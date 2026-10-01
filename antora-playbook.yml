@@ -12,8 +12,7 @@ content:
     - url: .
       branches:
         - wiki
-        - audit
-        - DEV
+        - main
       edit_url: 'https://github.com/sliptonic/freecad-cam-docs/edit/{refname}/{path}'
 
 ui:

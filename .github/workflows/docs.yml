@@ -2,7 +2,7 @@ name: docs
 
 on:
   push:
-    branches: [DEV, wiki, audit]
+    branches: [main, wiki]
   pull_request:
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
       # available as a local branch (actions/checkout only creates one).
       - name: Materialize content branches
         run: |
-          for b in wiki audit DEV; do
+          for b in wiki main; do
             git show-ref --verify --quiet "refs/heads/$b" || git branch "$b" "origin/$b" || true
           done
           git branch -a
@@ -68,7 +68,7 @@ jobs:
           name: site
           path: build/site
 
-      - name: Deploy (push to DEV or wiki)
+      - name: Deploy (push to main or wiki)
         if: github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v4
         with:

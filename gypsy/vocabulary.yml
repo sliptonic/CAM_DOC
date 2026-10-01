@@ -1,0 +1,105 @@
+# Vocabulary for gypsy lint, derived from src/Mod/CAM/Roadmap/ADR/ADR-000.md (ubiquitous language).
+# `avoid` entries are prohibited in prose. Prose excludes UI markup (menu:, btn:, kbd:, bold
+# property labels, italic dialog names, monospace, image alt text, xref text, code blocks,
+# attribute lines). `prose_ok` lists tolerated words that the rule would otherwise catch.
+# Patterns are case-insensitive regular expressions matched at word boundaries.
+terms:
+  - term: Tool Bit
+    avoid: ['toolbit', 'tool-bit', 'cutter', '(?<!tool )\bbit\b', 'end ?mill(?!s? (?:tool shape|shape))']
+    note: "'Tool' alone is not a domain term; name Tool Bit, Tool Controller, Tool Library or Tool Shape."
+  - term: Tool (bare)
+    avoid: ['\bthe tool\b(?! (?:axis|controller|bit|library|shape|change|table|path))', '\ba tool\b(?! (?:controller|bit|library|shape|change))']
+    note: "Disambiguate: Tool Bit, Tool Controller, Tool Library, Tool Shape."
+  - term: Tool Controller
+    avoid: ['tool slot', 'tool assembly']
+  - term: Toolpath
+    avoid: ['\btool ?paths?\b(?<!Toolpath)(?<!Toolpaths)', 'trajectory', 'motion plan', '\bthe path\b', '\bpaths?\b(?= (?:is|are|was|were) (?:generated|computed|cut))']
+    note: "Use Toolpath, one word, capitalised. 'Path' is a namespace only."
+  - term: Base Geometry
+    avoid: ['input geometry', 'target geometry', '\bthe base\b(?! geometry)']
+  - term: Operation
+    avoid: ['\bmachining step\b', '\bmachining task\b']
+  - term: Stock
+    avoid: ['\bblank\b', '\bbillet\b', 'raw material', 'work ?piece']
+  - term: Model
+    avoid: []
+  - term: Fixture
+    avoid: ['\bWCS\b', 'work offsets?', 'work coordinate systems?']
+  - term: Work Plane
+    avoid: ['tilted plane', 'local coordinate system', 'indexed frame', 'work ?plane(?<!Work Plane)(?<!Work Planes)']
+    note: "Two words, capitalised."
+  - term: Step Down / Step Over
+    avoid: ['axial step ?over', 'radial step ?down', 'stepover', 'stepdown']
+  - term: Horizontal Feed / Vertical Feed / Spindle Speed
+    avoid: ['feed ?rate', '\bF-word\b', '\bS-word\b', 'plunge rate(?! \()']
+  - term: Surface Speed
+    avoid: ['\bSFM\b']
+  - term: Chipload
+    avoid: ['chip thickness']
+  - term: Post-Processor
+    avoid: ['post ?processor(?<!Post-Processor)(?<!Post-Processors)', 'g-?code generator', '\bexporter\b']
+    note: "Hyphenated and capitalised; quote the UI label 'Post Processor' only inside UI markup."
+  - term: Post-Processing Dialog
+    avoid: ['post dialog', 'export dialog', 'output dialog']
+  - term: Post-Processor Property
+    avoid: ['post arguments?', 'post options?', 'post parameters?']
+  - term: Machine
+    avoid: ['machine config', 'machine profile', '\bCNC\b(?! machine)']
+  - term: Machine Template
+    avoid: ['\bbare template\b']
+  - term: Toolhead
+    avoid: ['tool holder', '\bhead\b(?! of)']
+  - term: Axis Velocity
+    avoid: ['max feed', 'feed limit', 'rapid rate']
+  - term: Rotation Strategy
+    avoid: ['output mode', 'rotation mode', '3\+2 mode']
+  - term: Deprecated
+    avoid: ['\blegacy\b(?! (?:simulator|post))', '\bobsolete\b', '\bretired\b']
+    note: "Only with a Deprecation Notice in code. 'Legacy CAM Simulator' and 'legacy post' are UI/catalogue names."
+  - term: Strategy
+    avoid: ['\bcut mode\b(?! property)']
+  - term: Dressup
+    avoid: ['post-modifier', 'path filter', 'dress-up', 'dress up']
+  - term: Tag
+    avoid: ['holding tabs?', '\btabs?\b(?= (?:are|is) left)']
+  - term: Sanity Check
+    avoid: ['\blinter\b', '\bvalidator\b', 'pre-?flight check', 'job report']
+  - term: Squawk
+    avoid: []
+  - term: Setup Sheet
+    avoid: ['defaults file', 'setup ?sheet(?<!Setup Sheet)(?<!Setup Sheets)']
+  - term: Generator
+    avoid: ['\bplanner\b']
+  - term: Indexed
+    avoid: ['positional machining']
+  - term: Job Template
+    avoid: []
+  - term: Job Model Group
+    avoid: ['model group(?<!Job Model Group)']
+  - term: Resource Clone
+    avoid: []
+  - term: Preset
+    avoid: ['\brecipe\b']
+
+# Words banned by STYLE.md §2 regardless of vocabulary.
+style_avoid:
+  - '\bsimply\b'
+  - '\bjust\b(?= (?:press|click|select|set|use|open))'
+  - '\bplease\b'
+  - 'note that'
+  - 'it should be noted'
+  - 'as desired'
+  - 'it is suggested'
+  - '\bthe users?\b'
+  - '\bwe\b'
+  - 'in (?:previous|earlier|older) versions?'
+  - '\bformerly\b'
+  - 'will be added'
+  - 'is planned'
+  - 'a future version'
+  - '\bv\d+\.\d+'
+
+# Tolerated in prose even though a pattern above would match.
+prose_ok:
+  - 'cutting speed'
+  - 'plunge rate \('

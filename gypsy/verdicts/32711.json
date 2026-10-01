@@ -1,0 +1,39 @@
+{
+ "pr": 32711,
+ "summary": "Removes the unused AddTipLength property from the Drilling operation, deleting it from new operations and migrating it out of existing ones on document restore.",
+ "pages": [
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py: initCircularHoleOperation no longer adds the AddTipLength bool property and SetupProperties drops it; the page's Properties list must lose the AddTipLength row (ExtraOffset is the actual tip-length control)",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py: only the Drilling-specific AddTipLength property is removed; the Tapping page documents its own operation and Legacy properties section does not describe AddTipLength",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a758a841a4c56aa29610d705ad476df0cb226441",
+  "merged_at": "2026-09-18T20:50:27Z",
+  "title": "CAM: remove unused AddTipLength property from Drilling operation",
+  "candidates": [
+   "operations/drilling.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "",
+  "cost_usd": 0.502267,
+  "duration_ms": 17230,
+  "session": "9b81572c-57d1-449e-8e82-78938896188e",
+  "generated": "2026-10-01T20:02:07+00:00"
+ }
+}

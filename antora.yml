@@ -1,14 +1,14 @@
-# Component descriptor for the audit branch: the imported wiki pages with every finding of the
-# 2026-08-22 CAM documentation audit applied (adds, revisions, deletions, missing pages).
+# Component descriptor for main: the current CAM documentation, maintained against FreeCAD main
+# (26.3dev). Seeded 2026-10-01 from the audit branch of sliptonic/freecad-cam-docs.
 name: cam
 title: FreeCAD CAM
-version: audit-2026-08
-display_version: Audit (26.3dev)
+version: DEV
+display_version: DEV (pre-release)
 prerelease: true
 start_page: index.adoc
 nav:
   - modules/ROOT/nav.adoc
 asciidoc:
   attributes:
-    freecad-version: wiki snapshot 2026-08-22
+    freecad-version: 26.3dev
     page-status: ''

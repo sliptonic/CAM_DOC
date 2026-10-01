@@ -1,0 +1,90 @@
+# gypsy stage 1: FreeCAD source paths -> documentation pages (relative to modules/ROOT/pages).
+# A changed file matching `match` (glob or prefix) makes every page in `pages` a candidate for
+# stage 2. A page that does not exist yet is a proposed path; stage 2 returns `new page` for it.
+# Built from the src/Mod/CAM inventory of 2026-10-01. Keep in step with InitGui.py command lists.
+map:
+  # ---- operations: model + GUI + .ui ------------------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Op/Adaptive.py', 'src/Mod/CAM/Path/Op/Gui/Adaptive.py', '*/PageOpAdaptiveEdit.ui'], pages: [operations/adaptive.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Custom.py', 'src/Mod/CAM/Path/Op/Gui/Custom.py', '*/PageOpCustomEdit.ui'], pages: [operations/custom.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Deburr.py', 'src/Mod/CAM/Path/Op/Gui/Deburr.py', '*/PageOpDeburrEdit.ui'], pages: [operations/deburr.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Drilling.py', 'src/Mod/CAM/Path/Op/Gui/Drilling.py', '*/PageOpDrillingEdit.ui'], pages: [operations/drilling.adoc, operations/tapping.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Tapping.py', 'src/Mod/CAM/Path/Op/Gui/Tapping.py', '*/PageOpTappingEdit.ui'], pages: [operations/tapping.adoc, operations/drilling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Engrave.py', 'src/Mod/CAM/Path/Op/EngraveBase.py', 'src/Mod/CAM/Path/Op/Gui/Engrave.py', '*/PageOpEngraveEdit.ui'], pages: [operations/engrave.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Flute.py', 'src/Mod/CAM/Path/Op/Gui/Flute.py', '*/PageOpFluteEdit.ui'], pages: [operations/flute.adoc, reference/experimental.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Helix.py', 'src/Mod/CAM/Path/Op/Gui/Helix.py', '*/PageOpHelixEdit.ui'], pages: [operations/helix.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/MillFace.py', 'src/Mod/CAM/Path/Op/Gui/MillFace.py'], pages: [operations/mill-face.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/MillFacing.py', 'src/Mod/CAM/Path/Op/Gui/MillFacing.py', '*/PageOpMillFacingEdit.ui'], pages: [operations/mill-facing.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/PlanarSurface.py', 'src/Mod/CAM/Path/Op/Gui/PlanarSurface.py', '*/PageOpPlanarSurfaceEdit.ui'], pages: [operations/planar-surface.adoc, operations/surface.adoc, operations/waterline.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Pocket.py', 'src/Mod/CAM/Path/Op/Gui/Pocket.py'], pages: [operations/pocket-3d.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/PocketBase.py', 'src/Mod/CAM/Path/Op/Gui/PocketBase.py', '*/PageOpPocketFullEdit.ui'], pages: [operations/pocket.adoc, operations/pocket-3d.adoc, operations/mill-face.adoc, operations/engrave.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/PocketShape.py', 'src/Mod/CAM/Path/Op/Gui/PocketShape.py'], pages: [operations/pocket.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/FeatureExtension.py', 'src/Mod/CAM/Path/Op/Gui/FeatureExtension.py', '*/PageOpPocketExtEdit.ui'], pages: [operations/pocket.adoc, operations/mill-facing.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Probe.py', 'src/Mod/CAM/Path/Op/Gui/Probe.py', '*/PageOpProbeEdit.ui'], pages: [operations/probe.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Profile.py', 'src/Mod/CAM/Path/Op/Gui/Profile.py', '*/PageOpProfileFullEdit.ui'], pages: [operations/profile.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/RotarySurface.py', 'src/Mod/CAM/Path/Op/Gui/RotarySurface.py', '*/PageOpRotarySurfaceEdit.ui'], pages: [operations/rotary-surface.adoc, reference/fourth-axis.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Slot.py', 'src/Mod/CAM/Path/Op/Gui/Slot.py', '*/PageOpSlotEdit.ui'], pages: [operations/slot.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Surface.py', 'src/Mod/CAM/Path/Op/SurfaceSupport.py', 'src/Mod/CAM/Path/Op/Gui/Surface.py', '*/PageOpSurfaceEdit.ui'], pages: [operations/surface.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/ThreadMilling.py', 'src/Mod/CAM/Path/Op/Gui/ThreadMilling.py', '*/PageOpThreadMillingEdit.ui', 'src/Mod/CAM/Data/Threads/*'], pages: [operations/thread-milling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Vcarve.py', 'src/Mod/CAM/Path/Op/Gui/Vcarve.py', '*/PageOpVcarveEdit.ui'], pages: [operations/vcarve.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Waterline.py', 'src/Mod/CAM/Path/Op/Gui/Waterline.py', '*/PageOpWaterlineEdit.ui'], pages: [operations/waterline.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/CircularHoleBase.py', 'src/Mod/CAM/Path/Op/Gui/CircularHoleBase.py', '*/PageBaseHoleGeometryEdit.ui', 'src/Mod/CAM/Path/Base/Drillable.py'], pages: [operations/drilling.adoc, operations/helix.adoc, operations/thread-milling.adoc, operations/tapping.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Gui/Comment.py'], pages: [operations/comment.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Gui/Stop.py'], pages: [operations/stop.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Gui/PathShape.py', 'src/Mod/CAM/App/FeaturePathShape.*', 'src/Mod/CAM/Gui/ViewProviderPathShape.*'], pages: [operations/path-from-shape-tc.adoc]}
+  # shared operation framework: base geometry, heights, depths, tool controller, start point
+  - {match: ['src/Mod/CAM/Path/Op/Base.py', 'src/Mod/CAM/Path/Op/Gui/Base.py', '*/PageBaseGeometryEdit.ui', '*/PageBaseLocationEdit.ui', '*/PageHeightsEdit.ui', '*/PageDepthsEdit.ui', '*/PageDiametersEdit.ui', '*/PageToolControllerEdit.ui', 'src/Mod/CAM/Path/Op/Gui/Selection.py'], pages: [index.adoc, inspect/set-start-point.adoc, operations/profile.adoc, operations/pocket.adoc, operations/drilling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Area.py', 'src/Mod/CAM/Path/Op/Util.py', 'src/Mod/CAM/Path/Base/Generator/*', 'src/Mod/CAM/Path/Geom.py', 'src/Mod/CAM/libarea/*', 'src/Mod/CAM/App/Area*'], pages: [misc/area.adoc]}
+  # ---- dressups -----------------------------------------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Dressup/Array.py', 'src/Mod/CAM/Path/Dressup/Gui/Array.py'], pages: [dressups/array.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/AxisMap.py', '*/AxisMapEdit.ui'], pages: [dressups/axis-map.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Boundary.py', 'src/Mod/CAM/Path/Dressup/Gui/Boundary.py', 'src/Mod/CAM/Path/Dressup/Gui/Boundary2.py', '*/DressupPathBoundary.ui'], pages: [dressups/path-boundary.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/DogboneII.py', 'src/Mod/CAM/Path/Dressup/Gui/DogboneII.py', '*/DogboneEdit.ui'], pages: [dressups/dogbone.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/Dragknife.py', '*/DragKnifeEdit.ui'], pages: [dressups/drag-knife.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/LeadInOut.py', '*/DressUpLeadInOutEdit.ui'], pages: [dressups/lead-in-out.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/Mirror.py'], pages: [dressups/mirror.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/PlungeMilling.py'], pages: [dressups/plunge-milling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/RampEntry.py'], pages: [dressups/ramp-entry.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Tags.py', 'src/Mod/CAM/Path/Dressup/Gui/Tags.py', 'src/Mod/CAM/Path/Dressup/Gui/TagPreferences.py', '*/HoldingTagsEdit.ui', '*/PathDressupHoldingTags.ui'], pages: [dressups/tag.adoc, reference/preferences.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Gui/ZCorrect.py', '*/ZCorrectEdit.ui'], pages: [dressups/zcorrect.adoc]}
+  - {match: ['src/Mod/CAM/Path/Dressup/Utils.py', 'src/Mod/CAM/Path/Dressup/Gui/Preferences.py'], pages: [index.adoc, reference/preferences.adoc]}
+  # ---- modify / inspect --------------------------------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Op/Gui/Copy.py'], pages: [modify/copy.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Gui/SimpleCopy.py'], pages: [modify/simple-copy.adoc]}
+  - {match: ['src/Mod/CAM/Path/Op/Gui/Array.py'], pages: [modify/array.adoc]}
+  - {match: ['src/Mod/CAM/PathCommands.py'], pages: [modify/copy.adoc, inspect/select-loop.adoc, inspect/op-active-toggle.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Gui/Inspect.py'], pages: [inspect/inspect.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Gui/SimulatorGL.py', 'src/Mod/CAM/PathSimulator/AppGL/*', '*/TaskCAMSimulator.ui'], pages: [inspect/simulator.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Gui/Simulator.py', 'src/Mod/CAM/PathSimulator/App/*', '*/TaskPathSimulator.ui'], pages: [inspect/simulator-legacy.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Gui/Camotics.py', '*/TaskPathCamoticsSim.ui'], pages: [inspect/camotics.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Gui/GetPoint.py', '*/PointEdit.ui'], pages: [inspect/set-start-point.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/PropertyBag.py', 'src/Mod/CAM/Path/Base/Gui/PropertyBag.py', 'src/Mod/CAM/PathScripts/PathPropertyBag*', '*/PropertyBag.ui', '*/PropertyCreate.ui'], pages: [misc/property-bag.adoc]}
+  - {match: ['src/Mod/CAM/Gui/Command.cpp', 'src/Mod/CAM/App/FeatureArea.*', 'src/Mod/CAM/Gui/ViewProviderArea.*'], pages: [misc/area.adoc, misc/area-workplane.adoc, operations/path-from-shape-tc.adoc]}
+  # ---- job, stock, setup sheet, fixture, sanity -------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Main/Job.py', 'src/Mod/CAM/Path/Main/Gui/Job.py', 'src/Mod/CAM/Path/Main/Gui/JobCmd.py', 'src/Mod/CAM/Path/Main/Gui/JobDlg.py', 'src/Mod/CAM/Path/Main/Gui/Editor.py', 'src/Mod/CAM/Path/Main/Stock.py', '*/PathEdit.ui', '*/DlgJobCreate.ui', '*/DlgJobModelSelect.ui'], pages: [job/job.adoc]}
+  - {match: ['*/DlgJobTemplateExport.ui'], pages: [job/export-template.adoc, job/job.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/SetupSheet*.py', 'src/Mod/CAM/Path/Base/Gui/SetupSheet*.py', '*/SetupOp.ui', '*/SetupGlobal.ui'], pages: [job/setup-sheet.adoc, job/job.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Gui/Fixture.py'], pages: [job/fixture.adoc, job/job.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Sanity/*', 'src/Mod/CAM/Path/Main/Gui/SanityCmd.py'], pages: [job/sanity-check.adoc, job/quick-validate.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Workplane.py', 'src/Mod/CAM/Path/Main/Gui/WorkplaneCmd.py', 'src/Mod/CAM/Path/Post/TiltedWorkPlane.py'], pages: [job/work-plane.adoc, job/job.adoc, reference/fourth-axis.adoc, output/machine-configuration.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Util.py', 'src/Mod/CAM/Path/Base/Gui/Util.py', 'src/Mod/CAM/PathScripts/PathUtils.py', 'src/Mod/CAM/PathScripts/PathUtilsGui.py', '*/DlgTCChooser.ui'], pages: [index.adoc]}
+  # ---- tools --------------------------------------------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Tool/Controller.py', 'src/Mod/CAM/Path/Tool/Gui/Controller.py', '*/DlgToolControllerEdit.ui', '*/ToolControllerEdit.ui', 'src/Mod/CAM/Path/Base/FeedRate.py'], pages: [tools/tool-controller.adoc]}
+  - {match: ['src/Mod/CAM/Path/Tool/Gui/FeedsSpeedsDialog.py', 'src/Mod/CAM/Path/Tool/Gui/MaterialPicker.py', 'src/Mod/CAM/Path/Tool/FeedsSpeeds/*', 'src/Mod/CAM/Path/Tool/toolbit/ui/presets_tab.py', '*/FeedsSpeedsPresetEdit.ui'], pages: [tools/feeds-speeds.adoc, tools/tool-controller.adoc, tools/toolbit.adoc]}
+  - {match: ['src/Mod/CAM/Path/Tool/toolbit/*', 'src/Mod/CAM/Path/Tool/docobject/*', '*/ToolBitEditor.ui', 'src/Mod/CAM/Tools/Bit/*', 'src/Mod/CAM/Tools/toolbit-attributes.py'], pages: [tools/toolbit.adoc, tools/add-toolbit.adoc]}
+  - {match: ['src/Mod/CAM/Path/Tool/library/*', '*/ToolBitLibraryEdit.ui', '*/LibraryProperties.ui', 'src/Mod/CAM/Tools/Library/*', 'src/Mod/CAM/Path/Tool/UpdateDocumentTools*', 'src/Mod/CAM/Path/Tool/Gui/UpdateDocumentToolsDlg.py'], pages: [tools/library-manager.adoc, tools/toolbit-library.adoc]}
+  - {match: ['src/Mod/CAM/Path/Tool/shape/*', '*/ShapeSelector.ui', 'src/Mod/CAM/Tools/Shape/*', 'src/Mod/CAM/Tools/shape_aliases.json'], pages: [tools/tool-shape.adoc, tools/toolbit.adoc]}
+  - {match: ['src/Mod/CAM/Path/Tool/assets/*', 'src/Mod/CAM/Path/Tool/camassets.py', 'src/Mod/CAM/Path/Tool/migration/*'], pages: [reference/preferences.adoc, tools/index.adoc, output/machine.adoc]}
+  # ---- machine and output ---------------------------------------------------------------------
+  - {match: ['src/Mod/CAM/Machine/*'], pages: [output/machine.adoc, output/machine-configuration.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/Processor.py', 'src/Mod/CAM/Path/Post/PostList.py', 'src/Mod/CAM/Path/Post/Utils*.py', 'src/Mod/CAM/Path/Post/DrillCycleExpander.py', 'src/Mod/CAM/Path/Post/GcodeProcessingUtils.py', 'src/Mod/CAM/Path/Post/PathOptimizationUtils.py', 'src/Mod/CAM/Path/Post/CAMErrors.py', 'src/Mod/CAM/Path/Base/MachineState.py'], pages: [output/mbpp-postprocessor.adoc, output/postprocessor-customization.adoc, output/post-process.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/Command.py', 'src/Mod/CAM/Path/Post/Gui/DlgPostProcess.py', '*/DlgPostProcess.ui', '*/DlgSelectPostProcessor.ui', 'src/Mod/CAM/Gui/DlgProcessorChooser.*'], pages: [output/post-process.adoc, output/post-process-selected.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/scripts/*_post.py', 'src/Mod/CAM/Path/Post/scripts/*_pre.py'], pages: [output/postprocessor-customization.adoc, output/post-process.adoc]}
+  # ---- preferences and workbench -----------------------------------------------------------
+  - {match: ['src/Mod/CAM/Path/Preferences.py', 'src/Mod/CAM/Path/Base/Gui/PreferencesAdvanced.py', 'src/Mod/CAM/Path/Main/Gui/PreferencesJob.py', 'src/Mod/CAM/Gui/Resources/preferences/*', 'src/Mod/CAM/Gui/DlgSettingsPathColor.*'], pages: [reference/preferences.adoc, reference/experimental.adoc]}
+  - {match: ['src/Mod/CAM/InitGui.py', 'src/Mod/CAM/Init.py', 'src/Mod/CAM/Path/GuiInit.py'], pages: [index.adoc]}
+  - {match: ['src/Mod/CAM/Gui/Resources/icons/*'], pages: [reference/artwork.adoc]}
+  - {match: ['src/Mod/CAM/Roadmap/ADR/ADR-000.md'], pages: [reference/glossary.adoc]}
+  - {match: ['src/Mod/CAM/Roadmap/*'], pages: [contributing/development-roadmap.adoc]}
+  - {match: ['src/Mod/CAM/PathPythonGui/*', 'src/Mod/CAM/Path/Base/Property.py', 'src/Mod/CAM/Path/Base/Gui/PropertyEditor.py'], pages: [reference/scripting.adoc]}
+  # files that never need documentation; matched so they are not reported as unmapped
+  - {match: ['src/Mod/CAM/CAMTests/*', 'src/Mod/CAM/*/translations/*', 'src/Mod/CAM/Gui/Resources/translations/*', 'src/Mod/CAM/CMakeLists.txt', 'src/Mod/CAM/*/CMakeLists.txt', 'src/Mod/CAM/CLAUDE.md', 'src/Mod/CAM/path.dox', 'src/Mod/CAM/Path/Log.py', 'src/Mod/CAM/Constants.py', 'src/Mod/CAM/DemoParts/*'], pages: []}

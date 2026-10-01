@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "gypsy verdict",
+  "type": "object",
+  "required": ["pr", "summary", "pages", "unmapped"],
+  "properties": {
+    "pr": {"type": "integer"},
+    "summary": {"type": "string"},
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["page", "verdict", "needs_gui", "reason", "sections"],
+        "properties": {
+          "page": {"type": "string"},
+          "verdict": {"enum": ["no change", "revise", "new page", "capture only"]},
+          "needs_gui": {"type": "boolean"},
+          "reason": {"type": "string"},
+          "sections": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "unmapped": {"type": "array", "items": {"type": "string"}},
+    "meta": {
+      "type": "object",
+      "description": "Added by triage.py: merge commit, candidate list, model, timestamp, cost."
+    }
+  }
+}

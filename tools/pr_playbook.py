@@ -13,7 +13,7 @@ import sys
 
 import yaml
 
-CONTENT_BRANCHES = ["wiki", "audit", "DEV"]
+CONTENT_BRANCHES = ["wiki", "main"]
 
 
 def main():

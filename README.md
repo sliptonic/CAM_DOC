@@ -1,19 +1,22 @@
-# FreeCAD CAM documentation — experiment
+# CAM_DOC: FreeCAD CAM documentation, maintained by gypsy
 
 This repository is a personal experiment by one FreeCAD contributor. It is **not** an official
 FreeCAD project and does not replace the [FreeCAD wiki](https://wiki.freecad.org/CAM_Workbench).
 
 It publishes the CAM workbench documentation as a versioned site built from git:
 
+- branch `main` — the current documentation, maintained against FreeCAD `main` (26.3dev) and
+  published as `DEV`. Seeded 2026-10-01 from the `audit` branch of `sliptonic/freecad-cam-docs`
+  (the wiki pages with the 2026-08-22 audit applied);
 - branch `wiki` — the wiki's CAM pages, imported mechanically from MediaWiki markup and labelled
-  by import date (the documentation FreeCAD has today, shown in the new pipeline);
-- branch `DEV` — a rewrite of the same documentation against FreeCAD `main` (26.3dev), with a new
-  information architecture.
+  by import date, with the de/fr/pl translations.
 
-The site lets the reader switch between the two. See [PROPOSAL.md](PROPOSAL.md) for what the
-experiment is trying to show and why.
+`gypsy/` holds the bot that keeps `main` current: it triages every merged `Mod: CAM` pull
+request in FreeCAD, drafts the documentation changes to [STYLE.md](STYLE.md), captures figures
+from the running application, and opens a pull request here for a person to merge. See
+`gypsy/README.md`.
 
-Site: https://sliptonic.github.io/freecad-cam-docs/
+See [PROPOSAL.md](PROPOSAL.md) for what the experiment is trying to show and why.
 
 ## Layout
 
@@ -22,6 +25,7 @@ antora.yml                 component descriptor (differs per branch)
 antora-playbook.yml        site assembly: which branches become which versions
 modules/ROOT/              pages, navigation, images, partials (Antora standard layout)
 supplemental-ui/           header override that puts the version selector in the header
+gypsy/                     triage, lint, prompts, verdicts, bot
 tools/                     wiki importer, template handlers, migration report, helpers
 .github/workflows/         build, validate, deploy, pull-request previews
 ```
@@ -33,7 +37,7 @@ npm ci
 npx antora antora-playbook.yml        # output in build/site/
 ```
 
-`antora-playbook.yml` reads the `wiki` and `DEV` branches of this clone, so both must exist
+`antora-playbook.yml` reads the `wiki` and `main` branches of this clone, so both must exist
 locally (`git branch wiki origin/wiki`).
 
 To re-run the wiki import (branch `wiki` only) you need `pandoc` and a clone of the wiki bridge
