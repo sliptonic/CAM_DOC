@@ -16,7 +16,7 @@ import time
 import requests
 
 API = "https://wiki.freecad.org/api.php"
-UA = "freecad-cam-docs importer (https://github.com/sliptonic/freecad-cam-docs)"
+UA = "freecad-cam-docs importer (https://github.com/sliptonic/CAM_DOC)"
 
 
 def resolve(session, names):

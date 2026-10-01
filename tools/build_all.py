@@ -5,7 +5,7 @@
 build/site/<lang>/ (the per-language-site pattern; languages exist for the wiki snapshot only,
 so language playbooks read just the `wiki` branch).
 
-    python3 tools/build_all.py [--base-url https://.../freecad-cam-docs] [--langs de,fr,pl]
+    python3 tools/build_all.py [--base-url https://.../CAM_DOC] [--langs de,fr,pl]
 """
 import argparse
 import copy

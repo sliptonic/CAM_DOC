@@ -773,7 +773,7 @@ nav:
   - modules/ROOT/nav.adoc
 asciidoc:
   attributes:
-    site-en-url: https://sliptonic.github.io/freecad-cam-docs
+    site-en-url: https://sliptonic.github.io/CAM_DOC
     page-component-version: wiki-2026-08
     page-has-l10n: 'y'
 """)
