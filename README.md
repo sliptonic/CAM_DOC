@@ -13,7 +13,7 @@ It publishes the CAM workbench documentation as a versioned site built from git:
 The site lets the reader switch between the two. See [PROPOSAL.md](PROPOSAL.md) for what the
 experiment is trying to show and why.
 
-Site: https://sliptonic.github.io/freecad-cam-docs/
+Site: https://sliptonic.github.io/CAM_DOC/
 
 ## Layout
 
