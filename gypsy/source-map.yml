@@ -33,6 +33,8 @@ map:
   - {match: ['src/Mod/CAM/Path/Op/Gui/PathShape.py', 'src/Mod/CAM/App/FeaturePathShape.*', 'src/Mod/CAM/Gui/ViewProviderPathShape.*'], pages: [operations/path-from-shape-tc.adoc]}
   # shared operation framework: base geometry, heights, depths, tool controller, start point
   - {match: ['src/Mod/CAM/Path/Op/Base.py', 'src/Mod/CAM/Path/Op/Gui/Base.py', '*/PageBaseGeometryEdit.ui', '*/PageBaseLocationEdit.ui', '*/PageHeightsEdit.ui', '*/PageDepthsEdit.ui', '*/PageDiametersEdit.ui', '*/PageToolControllerEdit.ui', 'src/Mod/CAM/Path/Op/Gui/Selection.py'], pages: [index.adoc, inspect/set-start-point.adoc, operations/profile.adoc, operations/pocket.adoc, operations/drilling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Generator/ramp_entry.py'], pages: [dressups/ramp-entry.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Generator/drill.py', 'src/Mod/CAM/Path/Base/Generator/helix.py', 'src/Mod/CAM/Path/Base/Generator/tapping.py'], pages: [operations/drilling.adoc, operations/helix.adoc, operations/tapping.adoc]}
   - {match: ['src/Mod/CAM/Path/Op/Area.py', 'src/Mod/CAM/Path/Op/Util.py', 'src/Mod/CAM/Path/Base/Generator/*', 'src/Mod/CAM/Path/Geom.py', 'src/Mod/CAM/libarea/*', 'src/Mod/CAM/App/Area*'], pages: [misc/area.adoc]}
   # ---- dressups -----------------------------------------------------------------------------
   - {match: ['src/Mod/CAM/Path/Dressup/Array.py', 'src/Mod/CAM/Path/Dressup/Gui/Array.py'], pages: [dressups/array.adoc]}
@@ -65,7 +67,8 @@ map:
   - {match: ['src/Mod/CAM/Path/Base/SetupSheet*.py', 'src/Mod/CAM/Path/Base/Gui/SetupSheet*.py', '*/SetupOp.ui', '*/SetupGlobal.ui'], pages: [job/setup-sheet.adoc, job/job.adoc]}
   - {match: ['src/Mod/CAM/Path/Main/Gui/Fixture.py'], pages: [job/fixture.adoc, job/job.adoc]}
   - {match: ['src/Mod/CAM/Path/Main/Sanity/*', 'src/Mod/CAM/Path/Main/Gui/SanityCmd.py'], pages: [job/sanity-check.adoc, job/quick-validate.adoc]}
-  - {match: ['src/Mod/CAM/Path/Main/Workplane.py', 'src/Mod/CAM/Path/Main/Gui/WorkplaneCmd.py', 'src/Mod/CAM/Path/Post/TiltedWorkPlane.py'], pages: [job/work-plane.adoc, job/job.adoc, reference/fourth-axis.adoc, output/machine-configuration.adoc]}
+  - {match: ['src/Mod/CAM/Path/Main/Workplane.py', 'src/Mod/CAM/Path/Main/Gui/WorkplaneCmd.py', ], pages: [job/work-plane.adoc, job/job.adoc, reference/fourth-axis.adoc, output/machine-configuration.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/TiltedWorkPlane.py'], pages: [output/mbpp-postprocessor.adoc, output/postprocessor-customization.adoc, output/machine-configuration.adoc]}
   - {match: ['src/Mod/CAM/Path/Base/Util.py', 'src/Mod/CAM/Path/Base/Gui/Util.py', 'src/Mod/CAM/PathScripts/PathUtils.py', 'src/Mod/CAM/PathScripts/PathUtilsGui.py', '*/DlgTCChooser.ui'], pages: [index.adoc]}
   # ---- tools --------------------------------------------------------------------------------
   - {match: ['src/Mod/CAM/Path/Tool/Controller.py', 'src/Mod/CAM/Path/Tool/Gui/Controller.py', '*/DlgToolControllerEdit.ui', '*/ToolControllerEdit.ui', 'src/Mod/CAM/Path/Base/FeedRate.py'], pages: [tools/tool-controller.adoc]}
@@ -85,6 +88,6 @@ map:
   - {match: ['src/Mod/CAM/Gui/Resources/icons/*'], pages: [reference/artwork.adoc]}
   - {match: ['src/Mod/CAM/Roadmap/ADR/ADR-000.md'], pages: [reference/glossary.adoc]}
   - {match: ['src/Mod/CAM/Roadmap/*'], pages: [contributing/development-roadmap.adoc]}
-  - {match: ['src/Mod/CAM/PathPythonGui/*', 'src/Mod/CAM/Path/Base/Property.py', 'src/Mod/CAM/Path/Base/Gui/PropertyEditor.py'], pages: [reference/scripting.adoc]}
+  - {match: ['src/Mod/CAM/PathPythonGui/*', 'src/Mod/CAM/Path/Base/Property.py', 'src/Mod/CAM/Path/Base/Gui/PropertyEditor.py', 'src/Mod/CAM/App/*PyImp.cpp', 'src/Mod/CAM/App/*.pyi', 'src/Mod/CAM/App/Command.*', 'src/Mod/CAM/App/Path.*', 'src/Mod/CAM/Constants.py'], pages: [reference/scripting.adoc]}
   # files that never need documentation; matched so they are not reported as unmapped
-  - {match: ['src/Mod/CAM/CAMTests/*', 'src/Mod/CAM/*/translations/*', 'src/Mod/CAM/Gui/Resources/translations/*', 'src/Mod/CAM/CMakeLists.txt', 'src/Mod/CAM/*/CMakeLists.txt', 'src/Mod/CAM/CLAUDE.md', 'src/Mod/CAM/path.dox', 'src/Mod/CAM/Path/Log.py', 'src/Mod/CAM/Constants.py', 'src/Mod/CAM/DemoParts/*'], pages: []}
+  - {match: ['src/Mod/CAM/CAMTests/*', 'src/Mod/CAM/*/translations/*', 'src/Mod/CAM/Gui/Resources/translations/*', 'src/Mod/CAM/CMakeLists.txt', 'src/Mod/CAM/*/CMakeLists.txt', 'src/Mod/CAM/CLAUDE.md', 'src/Mod/CAM/path.dox', 'src/Mod/CAM/Path/Log.py', 'src/Mod/CAM/DemoParts/*'], pages: []}

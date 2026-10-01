@@ -8,7 +8,8 @@
 Writes gypsy/verdicts/<pr>.json. --dry prints the prompt and writes nothing. Existing verdicts
 are kept unless --force. Needs `gh` (logged in, read-only use) and `claude` (logged in).
 """
-import argparse, datetime, fnmatch, json, os, re, subprocess, sys
+import argparse, datetime, fnmatch, functools, json, os, re, subprocess, sys
+print = functools.partial(print, flush=True)
 import yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -168,7 +169,7 @@ def ask(prompt, model, schema):
     result = env.get("structured_output") or env.get("result")
     if isinstance(result, str):
         result = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", result.strip()))
-    return result, {"model": env.get("model") or model, "cost_usd": env.get("total_cost_usd"),
+    return result, {"model": (env.get("modelUsage") and next(iter(env["modelUsage"]))) or env.get("model") or model or "default", "cost_usd": env.get("total_cost_usd"),
                     "duration_ms": env.get("duration_ms"), "session": env.get("session_id")}
 
 
