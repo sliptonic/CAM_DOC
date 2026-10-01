@@ -29,7 +29,7 @@ def run(playbook_path, env_extra):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base-url", default="https://sliptonic.github.io/freecad-cam-docs")
+    ap.add_argument("--base-url", default="https://sliptonic.github.io/CAM_DOC")
     ap.add_argument("--langs", default=",".join(DEFAULT_LANGS))
     ap.add_argument("--playbook", default=os.path.join(ROOT, "antora-playbook.yml"))
     args = ap.parse_args()

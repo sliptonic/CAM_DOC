@@ -2,10 +2,10 @@
 # identified by the `version` key in that branch's antora.yml.
 site:
   title: FreeCAD CAM documentation (experiment)
-  url: https://sliptonic.github.io/freecad-cam-docs
+  url: https://sliptonic.github.io/CAM_DOC
   start_page: cam::index.adoc
   keys:
-    repository: https://github.com/sliptonic/freecad-cam-docs
+    repository: https://github.com/sliptonic/CAM_DOC
 
 content:
   sources:
@@ -13,7 +13,7 @@ content:
       branches:
         - wiki
         - main
-      edit_url: 'https://github.com/sliptonic/freecad-cam-docs/edit/{refname}/{path}'
+      edit_url: 'https://github.com/sliptonic/CAM_DOC/edit/{refname}/{path}'
 
 ui:
   bundle:

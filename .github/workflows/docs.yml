@@ -47,7 +47,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             python3 tools/pr_playbook.py --base "${{ github.base_ref }}" \
-              --url "https://sliptonic.github.io/freecad-cam-docs/pr-${{ github.event.number }}" \
+              --url "https://sliptonic.github.io/CAM_DOC/pr-${{ github.event.number }}" \
               > antora-playbook-pr.yml
             echo "file=antora-playbook-pr.yml" >> "$GITHUB_OUTPUT"
           else
@@ -92,7 +92,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const url = `https://sliptonic.github.io/freecad-cam-docs/pr-${context.issue.number}/`;
+            const url = `https://sliptonic.github.io/CAM_DOC/pr-${context.issue.number}/`;
             const marker = '<!-- docs-preview -->';
             const body = `${marker}\nDocumentation preview: ${url}\n\nBuilt from ${context.sha}.`;
             const {data: comments} = await github.rest.issues.listComments({
