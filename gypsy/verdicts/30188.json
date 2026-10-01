@@ -1,0 +1,77 @@
+{
+ "pr": 30188,
+ "summary": "Adds a new Plunge Milling dressup command (CAM_DressupPlungeMilling) that converts horizontal cutting moves of a base operation into a chain of plunges, with StepOver, UseDrillingCycle, PeckDepth, PeckRetract, ChipBreak and DwellTime properties, registered in the Dressup menu; the drill generator gains an internal retract-height validation.",
+ "pages": [
+  {
+   "page": "dressups/plunge-milling.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/PlungeMilling.py: new dressup with properties Base, StepOver (default 0.2 x tool diameter), UseDrillingCycle, ChipBreak, PeckDepth, PeckRetract (default base StartDepth), DwellTime; command CAM_DressupPlungeMilling, menu text 'Plunge Milling', reuses CAM_Dressup icon; no task panel, editor modes hide Peck/Dwell fields unless UseDrillingCycle is set; Create() rejects compound Path objects ('Select a profile object')",
+   "sections": [
+    "Description",
+    "Usage",
+    "Properties",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: 'CAM_DressupPlungeMilling' added to the dressup command list between Mirror and RampEntry; Path Dressup command listing must gain the entry",
+   "sections": [
+    "Commands",
+    "Path Dressup"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/drill.py: only adds an isclose helper and a ValueError when retractheight is not above the end point; no property, default or documented output changes",
+   "sections": []
+  },
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/drill.py: internal validation only; Helix behaviour as documented is unaffected",
+   "sections": []
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/drill.py: internal validation only; Tapping page describes no retract-height edge case",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Candidate mapping from drill.py is spurious; CAM Area does not use the drill generator",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "f6e0aa4b5ceb56ac650ec2ffbca99c339fd80b25",
+  "merged_at": "2026-09-11T16:11:31Z",
+  "title": "CAM: DressupPlungeMilling",
+  "candidates": [
+   "dressups/plunge-milling.adoc",
+   "index.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/helix.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.46584225,
+  "duration_ms": 25214,
+  "session": "b965fe34-6a5b-4e49-badb-09f019a51a22",
+  "generated": "2026-10-01T20:45:39+00:00"
+ }
+}

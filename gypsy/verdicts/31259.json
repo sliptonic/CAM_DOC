@@ -1,0 +1,45 @@
+{
+ "pr": 31259,
+ "summary": "Profile regression fix: closed areas formed by vertical faces are enveloped directly again, nested compounds are flattened via a new internal Path.Geom.uncompound() helper (also used by DressupPathBoundary), and combineConnectedShapes/combineHorizontalFaces gain a BoundBox pre-check; no property, default, enumeration, panel control or output semantics change.",
+ "pages": [
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Profile.py: _processBase now builds an envelope from combineConnectedShapes(vertFaces) and only falls back to bottom edges when that fails; this restores the documented behaviour for vertical faces forming a closed area. Remaining hunks (uncompound in _processEachModel, base-less _processHorFace, closed/open wire split, tolerance fallback, removed unused offset) are internal; no areaOpProperties, PROP_DFLTS or enumeration hunks.",
+   "sections": []
+  },
+  {
+   "page": "dressups/path-boundary.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Boundary.py execute(): stock SubShapes replaced by Path.Geom.uncompound(obj.Stock.Shape), a bug fix for nested compound stock with identical offset output; no property or option change.",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Candidate dropped as mis-mapped: Path/Geom.py is a geometry helper module, not the Area feature. Hunks add uncompound(), add BoundBox.intersect pre-checks in combineConnectedShapes/combineHorizontalFaces and comment out a debug call; all internal.",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "0e3be8790de9c9cb1ea162aa3c6fe477d0e1ba5f",
+  "merged_at": "2026-09-21T00:45:34Z",
+  "title": "CAM: Profile - Fix for vertical faces",
+  "candidates": [
+   "dressups/path-boundary.adoc",
+   "misc/area.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5733565,
+  "duration_ms": 35391,
+  "session": "ebc1945a-5878-48b7-ba97-31926793f3be",
+  "generated": "2026-10-01T20:50:29+00:00"
+ }
+}

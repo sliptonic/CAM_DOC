@@ -1,0 +1,50 @@
+{
+ "pr": 31744,
+ "summary": "The Mill Facing operation now plunges from the Safe Height to the cutting depth with a G1 feed move instead of a G0 rapid, and the linking generator gains an internal split-plunge argument and annotation to support this.",
+ "pages": [
+  {
+   "page": "operations/mill-facing.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/MillFacing.py: initial positioning plunge changed from Path.Command('G0', pre3) to G1, and the final linking move between pattern segments is forced to G1 with split_plunge_height=obj.SafeHeight.Value, so rapids stop at Safe Height and the descent to depth is at feed rate; this changes what the operation produces and what the Heights/CollisionAvoidanceStrategy properties imply",
+   "sections": [
+    "Description",
+    "Properties",
+    "Heights",
+    "Notes"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/linking.py: new optional split_plunge_height argument and ANNOT_LINKING annotation are internal to the linking generator; the CAM Area page documents the Path.Area object, not this generator",
+   "sections": []
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Constants.py: adds ANNOT_LINKING = {\"type\": \"linking\"}, an internal annotation marker on generated commands; the Annotations section does not enumerate per-generator annotation constants",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "7b60b3b0bb8c9d107dc0afb4f86bb3c34315b78c",
+  "merged_at": "2026-09-07T17:47:47Z",
+  "title": "CAM: MillFacing - G1 for plunge moves",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/mill-facing.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.31798125,
+  "duration_ms": 13473,
+  "session": "627357ff-90dd-4fb8-ad2f-40ed21e85f6b",
+  "generated": "2026-10-01T20:56:24+00:00"
+ }
+}

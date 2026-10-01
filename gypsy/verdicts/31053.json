@@ -1,0 +1,37 @@
+{
+ "pr": 31053,
+ "summary": "Fixes the Adaptive operation so rest-machining finishing passes are generated only along edges not already inside the pre-cleared area, adds opt-in DEBUG_SVG diagnostics in libarea, exposes an internal clipperScale field, and bumps ADAPTIVE_GENERATOR_VERSION.",
+ "pages": [
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "libarea/Adaptive.cpp: finishing passes now skip pre-cleared regions, which is a bug fix restoring the documented rest-machining behaviour; Path/Op/Adaptive.py only bumps ADAPTIVE_GENERATOR_VERSION; no property, default, enumeration or task-panel control changes",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Source map mis-hit: libarea/Adaptive.cpp, Adaptive.hpp and pyarea.cpp implement the Adaptive clearing engine, not the CAM Area command this page describes; the new DebugSVGInfo struct is behind #ifdef DEBUG_SVG and clipperScale is an internal test-support field",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "0da231857ad1431295f252174cefce441966bffa",
+  "merged_at": "2026-08-15T13:50:41Z",
+  "title": "CAM: Make adaptive operation skip finishing passes in pre-cleared regions",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/adaptive.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.47444325000000004,
+  "duration_ms": 25501,
+  "session": "a7f167e4-7219-4873-9f1f-c22a72339ff5",
+  "generated": "2026-10-01T20:48:41+00:00"
+ }
+}

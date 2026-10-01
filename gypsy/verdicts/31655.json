@@ -1,0 +1,25 @@
+{
+ "pr": 31655,
+ "summary": "Internal C++ hardening of the Toolpath class: commands are stored by value instead of raw pointers, insertCommand/deleteCommand bounds checks are fixed, arc-length and cycle-time computation is corrected (now honoring G90/G91 and G90.1/G91.1), and gtest unit tests are added; no Python API, property, panel, or output format changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "9ecbd524adee179bde688111db11e50b8f5901d6",
+  "merged_at": "2026-08-21T16:11:54Z",
+  "title": "(cp) CAM: Fix crashes and memory leaks",
+  "candidates": [
+   "misc/area.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/App/FeaturePathCompound.cpp",
+   "src/Mod/CAM/Gui/ViewProviderPath.cpp"
+  ],
+  "files": 12,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.48652524999999996,
+  "duration_ms": 10003,
+  "session": "7a623480-6416-4f9f-81e1-43adbfae8019",
+  "generated": "2026-10-01T20:54:11+00:00"
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "pr": 30421,
+ "summary": "Reworks the Job task panel Setup tab: Model/Stock selection-target toggle buttons replace the single picking toggle, the Alignment and Origin & Orientation groups are merged into Origin & Alignment with renamed Center XYZ/XY in Stock buttons, the move pad loses diagonals and gains Z up/down plus a unit-aware step, rotation gains an X/Y/Z axis selector, Set Origin now accepts any edge midpoint, and stock extension and move-step defaults become 0.125\"/0.1\" under imperial units.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PathEdit.ui: 'Alignment' group becomes 'Selection Target' with Model/Stock toggle buttons; 'Origin && Orientation' becomes 'Origin && Alignment'; 'Center in Stock'/'XY in Stock' renamed 'Center XYZ in Stock'/'Center XY in Stock'; diagonal move arrows removed, Z up/down added, modelRotateAxis combo added. Gui/Job.py: modelRotate uses selected axis (X/Y/Z, default Z); isValidDatumSelection no longer rejects non-circular edges and alignMoveToOrigin uses edge midpoint; modelMoveValue is a QuantitySpinBox defaulting to 0.1 in under imperial. Stock.py: ExtX/Y/Zneg/pos default 3.175 mm when user unit is inch; stock view defaults change to tan dotted Flat Lines, Transparency 95, Selectable False.",
+   "sections": [
+    "Setup",
+    "Stock",
+    "Alignment",
+    "Origin & Orientation",
+    "Move - XY / Rotate around Z",
+    "Default values",
+    "Stock properties"
+   ]
+  },
+  {
+   "page": "reference/artwork.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path.qrc and Gui/Resources/icons/: 21 new SVG icons added (arrow-ccw/cw-x/y/z, arrow-up/down-y/z, arrow-left/right-x, center-in-stock, xy-in-stock, model, stock, move-to-origin, set-origin, origin-x/y/z) in the directory the page catalogues.",
+   "sections": [
+    "src/Mod/CAM/Gui/Resources/icons/"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "16267c8de2cb4248c54d352632704e9d0021a854",
+  "merged_at": "2026-08-24T20:36:00Z",
+  "title": "CAM: Update Job Task Panel GUI",
+  "candidates": [
+   "job/job.adoc",
+   "reference/artwork.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Gui/Resources/Path.qrc"
+  ],
+  "files": 26,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.6438382500000001,
+  "duration_ms": 29540,
+  "session": "a95e2554-869e-4b67-8095-b79358048331",
+  "generated": "2026-10-01T20:46:15+00:00"
+ }
+}

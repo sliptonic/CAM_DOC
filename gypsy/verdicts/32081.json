@@ -1,0 +1,63 @@
+{
+ "pr": 32081,
+ "summary": "Adds an \"Import...\" button to the Preferences → CAM → Assets → Machines panel that opens a new MTConnect import dialog, fetching a probe document from an agent URL or a saved XML file and opening the resulting Machine in the Machine Editor for review and saving.",
+ "pages": [
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/assets/ui/preferences.py: Machines button row gains 'Import...' between Add and Edit, with tooltip 'Create a machine from the probe document of an MTConnect agent'; new import_machine handler opens MTConnectImportDialog then MachineEditorDialog",
+   "sections": [
+    "Assets",
+    "Machines"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/mtconnect_import_dialog.py: new 'Import Machine from MTConnect' dialog (URL or probe XML file, /probe appended to bare host URLs, device picker when agent lists several machines, 'Machine Imported' summary of imported/assumed/not-imported items); Machine/models/mtconnect_import.py: what the import populates (axes, limits, velocities, spindle rpm band, coolant, units, machine_type) and the rotary-chain assumption recorded in kinematics notes",
+   "sections": [
+    "Machine library",
+    "Machine Editor",
+    "Using a Machine"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Machine/ui/editor/machine_editor.py: editor now accepts an unsaved in-memory machine (import path) so a machine can originate from an MTConnect probe rather than New/template; mtconnect_import.py writes 'Import assumptions:' into kinematics.notes and a provenance line into description, both visible on the Machine tab",
+   "sections": [
+    "How the pieces fit",
+    "The Machine Editor"
+   ]
+  },
+  {
+   "page": "tools/index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/assets/ui/preferences.py hunk only touches the Machines group of the Assets page; the Machines section here is a pointer to the machine pages and its text stays correct",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "c727ab001eba9139b4a0fadb6ed7ec0170659e4e",
+  "merged_at": "2026-09-01T17:00:25Z",
+  "title": "CAM: Add mtconnect import to machine editor",
+  "candidates": [
+   "output/machine-configuration.adoc",
+   "output/machine.adoc",
+   "reference/preferences.adoc",
+   "tools/index.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 11,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.92855725,
+  "duration_ms": 23961,
+  "session": "67df7ebc-832b-4cc9-a89e-050634fd8969",
+  "generated": "2026-10-01T21:03:17+00:00"
+ }
+}

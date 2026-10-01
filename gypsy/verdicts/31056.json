@@ -1,0 +1,37 @@
+{
+ "pr": 31056,
+ "summary": "Fixes solid slicing tolerance handling in Part::CrossSection and Area::makeSections, removes the 0.001 mm slice offset and the PocketShape GeometryTolerance extrusion buffer, and wraps OCCT ConnectEdgesToWires/ConnectWiresToWires to work around an OCCT bug, so Pocket Shape and Mill Face once again cut to full depth without any change to properties, defaults, task-panel controls or commands.",
+ "pages": [
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Area.cpp makeSections: internal slice-tolerance fix and removal of the 0.001 offset workaround; no Area property, default or enumeration changes",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PocketShape.py areaOpShapes: removes internal GeometryTolerance/10 extrusion buffer; a crash/bug fix restoring the documented full-depth behaviour, no property or panel change",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "97d93ad91d2e3a7fed6f766171822984e4accbd1",
+  "merged_at": "2026-08-15T13:49:04Z",
+  "title": "CAM: Fix slicer",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/pocket.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 16,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.6661315000000001,
+  "duration_ms": 26555,
+  "session": "409e432e-fed5-41e0-bc67-8c684ad38a43",
+  "generated": "2026-10-01T20:49:15+00:00"
+ }
+}

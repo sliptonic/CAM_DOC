@@ -1,0 +1,78 @@
+{
+ "pr": 32082,
+ "summary": "Operations on a job whose Machine has rotary axes now always emit a rotary-axis G0 pose command, including Z-up workplane ops which now command every rotary axis to zero instead of emitting nothing.",
+ "pages": [
+  {
+   "page": "reference/fourth-axis.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py _setup_workplane_transform: Z-up workplane on a machine with has_rotary_axes now emits G0 with every kinematic-chain axis at 0.0, so 3+2 output changes for every op; any text saying Z-aligned ops produce no rotation command is now wrong",
+   "sections": [
+    "Usage",
+    "Notes"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: behaviour is keyed on the existing has_rotary_axes flag; no Machine field, default or format changes",
+   "sections": []
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: internal rotation emission only; no command, menu or overview text affected",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: hunk is in _setup_workplane_transform, unrelated to start point handling",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: Workplane property, its default and its meaning are unchanged; the altered rotary emission is job/machine-level behaviour, not op-specific",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: Workplane property unchanged; rotary pose emission is documented at the fourth-axis level, not per operation",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: Workplane property unchanged; rotary pose emission is documented at the fourth-axis level, not per operation",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "b82f9fcf9b7037a3d8a6357284de56280215afb0",
+  "merged_at": "2026-08-28T16:31:35Z",
+  "title": "CAM: Emit rotation on all ops if rotation machine is used",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.46603199999999995,
+  "duration_ms": 27155,
+  "session": "474c899f-fc3b-4fbc-aa68-05a1774898f1",
+  "generated": "2026-10-01T21:03:50+00:00"
+ }
+}

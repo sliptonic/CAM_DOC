@@ -1,0 +1,40 @@
+{
+ "pr": 32053,
+ "summary": "Restores hover tooltips on the Lead In/Out dressup task panel's QuantitySpinBox controls by pulling them from the property descriptions, and trims the \"(1..90)\" range hint from the AngleIn/AngleOut property descriptions.",
+ "pages": [
+  {
+   "page": "dressups/lead-in-out.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/LeadInOut.py: AngleIn/AngleOut property descriptions lose the '(1..90)' range hint; setupSpinBoxes now passes setToolTip=True so the panel's Radius/Angle/Extend/Offset/Threshold spin boxes show the property description as a tooltip",
+   "sections": [
+    "Properties",
+    "Options"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Gui/Util.py: QuantitySpinBox gains an internal setToolTip helper plus range() lint cleanups; nothing the workbench overview describes",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e8a7a343bd057d1cedfd0c5239cb520387f53ee0",
+  "merged_at": "2026-08-21T17:04:47Z",
+  "title": "CAM: LeadInOut - Fix QuantitySpinBox tooltips",
+  "candidates": [
+   "dressups/lead-in-out.adoc",
+   "index.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35442425,
+  "duration_ms": 13804,
+  "session": "a4a697c6-efa9-4ae7-8f96-6dd06857f497",
+  "generated": "2026-10-01T21:02:18+00:00"
+ }
+}

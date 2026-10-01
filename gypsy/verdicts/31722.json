@@ -1,0 +1,63 @@
+{
+ "pr": 31722,
+ "summary": "The machine-based post-processor's export2 pipeline now does modal-command and modal-axis deduplication and line numbering on Path.Command objects (new PathOptimizationUtils, _add_line_numbers hook, modal_barrier and no_collapse_g0 annotations) instead of on the stringified G-code, and the Processor no longer applies the FILTER_INEFFICIENT_MOVES machine output option.",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: STAGE 4 string-world _optimize_gcode removed; export2 now calls _optimize_duplicates_doubles (modal_gcode/modal_axis from PathOptimizationUtils) then _add_line_numbers after all expansions and before command conversion; _edit_command_list gains all_postables; subclasses must render the N parameter in _convert_move; FILTER_INEFFICIENT_MOVES no longer consulted; Constants.py adds ANNOT_MODAL_BARRIER and ANNOT_NO_COLLAPSE_G0 (collapse_g0 exists but _optimize_g0 is not wired into export2)",
+   "sections": [
+    "The export2 pipeline",
+    "Hooks",
+    "Command filtering and annotations",
+    "Common properties"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: _optimize_gcode hunk drops filter_inefficient_moves so the FILTER_INEFFICIENT_MOVES output option has no effect; line numbering now numbers only Path.Commands per section, counts but does not number 'str' blocks, skips comments and preserves an existing N word",
+   "sections": [
+    "Machine output options",
+    "Writing a machine-based Post-Processor"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Constants.py: new annotation keys ANNOT_MODAL_BARRIER ('modal_barrier') and ANNOT_NO_COLLAPSE_G0 ('no_collapse_g0'), plus AXIS_MODAL/PARAMETER_MODAL/NOT_PARAMETER_MODAL; DrillCycleExpander.py now tags G0 retracts with no_collapse_g0",
+   "sections": [
+    "Annotations"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/opensbp_post.py: line-number-required commands now get N=LINE_NUMBER_START in Path.Command world and OUTPUT_DUPLICATE_COMMANDS is forced on, but the previous _optimize_gcode override already disabled command dedup, so the documented ShopBot output and the Post Process dialog are unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "33f36153fc9a213bddd9212712bf4b6898087c88",
+  "merged_at": "2026-08-28T16:43:35Z",
+  "title": "CAM: mbpp optimizations & line-numbers in Path.Command world ",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 10,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.9795592500000001,
+  "duration_ms": 49678,
+  "session": "4878df3a-e930-4801-a325-e1892cd43dba",
+  "generated": "2026-10-01T20:56:04+00:00"
+ }
+}

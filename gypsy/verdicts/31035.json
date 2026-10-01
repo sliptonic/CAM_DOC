@@ -1,0 +1,49 @@
+{
+ "pr": 31035,
+ "summary": "Replaces the machine-based post-processor's internal _modal_state dict with a MachineState that is updated before each command is handed to the subclass hooks, adds [] access, .previous and updateState to MachineState, and makes DrillCycleExpander require an established X/Y/Z/ReturnMode (and G0F when strict) and omit F from G0 moves when G0F is unknown.",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: _modal_state removed; _convert_item_commands now calls machine_state.addCommand(cmd) before convert_command_to_gcode so hooks see the post-command state and machine_state.previous for the prior one; machine_state is None outside use_machine_state() and is reset per section/after tool change and 'str' items; Path/Base/MachineState.py gains [key] access, .previous, updateState and a .get-tolerant M3/M4 S",
+   "sections": [
+    "Hooks",
+    "MachineState",
+    "How values reach your code"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/UtilsParse.py and DrillCycleExpander.py changes alter internal drill-translate tracking (legacy strict=False path, G0 F omitted when G0F unknown); the page does not describe drill-cycle expansion output at that level; opensbp_post.py probe now accepts modal F, which the page does not document",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Processor.py/MachineState.py changes affect subclass-author hook semantics documented on mbpp-postprocessor.adoc; this page's 'Writing a machine-based Post-Processor' section is high-level and does not describe _modal_state or MachineState internals",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "43cb6627b31cd2b3964da097542ce2699af5a0de",
+  "merged_at": "2026-08-15T13:47:28Z",
+  "title": "CAM: MachineState for MBPP (Processor.py)",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 11,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.8933835,
+  "duration_ms": 46273,
+  "session": "f8660a3c-bba7-4721-97fc-3eeab174ea67",
+  "generated": "2026-10-01T20:48:09+00:00"
+ }
+}

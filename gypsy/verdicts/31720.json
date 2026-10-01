@@ -1,0 +1,71 @@
+{
+ "pr": 31720,
+ "summary": "The Custom operation gains a PostProcessOutput property and task-panel checkbox plus a '!' line prefix that emit lines with a new as-is annotation which the machine-based post-processor passes through unchanged.",
+ "pages": [
+  {
+   "page": "operations/custom.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Custom.py initOperation adds App::PropertyBool PostProcessOutput (default True); PageOpCustomEdit.ui adds chkAsIs 'Post Process Output' checkbox; processLines treats lines starting with '!' or all lines when PostProcessOutput is off as as-is; File source lines now also get ANNOT_ALLOW_UNSUPPORTED and error messages are reworded",
+   "sections": [
+    "Task panel",
+    "Properties",
+    "Usage",
+    "Error handling",
+    "Notes"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py _convert_command returns command.Annotations[ANNOT_AS_IS] verbatim before supported-command validation; Constants.py adds ANNOT_AS_IS = 'as-is'",
+   "sections": [
+    "Command filtering and annotations"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Constants.py adds ANNOT_AS_IS annotation; Custom.py builds Path.Command('', {}, {ANNOT_AS_IS: line}) so the annotation list under The Command object needs the new entry",
+   "sections": [
+    "Annotations"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Processor.py hunk only adds an internal annotation branch in _convert_command; the Post Process dialog, preferences and job properties are untouched",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Processor.py change is an internal pass-through branch; nothing on this page about writing or adding a post-processor is affected",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "2858a60f80f4d90eae12966fc02d4e38fbf85dbf",
+  "merged_at": "2026-08-29T22:53:00Z",
+  "title": "CAM: Custom - Allow any string",
+  "candidates": [
+   "operations/custom.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 6,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.47826125,
+  "duration_ms": 16346,
+  "session": "b927aa02-3985-4642-a093-50646fc7d576",
+  "generated": "2026-10-01T20:55:09+00:00"
+ }
+}

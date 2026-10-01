@@ -1,0 +1,23 @@
+{
+ "pr": 31423,
+ "summary": "Crash fix in internal helpers: PathDressup.toolController() now returns None instead of raising when an object has no ToolController, and getCycleTimeEstimate() short-circuits for zero-length paths, restoring the documented behaviour that a Comment supplemental command does not break Job execution.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "5f0c102100e9b35334314c008b10da5fedacd229",
+  "merged_at": "2026-08-21T16:03:16Z",
+  "title": "CAM: Fix PathDressup.toolController",
+  "candidates": [
+   "index.adoc",
+   "misc/area.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.26033325,
+  "duration_ms": 5909,
+  "session": "147f4234-9f1b-46a1-83a1-b8d06c9097a1",
+  "generated": "2026-10-01T20:52:08+00:00"
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "pr": 31967,
+ "summary": "The Adaptive operation's Finishing Profile property is hidden from the property editor and its checkbox removed from the task panel Operation tab, with the default left at true so a finishing profile pass is always produced.",
+ "pages": [
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageOpAdaptiveEdit.ui: 'Finishing profile' QCheckBox removed from the Operation panel; Path/Op/Adaptive.py initOperation: obj.setEditorMode('FinishingProfile', 2) hides the property (default remains True); Path/Op/Gui/Adaptive.py: setFields/getFields/getSignalsForUpdate no longer bind the control",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e62d36df105eeaa2ec36ba2dc5941f931c59ea92",
+  "merged_at": "2026-08-21T16:31:44Z",
+  "title": "CAM: Make the adaptive finishing profile option hidden, default still true",
+  "candidates": [
+   "operations/adaptive.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.26555225,
+  "duration_ms": 6906,
+  "session": "8105da97-c171-415b-bef4-6956735e7d99",
+  "generated": "2026-10-01T21:00:57+00:00"
+ }
+}

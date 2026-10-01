@@ -1,0 +1,33 @@
+{
+ "pr": 31915,
+ "summary": "The CAM Inspect task panel gains a \"Show tool: <name>\" checkbox that toggles the tool shape, makes the G-code editor read-only, moves tool placement and path highlighting to follow the text cursor instead of the selection, and no longer draws the leading rapid from the origin.",
+ "pages": [
+  {
+   "page": "inspect/inspect.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Inspect.py: new 'Show tool' QCheckBox in a bottom frame toggles tool Visibility (restored on close); editor set read-only via TextInteractionFlags; highlightpath/toolPlacement now connected to cursorPositionChanged rather than selectionChanged; selectionobj StartIndex=1 hides the initial rapid move",
+   "sections": [
+    "Usage",
+    "Options",
+    "Notes"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "6add02aa6f8d63228a8a65a62e76b0e30767c65d",
+  "merged_at": "2026-08-26T14:44:17Z",
+  "title": "CAM: Inspect - Tool visibility",
+  "candidates": [
+   "inspect/inspect.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.31147525000000004,
+  "duration_ms": 8085,
+  "session": "31bcf881-83e8-4741-abe4-c4edc092d870",
+  "generated": "2026-10-01T20:59:05+00:00"
+ }
+}

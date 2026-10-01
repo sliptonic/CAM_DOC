@@ -1,0 +1,57 @@
+{
+ "pr": 23843,
+ "summary": "Replaces the experimental Path From Shape TC command with a new CAM_PathShape operation that has its own object class and view provider, a renamed menu entry, and a much larger property set including CycleTime, CoolantMode, StepDepth, DualDirection, StartPoint and HandleMultipleFeatures.",
+ "pages": [
+  {
+   "page": "operations/path-from-shape-tc.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/PathShape.py replaces PathShapeTC.py: command renamed CAM_PathShapeTC -> CAM_PathShape (menu text no longer 'Path From Shape TC'), property set rebuilt into Base/Tool/Feed/StartPoint/Curves/Path/Sorting/Gcode/Depth groups with new CycleTime, CoolantMode, HorizFeed/VertFeed, StartPoint/UseStartPoint, DualDirection, SafetyFinish, RetractAxis, HandleMultipleFeatures, PathParams, EmitPreamble, StartDepth, StepDepth; old OpToolDiameter, UserLabel, FeedRate and FeedRateVertical are gone; a ViewProvider is added so the object now has a task panel and multiple wires are processed",
+   "sections": [
+    "Description",
+    "Usage",
+    "Objects created",
+    "Options",
+    "Properties",
+    "Notes"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: experimental prepcmdlist entry changes from CAM_PathShapeTC to CAM_PathShape, so the Supplemental Commands listing and its menu label need the new name",
+   "sections": [
+    "Supplemental Commands"
+   ]
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: the command gated behind experimentalFeaturesEnabled() is now CAM_PathShape rather than CAM_PathShapeTC; the experimental-features list should name the new command",
+   "sections": [
+    "Usage"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "32216a6dc93d4082d7ce91f045590de535a7017c",
+  "merged_at": "2026-08-23T01:16:34Z",
+  "title": "CAM: PathShape improve",
+  "candidates": [
+   "index.adoc",
+   "operations/path-from-shape-tc.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Path/Op/Gui/PathShapeTC.py"
+  ],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.53699575,
+  "duration_ms": 22156,
+  "session": "892b8999-6f70-4cc1-bf87-b2526c8431c1",
+  "generated": "2026-10-01T20:44:05+00:00"
+ }
+}

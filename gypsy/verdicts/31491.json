@@ -1,0 +1,21 @@
+{
+ "pr": 31491,
+ "summary": "Crash-free bug fix in Area.cpp's toPath: initialises the previous-position tracker to NaN so the initial rapid move to a start point at X0 or Y0 emits all coordinates, restoring the expected G0 output without changing any property, default, option or documented behaviour.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "130cce5b4085e1b2cd7cbc1ef82a3a7db2af3e23",
+  "merged_at": "2026-08-29T18:20:13Z",
+  "title": "CAM: fix handling of initial position in Area.cpp",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.24598325000000001,
+  "duration_ms": 5803,
+  "session": "20d87fb3-f4b1-4d3f-81a3-ff2745b1a63c",
+  "generated": "2026-10-01T20:53:00+00:00"
+ }
+}

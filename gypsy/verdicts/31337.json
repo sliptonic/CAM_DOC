@@ -1,0 +1,23 @@
+{
+ "pr": 31337,
+ "summary": "Build-system change that enables warnings-as-errors on all targets including libarea, with cast-only warning fixes in Adaptive.cpp and AreaClipper.cpp that leave operation output unchanged.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "b3daf2790af042e0948c395ddf44b2fb78f6f4eb",
+  "merged_at": "2026-08-31T21:45:53Z",
+  "title": "Enable FREECAD_WARN_ERROR on Windows pixi release builds",
+  "candidates": [
+   "inspect/simulator-legacy.adoc",
+   "inspect/simulator.adoc",
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 54,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5891492500000001,
+  "duration_ms": 5974,
+  "session": "b8afaaf8-5405-4eb3-82c0-6aa144881adb",
+  "generated": "2026-10-01T20:51:27+00:00"
+ }
+}

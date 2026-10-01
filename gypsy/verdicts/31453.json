@@ -1,0 +1,95 @@
+{
+ "pr": 31453,
+ "summary": "Adds a Retract threshold field with a 0/tool-diameter toggle button to the Profile, Pocket-based and Adaptive operation task panels, relabels Keep tool down ratio and Material allowance/Pass Extension to Retract threshold and Radial stock to leave, and converts several fields to expression-capable quantity spin boxes.",
+ "pages": [
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageOpProfileFullEdit.ui / Profile.py: Operation panel gains 'Retract threshold' quantity field (RetractThreshold) plus toggle button setting it to 0 or OpToolDiameter; Number of passes becomes an expression-bound Gui::IntSpinBox",
+   "sections": [
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageOpPocketFullEdit.ui / PocketBase.py: Operation panel gains 'Retract threshold' field and toggle button; 'Material allowance'/'Pass Extension' label replaced by 'Radial stock to leave'; Angle becomes a -180..180° spin box",
+   "sections": [
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/mill-face.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PocketBase.py initPage/thresholdToggle apply to the MillFace task panel: new 'Retract threshold' field with toggle, 'Material allowance' label now 'Radial stock to leave'",
+   "sections": [
+    "Usage",
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/pocket-3d.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PocketBase.py-derived 3D Pocket panel gains 'Retract threshold' field with toggle and 'Radial stock to leave' label from PageOpPocketFullEdit.ui",
+   "sections": [
+    "Options",
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageOpAdaptiveEdit.ui: label 'Keep tool down ratio' renamed to 'Retract threshold' and KeepToolDownToggle button added (sets KeepToolDownRatio to 0 or OpToolDiameter); Force inside-out / Use outline / Use rest machining checkboxes moved to a separate options block",
+   "sections": [
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Engrave does not use PocketBase.py or PageOpPocketFullEdit.ui; source-map candidate is spurious",
+   "sections": []
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Gui/Util.py adds internal helper refresh_expression_icon on QuantitySpinBox; nothing the workbench overview describes",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "950c280b1c5bc28123c5931ce729fdc49ecbb241",
+  "merged_at": "2026-08-22T18:32:48Z",
+  "title": "CAM: RetractThreshold in Task panels",
+  "candidates": [
+   "index.adoc",
+   "operations/adaptive.adoc",
+   "operations/engrave.adoc",
+   "operations/mill-face.adoc",
+   "operations/pocket-3d.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 7,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.66314425,
+  "duration_ms": 34320,
+  "session": "bbe69f55-435d-44af-aadb-fa6fe511f096",
+  "generated": "2026-10-01T20:52:47+00:00"
+ }
+}

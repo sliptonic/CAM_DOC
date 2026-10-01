@@ -1,0 +1,83 @@
+{
+ "pr": 31819,
+ "summary": "Code-quality cleanup of the machine-based post-processor pipeline that also changes two Machine property defaults (drill_cycles_to_translate now lists G81/G82/G83/G73, parameter_order now XYZABCUVWFSIJKTQRPDHL), makes the OpenSBP post reject bare T tool-prep commands, and deprecates Maneuver.FromGCode.",
+ "pages": [
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py get_common_property_schema: drill_cycles_to_translate default becomes Constants.EXPANDABLE_DRILL_CYCLES (G81 G82 G83 G73) and parameter_order default becomes Constants.PARAMETER_ORDER 'XYZABCUVWFSIJKTQRPDHL' (was 'XYZABCFSIJTQRPH'); help text for drill cycles lists the new set",
+   "sections": [
+    "Properties",
+    "Output"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py get_common_property_schema: Machine-scope defaults for 'Drill Cycles to Translate' and 'Generated Parameter Order for GCode' changed; the Machine editor shows these values",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: common property defaults changed (drill_cycles_to_translate, parameter_order); _convert_move now reads PARAMETER_ORDER from Constants; _convert_drill_cycle keys on Constants.EXPANDABLE_DRILL_CYCLES; export2 stage comments renamed (Stage 1 'Postable List', Stage 2 includes block insertion) which the 'The export2 pipeline' section may mirror",
+   "sections": [
+    "Common properties",
+    "The export2 pipeline",
+    "Hooks"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/opensbp_post.py: 'T' added to the unsupported command list, so OpenSBP output no longer accepts the bare T early-tool-prep commands; probe-failure MSGBOX now names the job/operation",
+   "sections": [
+    "Included Post-Processors",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Processor.py and opensbp_post.py hunks swap ValueError/Exception for CAMValueError/CAMAttributeError and remove FIXMEs; no documented argument, hook or workflow changes",
+   "sections": []
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Constants.py adds EXPANDABLE_DRILL_CYCLES, GCODE_DRILL_COMMANDS, GCODE_BARE_T and PARAMETER_ORDER; Path/Base/Language.py deprecates Maneuver.FromGCode in favour of FromPath, but the page's headings do not cover Language.Maneuver or these constants",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Base/Language.py"
+ ],
+ "meta": {
+  "merge_commit": "1c50aabc7ce840a5c6bc0377c067ff9f87d54617",
+  "merged_at": "2026-09-18T20:48:08Z",
+  "title": "CAM: Processor.py related code-quality",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Path/Base/Language.py"
+  ],
+  "files": 9,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.63229725,
+  "duration_ms": 36573,
+  "session": "f2cf6662-0b26-494f-842c-ab96c4f784ec",
+  "generated": "2026-10-01T20:57:07+00:00"
+ }
+}

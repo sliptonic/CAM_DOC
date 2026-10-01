@@ -1,0 +1,55 @@
+{
+ "pr": 31691,
+ "summary": "Adds a NoEngagementFeed property and task-panel field to the Tool Controller (also saved in templates), a matching NoEngagementFeed command annotation, and marks Adaptive's at-depth link rapids with that annotation so they can be emitted as feed moves instead of G0.",
+ "pages": [
+  {
+   "page": "tools/tool-controller.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/Controller.py: new App::PropertySpeed 'NoEngagementFeed' in the Feed group, added on restore for old files and read/written in templates as 'noengagementfeed'; ToolControllerEdit.ui: new 'No-Engagement feed' QuantitySpinBox inserted at row 5 above Horizontal rapid",
+   "sections": [
+    "Task panel",
+    "Properties",
+    "Expressions and templates"
+   ]
+  },
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Adaptive.py GenerateGCode: LinkClear G0 X/Y moves at working depth now carry the NoEngagementFeed annotation, so they become feed moves at the tool controller's No-Engagement feed when that value is non-zero (default zero keeps G0)",
+   "sections": [
+    "Usage",
+    "Preliminary Notes About Adaptive Clearing"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Constants.py: new command annotation key ANNOT_NO_ENGAGEMENT_FEED = 'NoEngagementFeed' alongside allow_unsupported; set on Path.Command.Annotations by Adaptive",
+   "sections": [
+    "Annotations",
+    "Tool Bits and Tool Controllers"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a4e75c9008e5469818ad1e192f8a82595cd2402d",
+  "merged_at": "2026-08-21T19:24:51Z",
+  "title": "CAM: No-Engagement feed",
+  "candidates": [
+   "operations/adaptive.adoc",
+   "reference/scripting.adoc",
+   "tools/tool-controller.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.39550225000000006,
+  "duration_ms": 30642,
+  "session": "a10c508c-0543-4290-8399-f363cc71d17f",
+  "generated": "2026-10-01T20:54:47+00:00"
+ }
+}

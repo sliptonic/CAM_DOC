@@ -1,0 +1,23 @@
+{
+ "pr": 32076,
+ "summary": "Crash fix in ToolBit shape asset lookup: ToolBitShape gains an internal resolve_asset() helper that retries canonical name and aliases so ThreadMill (stored as thread-mill.fcstd) loads instead of a geometry-less placeholder; onDocumentRestored now resolves via ShapeID. No properties, panels, defaults, or outputs change.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "44e2083d8f9e530b24a1a151080f642a3cffd4f7",
+  "merged_at": "2026-09-01T16:59:37Z",
+  "title": "CAM: fix ToolBit shape lookup for thread-mill",
+  "candidates": [
+   "tools/add-toolbit.adoc",
+   "tools/tool-shape.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.34941125000000006,
+  "duration_ms": 6654,
+  "session": "9010d82c-ae2b-48be-9871-5a85ec0f9e57",
+  "generated": "2026-10-01T21:02:48+00:00"
+ }
+}

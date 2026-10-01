@@ -1,0 +1,66 @@
+{
+ "pr": 30644,
+ "summary": "File-selection dialogs in the Z Correct dressup, Job Output tab, CAMotics export and the Post Process dialog now open at the job's resolved output location or the document's folder; the Job Output tab adds a confirmation box before replacing the filename template, and the Post Process dialog's Output tab is now pre-filled with the resolved output folder and the template basename.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Job.py: setPostProcessorOutputFile now seeds the Select Output File dialog from FilenameGenerator (or the document folder) and pops a 'This will replace filename template / Are you sure?' confirmation before setting PostProcessorOutputFile",
+   "sections": [
+    "Output"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Gui/DlgPostProcess.py: new _populate_output pre-fills the Output tab's Output folder (resolved from FilenameGenerator) and Filename template (basename of Job.PostProcessorOutputFile); _browse_output_location falls back to the document folder",
+   "sections": [
+    "Post Processing dialog",
+    "Output file name"
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Shares the dialog from DlgPostProcess.py but the page only covers selection behaviour; dialog details live on output/post-process.adoc",
+   "sections": []
+  },
+  {
+   "page": "dressups/zcorrect.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Gui/ZCorrect.py: Select Probe Point File dialog only changes its starting folder and filter string; the page does not describe the dialog's default location",
+   "sections": []
+  },
+  {
+   "page": "inspect/camotics.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Gui/Camotics.py: Save Project As dialog only changes its starting folder to the document directory; no documented behaviour changes",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "81f74cf336d66144fb6c125a985c2b3c9b0e3570",
+  "merged_at": "2026-08-21T17:31:36Z",
+  "title": "CAM: Use current file path as default for file selection dialog",
+  "candidates": [
+   "dressups/zcorrect.adoc",
+   "inspect/camotics.adoc",
+   "job/job.adoc",
+   "output/post-process-selected.adoc",
+   "output/post-process.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35084224999999997,
+  "duration_ms": 18218,
+  "session": "54a64ea2-6717-4e82-8c3a-8c1466fc8683",
+  "generated": "2026-10-01T20:46:38+00:00"
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "pr": 32087,
+ "summary": "Both simulators now recognise the feed-retract and other canned cycles (G74, G84, G85, G88, G89) that Drilling and Tapping emit, and Drilling's cycle-group linking test is corrected; no property, default, control, or documented behaviour changes.",
+ "pages": [
+  {
+   "page": "inspect/simulator-legacy.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Gui/Simulator.py: hard-coded (G73,G81,G82,G83) replaced by Constants.GCODE_MOVE_DRILL + GCODE_DRILL_EXTENDED so G85 etc. are simulated; bug fix, page does not enumerate supported cycles and task panel is untouched",
+   "sections": []
+  },
+  {
+   "page": "inspect/simulator.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathSimulator/AppGL/GCodeParser.cpp ParseLine: drill-cycle branch gains 74, 85, 88, 89; bug fix for #22571 with no panel or documented-behaviour change",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py _executeDrilling: cycle-group break test changed from len(linking_moves) > 2 to a vertical-first-move check; internal linking fix, no property or output semantics the page describes",
+   "sections": []
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py changes are header, import style, and the linking fix only; nothing tapping-specific",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "81b84b83ce927849724443a4ad351df6f71686d6",
+  "merged_at": "2026-08-30T14:32:11Z",
+  "title": "CAM: Drilling - Fix G85 and linking",
+  "candidates": [
+   "inspect/simulator-legacy.adoc",
+   "inspect/simulator.adoc",
+   "operations/drilling.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5163740000000001,
+  "duration_ms": 30009,
+  "session": "a0cef768-cccf-417d-afc3-2714733400e4",
+  "generated": "2026-10-01T21:04:26+00:00"
+ }
+}

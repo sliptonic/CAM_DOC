@@ -1,0 +1,37 @@
+{
+ "pr": 32043,
+ "summary": "Test-infrastructure fix: MagicMock jobs in TestCAMSanity get string output paths, two abstract test bases become mixins, and Sanity._outputData() wraps the gcode line count in a context manager with identical report output.",
+ "pages": [
+  {
+   "page": "job/quick-validate.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Sanity/Sanity.py: _outputData() only swaps a leaked open() generator for a with-block; filesize and linecount values in the report are unchanged",
+   "sections": []
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Sanity/Sanity.py: same context-manager hunk; the Output (G-code) section of the report shows the same fields and values, and all other hunks are in CAMTests/",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "d5a1143ab2c29d0a9446cfdea9ae6fb82d80c63e",
+  "merged_at": "2026-09-18T18:00:05Z",
+  "title": "CAM: Fix test-suite crash and abstract base test collection",
+  "candidates": [
+   "job/quick-validate.adoc",
+   "job/sanity-check.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.31337825,
+  "duration_ms": 13368,
+  "session": "f3221cd7-662f-4791-b2c2-990c6f0b1d32",
+  "generated": "2026-10-01T21:01:58+00:00"
+ }
+}

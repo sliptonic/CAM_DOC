@@ -1,0 +1,113 @@
+{
+ "pr": 30169,
+ "summary": "Replaces libarea/kurve arc fitting with a Clipper2 z-metadata approach, removing the Profile JoinType/MiterLimit properties, the Area feature's Offset/Pocket configuration properties (JoinType, EndType, MiterLimit, RoundPrecision, Thicken) and several libarea properties (ClipFill, Simplify, CleanDistance, Unit, MinArcPoints, MaxArcPoints), plus the Path.ClipperJoinType* scripting constants.",
+ "pages": [
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Profile.py: areaOpProperties drops the JoinType enumeration and MiterLimit float properties (hidden in the editor, but listed in the page's property table) and areaOpOnDocumentRestored removes them from existing documents",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "App/FeatureArea.cpp: PARAM_PROP_ADD for AREA_PARAMS_OFFSET_CONF and AREA_PARAMS_POCKET_CONF removed, and App/AreaParams.h drops ClipFill, Simplify, CleanDistance, Unit, MinArcPoints, MaxArcPoints; the Offset group (JoinType, EndType, MiterLimit, RoundPrecision), Pocket Thicken and those libarea properties no longer exist on the Area feature",
+   "sections": [
+    "Properties",
+    "Data",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "App/AppPathPy.cpp removes Path.ClipperJoinType* constants and PathScripts/PathUtils.py drops the getOffsetArea joinType kwarg, but the page describes Path.Area only generically without these names",
+   "sections": []
+  },
+  {
+   "page": "operations/deburr.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Deburr.py: switches to offsetWireCompat and keeps the Side handling; fixes wrong-side cutting (#29824) with no property or option change",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "libarea/AreaPocket.cpp and App/Area.cpp only invert the internal Offset sign convention and replace OffsetWithClipper calls; no pocket property, default or pattern changes",
+   "sections": []
+  },
+  {
+   "page": "operations/path-from-shape-tc.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "App/FeatureArea.cpp hunk only affects the Area feature constructor; Path.fromShapes() usage on this page does not name the removed area parameters",
+   "sections": []
+  },
+  {
+   "page": "misc/area-workplane.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "App/FeatureArea.cpp: only FeatureArea's constructor changes; the workplane feature is untouched",
+   "sections": []
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py and PathScripts/PathUtils.py hunks remove the unused opExecute return value and getOffsetArea kwargs; nothing the overview describes",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py hunk is an internal return-value cleanup unrelated to start point selection",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py hunk is an internal return-value cleanup; drilling untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/App/AppPathPy.cpp"
+ ],
+ "meta": {
+  "merge_commit": "83df87da14ba114e82b4f952ffe7a28f915e25c7",
+  "merged_at": "2026-09-14T16:37:14Z",
+  "title": "CAM: Replace the process for Clipper curve discretization and fitting",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "misc/area-workplane.adoc",
+   "misc/area.adoc",
+   "operations/deburr.adoc",
+   "operations/drilling.adoc",
+   "operations/path-from-shape-tc.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/App/AppPathPy.cpp",
+   "src/Mod/CAM/App/PathSegmentWalker.cpp",
+   "src/Mod/CAM/Path/Base/Language.py"
+  ],
+  "files": 47,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 2.4724595000000003,
+  "duration_ms": 55754,
+  "session": "8ea47f0a-a160-4431-ab0c-bf370abaafd5",
+  "generated": "2026-10-01T20:45:08+00:00"
+ }
+}

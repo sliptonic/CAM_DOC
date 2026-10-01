@@ -1,0 +1,49 @@
+{
+ "pr": 31840,
+ "summary": "Mill Facing bug fixes that also change user-visible behaviour: PassExtension is hidden for the Spiral clearing pattern in both the property view and task panel, StepOver now clamps to 1–100 and the task-panel spinbox shows whole percent, negative StockExtension is limited so the stock rectangle cannot collapse, the engagement offset is dropped so passes extend only by PassExtension plus tool radius, a single pass is centred on the stock, and an empty toolpath now warns instead of raising.",
+ "pages": [
+  {
+   "page": "operations/mill-facing.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/MillFacing.py: opUpdateEditorModes hides PassExtension when ClearingPattern is Spiral and StepOver minimum clamps to 1 (was 0); Op/Gui/MillFacing.py updateVisibility hides the PassExtension task-panel field for Spiral; PageOpMillFacingEdit.ui StepOver decimals 1→0; opExecute limits negative StockExtension to half the shortest boundary edge and warns on an empty toolpath; facing_common.generate_t_values centres a single pass and drops calculate_engagement_offset so pass length is PassExtension + tool radius",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Clearing patterns",
+    "Notes"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py only gains isStrictlyLess/isLessEqual/isGreaterEqual helpers and the facing generators are Mill Facing internals; nothing on the Area page is affected",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Base/Generator/bidirectional_facing.py (mapped to misc/area.adoc, belongs to operations/mill-facing.adoc)",
+  "src/Mod/CAM/Path/Base/Generator/directional_facing.py (mapped to misc/area.adoc, belongs to operations/mill-facing.adoc)",
+  "src/Mod/CAM/Path/Base/Generator/facing_common.py (mapped to misc/area.adoc, belongs to operations/mill-facing.adoc)",
+  "src/Mod/CAM/Path/Base/Generator/spiral_facing.py (mapped to misc/area.adoc, belongs to operations/mill-facing.adoc)",
+  "src/Mod/CAM/Path/Base/Generator/zigzag_facing.py (mapped to misc/area.adoc, belongs to operations/mill-facing.adoc)"
+ ],
+ "meta": {
+  "merge_commit": "189158889b32ed7626ad32008ddaef02be2c742e",
+  "merged_at": "2026-09-25T15:45:44Z",
+  "title": "CAM: MillFacing - Fixes",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/mill-facing.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 9,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.7557667499999998,
+  "duration_ms": 29899,
+  "session": "d006e6c7-b1b4-4d5f-ad21-30725e526c1b",
+  "generated": "2026-10-01T20:58:04+00:00"
+ }
+}

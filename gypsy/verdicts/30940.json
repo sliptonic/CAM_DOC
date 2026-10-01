@@ -1,0 +1,21 @@
+{
+ "pr": 30940,
+ "summary": "Build-system and compiler-warning cleanup to allow -Werror with OCCT 8; the only CAM hunks remove an unused local in Area.cpp and add a CMake deprecation-warning define, with no change to any command, property, default, panel, or output.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "5819ffd21243e36cab589bca632d1dcf526d065a",
+  "merged_at": "2026-08-27T16:14:35Z",
+  "title": "Allow `-Werror` for OCCT 8",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 33,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.44653825,
+  "duration_ms": 6785,
+  "session": "28870944-ed7d-42e5-b03c-230de6870d3e",
+  "generated": "2026-10-01T20:46:51+00:00"
+ }
+}

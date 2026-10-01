@@ -1,0 +1,35 @@
+{
+ "pr": 31938,
+ "summary": "The Inspect dialog gains a Raw checkbox that toggles between raw mm/s commands and values converted to the Job Machine's output units and precision, changes its note text and window title, becomes non-modal, adds a tooltip with raw G-code or operation data, and replaces the scripting entry point Path.Main.Gui.Inspect.show(obj) with GCodeEditorDialog(obj).exec().",
+ "pages": [
+  {
+   "page": "inspect/inspect.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Inspect.py: new 'Raw' checkbox in bottomFrame; updateText() converts F/S to per-minute and XYZIJK to inches, rounding to the Machine asset's axis/feed precision; the Note label text is rewritten; window title now includes the op label; dialog created with parent=None so it no longer darkens the main window; highlightpath() sets an editor tooltip with raw G-code of selected lines or op/tool summary; show(obj) is removed and CommandPathInspect calls GCodeEditorDialog(obj).exec()",
+   "sections": [
+    "Description",
+    "Usage",
+    "Options",
+    "Notes",
+    "Scripting"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a04390f0ac3b26f535a3a55825352623af5ccee3",
+  "merged_at": "2026-09-08T15:46:05Z",
+  "title": "CAM: Inspect - Change units and round values",
+  "candidates": [
+   "inspect/inspect.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35928825,
+  "duration_ms": 14742,
+  "session": "a2f8686f-c463-4d1c-be28-456dfbe123e5",
+  "generated": "2026-10-01T21:00:44+00:00"
+ }
+}

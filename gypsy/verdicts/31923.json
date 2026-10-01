@@ -1,0 +1,31 @@
+{
+ "pr": 31923,
+ "summary": "Adds the backend toolpath generator modules (pattern, drop-cutter, mesh, waterline, z-level, adaptive) plus a pybind11 surface_generator C++ accelerator and unit tests for the forthcoming Planar Surface operation; no operation, command, property, task panel, preference or post-processor is added or modified, so nothing the pages describe changes yet.",
+ "pages": [
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/surface_*.py and adaptive_common.py are internal generator modules that merely call Path.Area; the CAM Area page documents the Path.Area object itself and none of its properties, usage or scripting change. The source-map entry routing Generator/*.py to misc/area.adoc is wrong and should be dropped.",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "faf5feae9d2d7b0d9bb81ee9a9fda266ed38ae2c",
+  "merged_at": "2026-08-23T01:32:08Z",
+  "title": "CAM: Surface generators",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/App/surface_generator.cpp"
+  ],
+  "files": 21,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.6256742500000003,
+  "duration_ms": 13208,
+  "session": "50a88765-cd72-459f-910c-a4b493702e3c",
+  "generated": "2026-10-01T20:59:25+00:00"
+ }
+}

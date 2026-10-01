@@ -1,0 +1,21 @@
+{
+ "pr": 31882,
+ "summary": "Bug fix in Pocket Shape's open-path handling: processVerticalFaces now builds the helper closing edge when the open wire has one end face (slice the face for its two endpoints) as well as two, and re-adds removed faces to the candidate compound, replacing Python errors with the already-documented Close Open Path behaviour; no property, default, enumeration, task-panel, or output change.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "70721f71da482ae50de28aab7e8813cb31c732aa",
+  "merged_at": "2026-09-01T18:16:39Z",
+  "title": "CAM: PocketShape - Open path fix for one and two faces",
+  "candidates": [
+   "operations/pocket.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.27755124999999997,
+  "duration_ms": 10845,
+  "session": "b1775fb4-89da-440f-9464-18e04706f213",
+  "generated": "2026-10-01T20:58:51+00:00"
+ }
+}

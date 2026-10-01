@@ -1,0 +1,43 @@
+{
+ "pr": 31371,
+ "summary": "The Engrave and Vcarve task panels now accept base geometry that is not part of the Job's Model group, removing the \"is not a Base Model object of the job\" rejection so imported SVG or other document objects can be used directly.",
+ "pages": [
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/Engrave.py addBaseGeometry: drops the job.Proxy.resourceClone check, so Base Geometry in the task panel accepts any selected object, not only Job Model members",
+   "sections": [
+    "Usage",
+    "Options"
+   ]
+  },
+  {
+   "page": "operations/vcarve.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/Vcarve.py addBaseGeometry: drops the job.Proxy.resourceClone check, so shapes outside the Job Model can be added as Base Geometry; 'Prepare the shapes to engrave' guidance about adding shapes to the Job no longer required",
+   "sections": [
+    "Usage",
+    "Options"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "62e65b752c8276dab5fd843f075e32796fff6016",
+  "merged_at": "2026-08-22T18:30:54Z",
+  "title": "CAM: Engrave - Allow to select shape outside the Job",
+  "candidates": [
+   "operations/engrave.adoc",
+   "operations/vcarve.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.25682625000000003,
+  "duration_ms": 9051,
+  "session": "0e9beab7-ac1a-4447-be8e-9d6a76402468",
+  "generated": "2026-10-01T20:51:42+00:00"
+ }
+}

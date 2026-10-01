@@ -1,0 +1,73 @@
+{
+ "pr": 30985,
+ "summary": "The Helix operation now auto-fills the HelixConeAngle property from selected cone faces, applies the signed angle directly instead of flipping it by Side, and gets its own selection gate that admits circular edges and cylinder or cone faces as base geometry.",
+ "pages": [
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Helix.py: initAfterBase sets HelixConeAngle from the cone faces' SemiAngle (sign from the cone axis) and circularHoleExecute no longer negates the angle for Side=Outside; Path/Op/Gui/Selection.py: new HELIXGate replaces drillselect so cone and cylinder faces and circular edges are selectable while editing",
+   "sections": [
+    "Usage",
+    "Properties",
+    "Data"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py: DRILLGate behaviour unchanged, only the import style of isDrillable changed",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py: pocketselect and its gate untouched",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py: profile gates untouched",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py: start-point selection code untouched; only the Helix entry in the opsel map changed",
+   "sections": []
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py: no new command, menu entry or operation; the overview page is unaffected",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "7ffe17ad1cf588a37ce7a27a5202d81eb19c3b2c",
+  "merged_at": "2026-09-11T16:11:57Z",
+  "title": "CAM: Helix op - Set default cone angle",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/drilling.adoc",
+   "operations/helix.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.44787849999999996,
+  "duration_ms": 21614,
+  "session": "4636dfb6-2470-4273-9f43-cca0ec05cdb9",
+  "generated": "2026-10-01T20:47:18+00:00"
+ }
+}

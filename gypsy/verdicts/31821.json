@@ -1,0 +1,21 @@
+{
+ "pr": 31821,
+ "summary": "Bug fix in the Engrave operation's path builder so the last point is tracked for single-edge wires, correcting linking moves; adds a unit test file. No property, default, control, or output-format change.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "16680174ee0176a6744e9666e27c52ec70710223",
+  "merged_at": "2026-08-22T18:47:51Z",
+  "title": "CAM: Engrave - fix for wire with one edge",
+  "candidates": [
+   "operations/engrave.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35224525,
+  "duration_ms": 15237,
+  "session": "49c192a2-6253-4d3f-b15d-95dda8fd586c",
+  "generated": "2026-10-01T20:57:28+00:00"
+ }
+}

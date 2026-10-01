@@ -1,0 +1,72 @@
+{
+ "pr": 31620,
+ "summary": "Exposes the Helix operation's existing cone, spiral, start-angle, inner stock, retract and arc-feed properties as task-panel controls, adds an auto cone-angle button, and moves widget tool tips to property descriptions.",
+ "pages": [
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageOpHelixEdit.ui rows 8-13 add Radial stock to leave (inner), Cone angle with '…' auto button, Starting angle, Spiral mill, Single helix, Override arc feed rate, Start from bottom, Retract from wall; Gui/Helix.py getFields/setFields/updateVisibility wire them to RadialStockToLeaveInner, HelixConeAngle, RotationAngle, SpiralMill, SingleHelix, OverrideArcFeedRate, StartConeFromBottom, RetractFromWall with Single helix hidden when Spiral mill is checked and Start from bottom hidden when cone angle is zero",
+   "sections": [
+    "Options",
+    "Properties"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: SPDX header, f-string and walrus refactors plus a new getToolTipList/setToolTips hook; nothing the overview page describes",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: refactor-only; no change to start point selection behaviour",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: generic TaskPanelPage refactor; Drilling panel and properties untouched",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: generic TaskPanelPage refactor; Pocket panel and properties untouched",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: generic TaskPanelPage refactor; Profile panel and properties untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "4eb7b5b7da02bde40b622a9b454169c308a9ea44",
+  "merged_at": "2026-09-21T00:46:12Z",
+  "title": "CAM: Helix - Added properties to Task panel",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/drilling.adoc",
+   "operations/helix.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.580813,
+  "duration_ms": 20024,
+  "session": "cb518c11-0eb2-4e7b-9e09-1e16f9d63548",
+  "generated": "2026-10-01T20:53:56+00:00"
+ }
+}

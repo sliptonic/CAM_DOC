@@ -1,0 +1,26 @@
+{
+ "pr": 32072,
+ "summary": "Bug fix: Constants.GCODE_MOVE/GCODE_MOVE_ALL now include the extended drill cycles (G74, G84, G88, G89) and Op/Base.py uses that constant when bracketing the path with coolant M8/M9, so a Tapping operation with CoolantMode set now emits coolant as the Drilling/Tapping pages already describe; no property, default, enumeration, panel control, or post-processor output changes beyond restoring documented behaviour.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "f41e20ef9a698a6d85806bd1c7b0e35970cfb03a",
+  "merged_at": "2026-08-23T01:15:24Z",
+  "title": "CAM: honor coolant for tapping cycles",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35264925,
+  "duration_ms": 11749,
+  "session": "130c07b6-ef3b-40dc-b82d-4abc8230da39",
+  "generated": "2026-10-01T21:02:35+00:00"
+ }
+}

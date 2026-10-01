@@ -1,0 +1,33 @@
+{
+ "pr": 31223,
+ "summary": "DressupMirror drops the 'Reference' MirrorAxis value, renames the Reference property to ReferenceOffset (which now auto-selects the mirror axis from the picked edge), changes CenterModel and reference offsets to mirror about the shape's bounding-box center, alters which properties are hidden, and adds a scripting Create() function.",
+ "pages": [
+  {
+   "page": "dressups/mirror.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/Mirror.py: MirrorAxis enumeration becomes ('X','Y','XY','None'); property 'Reference' renamed 'ReferenceOffset' with new tooltip and auto-sets MirrorAxis via setMirrorAxis(); setEditorModes now hides only ReferenceOffset when CenterModel is set (CenterModel/KeepBasePath no longer hidden); execute() now offsets by 2*bb.Center (not XMax+Placement) so mirrored output changes; new module-level Create(baseObject, name, mode) replaces the inline doCommand sequence",
+   "sections": [
+    "Properties",
+    "Usage",
+    "Scripting"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "2946104060c9b54f90c803ef5b1c6122373d5a49",
+  "merged_at": "2026-08-22T18:29:26Z",
+  "title": "CAM: DressupMirror - Minor fixes",
+  "candidates": [
+   "dressups/mirror.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35629425000000003,
+  "duration_ms": 11240,
+  "session": "da3596c1-0aec-4c1e-b40b-5bdc3a24b873",
+  "generated": "2026-10-01T20:49:48+00:00"
+ }
+}

@@ -1,0 +1,146 @@
+{
+ "pr": 31300,
+ "summary": "Adds an \"Update Tools from Library\" Job context-menu command and load-time prompt (gated by a new CAM > Assets preference) that fully replaces stale embedded ToolBits from the library, and extends the Feeds & Speeds Presets tab with a Notes field, required unique names, sortable columns and a Copy button.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Job.py: setupContextMenu gains 'Update Tools from Library' action (icon CAM_UpdateDocumentTools.svg) opening the Tool Updates Available dialog",
+   "sections": [
+    "Context menu"
+   ]
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/assets/ui/preferences.py: Assets tab gains checkbox 'Check for tool updates from the library when opening a document' (Path/Preferences.py ToolUpdateOnLoad, default True)",
+   "sections": [
+    "Assets"
+   ]
+  },
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/Gui/UpdateDocumentToolsDlg.py + UpdateDocumentTools.py: new Tool Updates Available dialog (per-tool checkbox, Changes tree, full replace by ToolBitID, presets and Shape-group geometry); presets.py adds 'notes' key to preset records",
+   "sections": [
+    "Update from library",
+    "JSON Structure"
+   ]
+  },
+  {
+   "page": "tools/index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Tool/Gui/UpdateDocumentToolsDlg.py: document-load observer prompts when a Job has stale tools; manual trigger is the Job context menu; gated by Assets preference",
+   "sections": [
+    "Tool update from library",
+    "Feeds and speeds"
+   ]
+  },
+  {
+   "page": "tools/feeds-speeds.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "FeedsSpeedsPresetEdit.ui adds Notes group box; presets_tab.py makes name required with duplicate check (preset_key), sortable table, Notes column populated, new Copy button",
+   "sections": [
+    "Presets"
+   ]
+  },
+  {
+   "page": "tools/tool-controller.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Tool/UpdateDocumentTools.py replace_tool_from_library relinks the ToolController's Tool to a fresh library copy and removes the old ToolBit; cross-reference from Tool Bit replacement",
+   "sections": [
+    "Tool Bit replacement"
+   ]
+  },
+  {
+   "page": "reference/artwork.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Gui/Resources/icons/CAM_UpdateDocumentTools.svg added and registered in Path.qrc",
+   "sections": [
+    "src/Mod/CAM/Gui/Resources/icons/"
+   ]
+  },
+  {
+   "page": "contributing/development-roadmap.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Roadmap/Epics/FeedsAndSpeeds.md gains a Library -> Job tool sync section; internal epic notes, page summarises wiki roadmap only",
+   "sections": []
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "preferences.py hunk touches only the new tool-update checkbox, not the Machines group",
+   "sections": []
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Preferences.py hunk adds ToolUpdateOnLoad only; no experimental flag changed",
+   "sections": []
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "docobject.py adds PropertyDistance handling and getDocumentationOfProperty internally; ToolBitDock unaffected",
+   "sections": []
+  },
+  {
+   "page": "tools/library-manager.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "UpdateDocumentToolsDlg.py is launched from the Job context menu and document load, not from the Library Manager",
+   "sections": []
+  },
+  {
+   "page": "tools/toolbit-library.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Library file format and library UI unchanged; sync reads the library but does not alter it",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Tool/Gui/UpdateDocumentToolsDlg.py (mapped to library-manager/toolbit-library; belongs with job/job.adoc, tools/toolbit.adoc, tools/index.adoc)",
+  "src/Mod/CAM/Path/Tool/UpdateDocumentTools.py (same mis-mapping)"
+ ],
+ "meta": {
+  "merge_commit": "dc2ed9d58652535b86d9945f8b2c12795fe80c2f",
+  "merged_at": "2026-08-19T03:12:44Z",
+  "title": "CAM: Sync tool presets from the library into embedded Job tools",
+  "candidates": [
+   "contributing/development-roadmap.adoc",
+   "job/job.adoc",
+   "output/machine.adoc",
+   "reference/artwork.adoc",
+   "reference/experimental.adoc",
+   "reference/preferences.adoc",
+   "tools/add-toolbit.adoc",
+   "tools/feeds-speeds.adoc",
+   "tools/index.adoc",
+   "tools/library-manager.adoc",
+   "tools/tool-controller.adoc",
+   "tools/toolbit-library.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Gui/Resources/Path.qrc"
+  ],
+  "files": 17,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.02780225,
+  "duration_ms": 36798,
+  "session": "9e93bbf9-b1dd-4301-814e-6cb147410c1c",
+  "generated": "2026-10-01T20:51:16+00:00"
+ }
+}

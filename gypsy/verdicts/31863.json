@@ -1,0 +1,38 @@
+{
+ "pr": 31863,
+ "summary": "Fixes findToolController so that creating an operation from a script in a Job with several tool controllers and no GUI selection no longer raises UnboundLocalError and instead assigns the last tool controller in the Job; also replaces lazy DraftGeomUtils/TechDraw imports with direct Part curve checks (internal only).",
+ "pages": [
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "PathScripts/PathUtils.py findToolController: in console mode with multiple tool controllers and no name, now returns controllers[-1] (last tool controller in the Job) instead of crashing; docstring changes 'first controller' to 'last controller', so any note on which tool controller a scripted Create() picks should say the last one in the Job, and that the tree selection only applies when no name is passed",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathUtils.py changes are internal helper code (import cleanup, reverseEdge using Part.Circle/Part.Line isinstance, unused-variable renames); nothing in the workbench overview page describes them",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "2ffc505316d2ff78fd123abe1416650448e4ce8f",
+  "merged_at": "2026-08-30T14:32:51Z",
+  "title": "CAM: Fix findToolController for console mode",
+  "candidates": [
+   "index.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.4026815,
+  "duration_ms": 25359,
+  "session": "cdb80b64-a7fd-41a7-b353-4138332ffeab",
+  "generated": "2026-10-01T20:58:35+00:00"
+ }
+}

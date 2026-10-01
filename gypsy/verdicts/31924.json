@@ -1,0 +1,146 @@
+{
+ "pr": 31924,
+ "summary": "Adds the new CAM_PlanarSurface operation (Path/Op/PlanarSurface.py, its task panel PageOpPlanarSurfaceEdit.ui, icon and selection registration) to the 3D Operations menu behind the experimental-features preference, and fixes climb direction, first-pass stock and per-move feed output in the surface generators it runs on.",
+ "pages": [
+  {
+   "page": "operations/planar-surface.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Op/PlanarSurface.py: new ObjectSurface op with Strategy (SurfaceScan/Waterline/ZLevelHybrid), CutPattern, CutPatternZLevel, LayerMode, BoundBox, accuracy presets, Avoid/Fill/ProfileEdges/Adaptive properties; Gui/PlanarSurface.py + PageOpPlanarSurfaceEdit.ui define the task panel; Selection.py maps it to surfaceselect; requires OpenCamLib",
+   "sections": [
+    "Description",
+    "Usage",
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "InitGui.py: threedopcmdlist gains CAM_PlanarSurface inside the experimentalFeaturesEnabled() block, adding a Planar Surface entry to the 3D operations menu/toolbar group",
+   "sections": [
+    "3D Operations"
+   ]
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: CAM_PlanarSurface registered only when Path.Preferences.experimentalFeaturesEnabled(), so the experimental feature list gains Planar Surface alongside Rotary Surface",
+   "sections": [
+    "Features"
+   ]
+  },
+  {
+   "page": "reference/artwork.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/icons/CAM_PlanarSurface.svg added and registered in Path.qrc",
+   "sections": [
+    "src/Mod/CAM/Gui/Resources/icons/"
+   ]
+  },
+  {
+   "page": "reference/opencamlib.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/PlanarSurface.py: module raises ImportError unless ocl/opencamlib imports, so Planar Surface joins the list of OCL-dependent operations",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "operations/rotary-surface.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "InitGui.py hunk only reshapes the extend() call that registers CAM_RotarySurface; its registration, gating and behaviour are unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/surface.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Existing Surface op (Path/Op/Surface.py, PageOpSurfaceEdit.ui) is untouched; the map matched on the PlanarSurface filenames only",
+   "sections": []
+  },
+  {
+   "page": "operations/waterline.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Existing Waterline op is untouched; PlanarSurface's Waterline strategy is a separate operation documented on its own page",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "surface_common/mesh/pattern/postprocess/zlevel.py changes are internals of the new surface generators consumed by Planar Surface; Path.Area itself is unchanged",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk only adds opsel['PlanarSurface'] = surfaceselect; start-point selection logic unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a PlanarSurface entry only; drilling selection unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a PlanarSurface entry only; pocket selection unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a PlanarSurface entry only; profile selection unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/App/surface_generator.cpp",
+  "src/Mod/CAM/Path/Base/Generator/surface_common.py",
+  "src/Mod/CAM/Path/Base/Generator/surface_mesh.py",
+  "src/Mod/CAM/Path/Base/Generator/surface_pattern.py",
+  "src/Mod/CAM/Path/Base/Generator/surface_postprocess.py",
+  "src/Mod/CAM/Path/Base/Generator/surface_zlevel.py"
+ ],
+ "meta": {
+  "merge_commit": "23a567e8518617ded19da4929b5e5ec8fe3de4a9",
+  "merged_at": "2026-09-13T05:13:24Z",
+  "title": "CAM: Planar surface",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/planar-surface.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "operations/surface.adoc",
+   "operations/waterline.adoc",
+   "reference/artwork.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/App/surface_generator.cpp",
+   "src/Mod/CAM/Gui/Resources/Path.qrc"
+  ],
+  "files": 17,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.30701425,
+  "duration_ms": 41129,
+  "session": "5505d91b-e380-48ce-9e08-11a074fe72da",
+  "generated": "2026-10-01T21:00:12+00:00"
+ }
+}

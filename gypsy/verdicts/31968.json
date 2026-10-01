@@ -1,0 +1,123 @@
+{
+ "pr": 31968,
+ "summary": "Adds a new experimental CAM_Flute operation (ramping slot/groove along a face centerline or flat 2D wire) with its own task panel, properties (FlutingType, RampType, RampLengthType, RampLength, RampLengthPercent, FlipStart2D, FlippedSegments, ReverseDirection, BlindEndCompensation, CombineTangentSegments, AxialStockToLeave), dropdown icons, and a selection gate, grouped in the Engrave toolbar/menu group behind the experimental-features preference.",
+ "pages": [
+  {
+   "page": "operations/flute.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Op/Flute.py + Path/Op/Gui/Flute.py + PageOpFluteEdit.ui: new CAM_Flute operation with Base Geometry flip-direction checkboxes and an Operation tab (Reverse Direction, Blind End Compensation, Combine Tangent Segments, Axial Stock to Leave, Fluting Type Ramp Full/Start/Start End, Ramp Type Linear/S-Curve/Smooth/Fillet, Ramp Length Type Length/Percent, Ramp Length, Ramp %, Flip Start); no existing page",
+   "sections": [
+    "Description",
+    "Usage",
+    "Notes",
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Base Geometry",
+    "Heights",
+    "Tool Controller",
+    "Operation",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: CAM_Flute appended to engravecmdlist (Engrave/Deburr/Vcarve toolbar dropdown and CAM menu, new separator) when experimental features are enabled",
+   "sections": [
+    "Commands",
+    "Basic Operations"
+   ]
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: CAM_Flute added to the experimentalFeaturesEnabled() command list; the same hunk drops the CAM_Slot append from that block",
+   "sections": [
+    "Enable experimental commands"
+   ]
+  },
+  {
+   "page": "operations/slot.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: `twodopcmdlist.append(\"CAM_Slot\")` removed from the experimental-gated block, so the page's statement about Slot requiring the experimental preference needs checking against how Slot is now registered",
+   "sections": [
+    "Description",
+    "Usage"
+   ]
+  },
+  {
+   "page": "reference/artwork.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Gui/Resources/icons: seven new SVGs (flute-ramp-linear/s-curve/smooth/fillet, flute-fluting-ramp-full/start/start-end) registered in Path.qrc",
+   "sections": [
+    "src/Mod/CAM/Gui/Resources/icons/"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py edgesToPoints/flipEdge-ellipse and Base/Generator/follow_wire.py are internal helpers; Area page does not describe them",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Selection.py only adds FLUTEGate/fluteselect for the new op; nothing on this page changes",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a Flute gate only; Drilling selection unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a Flute gate only; Pocket selection unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py hunk adds a Flute gate only; Profile selection unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "bafe119010358a8f30207efbaa94c967090dde79",
+  "merged_at": "2026-08-25T15:55:30Z",
+  "title": "CAM: Add 2d/3d Flute Operation",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/flute.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "reference/artwork.adoc",
+   "reference/experimental.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Gui/Resources/Path.qrc"
+  ],
+  "files": 20,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.00215425,
+  "duration_ms": 37983,
+  "session": "c81a8db4-77dd-4c2d-9c5c-ead81465b3f0",
+  "generated": "2026-10-01T21:01:40+00:00"
+ }
+}

@@ -1,0 +1,51 @@
+{
+ "pr": 31589,
+ "summary": "The Job task panel's Workplan operations list and the Post Process dialog's Operations tab change from a plain label list to a multi-column tree showing index, operation, tool number, tool controller, coolant mode and cycle time for each operation.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/panels/PathEdit.ui: operationsList becomes a QTreeWidget with columns '#', 'Operation', 'Tool', 'Tool Controller', 'Coolant', 'Time'; Path/Main/Gui/Job.py setFields fills tool number, TC label ('???' if none), coolant and CycleTime per operation; move up/down and delete still work on the same list",
+   "sections": [
+    "Workplan"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/panels/DlgPostProcess.ui: treeWidgetOperations gains columns '#', 'Operation', 'Tool', 'Tool Controller', 'Coolant', 'Time'; Path/Post/Gui/DlgPostProcess.py _populate_operations no longer hides the header and numbers operations from 1, showing tool number, TC label, coolant and cycle time beside the checkbox",
+   "sections": [
+    "Post Processing dialog"
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Post/Gui/DlgPostProcess.py: same dialog is used with the preselected operations checked; the Operations tab now shows extra columns but the documented selection behaviour is unchanged",
+   "sections": [
+    "Usage"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "fd0f18a1a09c90ba9d06044eb18247929aaa21e6",
+  "merged_at": "2026-08-21T19:24:16Z",
+  "title": "CAM: MBPP and Job Dialog - Operations data",
+  "candidates": [
+   "job/job.adoc",
+   "output/post-process-selected.adoc",
+   "output/post-process.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.38791725,
+  "duration_ms": 24473,
+  "session": "c1c516d9-07a9-4431-8a57-327bbf9b72e9",
+  "generated": "2026-10-01T20:53:30+00:00"
+ }
+}

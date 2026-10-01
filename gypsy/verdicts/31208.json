@@ -1,0 +1,35 @@
+{
+ "pr": 31208,
+ "summary": "Cylinder stock gains an Axis enumeration property (X/Y/Z, default Z) exposed as a combo box in the Job task panel's Stock tab; auto-sized cylinder stock now derives radius, height and placement from the chosen axis, and the CreateCylinder scripting helper takes an axis argument.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/panels/PathEdit.ui: stockCreateCylinder frame gains an 'Axis' QComboBox above Radius/Height; Path/Main/Stock.py: StockCreateCylinder adds App::PropertyEnumeration 'Axis' (X, Y, Z; default Z) and CreateCylinder() gains an axis parameter that changes auto-sizing (height along chosen axis, radius from the other two extents) and placement (origin at the min of the chosen axis, centred on the other two).",
+   "sections": [
+    "Setup",
+    "Stock",
+    "Properties",
+    "Stock properties",
+    "Scripting"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a4b7421bb3c0c26d38eef25826c11d2191f68551",
+  "merged_at": "2026-09-07T15:47:17Z",
+  "title": "CAM: Job - Stock cylinder",
+  "candidates": [
+   "job/job.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.33351725,
+  "duration_ms": 11055,
+  "session": "368c7fe5-6b61-401a-bfd6-f980ada775ee",
+  "generated": "2026-10-01T20:49:32+00:00"
+ }
+}
