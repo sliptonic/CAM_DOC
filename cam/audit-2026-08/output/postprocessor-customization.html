@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CAM Postprocessor Customization :: FreeCAD CAM documentation (experiment)</title>
+    <link rel="canonical" href="https://sliptonic.github.io/freecad-cam-docs/cam/wiki-2026-08/output/postprocessor-customization.html">
+    <link rel="prev" href="../job/fixture.html">
+    <link rel="next" href="mbpp-postprocessor.html">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/freecad-cam-docs">FreeCAD CAM documentation (experiment)</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="postprocessor-customization.html" selected>Audit (26.3dev)</option>
+            <option value="../../wiki-2026-08/output/postprocessor-customization.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/freecad-cam-docs">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/freecad-cam-docs/blob/DEV/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="audit-2026-08">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">Audit (26.3dev)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">Audit (26.3dev)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
+    <li><a href="postprocessor-customization.html">CAM Postprocessor Customization</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">Audit (26.3dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="postprocessor-customization.html">Audit (26.3dev)</a>
+    <a class="version" href="../../wiki-2026-08/output/postprocessor-customization.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/freecad-cam-docs/edit/audit/modules/ROOT/pages/output/postprocessor-customization.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">CAM Postprocessor Customization</h1>
+<div class="sect1">
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>FreeCAD uses as internal representation for the generated Toolpaths so called G-codes. They can describe such things as: speed and feed rates, stopping the motor etc&#8230;&#8203; But the most important thing is the movements they describe. These movements are rather simple: They can be straight lines or they can be circular arcs. More sophisticated curves such as B-splines are already approximated by FreeCAD&#8217;s <span class="image"><img src="../_images/Workbench_CAM.svg" alt="Workbench CAM" width="24"></span> <a href="../index.html" class="xref page">CAM Workbench</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="two-kinds-of-post-processor"><a class="anchor" href="#two-kinds-of-post-processor"></a>Two kinds of Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>FreeCAD has <strong>legacy argument-based</strong> Post-Processors (a script exposing <code>export(objectslist, filename, argstring)</code> and an argparse parser; selected in the Job&#8217;s Processor field and configured with command-line style arguments) and, since <span class="since">26.3</span>, <strong>machine-based</strong> Post-Processors (a class deriving from <code>Path.Post.Processor.PostProcessor</code> with the module constant <code>POST_TYPE = "machine"</code>; selected by a <a href="machine.html" class="xref page">Machine</a> and configured through the machine&#8217;s <code>.fcm</code> options and a property schema). The sections below are marked accordingly.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what-the-post-processor-can-do-for-you"><a class="anchor" href="#what-the-post-processor-can-do-for-you"></a>What the Post-Processor can do for you</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many machines use G-codes as well to control the machining process. They may look almost like the internal codes, but there may be some differences:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the machine can have a special startup sequence</p>
+</li>
+<li>
+<p>it can have a special stop sequence</p>
+</li>
+<li>
+<p>arcs can be defined with a relative or an absolute center</p>
+</li>
+<li>
+<p>it may require line numbers in a certain format</p>
+</li>
+<li>
+<p>it can use so called canned cycles for predefined subprocesses such as drilling</p>
+</li>
+<li>
+<p>you might prefer your G-code output in either metric or imperial units.</p>
+</li>
+<li>
+<p>it might be useful to perform a set of moves prior to calling for a tool change to make the action easier for the operator</p>
+</li>
+<li>
+<p>you might wish to include comments for readability or suppress them to keep the program small</p>
+</li>
+<li>
+<p>you might wish to include a custom header to identify or document the program for future reference.</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Furthermore there are other languages to control a machine, such as HPGL, DXF, or others.</p>
+</div>
+<div class="paragraph">
+<p>The Post-Processor is a program which translates the internal codes into a complete file, that can be uploaded to your machine.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="preparation-for-writing-your-own-post-processor"><a class="anchor" href="#preparation-for-writing-your-own-post-processor"></a>Preparation for writing your own Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You may start with a very simple model showing how your machine reads straight lines and arcs. Prepare it with any program suitable for your machine.</p>
+</div>
+<div class="paragraph">
+<p>A file for such Toolpaths starting at (0,0,0) and going towards Y would be helpful. Make sure it is the tool itself moving along this Toolpath, i.e. no tool radius compensation must be applied.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/Path_PostProcessorSketch.png" alt="Path PostProcessorSketch"></span></p>
+</div>
+<div class="paragraph caption">
+<p>Sketch of the test geometry (screenshot from the Path era of the CAM Workbench)</p>
+</div>
+<div class="paragraph">
+<p>The Toolpath in FreeCAD would look like this. Please note the small blue arrow, it indicates the starting direction. For a very first go you may provide only one level in the XY-plane.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/Path_PostProcessorModel.png" alt="Path PostProcessorModel"></span></p>
+</div>
+<div class="paragraph caption">
+<p>The resulting Toolpath (screenshot from the Path era of the CAM Workbench)</p>
+</div>
+<div class="paragraph">
+<p>You can then have a look at the file and compare it to the output of existing Post-Processors such as <code>linuxcnc_legacy_post.py</code> (legacy) or <code>grbl_post.py</code> and try yourself to adapt them, or you upload yours to the <a href="https://forum.freecad.org/viewforum.php?f=15">Path/CAM forum</a> to get some help.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="naming-convention"><a class="anchor" href="#naming-convention"></a>Naming convention</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The file must be named <code>&lt;name&gt;_post.py</code>. Please note that the postfix and extension, <code>_post.py</code>, have to be lower case. A script post defines <code>export()</code> at module level. A class post defines a class whose name is the title-cased file prefix (e.g. <code>class Mymachine(PostProcessor)</code> in <code>mymachine_post.py</code>; linuxcnc → Linuxcnc, mach3_mach4 → Mach3_Mach4, masso_g3 → Masso_G3) and sets <code>POST_TYPE = "machine"</code> to be offered in the Machine Editor; without that constant the post is treated as legacy and offered in the Job&#8217;s Processor list.</p>
+</div>
+<div class="paragraph">
+<p>(Legacy scripts only) set <code>prog</code> of the argparse parser to the post name so the argument help shown in the Job&#8217;s Arguments tooltip is correct, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">parser = argparse.ArgumentParser(prog="grbl", add_help=False)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are testing, place it in your macro directory. If it functions well, please consider providing it for others to benefit (post it to the FreeCAD Path/CAM forum) so that it can be included in the FreeCAD distribution going forward.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="other-existing-post-processors"><a class="anchor" href="#other-existing-post-processors"></a>Other existing Post-Processors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For comparison you may look at the Post-Processors which come with your FreeCAD installation. They are located under the directory <code>&lt;path_to_your_FreeCAD_distro&gt;/Mod/CAM/Path/Post/scripts</code>. Widely used are the <a href="http://linuxcnc.org/">linuxcnc</a> and the <a href="https://github.com/grbl/grbl">grbl</a> Post-Processors (<code>linuxcnc_legacy_post.py</code>, <code>grbl_post.py</code>, and the machine-based <code>linuxcnc_post.py</code>). Studying their code can give helpful insights.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="programming-a-legacy-script-post-processor"><a class="anchor" href="#programming-a-legacy-script-post-processor"></a>Programming a legacy script Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section discusses some internals of the legacy linuxcnc Post-Processor (<code>linuxcnc_legacy_post.py</code>); it applies to <code>*_legacy_post.py</code> and other script posts. The same structure is used in other script Post-Processors as well.</p>
+</div>
+<div class="paragraph">
+<p>Looking at <code>linuxcnc_legacy_post.py</code>, you&#8217;ll see the export function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">def export(objectslist, filename, argstring):
+    # pylint: disable=global-statement
+    ...
+    gcode = ""
+    ...
+    ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>it collects step by step in the variable "gcode" the processed G-codes and handles the overall exporting of post-processable objects (Operations, Tool Controllers, Jobs, etc.). Export handles the high level stuff like comments and coolant but any objects that have multiple CAM commands (tool changes and Operations) it delegates to the parse function.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">def parse(pathobj):
+    ...
+    out = ""
+    lastcommand = None
+    ...
+    ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similarly to the "export" function, parse collects the G-codes in the variable "out". In the variable "command" the commands as seen in the CAM workbench&#8217;s "inspect G-code" function are stored and can be investigated for further processing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">        for c in pathobj.Path.Commands:
+
+            command = c.Name</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It recognizes the different G, M, F, S, and other G-codes. By remembering the last command in the variable "lastcommand" it can suppress subsequent repetitions of modal commands.</p>
+</div>
+<div class="paragraph">
+<p>Both parse and export are just formatting strings and concatenating them together into what will be the final output.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll see that both functions also call the "linenumber()" function. If the user wants line numbers, the linenumber function returns the string to stick in to the appropriate spot, otherwise it returns an empty string so nothing is added.</p>
+</div>
+<div class="paragraph">
+<p>Class-based posts that still use arguments do not implement <code>parse()</code> themselves; they call the shared helpers <code>Path.Post.UtilsArguments.init_shared_arguments</code>, <code>Path.Post.UtilsExport.export_common</code> and <code>Path.Post.UtilsParse.parse_a_path</code> and override <code>init_values()</code> and <code>init_argument_defaults()</code> to change defaults.</p>
+</div>
+<div class="sect2">
+<h3 id="common-arguments"><a class="anchor" href="#common-arguments"></a>Common arguments</h3>
+<div class="paragraph">
+<p>Class-based legacy posts accept these arguments in the Job&#8217;s Arguments field (pairs are shown as --x/--no-x): <code>--metric</code>/<code>--inches</code>, <code>--axis-modal</code>, <code>--axis-precision N</code>, <code>--bcnc</code>, <code>--chipbreaking_amount</code>, <code>--command_space</code>, <code>--comments</code>, <code>--comment_symbol</code>, <code>--enable_coolant</code>/<code>--disable_coolant</code>, <code>--enable_machine_specific_commands</code>, <code>--end_of_line_characters</code>, <code>--feed-precision N</code>, <code>--finish_label</code>, <code>--header</code>, <code>--line_number_increment</code>, <code>--line_number_start</code>, <code>--line-numbers</code>, <code>--list_tools_in_preamble</code>, <code>--modal</code>, <code>--output_all_arguments</code>, <code>--output_machine_name</code>, <code>--output_path_labels</code>, <code>--output_visible_arguments</code>, <code>--postamble</code>, <code>--post_operation</code>, <code>--preamble</code>, <code>--precision N</code>, <code>--return-to=x,y,z</code>, <code>--show-editor</code>, <code>--split-arcs</code>, <code>--tlo</code>, <code>--tool_change</code>, <code>--translate_drill</code>, <code>--wait-for-spindle S</code>.</p>
+</div>
+<div class="paragraph">
+<p>Pure script posts define their own subset (e.g. linuxcnc_legacy: <code>--no-header</code>, <code>--no-comments</code>, <code>--line-numbers</code>, <code>--no-show-editor</code>, <code>--precision</code>, <code>--preamble</code>, <code>--postamble</code>, <code>--inches</code>, <code>--modal</code>, <code>--axis-modal</code>, <code>--no-tlo</code>, <code>--rigid-tap</code>).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="writing-a-machine-based-post-processor"><a class="anchor" href="#writing-a-machine-based-post-processor"></a>Writing a machine-based Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span></p>
+</div>
+<div class="paragraph">
+<p>The full developer reference for this system — the property schema, UI visibility rules, the export2 pipeline and its hooks, MachineState, testing — is on the <a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a> page; machine files are documented under <a href="machine-configuration.html" class="xref page">Machine Configuration</a>. Below is the short version.</p>
+</div>
+<div class="paragraph">
+<p>Start from <code>generic_post.py</code>. Minimal form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Path.Post.Processor import PostProcessor
+POST_TYPE = "machine"
+
+class Mymachine(PostProcessor):
+    @classmethod
+    def get_common_property_schema(cls):
+        props = super().get_common_property_schema()
+        for p in props:
+            if p["name"] == "file_extension":
+                p["default"] = "ngc"
+            elif p["name"] == "preamble":
+                p["default"] = "G17 G54 G40 G49 G80 G90"
+        return props
+
+    @classmethod
+    def get_property_schema(cls):
+        return [{"name": "blend_mode", "type": "choice", "runtime": True,
+                 "label": "Path Blending Mode", "default": "BLEND",
+                 "choices": ["EXACT_PATH", "EXACT_STOP", "BLEND"], "help": "..."}]
+
+    def __init__(self, job, tooltip="My machine post processor", tooltipargs=[], units="Metric"):
+        super().__init__(job=job, tooltip=tooltip, tooltipargs=tooltipargs, units=units)
+
+    def init_values(self, values):
+        super().init_values(values)
+        values["PARAMETER_ORDER"] = "XYZABCIJFSTQRLHDP"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The common property schema covers file_extension, supports_tool_radius_compensation, supported_commands, drill_cycles_to_translate, preamble, postamble, safetyblock, pre_job, post_job, pre_fixture_change, post_fixture_change, pre_operation, post_operation, pre_tool_change, post_tool_change, tool_return, pre_rotary_move, post_rotary_move, show_dialog, parameter_order, output_tool_length_offset, tool_change, output_units, axis_precision, feed_precision, spindle_decimals and f_for_rapid_moves.</p>
+</div>
+<div class="paragraph">
+<p>Schema entries have name, type (string, bool, choice, int, float), label, default, help and optionally choices, min, max, decimals and runtime (runtime properties are shown on the Overview tab of the Post Processing dialog, others on its Options tab and in the Machine Editor). Values are stored in the Machine&#8217;s <code>.fcm</code> under <code>postprocessor.properties</code> and merged with Job and dialog overrides by <code>apply_configuration_bundle()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Hooks: override <code><em>expand_prefix()</code> and other <code>_expand</em>*</code> stages, <code>_convert_drill_cycle()</code>, <code>get_sanity_checks(job)</code> (return squawks shown on the Warnings tab and by Quick Validate) and <code>pre_processing_dialog()</code>. The pipeline entry point is <code>export2()</code>: pre-processing dialog, ordering (PostList by Fixture/Tool/Operation), command expansion (canned cycles, arc splitting, rapids, tool length offset, bCNC blocks), conversion, optimisation (modal suppression, line numbers) and output.</p>
+</div>
+<div class="sect2">
+<h3 id="machine-output-options"><a class="anchor" href="#machine-output-options"></a>Machine output options</h3>
+<div class="paragraph">
+<p>For machine-based posts the legacy module flags are replaced by the Machine&#8217;s output options: units, output_tool_length_offset, output_header and header items (date, description, document name, machine name, project file, units, tool list, fixture list), comments (enabled, symbol, operation labels, blank lines, bCNC comments), formatting (line numbers, start, prefix, increment, command space, end-of-line characters), precision (axis, feed, spindle), duplicates (commands, parameters) and processing (early tool prep, filter inefficient moves, split arcs, tool change, translate drill cycles, translate rapid moves, XY before Z after tool change, return-to). They are edited in the <a href="machine.html" class="xref page">Machine Editor</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-a-custom-post-processor"><a class="anchor" href="#adding-a-custom-post-processor"></a>Adding a custom Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Place the file in the macro directory (<span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Python</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Macro</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Macro path</b></span>, e.g. <code>/home/user/snap/freecad/common</code>), in the CAM file path (<span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Job preferences</b></span>), or distribute it as an add-on whose <code>package.xml</code> lists a Postprocessor item. Make sure the post is enabled in <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Job preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Post processor</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Post processors selection</b></span>.</p>
+</div>
+<div class="sect2">
+<h3 id="notes"><a class="anchor" href="#notes"></a>Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensure the file has the necessary read permissions.</p>
+</li>
+<li>
+<p>Re-open the Job task panel (or restart FreeCAD if the file was already loaded) to see it.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing"><a class="anchor" href="#testing"></a>Testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unit tests for posts live in <code>Mod/CAM/Tests/</code> (TestPostCore, TestLinuxCNCPost, etc.) and run with <code>FreeCADCmd -t TestCAMApp</code>; <code>test_post.py</code> is a minimal post used by the tests.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a></p>
+</li>
+<li>
+<p><a href="machine-configuration.html" class="xref page">Machine Configuration</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_Post.svg" alt="CAM Post" width="24"></span> <a href="post-process.html" class="xref page">CAM Post</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_Machine.svg" alt="CAM Machine" width="24"></span> <a href="machine.html" class="xref page">CAM Machine</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_PostSelected.svg" alt="CAM PostSelected" width="24"></span> <a href="post-process-selected.html" class="xref page">CAM PostSelected</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../job/fixture.html">CAM Fixture</a></span>
+  <span class="next"><a href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
