@@ -1,0 +1,83 @@
+{
+ "pr": 32861,
+ "summary": "Adds a \"Sanity report output file\" path template to the CAM Job preferences (General group) and makes CAM Sanity propose a default report filename from it, with %D/%d/%j/%M substitutions and a <docname>.html fallback.",
+ "pages": [
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/preferences/PathJob.ui: new 'Sanity report output file' line edit and browse button added at row 1 of the Job General group; Path/Preferences.py adds PathSanityReportOutputFile string preference",
+   "sections": [
+    "Job Preferences",
+    "General"
+   ]
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/SanityCmd.py Activated: save dialog now proposes a filename expanded from the preference template (%D, %d, %j, %M, .html appended) or <docname>.html next to the document / setupreport.html in home when no document path",
+   "sections": [
+    "Usage",
+    "Notes"
+   ]
+  },
+  {
+   "page": "job/quick-validate.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "SanityCmd.py hunks only touch the CAM_Sanity report-save path; QuickValidate writes no report file",
+   "sections": []
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py: _apply_path_substitutions extracted to module-level apply_path_substitutions, identical substitutions and output",
+   "sections": []
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py change is a pure refactor of FilenameGenerator internals",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py change is a pure refactor; post-processor interface and output unchanged",
+   "sections": []
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathJob.ui / PreferencesJob.py / Preferences.py hunks add a Job General preference, not an experimental toggle",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "fd593d363e297986f02cab0bce1aeda3a840585d",
+  "merged_at": "2026-09-29T13:38:43Z",
+  "title": "CAM: Add preference for Sanity report output file",
+  "candidates": [
+   "job/quick-validate.adoc",
+   "job/sanity-check.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/experimental.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "",
+  "cost_usd": 0.39305725,
+  "duration_ms": 18101,
+  "session": "984b4349-24a0-4692-bfaa-f0f55093ddb1",
+  "generated": "2026-10-01T20:19:19+00:00"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "pr": 32769,
+ "summary": "Regression fix for Clipper-based pocket/MillFace offsetting: adds a fallback parent-edge lookup in libarea, restores biarc (arc+line) approximation of B-spline/ellipse edges in Area::addWire, replaces near-degenerate arcs with chords in Area::toShape, and fixes a midpoint bug in Part's BSplineCurveBiArcs; no properties, defaults, enumerations, UI or output semantics documented on any page change.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "110fa88ce2c404bd033523b4a96aac405f59df53",
+  "merged_at": "2026-09-25T23:02:35Z",
+  "title": "CAM: fix clipper pockets",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "",
+  "cost_usd": 0.65415725,
+  "duration_ms": 15791,
+  "session": "e5474b2b-c8b8-4eec-8a36-11590fd6001d",
+  "generated": "2026-10-01T20:25:06+00:00"
+ }
+}

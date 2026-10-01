@@ -1,0 +1,54 @@
+{
+ "pr": 32378,
+ "summary": "Adds a new dressup command CAM_DressupPathBoundary2 (menu text \"Boundary2\") that clips a toolpath to a boundary solid by converting G1/G2/G3 moves to wires, with properties Base, Boundary, Side (Inside/Outside), RetractThreshold, RestMachiningPass and Offset, no task panel, registered in the CAM Path Dressup menu.",
+ "pages": [
+  {
+   "page": "dressups/path-boundary-2.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/Boundary2.py: new CommandPathDressup 'CAM_DressupPathBoundary2' with ObjectDressup properties Base, Boundary, Side (Inside/Outside), RetractThreshold, RestMachiningPass, Offset; no task panel, edited via property editor; only G1/G2/G3 kept, rapids/drilling skipped, segment order may change",
+   "sections": [
+    "Description",
+    "Usage",
+    "Properties",
+    "Limitations",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "InitGui.py: 'CAM_DressupPathBoundary2' added to the Path Dressup command list after CAM_DressupPathBoundary; Path/GuiInit.py imports Path.Dressup.Gui.Boundary2",
+   "sections": [
+    "Path Dressup"
+   ]
+  },
+  {
+   "page": "dressups/path-boundary.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Gui/Boundary2.py: sibling command with the same purpose but faster and without a task panel; existing text stays correct, add a cross-reference to the new page in see-also/Notes",
+   "sections": [
+    "Notes"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "fc2a7b2cfac942a282e9efdd0e26deae8c21399a",
+  "merged_at": "2026-09-28T17:01:34Z",
+  "title": "CAM: DressupPathBoundary2",
+  "candidates": [
+   "dressups/path-boundary.adoc",
+   "index.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "",
+  "cost_usd": 0.39915425,
+  "duration_ms": 16073,
+  "session": "e42627af-c323-493f-a1f0-e5a2a54f095b",
+  "generated": "2026-10-01T20:20:22+00:00"
+ }
+}

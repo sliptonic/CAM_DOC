@@ -1,0 +1,41 @@
+{
+ "pr": 33079,
+ "summary": "Corrects the endmill tool-shape illustration so the cutting edge height (H) dimension ends at the top of the flutes; no property, control or behaviour changes.",
+ "pages": [
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Tools/Shape/endmill.svg: H extension line and arrow moved down; this illustration is displayed in the toolbit parameter editor, so any screenshot of that panel for an endmill is stale, while the text describing cutting edge height stays correct",
+   "sections": [
+    "Toolbit Parameter Editor"
+   ]
+  },
+  {
+   "page": "tools/tool-shape.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Tools/Shape/endmill.svg and svg_source/endmill.svg: shape illustration geometry changed only; if the page reproduces the endmill thumbnail it needs a fresh capture, the parameter descriptions are unaffected",
+   "sections": [
+    "Tool Thumbnail Images"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "c97e069823942cd5f7c1d9299536a3967f1b6586",
+  "merged_at": "2026-09-30T13:43:09Z",
+  "title": "CAM: Endmill SVG cutting edge height (H) now ends at top of flutes",
+  "candidates": [
+   "tools/tool-shape.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "",
+  "cost_usd": 0.3141535,
+  "duration_ms": 16262,
+  "session": "93a34b83-6e94-4af3-8dab-000c8fc25505",
+  "generated": "2026-10-01T20:17:05+00:00"
+ }
+}

@@ -1,0 +1,95 @@
+{
+ "pr": 32854,
+ "summary": "The Job task panel's Machine dropdown and New Machine button move from the General tab to the top of the Output tab, the placeholder entry becomes \"(Legacy post-processor)\" in both the Job panel and the Post Process dialog, selecting a machine now hides the Processor and Arguments rows, and MachineFactory.list_configurations no longer returns an \"<any>\" entry.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PathEdit.ui: machineGroup removed from General tab and jobMachine/jobMachineNew inserted as row 0 of the Output tab; Job.py: combo gains '(Legacy post-processor)' first entry and updatePostProcessorVisibility hides Processor/Arguments rows when a machine is selected",
+   "sections": [
+    "General",
+    "Output",
+    "Properties"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Job.py: machine is now chosen on the Output tab, '<any>' placeholder replaced by '(Legacy post-processor)', and post-processor fields are hidden once a machine is set; machine.py: list_configurations no longer returns '<any>'",
+   "sections": [
+    "Machine settings in the Job",
+    "Job-level overrides",
+    "Per-export overrides",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Job.py/PathEdit.ui: machine selection moved to the Job Output tab with '(Legacy post-processor)' as the no-machine entry; machine.py: list_configuration_files/list_configurations drop the '<any>' placeholder",
+   "sections": [
+    "Using a Machine",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "DlgPostProcess.py: machine combo placeholder text changes from '(none)' to '(Legacy post-processor)'; Job.py: Job Output tab now hides Processor/Arguments when a machine is selected",
+   "sections": [
+    "Two flows: machine-based and legacy",
+    "Post Processing dialog",
+    "Job properties"
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "DlgPostProcess.py: shared Post Process dialog's machine combo placeholder changes from '(none)' to '(Legacy post-processor)'",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "preferences.py: only removes a now-unneeded '<any>' filter in the Machines list; visible content unchanged",
+   "sections": []
+  },
+  {
+   "page": "tools/index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "preferences.py hunk is an internal filter removal with no visible effect on the Machines list",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "b7741d47df5c47109ffc3c3458911ff659779b7f",
+  "merged_at": "2026-09-28T14:20:20Z",
+  "title": "CAM: In Job Dialog, move machines dropdown to output tab",
+  "candidates": [
+   "job/job.adoc",
+   "output/machine-configuration.adoc",
+   "output/machine.adoc",
+   "output/post-process-selected.adoc",
+   "output/post-process.adoc",
+   "reference/preferences.adoc",
+   "tools/index.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 7,
+  "model": "",
+  "cost_usd": 0.42516225,
+  "duration_ms": 19229,
+  "session": "6f1199b8-8161-40a9-97ef-d6162f7a5b4d",
+  "generated": "2026-10-01T20:20:47+00:00"
+ }
+}

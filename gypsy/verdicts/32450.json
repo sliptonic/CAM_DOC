@@ -1,0 +1,93 @@
+{
+ "pr": 32450,
+ "summary": "Simple Copy now creates a regular Custom operation with the standard Custom view provider, so the copied object gets the Custom task panel and Custom icon instead of a property-view-only object; the Custom task panel is also made to expand to the full task-panel height.",
+ "pages": [
+  {
+   "page": "modify/simple-copy.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/SimpleCopy.py: Activated() now assigns Path.Op.Gui.Base.ViewProvider with the Custom resources (icon CAM_Custom.svg, page Path.Op.Gui.Custom.TaskPanelOpPage) and calls setDeleteObjectsOnReject(False), so the result is an editable Custom op with a task panel (G-code editor, tool controller, coolant) rather than a parameter-only object; the old SimpleCopy-specific ViewProvider is kept solely to migrate objects in old documents on save",
+   "sections": [
+    "Description",
+    "Usage",
+    "Options",
+    "Properties",
+    "Notes"
+   ]
+  },
+  {
+   "page": "operations/custom.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/Custom.py: TaskPanelOpPage gains needsFullSpace = True and sets the form and txtGCodeBox vertical size policy to Expanding, so the G-code editor fills the task panel height; no control or behaviour text changes",
+   "sections": [
+    "Task panel"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Utils.py: baseOp() switches from name matching to Proxy module check, and Path/Op/Gui/Base.py: needsFullSpace() consults feature pages; both are internal with no documented behaviour change",
+   "sections": []
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Utils.py: only baseOp() robustness and licence header changed; no preference touched",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: needsFullSpace() hunk is a layout helper unrelated to start point selection",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: needsFullSpace() change only affects pages that opt in; Drilling does not",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: needsFullSpace() change only affects pages that opt in; Pocket does not",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py: needsFullSpace() change only affects pages that opt in; Profile does not",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "5591937592c863c59a7b3497fbe6ee06ff4b440e",
+  "merged_at": "2026-09-29T01:57:03Z",
+  "title": "CAM: SimpleCopy - Add task panel",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "modify/simple-copy.adoc",
+   "operations/custom.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "",
+  "cost_usd": 0.49361425,
+  "duration_ms": 35885,
+  "session": "453308bd-012d-496a-b943-6c3cc6621f6e",
+  "generated": "2026-10-01T20:20:01+00:00"
+ }
+}

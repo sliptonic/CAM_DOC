@@ -1,0 +1,21 @@
+{
+ "pr": 32272,
+ "summary": "Crash fix in Path/Op/Util.py getOpSide(): guards Part.Wire() against an empty bottom-edge list when deciding the default Side (Inside/Outside) for a Profile operation from selected faces, plus an SPDX license-header reformat; no property, default, enumeration, panel or output changes, so nothing documented moves.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "31b164ce42c5327bb1c662ea21bf2d79d1956602",
+  "merged_at": "2026-09-28T01:54:13Z",
+  "title": "CAM: Fix getOpSide()",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "",
+  "cost_usd": 0.28907125,
+  "duration_ms": 23798,
+  "session": "f75801b6-9959-4a8f-88c8-d6601af5dfb9",
+  "generated": "2026-10-01T20:21:37+00:00"
+ }
+}

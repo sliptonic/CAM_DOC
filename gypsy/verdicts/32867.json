@@ -1,0 +1,29 @@
+{
+ "pr": 32867,
+ "summary": "Fixes a TypeError crash in the polar mode of the Array dressup by removing stray call parentheses on Path.Commands, restoring the documented behaviour without changing any property, default or output.",
+ "pages": [
+  {
+   "page": "dressups/array.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Array.py getPath(): `np.Commands()` becomes `np.Commands`, a crash fix in the polar branch; no property, enumeration, default or generated path changes",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "d170638796db7c7893d224c82814d28e313885e8",
+  "merged_at": "2026-09-25T16:29:15Z",
+  "title": "CAM: fix small error in polar DressupPathArray",
+  "candidates": [
+   "dressups/array.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "",
+  "cost_usd": 0.22478325000000002,
+  "duration_ms": 4837,
+  "session": "55c40092-c900-4130-a0c2-a2c2f9170cf4",
+  "generated": "2026-10-01T20:25:16+00:00"
+ }
+}

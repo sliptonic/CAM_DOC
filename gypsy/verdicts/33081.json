@@ -1,0 +1,69 @@
+{
+ "pr": 33081,
+ "summary": "Follow-up to #31074 that passes the operation tolerance and the SortingMode-derived keepOrder flag into combineHorizontalFaces for Pocket Shape and Profile, sets the SortingMode enumeration during document restore, tidies comments and a log message in Geom.py, and extends the unit test; no task-panel control, property, default, enumeration, menu entry, or documented output changes.",
+ "pages": [
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/PocketShape.py: areaOpShapes now forwards tol and reads obj.SortingMode directly; internal bug fix completing #31074, property set and panel unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Profile.py: _processBase now passes keepOrder from the existing SortingMode property and self.tol; makes the already-documented 'Manual: uses order of shapes selection' behaviour apply to combined horizontal faces, no new property or value",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py: comment edits and reworded Path.Log.info message in combineHorizontalFaces; helper is not the CAM Area command this page documents",
+   "sections": []
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/PocketBase.py: opOnDocumentRestored migration only; Engrave does not use PocketBase SortingMode",
+   "sections": []
+  },
+  {
+   "page": "operations/mill-face.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/PocketBase.py: opOnDocumentRestored sets SortingMode enumeration ('Automatic','Manual') on restored documents; migration fix, enumeration values already existed for new objects",
+   "sections": []
+  },
+  {
+   "page": "operations/pocket-3d.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/PocketBase.py: opOnDocumentRestored migration only; no property, default, or enumeration added for new objects",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e841c22f5431cada09064a9ef18f7954d99f5787",
+  "merged_at": "2026-09-30T17:25:12Z",
+  "title": "CAM: PocketShape - Add tolerance to combineHorizontalFaces",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/engrave.adoc",
+   "operations/mill-face.adoc",
+   "operations/pocket-3d.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "",
+  "cost_usd": 0.40704125,
+  "duration_ms": 29324,
+  "session": "607627c6-68d1-4ead-a3b9-d1c060fa220d",
+  "generated": "2026-10-01T20:11:35+00:00"
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "pr": 32505,
+ "summary": "Rewrites the VCarve, Engrave and Deburr selection gates in Path/Op/Gui/Selection.py so the expensive Volume check only runs for whole-object selections; as a side effect VCarve now accepts Edge sub-elements and Engrave now accepts Face sub-elements in the Base Geometry picker, while Deburr's accepted selection is unchanged. The source-map candidates (index, set-start-point, drilling, pocket, profile) are wrong for these hunks and were dropped.",
+ "pages": [
+  {
+   "page": "operations/vcarve.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Selection.py VCARVEGate.allow: the explicit 'Edge sub-element -> False' branch is removed and replaced by `sub[0:4] in (\"Edge\", \"Face\")`, so edges of a solid can now be added as base geometry alongside faces",
+   "sections": [
+    "Usage",
+    "Tasks Window Editor Layout",
+    "Base Geometry"
+   ]
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Selection.py ENGRAVEGate.allow: previously only Edge sub-elements (or whole zero-volume wire objects) passed; now `sub[0:4] in (\"Edge\", \"Face\")` lets Face sub-elements be selected as base geometry",
+   "sections": [
+    "Usage",
+    "Tasks Window Editor Layout",
+    "Base Geometry"
+   ]
+  },
+  {
+   "page": "operations/deburr.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Selection.py CHAMFERGate.allow: Edge and Face sub-elements and whole zero-volume edge objects were already accepted; the rewrite only drops the Volume call for sub-element preselection, so the documented selectable geometry is unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "090ffe7ce50310bcd0a184694c2c9ba8851ca028",
+  "merged_at": "2026-09-25T23:05:39Z",
+  "title": "CAM: Selection Gate - Optimization",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "",
+  "cost_usd": 0.49737125,
+  "duration_ms": 56169,
+  "session": "9ee7ddb7-a556-4de4-96cc-43c540194aa3",
+  "generated": "2026-10-01T20:24:43+00:00"
+ }
+}

@@ -1,0 +1,167 @@
+{
+ "pr": 30402,
+ "summary": "Area-based operations (Profile, Pocket Shape, 3D Pocket, Face) gain linking via CollisionAvoidanceStrategy/CollisionClearance, Pocket ops drop MinTravel and ZigZagOffset in favour of Helix/No clearing patterns plus Finishing* properties, Profile gains FinishingPasses/FinishingOffset/StartAt/RampMethod/RampAngle and allows zero-stepover spring passes, and LeadInOut/Boundary/Tags dressups treat linking moves as travel.",
+ "pages": [
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Profile.py: areaOpProperties gains FinishingOffset, FinishingOneStepDown, FinishingPasses, StartAt (OutOfEdge/Edge), RampMethod (None/Helix/Method 1-3), RampAngle; zero Stepover no longer reduced to a single pass; Area.py opFeatures adds FeatureLinking so CollisionAvoidanceStrategy/CollisionClearance apply; RetractThreshold editor mode tied to pass count",
+   "sections": [
+    "Properties",
+    "Usage Notes",
+    "Tasks Window Editor Layout"
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/PocketBase.py: MinTravel property removed and 'Min travel' checkbox removed from PageOpPocketFullEdit.ui; ClearingPattern enumeration drops ZigZagOffset and adds Helix and 'No clearing'; new FinishingOffset/FinishingPasses/FinishingOneStepDown/FinishingRampHelix; StartAt only shown for Offset/Helix; Area.py adds linking properties",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  },
+  {
+   "page": "operations/pocket-3d.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Pocket.py inherits PocketBase: MinTravel removed, ClearingPattern enumeration changed (ZigZagOffset -> Helix, No clearing), Finishing* properties added with FinishingPasses default 0; linking properties via Area.py FeatureLinking; shared .ui loses Min travel checkbox",
+   "sections": [
+    "Properties",
+    "Options"
+   ]
+  },
+  {
+   "page": "operations/mill-face.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/MillFace.py: excludedClearingPatterns = (Helix, No clearing) so ClearingPattern is ZigZag/Offset/Line/Grid (ZigZagOffset gone); PocketBase.py removes MinTravel and adds Finishing* properties; Area.py adds CollisionAvoidanceStrategy/CollisionClearance; PageOpPocketFullEdit.ui loses Min travel checkbox",
+   "sections": [
+    "Properties",
+    "Usage"
+   ]
+  },
+  {
+   "page": "dressups/lead-in-out.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/leadinout.py: isCuttingMove excludes linking moves so no lead-in/out is added to travel between passes; getTravelStart uses the base operation's linking (get_dressup_linking_moves) instead of clearance height when the operation has a collision avoidance strategy",
+   "sections": [
+    "Notes",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "dressups/path-boundary.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Boundary.py boundaryCommands: travel between boundary exit and re-entry uses the base operation's linking arguments when set, otherwise retract to clearance as before",
+   "sections": [
+    "Notes"
+   ]
+  },
+  {
+   "page": "dressups/tag.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Tags.py: linkingEdges/createPath skip linking moves, so tags are never placed on linking travel between passes and those moves are ignored for Z limits",
+   "sections": [
+    "Notes"
+   ]
+  },
+  {
+   "page": "dressups/dogbone.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/DogboneII.py: linking move ends a profile like a plunge; corrects bone placement at links, documented behaviour unchanged",
+   "sections": []
+  },
+  {
+   "page": "dressups/axis-map.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Gui/AxisMap.py only copies command annotations; no user-visible change",
+   "sections": []
+  },
+  {
+   "page": "dressups/zcorrect.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Gui/ZCorrect.py only copies command annotations; no user-visible change",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Area.py changes are in the operation base class, not the CAM Area command; linking.py/leadinout.py/ramp_entry.py are generator internals",
+   "sections": []
+  },
+  {
+   "page": "job/setup-sheet.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/SetupSheet.py only migrates ClearingPattern ZigZagOffset to ZigZag + FinishingPasses in templates and header cleanup; no documented field changes",
+   "sections": []
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/SetupSheet.py changes are template migration internals",
+   "sections": []
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Map is wrong: Engrave does not derive from PocketBase or use PageOpPocketFullEdit.ui",
+   "sections": []
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Tags.py changes do not touch tag preferences",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Dressup/Gui/PlungeMilling.py (mapped to dressups/plunge-milling.adoc, which does not exist; change here only skips linking moves, but the dressup has no page)"
+ ],
+ "meta": {
+  "merge_commit": "809b75f381cf89fb73b6bca53c9dc2b02110ed91",
+  "merged_at": "2026-09-28T01:53:46Z",
+  "title": "CAM: Area - Linking",
+  "candidates": [
+   "dressups/axis-map.adoc",
+   "dressups/dogbone.adoc",
+   "dressups/lead-in-out.adoc",
+   "dressups/path-boundary.adoc",
+   "dressups/plunge-milling.adoc",
+   "dressups/tag.adoc",
+   "dressups/zcorrect.adoc",
+   "job/job.adoc",
+   "job/setup-sheet.adoc",
+   "misc/area.adoc",
+   "operations/engrave.adoc",
+   "operations/mill-face.adoc",
+   "operations/pocket-3d.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Path/Base/Language.py"
+  ],
+  "files": 27,
+  "model": "",
+  "cost_usd": 1.37888925,
+  "duration_ms": 59365,
+  "session": "754aac2f-33f1-4fcc-9830-dd8fdbfc1349",
+  "generated": "2026-10-01T20:22:47+00:00"
+ }
+}

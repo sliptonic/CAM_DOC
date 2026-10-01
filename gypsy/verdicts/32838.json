@@ -1,0 +1,42 @@
+{
+ "pr": 32838,
+ "summary": "The Ramp Entry dressup gains a fifth Method enumeration value, RampMethod4, which ramps down along the path and then continues in the cutting direction without backtracking, closing the missed segment on the final loop.",
+ "pages": [
+  {
+   "page": "dressups/ramp-entry.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/RampEntry.py: Method enumeration gains 'RampMethod4' and the property tooltip describes it; Path/Base/Generator/ramp_entry.py createRampMethod4 changes the toolpath the dressup produces (no backtrack, loop extended on final pass, material left uncut on non-loops)",
+   "sections": [
+    "Properties",
+    "Notes"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/ramp_entry.py is the Ramp Entry dressup's generator, not CAM Area; candidate mapping is wrong and the Area page describes nothing this file does",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Base/Generator/ramp_entry.py (mapped to misc/area.adoc but belongs to dressups/ramp-entry.adoc)"
+ ],
+ "meta": {
+  "merge_commit": "604eb6fbf8deb89bb5da639ed0ea298bab5a981f",
+  "merged_at": "2026-09-28T06:02:21Z",
+  "title": "CAM: add new ramp method without backtracking",
+  "candidates": [
+   "dressups/ramp-entry.adoc",
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "",
+  "cost_usd": 0.3600992499999999,
+  "duration_ms": 16527,
+  "session": "6d84f30c-d51f-4c8d-a919-b17101e76e78",
+  "generated": "2026-10-01T20:21:09+00:00"
+ }
+}

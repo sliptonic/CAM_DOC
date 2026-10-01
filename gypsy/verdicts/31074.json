@@ -1,0 +1,40 @@
+{
+ "pr": 31074,
+ "summary": "Profile now merges connected coplanar horizontal faces into one outline before generating paths, so selecting adjacent faces no longer profiles each face's own boundary and plunges along shared edges.",
+ "pages": [
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Profile.py _processBase: horFaces now passed through Path.Geom.combineHorizontalFaces(), so adjacent horizontal faces are profiled as a single combined outline rather than individually",
+   "sections": [
+    "Usage Notes",
+    "Base Geometry"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py combineHorizontalFaces() is an internal helper rewrite (new z and tol args, faster boolean cut); CAM Area page documents Path::FeatureArea, not this module",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "fd7f9ddeb119ec0b1c7c83562cf5c7d27ba0d612",
+  "merged_at": "2026-09-30T02:35:48Z",
+  "title": "CAM: Profile - Combine connected faces",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "",
+  "cost_usd": 0.42169449999999997,
+  "duration_ms": 34634,
+  "session": "511a6148-7097-4854-a473-94a4f687de67",
+  "generated": "2026-10-01T20:17:45+00:00"
+ }
+}

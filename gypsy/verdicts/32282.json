@@ -1,0 +1,75 @@
+{
+ "pr": 32282,
+ "summary": "Legacy post-processor scripts now run the path through cannedCycleTerminator, so every canned-cycle group in their output is wrapped in a literal G98/G99 and G80 and the Drilling operation's KeepToolDown (G99) setting is honoured; cannedCycleTerminator itself now also terminates tapping cycles and keeps a literal G98/G99 as fallback.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/*_legacy_post.py parse(): every legacy script (linuxcnc, grbl, marlin, estlcam, rrf, fanuc, uccnc, dynapath, dynapath_4060, mach3_mach4, centroid, KineticNCBeamicon2) now wraps each canned-cycle group in a literal G98/G99 ... G80 (see TestFanucLegacyPost expected blocks); legacy flow now honours Drilling KeepToolDown; heidenhain_legacy_post still does not",
+   "sections": [
+    "Two flows: machine-based and legacy",
+    "Included Post-Processors",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py cannedCycleTerminator(): now matches GCODE_DRILL_EXTENDED (G84/G74 tapping) as well as CmdMoveDrill, inserted G98/G99/G80 carry the cycle's annotations, un-annotated cycles fall back to the last literal G98/G99, and the retract word is placed before a preceding M29 for rigid tapping",
+   "sections": [
+    "Command filtering and annotations",
+    "The export2 pipeline"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "All legacy scripts now call PostUtils.cannedCycleTerminator(PathUtils.getPathWithPlacement(pathobj)) before their per-command scan; a custom legacy script must do the same to see the retract mode, and dynapath_legacy_post.export() now returns the G-code string and accepts filename '-' like the other scripts",
+   "sections": [
+    "Programming a legacy script Post-Processor",
+    "Common arguments"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "KeepToolDown property is unchanged; the PR only makes legacy posts honour the G99 annotation Path/Op/Drilling.py already emitted, restoring documented behaviour",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Job.py: module-level Instances() removed and replaced by PathScripts.PathUtils.jobInstances(); JobCmd.py/JobDlg.py only switch callers, no visible dialog or property change",
+   "sections": [
+    "Scripting"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a24e31523a66bf98a7c3ef85bf168eb38e32f791",
+  "merged_at": "2026-09-30T17:14:16Z",
+  "title": "CAM: legacy post scripts silently drop G99 retract mode",
+  "candidates": [
+   "index.adoc",
+   "job/job.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 23,
+  "model": "",
+  "cost_usd": 0.8593387500000002,
+  "duration_ms": 302691,
+  "session": "717ef416-9975-4f35-9c8a-83499090811c",
+  "generated": "2026-10-01T20:16:43+00:00"
+ }
+}

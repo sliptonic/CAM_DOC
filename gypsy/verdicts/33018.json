@@ -1,0 +1,45 @@
+{
+ "pr": 33018,
+ "summary": "Bug fix in the Copy Operation command: the dressup chain is now copied in one copyObject call so Base links and property expressions on the copies reference the copied operation instead of the original; no new control, property, default or output.",
+ "pages": [
+  {
+   "page": "modify/copy.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathCommands.py: _CopyOperation.Activated hunk rewires how the dressup chain is duplicated (single copyObject on the collected chain) so expressions follow the copy; this restores the behaviour the page already describes and adds no property or option",
+   "sections": []
+  },
+  {
+   "page": "inspect/op-active-toggle.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathCommands.py hunk is confined to the Copy Operation command; OpActiveToggle code untouched",
+   "sections": []
+  },
+  {
+   "page": "inspect/select-loop.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "PathCommands.py hunk is confined to the Copy Operation command; SelectLoop code untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "ea8d563d30f6176b71d395db6a1cda2725946b01",
+  "merged_at": "2026-09-29T15:02:38Z",
+  "title": "CAM: Copy Operation - keep dressup expressions on the copy",
+  "candidates": [
+   "inspect/op-active-toggle.adoc",
+   "inspect/select-loop.adoc",
+   "modify/copy.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "",
+  "cost_usd": 0.26021725,
+  "duration_ms": 12839,
+  "session": "48c12d89-0625-4414-b76b-7148ba40cc78",
+  "generated": "2026-10-01T20:18:56+00:00"
+ }
+}

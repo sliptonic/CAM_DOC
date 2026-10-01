@@ -1,0 +1,35 @@
+{
+ "pr": 31887,
+ "summary": "Mill Facing's ClearingPattern enumeration renames Spiral to Spiral Rectangular and adds a Spiral Circular pattern, with task-panel tooltips now taken from property descriptions and Pass Extension disabled rather than hidden for spiral patterns.",
+ "pages": [
+  {
+   "page": "operations/mill-facing.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/MillFacing.py propertyEnumerations: ClearingPattern 'Spiral' becomes 'Spiral Rectangular' and 'Spiral Circular' is added (opExecute builds a circular spiral from the boundary's bounding-box centre, CW for climb/CCW for conventional, start angle from Angle and Reverse); Gui/MillFacing.py updateVisibility disables Pass Extension for both spiral patterns instead of hiding it; PageOpMillFacingEdit.ui tooltips replaced by property descriptions; opOnDocumentRestored migrates old 'Spiral' to 'Spiral Rectangular' on load",
+   "sections": [
+    "Clearing patterns",
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Notes"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "4f3bcc6bad2d825cec3d5791739d1fe9be0cfd6f",
+  "merged_at": "2026-09-29T17:16:54Z",
+  "title": "CAM: MillFacing - Circular clearing pattern",
+  "candidates": [
+   "operations/mill-facing.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "",
+  "cost_usd": 0.42163325,
+  "duration_ms": 13575,
+  "session": "23bed0f9-6351-44c0-9854-43592f209bfe",
+  "generated": "2026-10-01T20:18:23+00:00"
+ }
+}

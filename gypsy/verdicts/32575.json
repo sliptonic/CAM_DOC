@@ -1,0 +1,26 @@
+{
+ "pr": 32575,
+ "summary": "Removes the internal arc-fix helper from the 3+2 axis base-shape and stock transformation in Path/Op/Base.py, replacing it with a plain rigid transformShape, and strips debug logging from Deburr; no user-facing property, control, default, or output described by any page changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "cdf50fb682157ffbd778ea664f3977d46fdd535a",
+  "merged_at": "2026-09-27T18:36:39Z",
+  "title": "CAM: Fix 3+2 Axis Transform Shape",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/deburr.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "",
+  "cost_usd": 0.29438125,
+  "duration_ms": 5218,
+  "session": "7800ac0c-e008-4fd0-8c7e-dc9fb48fac86",
+  "generated": "2026-10-01T20:22:57+00:00"
+ }
+}
