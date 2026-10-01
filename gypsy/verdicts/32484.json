@@ -1,0 +1,37 @@
+{
+ "pr": 32484,
+ "summary": "Fixes DetachedDocumentObject so an enumeration property defaults to its first choice instead of None, restoring the documented FreeCAD behaviour and preventing a crash when adding a toolbit to a document; adds unit tests.",
+ "pages": [
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/docobject/models/docobject.py: __setattr__ enum branch now sets value[0] when the stored value is None; a crash fix restoring behaviour the Properties section already assumes, no documented property, default or control changes",
+   "sections": []
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/docobject/models/docobject.py: internal model fix only; the ToolBitDock command, menu and usage are unaffected",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a80d61a8a747f05d630f3c2d50da22f04e21a520",
+  "merged_at": "2026-09-09T14:15:37Z",
+  "title": "CAM: Add DetachedDocumentObject tests and fix enum defaults",
+  "candidates": [
+   "tools/add-toolbit.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "",
+  "cost_usd": 0.34607725,
+  "duration_ms": 9242,
+  "session": "c61fe8c9-4a19-45a9-b92e-e93e2f667cf3",
+  "generated": "2026-10-01T20:03:35+00:00"
+ }
+}

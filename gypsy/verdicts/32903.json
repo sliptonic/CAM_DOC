@@ -1,0 +1,287 @@
+{
+ "pr": 32903,
+ "summary": "An Operation now generates its Toolpath in its Work Plane's frame with a derived read-only Placement positioning it and no rotary words; a Work Plane gains a Fixture property and is created without machine gating; the Machine declares a Rotation Strategy (DWO/TWP) replacing the DWO checkbox, and the Post-Processor solves the rotary pose at output, emits TWP via its Plane Command with four new machine-scope post properties, wraps pose changes in the Pre/Post-Rotary blocks, refuses Indexed Operations on legacy posts, and adds Sanity squawks for rotary moves and plane fixtures.",
+ "pages": [
+  {
+   "page": "job/work-plane.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Main/Workplane.py: no page exists for the Work Plane command; this PR adds the Fixture property (ensureFixtureProperty), puts a face-created plane's origin at the face centroid via AttachmentOffset, and removes the rotary-machine gate on creation (WorkplaneCmd.py drops the ValueError handling)",
+   "sections": [
+    "Description",
+    "Usage",
+    "Properties",
+    "Notes"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/editor/machine_editor.py: kinematics group replaces the 'DWO Supported' checkbox with a 'Rotation Strategy' combo (Not declared / DWO / TWP / Post transform); machine.py to_dict writes rotation_strategy to the .fcm and from_dict maps old dwo_supported",
+   "sections": [
+    "Machine Editor",
+    "Machine tab",
+    "Postprocessor tab",
+    "Machine file (.fcm)"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "machine_editor.py Rotation Strategy combo and Processor.py new machine-scope properties twp_control_positions_rotaries, twp_declare, twp_align, twp_cancel shown under the post's properties; machine.py adds rotation_strategy to the .fcm kinematics block",
+   "sections": [
+    "The Machine Editor",
+    "Machine tab",
+    "Postprocessor tab",
+    "The .fcm file format"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: get_common_property_schema gains four twp_* properties and rewrites Pre/Post-Rotary Move help; new class attributes ROTATION_STRATEGIES and PLANE_COMMAND; _expand_workplane_frames expansion stage; base sanity checks warn on rotary moves between operations with empty pre-rotary block and on a plane Fixture that is in the Job's Fixtures list or not a fixture word; format_parameter no longer unit-converts A/B/C",
+   "sections": [
+    "The property schema",
+    "Common properties",
+    "The export2 pipeline",
+    "Sanity checks"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Processor.py _check_rotation_strategy and _refuse_without_rotary_axes: a tilted operation is refused with a message when the machine has no rotary axes, no strategy, or a strategy the post cannot emit; legacy WrapperPost refuses tilted operations and places datum-plane paths into world coordinates",
+   "sections": [
+    "Two flows: machine-based and legacy",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Processor.py: ROTATION_STRATEGIES and PLANE_COMMAND (Path/Post/TiltedWorkPlane.py PlaneCommand G68_2/G268/PLANE_SPATIAL) are what a post subclass sets to control TWP output; legacy script posts cannot post Indexed Operations",
+   "sections": [
+    "Two kinds of Post-Processor",
+    "Writing a machine-based Post-Processor",
+    "Machine output options"
+   ]
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Main/Sanity/Sanity.py _runData: Job and operation Z ranges now come from the placed path; Processor.py base sanity checks add squawks for rotaries moving between operations with an empty Pre-Rotary Move block and for a work plane Fixture that repeats the Job's Fixtures list or is not a fixture word",
+   "sections": [
+    "Run Summary",
+    "Squawks"
+   ]
+  },
+  {
+   "page": "job/fixture.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Main/Workplane.py ensureFixtureProperty: a Work Plane may name its own Fixture, selected by the post around the pose change and reverted to the Job's; the Job's Fixtures list is untouched and sanity warns when a plane selects one of those",
+   "sections": [
+    "Description",
+    "Notes"
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Main/Job.py onDocumentRestored gives every work plane the Fixture property; the Job's Output Fixtures list now coexists with per-plane Fixture selection and should be distinguished from it",
+   "sections": [
+    "Output",
+    "Workplan"
+   ]
+  },
+  {
+   "page": "inspect/inspect.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Inspect.py: Raw checkbox now shows the stored path before Placement (new tooltip text), the caution label reports the frame origin left out, highlight carries the operation's Placement, and the tool is oriented along the operation's tool axis",
+   "sections": [
+    "Options",
+    "Notes"
+   ]
+  },
+  {
+   "page": "inspect/simulator-legacy.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Simulator.py SetupOperation/toolPlacement: boolean mode simulates in the operation's work plane frame with the tool along the plane's Z; voxel mode keeps the placed path with a vertical tool and cannot represent a tilted cut",
+   "sections": [
+    "Task panel",
+    "Notes"
+   ]
+  },
+  {
+   "page": "reference/fourth-axis.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py _setup_workplane_transform: operations no longer emit rotary G0 words or record RotaryPositions; the post solves and commands the pose from Placement per machine.py RotationStrategy (DWO or TWP), and legacy posts refuse Indexed Operations",
+   "sections": [
+    "3+2 indexed machining",
+    "Display and post-processing of rotary moves",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Base.py updateDepths/_updateDepthsInFrame and Gui/Base.py selectionZLevel: every depth and height is measured along the tool axis from the Work Plane's origin, the Start/Final Depth helper buttons measure from the plane, and an operation's Placement is derived from its plane and read-only",
+   "sections": [
+    "General concepts",
+    "Heights and depths"
+   ]
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Gui/Base.py _reofferSide: while the creation panel is open, Side is offered again from the selection whenever the Work Plane changes, until the user sets it; Placement is read-only (Op/Base.py setEditorModes)",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  },
+  {
+   "page": "dressups/zcorrect.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Gui/ZCorrect.py execute: on a Work Plane whose tool axis is not Z the dressup warns 'Z correction needs a work plane parallel to the table' and passes the path through; probe map is looked up at the world X,Y of frame points",
+   "sections": [
+    "Limitations",
+    "Notes"
+   ]
+  },
+  {
+   "page": "job/quick-validate.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Sanity.py changes alter report values and the post's checks; the Quick Validate page does not enumerate individual checks",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Op/Base.py toFrame()/startPoint(): the picked world point is now carried into the operation's frame, restoring documented behaviour on offset planes",
+   "sections": []
+  },
+  {
+   "page": "contributing/development-roadmap.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Roadmap/ADR/ADR-000.md gains Rotation Strategy and Plane Command vocabulary; the roadmap page links to ADRs rather than repeating their entries",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Op/Util.py getClearedAreas and Generator/linking.py frame handling are internal to rest machining and collision checks; Area.py startPoint hunk is internal",
+   "sections": []
+  },
+  {
+   "page": "dressups/lead-in-out.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Dressup/Gui/LeadInOut.py now reads the base op's stored path with placeWithBase(); user-visible options and properties are unchanged",
+   "sections": []
+  },
+  {
+   "page": "dressups/tag.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Dressup/Gui/Tags.py addNewTagAt carries the 3D pick into the base op's frame; the picking workflow documented is unchanged",
+   "sections": []
+  },
+  {
+   "page": "dressups/path-boundary.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Boundary.py/Boundary2.py bring the boundary and model into the base op's frame; options and properties unchanged",
+   "sections": []
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Engrave.py/EngraveBase.py read BaseShapes and depth defaults through shapeToFrame(); documented behaviour restored on planes, no property change",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "CircularHoleBase.py uses startPoint()/toFrame() for TSP sorting; no property or panel change",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Post/TiltedWorkPlane.py (mapped to job/work-plane, machine-configuration and fourth-axis, but its PlaneCommand dialects belong on the post-processor pages)"
+ ],
+ "meta": {
+  "merge_commit": "426d03d1bdbfab508be4476852b9e1756cbba6f0",
+  "merged_at": "2026-09-30T02:15:58Z",
+  "title": "CAM:  Operations respect workplane frame",
+  "candidates": [
+   "contributing/development-roadmap.adoc",
+   "dressups/array.adoc",
+   "dressups/axis-map.adoc",
+   "dressups/dogbone.adoc",
+   "dressups/drag-knife.adoc",
+   "dressups/lead-in-out.adoc",
+   "dressups/mirror.adoc",
+   "dressups/path-boundary.adoc",
+   "dressups/plunge-milling.adoc",
+   "dressups/ramp-entry.adoc",
+   "dressups/tag.adoc",
+   "dressups/zcorrect.adoc",
+   "index.adoc",
+   "inspect/inspect.adoc",
+   "inspect/set-start-point.adoc",
+   "inspect/simulator-legacy.adoc",
+   "job/job.adoc",
+   "job/quick-validate.adoc",
+   "job/sanity-check.adoc",
+   "job/work-plane.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/engrave.adoc",
+   "operations/helix.adoc",
+   "operations/planar-surface.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "operations/slot.adoc",
+   "operations/surface.adoc",
+   "operations/tapping.adoc",
+   "operations/thread-milling.adoc",
+   "operations/waterline.adoc",
+   "output/machine-configuration.adoc",
+   "output/machine.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/fourth-axis.adoc",
+   "reference/glossary.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 51,
+  "model": "",
+  "cost_usd": 2.40587925,
+  "duration_ms": 95007,
+  "session": "fde78c93-82e5-4506-8df1-4110a1a04b4c",
+  "generated": "2026-10-01T20:05:16+00:00"
+ }
+}

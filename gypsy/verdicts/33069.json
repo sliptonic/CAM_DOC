@@ -1,0 +1,66 @@
+{
+ "pr": 33069,
+ "summary": "Adds a new machine-based Fanuc post-processor (\"fanuc\") with Fanuc defaults for the common Machine output properties and eight post-specific Machine/Job properties (program number, tape marks, upper-case, dwell in ms, rigid tapping M29, parametric TLO, empty-spindle park and its retract); the legacy fanuc_legacy post is untouched and only its test suite is renamed.",
+ "pages": [
+  {
+   "page": "output/post-fanuc.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/fanuc_post.py: new FanucPost(PostProcessor) with POST_TYPE='machine'; get_property_schema() defines program_number (job), wrap_in_percent, uppercase_output, dwell_in_milliseconds, rigid_tapping, tool_length_offset_macro, end_spindle_empty (job), end_spindle_empty_retract; get_common_property_schema() overrides defaults (file_extension 'nc', preamble 'G17 G54 G40 G49 G80 G90 G94', postamble, pre_tool_change, spindle_decimals 0, drill_cycles_to_translate empty, supports_tool_radius_compensation True, parameter_order without K); ROTATION_STRATEGIES ('dwo','twp'), PLANE_COMMAND G68.2; no page documents this post",
+   "sections": [
+    "Description",
+    "Properties",
+    "Machine output options",
+    "Output",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/fanuc_post.py added and registered in CMakeLists.txt PathPythonPostScripts_SRCS: the list of included post-processors gains a machine-based 'fanuc' alongside the existing 'fanuc_legacy'",
+   "sections": [
+    "Included Post-Processors",
+    "Two flows: machine-based and legacy"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/fanuc_post.py: new machine-based post that the 'Other existing Post-Processors' inventory should list; it is also a worked example of overriding get_common_property_schema() defaults and adding get_property_schema() entries with SCOPE_MACHINE/SCOPE_JOB",
+   "sections": [
+    "Other existing Post-Processors",
+    "Writing a machine-based Post-Processor"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/fanuc_post.py: if this page enumerates the machine-based posts and their post-specific properties, the fanuc post adds a new entry with eight properties shown in the Machine editor; drop if the page is only the generic mechanism",
+   "sections": [
+    "Properties",
+    "Included Post-Processors"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "3ffae4b83766817d5645d7709f0cff787ddd21e7",
+  "merged_at": "2026-09-30T02:04:19Z",
+  "title": "CAM: Machine-based postprocessor for Fanuc ",
+  "candidates": [
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "",
+  "cost_usd": 0.66399125,
+  "duration_ms": 43008,
+  "session": "622658b5-1575-4d6a-9393-00818a2ac2fe",
+  "generated": "2026-10-01T20:03:20+00:00"
+ }
+}
