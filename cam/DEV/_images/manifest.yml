@@ -1,0 +1,12 @@
+# Figure manifest (STYLE.md §10.3). One entry per captured figure. A block image on a page whose
+# file has no entry here fails gypsy lint. Icons (CAM_*.svg) and wiki-era figures are not listed;
+# a wiki-era figure is replaced, and listed, when its page is rewritten.
+#
+# - file: operations/profile/task-panel-operation.png   # path under modules/ROOT/images
+#   page: operations/profile.adoc
+#   model: twp-block                                    # entry in models/models.json
+#   recipe: recipes/operations/profile/task_panel_operation.py
+#   freecad: 7a1823378eb                                # commit the capture was made at
+#   date: 2026-10-01
+#   alt: Profile task panel, Operation tab, with Side set to Outside
+figures: []

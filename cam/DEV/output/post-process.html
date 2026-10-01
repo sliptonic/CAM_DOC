@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CAM Post :: FreeCAD CAM documentation (experiment)</title>
+    <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/cam/wiki-2026-08/output/post-process.html">
+    <link rel="prev" href="../job/job.html">
+    <link rel="next" href="post-process-selected.html">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC">FreeCAD CAM documentation (experiment)</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="post-process.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/output/post-process.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Project Commands</li>
+    <li><a href="post-process.html">Post Process</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="post-process.html">DEV (pre-release)</a>
+    <a class="version" href="../../wiki-2026-08/output/post-process.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/main/modules/ROOT/pages/output/post-process.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">CAM Post</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="openblock fcinfobox">
+<div class="content">
+<div class="paragraph fcTitle">
+<p><span class="image"><img src="../_images/CAM_Post.svg" alt="CAM Post" width="32"></span> <strong>CAM Post</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Menu location</dt>
+<dd>
+<p><span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Post Process</b></span>; also in the Tree View context menu of a Job or Operation</p>
+</dd>
+<dt class="hdlist1">Workbenches</dt>
+<dd>
+<p><a href="../index.html" class="xref page">CAM</a></p>
+</dd>
+<dt class="hdlist1">Default shortcut</dt>
+<dd>
+<p><kbd>P</kbd> <kbd>P</kbd></p>
+</dd>
+<dt class="hdlist1">Introduced in version</dt>
+<dd>
+<p>-</p>
+</dd>
+<dt class="hdlist1">See also</dt>
+<dd>
+<p><a href="post-process-selected.html" class="xref page">CAM PostSelected</a>, <a href="machine.html" class="xref page">CAM Machine</a>, <a href="machine-configuration.html" class="xref page">Machine Configuration</a>, <a href="postprocessor-customization.html" class="xref page">CAM Postprocessor Customization</a></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="description"><a class="anchor" href="#description"></a>Description</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <span class="image"><img src="../_images/CAM_Post.svg" alt="CAM Post" width="24"></span> <a href="#">CAM Post</a> command (tooltip: <em>Post Processes the selected Job</em>) exports the selected <span class="image"><img src="../_images/CAM_Job.svg" alt="CAM Job" width="16"></span> <a href="../job/job.html" class="xref page">CAM Job</a> to a G-code file. The toolbar button is part of the <strong>Post process Operations</strong> drop-down group in the <strong>Project Setup</strong> toolbar, together with <span class="image"><img src="../_images/CAM_PostSelected.svg" alt="CAM PostSelected" width="16"></span> <a href="post-process-selected.html" class="xref page">Post Process Selected</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Each CNC controller speaks a specific G-code dialect, requiring a dialect-correct Post-Processor to translate the final output from the agnostic internal FreeCAD G-code dialect</strong> (see <a href="../reference/scripting.html#the-freecad-internal-g-code-format" class="xref page">FreeCAD&#8217;s internal G-code format</a>).</p>
+</div>
+<div class="sect2">
+<h3 id="typical-functions-of-the-post-processor-include"><a class="anchor" href="#typical-functions-of-the-post-processor-include"></a>Typical functions of the Post-Processor include</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Using a correct Job output G-code file extension.</p>
+</li>
+<li>
+<p>Selecting the G-code commands. CNC controllers typically support a subset of available G-code commands. The super-set of G-code commands contains powerful and specialized commands that otherwise must be processed using multiple simpler commands. Post-Processors are written to select the best G-code for an Operation, available on the target.</p>
+</li>
+<li>
+<p>Formatting the G-code syntax by reordering the Feed, X, Y, Z, A, and B inputs, and the precision.</p>
+</li>
+<li>
+<p>Inserting a preamble to set units, units format, work plane, coordinate system, etc.</p>
+</li>
+<li>
+<p>Inserting a postamble to park the machine, stop it, process any arguments.</p>
+</li>
+<li>
+<p>Inserting tool changes, or suppressing them between subsequent Operations using the same Tool Controller.</p>
+</li>
+<li>
+<p>Formatting the feed and speed rate information to revolutions per minute, or per second.</p>
+</li>
+<li>
+<p>Formatting function call naming and calling.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Typical CNC machine controller targets include CNC mills, CNC lathes, 3D printers, drag-knife cutters, laser cutters, engravers and plasma torch cutters.</p>
+</div>
+<div class="paragraph">
+<p>If you want to write your own Post-Processor, have a look at the <a href="postprocessor-customization.html" class="xref page">CAM Postprocessor Customization</a> page. Several provided Post-Processors generate suitable code for many CNC controllers, or can be used as templates for modification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="two-flows-machine-based-and-legacy"><a class="anchor" href="#two-flows-machine-based-and-legacy"></a>Two flows: machine-based and legacy</h3>
+<div class="paragraph">
+<p>If the Job&#8217;s <strong>Machine</strong> property is set (<span class="since">introduced in 26.3</span>), the machine definition decides the Post-Processor (its <em>postprocessor</em> entry) and the output options, and the Job&#8217;s <strong>PostProcessor</strong> property is ignored. Machine-based Post-Processors cannot be selected in the Job&#8217;s Processor combo; legacy ones cannot be assigned to a Machine. See <a href="machine.html" class="xref page">CAM Machine</a>.</p>
+</div>
+<div class="paragraph">
+<p>For legacy argument-based Post-Processors, the settings are module-level flags of the script, usually changed through the Job&#8217;s <strong>Arguments</strong> field (e.g. <code>--no-header --line-numbers --precision 4</code>; hover the Arguments field for the list). For machine-based Post-Processors the same settings are <strong>Output options</strong> of the Machine (<code>.fcm</code>) edited in the <a href="machine.html" class="xref page">Machine Editor</a> or overridden per export on the Options tab of the Post Processing dialog.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select the <span class="image"><img src="../_images/CAM_Job.svg" alt="CAM Job" width="16"></span> <a href="../job/job.html" class="xref page">CAM Job</a> (or any of its Operations) in the <a href="https://wiki.freecad.org/Tree_View">Tree View</a>.</p>
+</li>
+<li>
+<p>There are several ways to invoke the command:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Press the <span class="image"><img src="../_images/CAM_Post.svg" alt="CAM Post" width="16"></span> <a href="#">Post Process</a> button in the <strong>Post process Operations</strong> toolbar drop-down.</p>
+</li>
+<li>
+<p>Select the <span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Post Process</b></span> option from the menu.</p>
+</li>
+<li>
+<p>Select <strong>Post Process</strong> from the context menu of the Job.</p>
+</li>
+<li>
+<p>Use the keyboard shortcut: <kbd>P</kbd> then <kbd>P</kbd>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If the Job has no Machine (legacy flow): the G-code is generated with the Job&#8217;s legacy Post-Processor (or the default from preferences, or a <strong>Post Processor</strong> selection dialog if none is set). Most legacy posts show the G-code in an editor with line numbers (<span class="since">line numbers introduced in 26.3</span>) where you may edit or cancel; the file is then written according to the File save policy (see below).</p>
+</li>
+<li>
+<p>If the Job has a Machine (<span class="since">introduced in 26.3</span>, machine-based flow): the <strong>Post Processing</strong> dialog opens (see below); press <b class="button">Generate Output</b>, review the files on the Output tab and press <b class="button">Save to Disk</b>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If neither the Job nor the preferences define a Post-Processor, a <strong>Post Processor</strong> dialog lists the enabled ones; double-click to choose.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="post-processing-dialog"><a class="anchor" href="#post-processing-dialog"></a>Post Processing dialog</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span></p>
+</div>
+<div class="paragraph">
+<p>When the Job has a Machine, post-processing opens the dialog titled <em>Post Processing - Job: &lt;name&gt;</em>. Its tabs are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Overview</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Machine</strong>: the <code>.fcm</code> machine to use; defaults to the Job&#8217;s Machine, <em>(none)</em> falls back to the legacy Post-Processor.</p>
+</li>
+<li>
+<p><strong>Fixtures</strong>: check the work coordinate systems to include.</p>
+</li>
+<li>
+<p><strong>Job Details</strong>: Author and Comment written into the G-code header.</p>
+</li>
+<li>
+<p><strong>Options</strong>: <strong>Generate HTML sanity report</strong>.</p>
+</li>
+<li>
+<p><strong>Post Processor Parameters</strong>: runtime properties declared by the machine&#8217;s Post-Processor, e.g. LinuxCNC path blending.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Operations</strong>: check the Operations to export (inactive Operations are not listed); <b class="button">Select All</b>, <b class="button">Select None</b>, <b class="button">Workplan</b> (shows the ordered list of postable items with estimated times).</p>
+</li>
+<li>
+<p><strong>Options</strong>: the machine&#8217;s output options (units, header, comments, formatting, precision, duplicates, processing) and the non-runtime Post-Processor properties; changes apply to this export only.</p>
+</li>
+<li>
+<p><strong>Output</strong>: <strong>Output folder</strong> with <b class="button">Browse…</b>, <strong>Filename template</strong> (%j job name, %d document, %T tool, %W fixture, %O operation; <b class="button">Apply</b> renames the generated files), the list of generated files (rename via the context menu) and an editable G-code view. <b class="button">Save to Disk</b> writes every file and closes the dialog.</p>
+</li>
+<li>
+<p><strong>Warnings</strong>: result of the <a href="../job/sanity-check.html" class="xref page">sanity checks</a> (Severity, Note); the tab label shows the count.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="output-file-name"><a class="anchor" href="#output-file-name"></a>Output file name</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the legacy flow the file name comes from the Job&#8217;s <strong>PostProcessorOutputFile</strong>, otherwise from the preference <strong>Output File → Default path</strong>, otherwise the document name in the document&#8217;s folder. Whether a file dialog appears depends on the File save policy preference. Placeholders: %D document directory, %d document name, %M macro directory, %j Job label; in the file name, when output is split: %T tool number, %t Tool Controller label, %W fixture, %O operation label, %S sequence number. Without an extension <code>.nc</code> is used; machine-based Post-Processors apply their own extension (e.g. <code>.ngc</code> for LinuxCNC).</p>
+</div>
+<div class="paragraph">
+<p><span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Job preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Post processor</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">File save policy</b></span> offers: <strong>Open file dialog</strong> (always ask), <strong>Open file dialog on conflict</strong>, <strong>Overwrite existing file</strong>, <strong>Append Unique ID on conflict</strong> (adds -1 to the name). The policy applies to the legacy flow; the Post Processing dialog always writes the files listed on its Output tab.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="preferences"><a class="anchor" href="#preferences"></a>Preferences</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Job preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Post processor</b></span>: enable or disable installed Post-Processors, choose the default Post-Processor and default arguments, the default output path and the file save policy.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="header"><a class="anchor" href="#header"></a>Header</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Machine-based output starts with a comment header that can include exporter, machine name, Post-Processor, project file, document name, description, author, date, units, tool list and fixture list; each item can be switched off in the Machine&#8217;s Header Options.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="included-post-processors"><a class="anchor" href="#included-post-processors"></a>Included Post-Processors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Included Post-Processors live in <code>&lt;FreeCAD&gt;/Mod/CAM/Path/Post/scripts</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Machine-based (<span class="since">introduced in 26.3</span>, used through a <a href="machine.html" class="xref page">Machine</a>): centroid, generic, generic_plasma, <a href="http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g17-g19.1">linuxcnc</a>, mach3_mach4, marlin, opensbp, smoothie.</p>
+</li>
+<li>
+<p>Class-based, selectable as legacy posts in the Job: grbl (with support for bCNC header blocks using the argument <code>--bcnc</code>), masso_g3, svg, test.</p>
+</li>
+<li>
+<p>Legacy argument-based scripts (<span class="since">renamed with the <code>_legacy</code> suffix in 26.3</span>): centroid_legacy, dxf, dynapath_legacy, dynapath_4060_legacy, estlcam_legacy, fablin_legacy, fangling_legacy, fanuc_legacy, grbl_legacy, heidenhain_legacy, jtech_legacy (laser), KineticNCBeamicon2_legacy, linuxcnc_legacy, mach3_mach4_legacy, marlin_legacy, nccad_legacy, opensbp_legacy, philips_legacy, rml_legacy, rrf_legacy, snapmaker_legacy, uccnc_legacy, wedm_legacy.</p>
+</li>
+<li>
+<p>Pre-processors for importing G-code: gcode_pre, opensbp_pre, slic3r_pre.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>snapmaker, masso_g3 and svg were added in <span class="since">1.1</span>; fanuc, dynapath_4060, generic, generic_plasma and the machine-based versions in <span class="since">26.3</span>.</p>
+</div>
+<div class="paragraph">
+<p>Additional Post-Processors are found in the macro directory, in the CAM file path preference, and in any installed add-on whose <code>package.xml</code> declares a Postprocessor content item (e.g. the FreeCAD/Machines add-on).</p>
+</div>
+<div class="paragraph">
+<p>To post-process only some Operations of a Job, use <a href="post-process-selected.html" class="xref page">CAM PostSelected</a> (<span class="since">introduced in 26.3</span>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="job-properties"><a class="anchor" href="#job-properties"></a>Job properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="../job/job.html#_properties" class="xref page">CAM Job</a>: Output File, Post Processor, Arguments, Machine (<span class="since">26.3</span>), Fixtures, Order Output By, Split Output and Post Processor Property Overrides (<span class="since">26.3</span>). After a successful export the hidden <strong>LastPostProcessDate</strong> and <strong>LastPostProcessOutput</strong> properties are updated and used by <a href="../job/sanity-check.html" class="xref page">CAM Sanity</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scripting"><a class="anchor" href="#scripting"></a>Scripting</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Path.Post.Processor import PostProcessorFactory
+post = PostProcessorFactory.get_post_processor(job, 'linuxcnc')
+sections = post.export2()   # machine-based; use post.export() for legacy posts
+for name, gcode in sections:
+    print(name, len(gcode))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limitations"><a class="anchor" href="#limitations"></a>Limitations</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Do <strong>not</strong> use the <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Export</b></span> menu option for export to G-code, it will produce damaged G-code!</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../job/job.html">New Job</a></span>
+  <span class="next"><a href="post-process-selected.html">Post Process Selected</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
