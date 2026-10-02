@@ -3,7 +3,7 @@
  "summary": "Adds a new machine-based Fanuc post-processor (\"fanuc\") with Fanuc defaults for the common Machine output properties and eight post-specific Machine/Job properties (program number, tape marks, upper-case, dwell in ms, rigid tapping M29, parametric TLO, empty-spindle park and its retract); the legacy fanuc_legacy post is untouched and only its test suite is renamed.",
  "pages": [
   {
-   "page": "output/post-fanuc.adoc",
+   "page": "output/posts/fanuc.adoc",
    "verdict": "new page",
    "needs_gui": true,
    "reason": "Path/Post/scripts/fanuc_post.py: new FanucPost(PostProcessor) with POST_TYPE='machine'; get_property_schema() defines program_number (job), wrap_in_percent, uppercase_output, dwell_in_milliseconds, rigid_tapping, tool_length_offset_macro, end_spindle_empty (job), end_spindle_empty_retract; get_common_property_schema() overrides defaults (file_extension 'nc', preamble 'G17 G54 G40 G49 G80 G90 G94', postamble, pre_tool_change, spindle_decimals 0, drill_cycles_to_translate empty, supports_tool_radius_compensation True, parameter_order without K); ROTATION_STRATEGIES ('dwo','twp'), PLANE_COMMAND G68.2; no page documents this post",

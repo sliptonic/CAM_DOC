@@ -33,6 +33,11 @@ map:
   - {match: ['src/Mod/CAM/Path/Op/Gui/PathShape.py', 'src/Mod/CAM/App/FeaturePathShape.*', 'src/Mod/CAM/Gui/ViewProviderPathShape.*'], pages: [operations/path-from-shape-tc.adoc]}
   # shared operation framework: base geometry, heights, depths, tool controller, start point
   - {match: ['src/Mod/CAM/Path/Op/Base.py', 'src/Mod/CAM/Path/Op/Gui/Base.py', '*/PageBaseGeometryEdit.ui', '*/PageBaseLocationEdit.ui', '*/PageHeightsEdit.ui', '*/PageDepthsEdit.ui', '*/PageDiametersEdit.ui', '*/PageToolControllerEdit.ui', 'src/Mod/CAM/Path/Op/Gui/Selection.py'], pages: [index.adoc, inspect/set-start-point.adoc, operations/profile.adoc, operations/pocket.adoc, operations/drilling.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Generator/*facing*.py'], pages: [operations/mill-facing.adoc, operations/mill-face.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Generator/surface_*.py', 'src/Mod/CAM/App/surface_generator.*'], pages: [operations/planar-surface.adoc, operations/surface.adoc, operations/waterline.adoc]}
+  - {match: ['src/Mod/CAM/Path/Base/Generator/rotary*.py'], pages: [operations/rotary-surface.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/scripts/heidenhain_post.py'], pages: [output/posts/heidenhain.adoc]}
+  - {match: ['src/Mod/CAM/Path/Post/scripts/fanuc_post.py'], pages: [output/posts/fanuc.adoc]}
   - {match: ['src/Mod/CAM/Path/Base/Generator/ramp_entry.py'], pages: [dressups/ramp-entry.adoc]}
   - {match: ['src/Mod/CAM/Path/Base/Generator/drill.py', 'src/Mod/CAM/Path/Base/Generator/helix.py', 'src/Mod/CAM/Path/Base/Generator/tapping.py'], pages: [operations/drilling.adoc, operations/helix.adoc, operations/tapping.adoc]}
   - {match: ['src/Mod/CAM/Path/Op/Area.py', 'src/Mod/CAM/Path/Op/Util.py', 'src/Mod/CAM/Path/Base/Generator/*', 'src/Mod/CAM/Path/Geom.py', 'src/Mod/CAM/libarea/*', 'src/Mod/CAM/App/Area*'], pages: [misc/area.adoc]}
@@ -88,6 +93,6 @@ map:
   - {match: ['src/Mod/CAM/Gui/Resources/icons/*'], pages: [reference/artwork.adoc]}
   - {match: ['src/Mod/CAM/Roadmap/ADR/ADR-000.md'], pages: [reference/glossary.adoc]}
   - {match: ['src/Mod/CAM/Roadmap/*'], pages: [contributing/development-roadmap.adoc]}
-  - {match: ['src/Mod/CAM/PathPythonGui/*', 'src/Mod/CAM/Path/Base/Property.py', 'src/Mod/CAM/Path/Base/Gui/PropertyEditor.py', 'src/Mod/CAM/App/*PyImp.cpp', 'src/Mod/CAM/App/*.pyi', 'src/Mod/CAM/App/Command.*', 'src/Mod/CAM/App/Path.*', 'src/Mod/CAM/Constants.py'], pages: [reference/scripting.adoc]}
+  - {match: ['src/Mod/CAM/PathPythonGui/*', 'src/Mod/CAM/Path/Base/Property.py', 'src/Mod/CAM/Path/Base/Gui/PropertyEditor.py', 'src/Mod/CAM/App/*PyImp.cpp', 'src/Mod/CAM/App/AppPathPy.cpp', 'src/Mod/CAM/App/*.pyi', 'src/Mod/CAM/App/Command.*', 'src/Mod/CAM/App/Path.*', 'src/Mod/CAM/Constants.py'], pages: [reference/scripting.adoc]}
   # files that never need documentation; matched so they are not reported as unmapped
-  - {match: ['src/Mod/CAM/CAMTests/*', 'src/Mod/CAM/*/translations/*', 'src/Mod/CAM/Gui/Resources/translations/*', 'src/Mod/CAM/CMakeLists.txt', 'src/Mod/CAM/*/CMakeLists.txt', 'src/Mod/CAM/CLAUDE.md', 'src/Mod/CAM/path.dox', 'src/Mod/CAM/Path/Log.py', 'src/Mod/CAM/DemoParts/*'], pages: []}
+  - {match: ['src/Mod/CAM/CAMTests/*', 'src/Mod/CAM/*/translations/*', 'src/Mod/CAM/Gui/Resources/translations/*', 'src/Mod/CAM/CMakeLists.txt', 'src/Mod/CAM/*/CMakeLists.txt', 'src/Mod/CAM/CLAUDE.md', 'src/Mod/CAM/path.dox', 'src/Mod/CAM/Path/Log.py', 'src/Mod/CAM/Path/Base/Language.py', 'src/Mod/CAM/DemoParts/*'], pages: []}
