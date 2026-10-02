@@ -128,7 +128,7 @@ Each block is G-code text inserted as written. Every block defaults to empty.
 These properties apply when the Machine's *Rotation Strategy* is TWP.
 
 * *Tilted work plane: control positions the rotaries*: the plane command positions the rotary axes itself (G53.1, TURN). Unchecked, the program commands them with a rotary move before declaring the plane. Default checked.
-* *Tilted work plane: declare*: the line that declares a tilted Work Plane, with `{x} {y} {z}` the plane's origin and `{a1} {a2} {a3}` the plane command's angles. Empty uses the plane command's own form. Default empty.
+* *Tilted work plane: declare*: the line that declares a tilted Work Plane, with `+{x} {y} {z}+` the plane's origin and `+{a1} {a2} {a3}+` the plane command's angles. Empty uses the plane command's own form. Default empty.
 * *Tilted work plane: align*: the line that points the Tool Axis along a declared plane when the control positions the rotary axes itself. Empty uses the plane command's own form. Default empty.
 * *Tilted work plane: cancel*: the line that cancels a declared plane. Empty uses the plane command's own form. Default empty.
 
