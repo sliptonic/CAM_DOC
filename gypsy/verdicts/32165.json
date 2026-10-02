@@ -1,0 +1,37 @@
+{
+ "pr": 32165,
+ "summary": "Moves the Tapping operation's deprecation console warning from property initialisation to opOnDocumentRestored so it only logs when a document containing a legacy Tapping op is opened; no properties, defaults, panels or output change.",
+ "pages": [
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Tapping.py: Path.Log.warning moved from initCircularHoleOperation to new opOnDocumentRestored; only the timing of a Report view log message changes, no property, default, panel or migration behaviour is altered",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Tapping.py only; Drilling operation and its Tapping strategy are untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "59d650a3fdb93f9407bccb83f6dce8b13e58e1f1",
+  "merged_at": "2026-08-29T21:03:20Z",
+  "title": "CAM: Tapping - Deprecated",
+  "candidates": [
+   "operations/drilling.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.25101625,
+  "duration_ms": 11009,
+  "session": "1c85746b-cbe9-4a0b-8e4a-cd0dca293dad",
+  "generated": "2026-10-01T23:45:03+00:00"
+ }
+}

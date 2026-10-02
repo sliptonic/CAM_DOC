@@ -1,0 +1,76 @@
+{
+ "pr": 32573,
+ "summary": "Adds a depth-parameter validation to the operation base class that makes every operation fail with an error when FinalDepth exceeds StartDepth, StartDepth exceeds SafeHeight, or SafeHeight exceeds ClearanceHeight, and changes Pocket Shape to accept equal StartDepth and FinalDepth while dropping its no-base-geometry whole-model fallback.",
+ "pages": [
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: new checkDepths() raises DepthsException when FinalDepth > StartDepth, StartDepth > SafeHeight, or SafeHeight > ClearanceHeight, so the documented height/depth ordering is now enforced on recompute for all operations",
+   "sections": [
+    "Heights and depths"
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/PocketShape.py: areaOpShapes now extrudes at least 1 mm so StartDepth equal to FinalDepth works instead of raising an OCC error; the else branch that pocketed the whole model when no base geometry was selected is removed (checkBase() now raises BaseGeometryException)",
+   "sections": [
+    "Usage",
+    "Notes",
+    "Base Geometry",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: depth validation is generic to all operations and belongs in the index Heights and depths section; no drilling-specific control or property changes",
+   "sections": []
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py: depth validation is generic and documented centrally; no profile-specific control or property changes",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py hunks touch depth checks, exceptions, lint cleanup and SPDX headers; nothing about start point selection",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py: adds isStrictlyGreater() helper only; the Area object is not touched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "019f5c50a945743b89cabf422ac5f5f1e297d890",
+  "merged_at": "2026-09-22T20:26:31Z",
+  "title": "CAM: Base - Check depths parameters",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.66001275,
+  "duration_ms": 27529,
+  "session": "fa4ced03-ec66-4a08-b882-fe0eaf471577",
+  "generated": "2026-10-01T23:58:27+00:00"
+ }
+}

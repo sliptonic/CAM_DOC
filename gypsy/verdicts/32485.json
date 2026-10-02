@@ -1,0 +1,45 @@
+{
+ "pr": 32485,
+ "summary": "Adds a wire_edm value to the Machine toolhead type enumeration (with capabilities and a \"Wire EDM\" display name), so the Machine Editor's toolhead type combo gains a new entry and .fcm files with toolhead_type \"wire_edm\" load.",
+ "pages": [
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/models/machine.py: ToolheadType enumeration gains WIRE_EDM ('wire_edm', shown as 'Wire EDM'); machine_editor.py update_toolheads combo now lists it via display_name",
+   "sections": [
+    "Machine Editor",
+    "Machine tab",
+    "Machine file (.fcm)"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/models/machine.py: ToolheadType gains 'wire_edm' with capabilities (pulse control, water dielectric, Z-only head); valid toolhead_type values in the .fcm format and the editor's toolhead type list change",
+   "sections": [
+    "The Machine Editor",
+    "Machine tab",
+    "The .fcm file format"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "924ba848781dbf3e685baeb6ff9cf43f5e9e5de3",
+  "merged_at": "2026-09-17T21:52:07Z",
+  "title": "CAM: Add wire EDM toolhead type",
+  "candidates": [
+   "output/machine-configuration.adoc",
+   "output/machine.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.28800425,
+  "duration_ms": 10066,
+  "session": "feefbba8-0a1c-47ad-8ffd-3d5cc58c2abf",
+  "generated": "2026-10-01T23:57:18+00:00"
+ }
+}

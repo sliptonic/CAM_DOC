@@ -1,0 +1,37 @@
+{
+ "pr": 32433,
+ "summary": "Code-quality fixes in the toolbit editor: removes duplicated serializer test classes, guards a signal-block against an exception, restores the unit schema and edit state when the toolbit task panel closes, and enters edit mode through the document; no user-facing control, property, default or output changes.",
+ "pages": [
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/toolbit/ui/panel.py and view.py: accept/reject now restore the entry unit schema and call resetEdit, doubleClicked routes through Document.setEdit; the editor's controls, properties and behaviour as documented are unchanged (crash/state-leak fix)",
+   "sections": []
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/docobject/ui/property.py: try/finally around blockSignals in updateWidget is an internal robustness fix with no visible change to the Add Toolbit dialog",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "6c8e66a9cf2ef489e08852ef6a4e884e435338fa",
+  "merged_at": "2026-09-17T13:55:57Z",
+  "title": "CAM: Fix review findings in the toolbit editor",
+  "candidates": [
+   "tools/add-toolbit.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.33673225,
+  "duration_ms": 11717,
+  "session": "e6ec4817-ea0a-4bbe-b7e6-ae6455f6e9b0",
+  "generated": "2026-10-01T23:56:22+00:00"
+ }
+}

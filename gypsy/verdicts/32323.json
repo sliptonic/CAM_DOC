@@ -1,0 +1,70 @@
+{
+ "pr": 32323,
+ "summary": "Machine-based post output: the Post-Tool Change block now emits immediately after M6 (before G43 and spindle start, and suppressed when tool_change is off), Tool Return emits at the end of the tool-change item, and both Machine fields get new help text; internal pipeline steps renamed (_expand_tool_change, _suppress_tool_change).",
+ "pages": [
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py get_common_property_schema: 'post_tool_change' and 'tool_return' help text rewritten; _expand_tool_change now places POST_TOOL_CHANGE directly after M6 (before G43/M3) and only when M6 is emitted, TOOL_RETURN moves to end of the tool-change item",
+   "sections": [
+    "Properties",
+    "Blocks"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py export2: _expand_tool_length_offset renamed _expand_tool_change, old _expand_tool_change renamed _suppress_tool_change and moved before _expand_post_item; common-property help for post_tool_change/tool_return changed",
+   "sections": [
+    "Common properties",
+    "The export2 pipeline"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: order of emitted tool-change output changes to pre_tool_change, TC comment, M6, post_tool_change, G43, M3 S, tool_return; post_tool_change dropped when tool_change is false",
+   "sections": [
+    "Machine output options"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py get_common_property_schema: Post-Tool Change and Tool Return field descriptions and output positions change, if this page lists the G-code block fields",
+   "sections": [
+    "Post-processor properties",
+    "Blocks"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py changes affect block placement in machine-based output only; the CAM Post command, dialog, preferences and file naming described here are untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "6c89688df93da6c9a7b56f373451c4fef91960eb",
+  "merged_at": "2026-09-15T16:08:54Z",
+  "title": "CAM: tool change blocks",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.46968350000000003,
+  "duration_ms": 36388,
+  "session": "a026ac0d-c248-4e93-8d09-96d007fe2ea9",
+  "generated": "2026-10-01T23:52:58+00:00"
+ }
+}

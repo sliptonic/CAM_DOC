@@ -1,0 +1,42 @@
+{
+ "pr": 32220,
+ "summary": "The Camotics tool-library serializer now writes diameter and length in the user's unit schema (inch or mm), tags the entry \"imperial\" or \"metric\" to match, rounds to the Units Decimals preference, and on import reads the \"units\" key instead of assuming millimetres.",
+ "pages": [
+  {
+   "page": "tools/toolbit-library.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Tool/library/serializers/camotics.py: serialize() replaces hardcoded \"units\": \"metric\" and getValueAs(\"mm\") with _camotics_units() chosen from the active unit schema, and rounds values to the Preferences → General → Units Decimals setting; the Camotics export output now depends on two preferences the Export/JSON Structure text should mention",
+   "sections": [
+    "Export",
+    "JSON Structure"
+   ]
+  },
+  {
+   "page": "tools/library-manager.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Tool/library/serializers/camotics.py: deserialize() now builds Diameter/Length Quantities in the unit named by the file's \"units\" key (imperial → in, metric → mm) instead of always mm, so importing an imperial Camotics library no longer yields tools 25.4x too small",
+   "sections": [
+    "Import"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "b3c8bff00445a198ff9eee728cbf2964ec998f0b",
+  "merged_at": "2026-09-04T16:05:19Z",
+  "title": "CAM: export Camotics tool libraries in the user's units",
+  "candidates": [
+   "tools/library-manager.adoc",
+   "tools/toolbit-library.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.44224874999999997,
+  "duration_ms": 47328,
+  "session": "2fcf1fa6-4278-4432-851c-82f6f2dab540",
+  "generated": "2026-10-01T23:48:03+00:00"
+ }
+}

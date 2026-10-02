@@ -1,0 +1,45 @@
+{
+ "pr": 32367,
+ "summary": "Adds a Validate button to the Machine Editor dialog and a library/command-line validator (Machine/models/validate.py) that reports errors, warnings and info for .fcm machine definitions.",
+ "pages": [
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/editor/machine_editor.py: button_layout gains a 'Validate' QPushButton calling validate_current_machine, which shows a message box with error/warning counts and detailed findings; Machine/models/validate.py: new CLI 'FreeCADCmd validate.py --pass MACHINES_DIR' and validate_file/validate_machine library API for .fcm files",
+   "sections": [
+    "The Machine Editor",
+    "The .fcm file format",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/editor/machine_editor.py: new 'Validate' button in the editor's button row with tooltip 'Check this machine for problems that would stop it loading or would silently drop settings'; Machine/models/validate.py: validate_file/validate_machine library functions and Severity enum usable from scripts",
+   "sections": [
+    "Machine Editor",
+    "Machine file (.fcm)",
+    "Scripting"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "433b8a0e749ceaa8187720bda3855bc84e34c242",
+  "merged_at": "2026-09-07T18:54:40Z",
+  "title": "CAM: add a validator for machine (.fcm) definitions",
+  "candidates": [
+   "output/machine-configuration.adoc",
+   "output/machine.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.50927225,
+  "duration_ms": 8697,
+  "session": "bef266d1-2b57-4fdf-86da-71d2bb148024",
+  "generated": "2026-10-01T23:54:55+00:00"
+ }
+}

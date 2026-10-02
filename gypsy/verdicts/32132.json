@@ -1,0 +1,73 @@
+{
+ "pr": 32132,
+ "summary": "Adds a common machine-scoped \"Ignore G-code Commands\" property to every machine-based post-processor (replacing opensbp's private \"suppressed_commands\"), and factors the G43 tool-length-offset insertion into an overridable hook for post-processor authors.",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: get_common_property_schema gains 'ignored_commands' (SCOPE_MACHINE, text, default empty); new overridable hook _expand_tool_length_offset_post_command returns the TLO commands emitted after a tool change; convert_command_to_gcode now drops ignored commands before the supported_commands check; Constants.py adds ANNOT_ADDED_TLO; marlin_post.py shows forcing values in _merge_machine_config rather than init_values",
+   "sections": [
+    "The property schema",
+    "Common properties",
+    "Hooks",
+    "Command filtering and annotations",
+    "How values reach your code"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py: new common machine output option 'Ignore G-code Commands' appears for all machine-based posts; opensbp_post.py removes its own 'Suppressed (tolerated) G-code Commands' option and instead seeds the common one with GCodeSuppressed",
+   "sections": [
+    "Writing a machine-based Post-Processor",
+    "Machine output options",
+    "Other existing Post-Processors"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py: get_common_property_schema adds machine-scoped 'ignored_commands' text field, so the Machine post-processor options panel gains a new 'Ignore G-code Commands' entry",
+   "sections": [
+    "Post-processor options",
+    "Properties"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Post Process dialog and flow unchanged; marlin_post.py only relocates its OUTPUT_TOOL_CHANGE/USE_TLO overrides and opensbp_post.py keeps identical output via the common ignored_commands option",
+   "sections": []
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Constants.py: ANNOT_ADDED_TLO names the already-used 'tool_length_offset' annotation key; the annotation string and behaviour are unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "4ae023961c82a1e251b4a66e3964acfabccd0875",
+  "merged_at": "2026-09-05T14:10:14Z",
+  "title": "CAM: more support for Machines and MBPP",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 8,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.41461525000000005,
+  "duration_ms": 27425,
+  "session": "17e1a2fd-78d8-441d-bb0b-5d438164bece",
+  "generated": "2026-10-01T23:44:23+00:00"
+ }
+}

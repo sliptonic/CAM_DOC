@@ -1,0 +1,54 @@
+{
+ "pr": 32099,
+ "summary": "Removes the 'translate_drill_cycles' (Expand drill-cycles) property from the machine-based post-processor common property schema, reorders export2 so canned-cycle expansion runs before drill-cycle translation, and fixes drill-cycle expansion errors (missing RetractMode, F0 crash).",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py get_common_property_schema: 'translate_drill_cycles' (label 'Expand drill-cycles', bool, default False) is removed from the common properties; export2 now runs _expand_canned_cycles before _expand_translate_drill_cycles",
+   "sections": [
+    "The property schema",
+    "Common properties",
+    "The export2 pipeline"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py: common post-processor property 'Expand drill-cycles' (translate_drill_cycles) no longer appears in the post's property list shown on the Job; remove it if the Job properties section enumerates it",
+   "sections": [
+    "Job properties"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: 'translate_drill_cycles' dropped from the common schema; the Machine output options list for machine-based posts should no longer mention an 'Expand drill-cycles' switch (only 'Drill Cycles to Translate' remains)",
+   "sections": [
+    "Writing a machine-based Post-Processor",
+    "Machine output options"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e2b826e5d0e235f1570ddd4babf56572cb2d1964",
+  "merged_at": "2026-08-30T01:01:48Z",
+  "title": "CAM: Mbpp drill expand bug",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.6485322499999999,
+  "duration_ms": 33325,
+  "session": "7156a188-edeb-40de-98ef-eaeb0f93f328",
+  "generated": "2026-10-01T23:42:08+00:00"
+ }
+}

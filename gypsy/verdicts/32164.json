@@ -1,0 +1,29 @@
+{
+ "pr": 32164,
+ "summary": "Removes an empty horizontal Line widget from the Job task panel's Alignment layout (PathEdit.ui) to silence a Qt \"Empty widget item\" warning, and reindents the rest of the .ui file; no controls, properties, defaults, or visible layout change.",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "src/Mod/CAM/Gui/Resources/panels/PathEdit.ui: only a non-rendering Line separator in verticalLayout_transformInner is removed and whitespace realigned; the separator never appeared in built panels, so the Alignment section text and screenshots remain correct",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "4e6a0bec11450e617ec18d22c2670bfe5ec7fa20",
+  "merged_at": "2026-09-07T17:51:36Z",
+  "title": "CAM: Job dialog - Fix error empty widget",
+  "candidates": [
+   "job/job.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.33436125000000005,
+  "duration_ms": 7002,
+  "session": "9a2207d3-6cec-4105-9a53-3f8ca24edcf9",
+  "generated": "2026-10-01T23:44:47+00:00"
+ }
+}

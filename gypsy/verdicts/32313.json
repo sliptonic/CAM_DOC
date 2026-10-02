@@ -1,0 +1,85 @@
+{
+ "pr": 32313,
+ "summary": "Machine-based post-processors now convert the F word of G84/G74 tapping cycles from thread pitch to feed rate (pitch × spindle speed) by default via a new overridable _tapping_to_speed hook, raising an error when S is missing or zero; the Tapping operation tags its cycle with an 'operation: tapping' annotation and the LinuxCNC post defers non-rigid tapping to this default.",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: new _tapping_to_speed hook called from _convert_drill_cycle; converts tapping F pitch to feed = pitch*S/60 and raises CAMAttributeError/CAMValueError for missing or zero S; subclasses can override",
+   "sections": [
+    "Hooks",
+    "Command filtering and annotations",
+    "Sanity checks"
+   ]
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/tapping.py: G84/G74 command gains 'operation: tapping' annotation; posted F is now feed rate (pitch × RPM) rather than raw pitch, and a tool controller spindle speed of 0 now errors at post time",
+   "sections": [
+    "Description"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/linuxcnc_post.py: non-rigid G84/G74 now emit F as pitch×RPM via the parent conversion; rigid tapping still emits G33.1 with K pitch",
+   "sections": [
+    "Included Post-Processors"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Processor.py/linuxcnc_post.py changes are covered by the MBPP page; this page's machine-based section does not enumerate individual hooks",
+   "sections": []
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "tapping.py generator change only affects the Tapping operation's command annotation; Drilling page text unaffected",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "source-map false positive; Area has no relation to tapping.py",
+   "sections": []
+  },
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "source-map false positive; Helix does not use the tapping generator",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "42e5915779a15547225b2834d21ff38d406a3889",
+  "merged_at": "2026-09-12T08:41:41Z",
+  "title": "CAM: tapping pitch->speed by default",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/helix.adoc",
+   "operations/tapping.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 6,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5135937500000001,
+  "duration_ms": 27092,
+  "session": "c2707c69-d81e-4173-8823-ba1da812dc6b",
+  "generated": "2026-10-01T23:51:58+00:00"
+ }
+}

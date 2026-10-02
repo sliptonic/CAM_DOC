@@ -1,0 +1,33 @@
+{
+ "pr": 32166,
+ "summary": "Helix operation now orients the first helix toward the StartPoint property instead of the origin, and the RotationAngle property is no longer hidden in the property editor.",
+ "pages": [
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Helix.py: opSetEditorModes no longer hides RotationAngle (property becomes visible in Data tab); getDirAngle orients the first helix toward Path.Geom.xy(obj.StartPoint) instead of (0,0), changing the generated toolpath",
+   "sections": [
+    "Properties",
+    "Data",
+    "Notes"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "8727c40c373effd1d553ae10a752e68b651cb3f6",
+  "merged_at": "2026-09-07T18:01:52Z",
+  "title": "CAM: Helix - Use start point to orient first helix",
+  "candidates": [
+   "operations/helix.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.23674025,
+  "duration_ms": 6422,
+  "session": "788d538a-5f15-4131-ae86-cee602d5dc71",
+  "generated": "2026-10-01T23:45:15+00:00"
+ }
+}

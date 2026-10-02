@@ -1,0 +1,30 @@
+{
+ "pr": 32441,
+ "summary": "Fixes automatic tag generation in the Tag dressup so paths made of many short edges get tags distributed evenly instead of bunched on one long segment, plus linter cleanups; no properties, task-panel controls, defaults, or preferences change.",
+ "pages": [
+  {
+   "page": "dressups/tag.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Dressup/Tags.py: generateTags() now falls back to short edges when too few edges are at least 2x tag width and stops once enough tags are assigned; restores documented even spread, no user-facing option or property changes. Gui/Tags.py hunks are f-string and import cleanups only.",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "a4219349f5f196be4713274acc5f1237cfa2ec2d",
+  "merged_at": "2026-09-25T02:24:14Z",
+  "title": "CAM: DressupTag - Fix for path with short edges",
+  "candidates": [
+   "dressups/tag.adoc",
+   "reference/preferences.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.453576,
+  "duration_ms": 22356,
+  "session": "a0a3674d-5246-4430-b359-cb51eb005a1d",
+  "generated": "2026-10-01T23:57:02+00:00"
+ }
+}

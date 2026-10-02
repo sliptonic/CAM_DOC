@@ -1,0 +1,22 @@
+{
+ "pr": 32513,
+ "summary": "Fixes the ToolBit serializer so that deleting the last preset on the Presets tab is persisted to the .fctb file instead of being reinstated from the stale _extra_attrs snapshot.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "f64a6e2747b9d0921849fe378958ad71f3fa49f1",
+  "merged_at": "2026-09-18T15:06:54Z",
+  "title": "CAM: fix unpersisted deletion of a toolbit preset",
+  "candidates": [
+   "tools/add-toolbit.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.27553225,
+  "duration_ms": 4758,
+  "session": "68a02d48-8313-4462-9e7c-77f89a310b6e",
+  "generated": "2026-10-01T23:57:28+00:00"
+ }
+}

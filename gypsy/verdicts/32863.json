@@ -1,0 +1,65 @@
+{
+ "pr": 32863,
+ "summary": "Adds a new machine-based Heidenhain Klartext post-processor (heidenhain_post.py) with its own post-processor properties (program_name, tool_axis, rapid_feed_rate, cycle_format, drill_setup_clearance, chip_break_retract, fixture_output, fixture_first_number, output_blk_form), overridden common defaults (.h extension, radius compensation on, no tool-length offset, no drill-cycle translation), and a test module.",
+ "pages": [
+  {
+   "page": "output/posts/heidenhain.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/heidenhain_post.py: new machine-based post with POST_TYPE = \"machine\", get_property_schema() declaring nine Heidenhain-specific properties (choice enumerations for tool_axis, cycle_format, fixture_output) and get_common_property_schema() overriding file_extension='h', supports_tool_radius_compensation=True, output_tool_length_offset=False, drill_cycles_to_translate=''; output is Klartext (BEGIN PGM/BLK FORM/TOOL CALL/L/CC/C/CYCL DEF), not G-code",
+   "sections": [
+    "Description",
+    "Properties",
+    "Output",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "CMakeLists.txt: Path/Post/scripts/heidenhain_post.py added to PathPythonPostScripts_SRCS, so 'heidenhain' now appears alongside 'heidenhain_legacy' in the post-processor list; Included Post-Processors should list the new machine-based entry",
+   "sections": [
+    "Included Post-Processors"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/heidenhain_post.py: a new machine-based post exists that the 'Other existing Post-Processors' list and the machine-based examples should reference; it is also the first machine post that is not G-code (every conversion hook overridden)",
+   "sections": [
+    "Other existing Post-Processors",
+    "Writing a machine-based Post-Processor"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/heidenhain_post.py: POST_TYPE = \"machine\"; if this page enumerates the available machine-based posts or the Machine 'postprocessor' choices, Heidenhain must be added",
+   "sections": [
+    "Available post-processors"
+   ]
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/CMakeLists.txt"
+ ],
+ "meta": {
+  "merge_commit": "cacc86b3ffdebf08aa4a4b4e367bc2f8357d35bc",
+  "merged_at": "2026-09-23T02:20:19Z",
+  "title": "CAM: Heidenhain MBPP post",
+  "candidates": [
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5317802500000001,
+  "duration_ms": 30231,
+  "session": "8f5f003c-72f4-47f2-b8c2-1c2e0736673c",
+  "generated": "2026-10-02T00:04:11+00:00"
+ }
+}

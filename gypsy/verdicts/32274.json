@@ -1,0 +1,97 @@
+{
+ "pr": 32274,
+ "summary": "Every Post-Processor Property now declares a Property Scope (machine, job, run, internal) that decides whether the Machine Editor or the Post-Processing Dialog may edit it; the dialog's Options tab now actually renders Job-scope properties, LinuxCNC blend_mode/blend_tolerance reappear in the Machine Editor, and show_dialog moves from the Machine Editor to the dialog's Overview tab.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Gui/DlgPostProcess.py: _rebuild_post_config_section() is now called, so the Options tab gains a 'Postprocessor Properties' group listing job-scoped properties (tool_change, blend_mode, blend_tolerance, plasma delays); Overview tab now reads the full schema so the common show_dialog property appears there",
+   "sections": [
+    "Post Processing dialog",
+    "Job properties"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/editor/machine_editor.py: updatePostProcessorProperties() filters on SCOPE_MACHINE/SCOPE_JOB, so blend_mode/blend_tolerance return to the editor and show_dialog (now SCOPE_RUN) leaves it; DlgPostProcess.py Options tab now provides the per-export override of job-scoped values",
+   "sections": [
+    "Postprocessor tab",
+    "Options tab",
+    "Per-export overrides"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Machine/ui/editor/machine_editor.py: editor now shows machine- and job-scoped properties only; show_dialog disappears from the Postprocessor tab, LinuxCNC blend properties appear",
+   "sections": [
+    "Postprocessor tab"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: schema entries gain a 'scope' key (SCOPE_MACHINE/JOB/RUN/INTERNAL, default job, 'runtime': True kept as alias for run); new property_scope() and properties_in_scope() helpers; every common property now tagged",
+   "sections": [
+    "The property schema",
+    "Common properties",
+    "Adding your own properties",
+    "Where properties appear"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py and scripts/linuxcnc_post.py, generic_plasma_post.py, opensbp_post.py: machine-based posts declare 'scope' per property instead of the 'runtime' boolean; linuxcnc blend properties become job, opensbp hardware switches become machine",
+   "sections": [
+    "Writing a machine-based Post-Processor",
+    "Machine output options"
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Post/Gui/DlgPostProcess.py: same dialog is used; its Options tab now shows a Postprocessor Properties group, so any dialog screenshot is stale but the page's description of the command is unchanged",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "contributing/development-roadmap.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Roadmap/ADR/ADR-000.md: glossary additions (Post-Processing Dialog, Post-Processor Property, Property Scope) are contributor vocabulary; the roadmap page only points at the ADR directory",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "660efbfe88bf3263bb2f9a0528cf45b8521c0d67",
+  "merged_at": "2026-09-01T18:16:00Z",
+  "title": "CAM: Give postprocessor properties an explicit editing scope",
+  "candidates": [
+   "contributing/development-roadmap.adoc",
+   "output/machine-configuration.adoc",
+   "output/machine.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process-selected.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/glossary.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 10,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.72018825,
+  "duration_ms": 33675,
+  "session": "73240b1f-9166-4fc1-9ad5-434570cebf5b",
+  "generated": "2026-10-01T23:49:43+00:00"
+ }
+}

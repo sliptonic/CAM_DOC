@@ -1,0 +1,51 @@
+{
+ "pr": 32371,
+ "summary": "ToolBit values are now stored and displayed in the bit's own Units at a fixed tool precision (3 decimals metric, 4 imperial) independent of the units schema and decimals preference, shipped .fctb bits declare a Units parameter, and the ToolBit task panel is repaired so a tool in a document can be edited by double-click.",
+ "pages": [
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/toolbit/util.py quantity_to_str: parameters saved in the bit's Units at 3/4 decimals rather than UserString; Tools/Bit/*.fctb gain a \"Units\" parameter; docobject/ui/property.py at_tool_precision: editor fields show tool precision not the decimals preference; toolbit/ui/view.py doubleClicked -> setEdit and panel.py fix make the in-document task panel reachable",
+   "sections": [
+    "Toolbit Parameter Editor",
+    "JSON Structure",
+    "Tool Bits in a document"
+   ]
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Tool/toolbit/util.py format_value: list entries now read e.g. '5.000 mm 4-flute endmill, 30.000 mm cutting edge' (TestPathToolBitListWidget), text otherwise unchanged",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "tools/tool-shape.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/shape/models/base.py _normalize_value: bare numbers pick up mm/deg; internal fix restoring documented parameter units, nothing on the page changes",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "90f13f04d2d832c954ebf99d88be93de42c26766",
+  "merged_at": "2026-09-04T22:50:23Z",
+  "title": "CAM: Fix ToolBit units, precision and the task panel",
+  "candidates": [
+   "tools/add-toolbit.adoc",
+   "tools/tool-shape.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 26,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.6804042500000002,
+  "duration_ms": 26781,
+  "session": "11910bd9-7c34-4c4a-b105-ae4e0da7dafa",
+  "generated": "2026-10-01T23:55:28+00:00"
+ }
+}

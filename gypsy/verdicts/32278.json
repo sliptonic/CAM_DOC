@@ -1,0 +1,82 @@
+{
+ "pr": 32278,
+ "summary": "Adds four CAM preferences for ToolBit shape drawing colors and brightness, makes the ToolBit editor's shape drawing interactive (hover/click a dimension to highlight/focus its field), strips dimensions from small shape icons, and turns the Chamfer shape's Diameter into a read-only derived property.",
+ "pages": [
+  {
+   "page": "reference/preferences.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/DlgSettingsPathColor.ui: new 'Tool Bit Shape Drawing' group with Dimension color (light theme, default #111111), Dimension color (dark theme, default #23818d), Dimension highlight color (default #ff8c00) and Tool artwork brightness (dark theme, 10-100 %, default 85); Path/Preferences.py adds the matching Mod/CAM keys",
+   "sections": [
+    "GUI",
+    "Default Path Colors"
+   ]
+  },
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/toolbit/ui/editor.py + shape/ui/shapewidget.py + docobject/ui/docobject.py: ShapeWidget(interactive=True) in the editor; hovering a dimension in the drawing highlights its property field and vice versa, clicking a dimension focuses the field; editor.py load_toolbit hides derived parameters (Chamfer Diameter) from the form and toolbit/models/base.py sets them read-only (setEditorMode 1)",
+   "sections": [
+    "Toolbit Parameter Editor",
+    "Properties"
+   ]
+  },
+  {
+   "page": "tools/tool-shape.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "shape/models/chamfer.py: derived_parameters() computes Diameter = TipDiameter + 2*CuttingEdgeHeight*tan(CuttingEdgeAngle/2), so Chamfer Diameter is no longer user-entered; shape/models/icon.py theme_svg() recolors dimensions via #ff0000/#00ff00 sentinels and dim-<label> groups, and toolbit/models/base.py get_thumbnail / shapebutton.py / tablecell.py render icons with dimensions=False",
+   "sections": [
+    "Parameters",
+    "Tool Thumbnail Images"
+   ]
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Tool/toolbit/ui/tablecell.py: tool table icons now rendered with dimensions=False and theme-aware colors; text unaffected",
+   "sections": [
+    "Usage"
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Main/Gui/Job.py: _applyButtonIcons only switches to the shared PathGuiTheme.is_dark_theme() helper; behaviour unchanged",
+   "sections": []
+  },
+  {
+   "page": "reference/experimental.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "DlgSettingsPathColor changes add normal preferences, nothing under the experimental flags",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "0a9a02abe9b4a7d2ef60acc861b4cc0cef82cb9d",
+  "merged_at": "2026-08-31T21:29:32Z",
+  "title": "CAM: Theme-aware ToolBit shape drawings with dimension/field highlighting",
+  "candidates": [
+   "job/job.adoc",
+   "reference/experimental.adoc",
+   "reference/preferences.adoc",
+   "tools/add-toolbit.adoc",
+   "tools/tool-shape.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Path/Base/Gui/Theme.py"
+  ],
+  "files": 45,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.9271852500000001,
+  "duration_ms": 24728,
+  "session": "b79a0d23-1b72-4540-bfcf-ac177663f4b4",
+  "generated": "2026-10-01T23:50:14+00:00"
+ }
+}

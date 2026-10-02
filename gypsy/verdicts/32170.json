@@ -1,0 +1,41 @@
+{
+ "pr": 32170,
+ "summary": "Changes the Python signature of Path.Path.getCycleTime from four arguments (hFeed, vFeed, hRapid, vRapid) to three (hFeed, vFeed, rapid) and makes the estimate honour per-command F values, which also changes the numbers shown by operations' CycleTime property without changing any property, control or default.",
+ "pages": [
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path.pyi / PathPyImp.cpp: Path.getCycleTime(h_feed, v_feed, h_rapid, v_rapid) becomes getCycleTime(h_feed, v_feed, rapid) and command F parameters now override the arguments; any call example or method listing under The Path object with four arguments is now wrong (if the page does not list the method, no edit is needed)",
+   "sections": [
+    "The Path object"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Util.py hunk only updates the internal call in getCycleTimeEstimate to the new three-argument signature; the source map's Util.py -> area.adoc mapping is unrelated to this file's content",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Path/Op/Util.py (mapped to misc/area.adoc, but it holds operation helpers such as getCycleTimeEstimate; a better map target would be the operation pages' CycleTime property or reference/scripting.adoc)"
+ ],
+ "meta": {
+  "merge_commit": "1d0b10341810839974965153404d0c2b27f7160b",
+  "merged_at": "2026-09-19T15:49:21Z",
+  "title": "CAM: Fix getCycleTime estimates to actually use command F-values",
+  "candidates": [
+   "misc/area.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 7,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.42854675,
+  "duration_ms": 23899,
+  "session": "7faf3d1e-ea86-4a9b-be30-77bb0ea6a685",
+  "generated": "2026-10-01T23:45:45+00:00"
+ }
+}

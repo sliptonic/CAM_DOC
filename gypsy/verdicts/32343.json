@@ -1,0 +1,37 @@
+{
+ "pr": 32343,
+ "summary": "Bug fix in the KineticNCBeamicon2 legacy post-processor that restores the module-default preamble and postamble (including M05/M30) after an argparse default of \"\" had silently blanked them, and re-adds the escaped help text for --preamble/--postamble; adds a regression test.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "KineticNCBeamicon2_legacy_post.py: --preamble/--postamble lose the default=\"\" so the documented PREAMBLE/POSTAMBLE constants apply again; a crash/regression fix restoring existing behaviour, no new argument, output or property",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "KineticNCBeamicon2_legacy_post.py: only the per-argument help strings for --preamble/--postamble change (with %% escaping); the Common arguments section does not quote this post's help text",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "6ec27a43b35f6bb87ea553f6101e779d8ee70f6c",
+  "merged_at": "2026-09-07T17:53:16Z",
+  "title": "CAM: restore default pre/postamble in KineticNCBeamicon2 legacy post",
+  "candidates": [
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.33692425,
+  "duration_ms": 9023,
+  "session": "f31fec5a-1433-4327-8da6-16bd4fb80655",
+  "generated": "2026-10-01T23:53:39+00:00"
+ }
+}

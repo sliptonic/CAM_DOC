@@ -1,0 +1,21 @@
+{
+ "pr": 32411,
+ "summary": "Crash fix in the Area op base class: Profile with UseLongestEdge and a feature whose shape has no edges (hole smaller than the cutter) now falls back to the default start point instead of raising IndexError; no documented property, default, or output changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "3471328fe90711de24810418c3447d48c6c2d46e",
+  "merged_at": "2026-09-24T20:19:22Z",
+  "title": "CAM: fix error when finding longest edge for Profile",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.26067425,
+  "duration_ms": 8632,
+  "session": "66cb5c4f-ccdf-499f-9d01-bd40a3aae9de",
+  "generated": "2026-10-01T23:55:42+00:00"
+ }
+}

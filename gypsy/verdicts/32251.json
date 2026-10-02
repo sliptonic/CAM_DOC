@@ -1,0 +1,23 @@
+{
+ "pr": 32251,
+ "summary": "Bug fix in the export2 pipeline: modal gcode-word and modal-axis deduplication in Processor.py now keeps the G-word only on the first move and no longer emits a leading separator on stripped lines, and the LinuxCNC post's blend command (G64/G61/G61.1) is separated from the preamble by a space instead of being concatenated; no property, default, enumeration, panel control or documented option changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "51f51adb1a40e39fd74f5eb63cdec3c38968bfb5",
+  "merged_at": "2026-09-03T20:10:18Z",
+  "title": "CAM: Fix modal gcode and blend command output",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.34964925,
+  "duration_ms": 9256,
+  "session": "d3246c44-d01a-4f18-93f2-84e7bacf41d5",
+  "generated": "2026-10-01T23:48:31+00:00"
+ }
+}

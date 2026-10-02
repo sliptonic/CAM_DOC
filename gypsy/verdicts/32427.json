@@ -1,0 +1,58 @@
+{
+ "pr": 32427,
+ "summary": "Removes a duplicate output_units entry from the machine-scope common property schema, so the Machine editor's Postprocessor tab shows the \"Unit-command in output\" field once instead of twice.",
+ "pages": [
+  {
+   "page": "output/machine.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py get_common_property_schema: duplicate output_units dict removed; the Postprocessor tab of the Machine editor loses a repeated 'Unit-command in output' row, text about the field stays correct",
+   "sections": [
+    "Postprocessor tab"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: the surviving output_units schema entry is unchanged; Common properties list still describes one output_units property",
+   "sections": [
+    "Common properties"
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: removal of a duplicate schema dict does not alter the post-process dialog or output",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: Machine output options text lists output_units once, which remains true",
+   "sections": [
+    "Machine output options"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "22af548376aed2d7b51bae18f3fcde3a2a2cf594",
+  "merged_at": "2026-09-09T20:27:20Z",
+  "title": "CAM: remove bogus output_units in machine-editor:Postprocessor tab",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.318125,
+  "duration_ms": 17916,
+  "session": "c261904a-b6b1-41df-b659-3b1e6b6fe07f",
+  "generated": "2026-10-01T23:56:05+00:00"
+ }
+}

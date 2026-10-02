@@ -1,0 +1,19 @@
+{
+ "pr": 32155,
+ "summary": "Replaces pkgutil globbing in CAMTests/__init__.py with a CMake-generated module list and scopes the loader into a function; test infrastructure only, no user-facing command, property, panel, or output changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "ac26e342a9cab91dab2897c95c6662996ccd6b37",
+  "merged_at": "2026-08-29T16:07:57Z",
+  "title": "CAM: replace CAM test detection by globbing with a cmake-generated file",
+  "candidates": [],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.24103124999999997,
+  "duration_ms": 4034,
+  "session": "8928ad40-82bc-4cf7-a2b2-d617aa28abc4",
+  "generated": "2026-10-01T23:44:33+00:00"
+ }
+}

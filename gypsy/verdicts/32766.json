@@ -1,0 +1,65 @@
+{
+ "pr": 32766,
+ "summary": "Fixes in the Planar Surface operation: removes the GapThreshold property, relabels the Keep tool down threshold task-panel field and drops its mm unit, rewrites the KeepToolDownRatio and KeepToolDownThreshold property descriptions, changes which contextual properties are hidden in Waterline versus Z-Level mode, corrects the MinSampleInterval limit message, and fixes several Z-Level/Adaptive toolpath bugs that do not change documented behaviour.",
+ "pages": [
+  {
+   "page": "operations/planar-surface.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Op/PlanarSurface.py and PageOpPlanarSurfaceEdit.ui: the operation whose properties and task panel change here (GapThreshold removed, KeepToolDownThreshold/KeepToolDownRatio descriptions rewritten, 'Keep tool down threshold' label with no unit, MinSampleInterval limit 0.001-25.4 mm) has no page",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  },
+  {
+   "page": "operations/surface.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/PlanarSurface.py: GapThreshold property removed from opPropertyDefinitions/defaults/SetupProperties; KeepToolDownRatio description now 'multiple of the tool diameter'; PageOpPlanarSurfaceEdit.ui label 'Keep tool down ratio' -> 'Keep tool down threshold', unit mm dropped; CutPatternAngle no longer hidden with the SurfaceScan-only group",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  },
+  {
+   "page": "operations/waterline.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/PlanarSurface.py setEditorProperties: F group now 'hide if is_waterline' instead of 'hide if is_zlevel', so the contextual properties flip visibility between Waterline and Z-Level modes; GapThreshold removed and _executeWaterline uses a fixed 0.005 tolerance; MinSampleInterval error message now states 0.001 mm lower limit",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "adaptive_common.py and surface_zlevel.py: parameter normalisation, vertRapid fix, per-layer finishing_profile copy and planar-face test are internal generator fixes; the Area page does not describe them",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "6e225b61d21573dc6fee562360959b9e95bc1b77",
+  "merged_at": "2026-09-18T20:50:00Z",
+  "title": "CAM: Planar Surface Several fixes",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/planar-surface.adoc",
+   "operations/surface.adoc",
+   "operations/waterline.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5573490000000001,
+  "duration_ms": 51821,
+  "session": "ccd58071-2473-45aa-bd60-c4f4566ea5c4",
+  "generated": "2026-10-02T00:02:44+00:00"
+ }
+}

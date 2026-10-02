@@ -1,0 +1,37 @@
+{
+ "pr": 32780,
+ "summary": "Bug fix to the Drilling operation's inter-hole linking so that the Collision Avoidance Strategy and Keep Tool Down settings are honoured as already documented (Clearance Height strategy now traverses at Clearance Height, geometry strategies check the traverse at the peck retract plane); no property, default, enumeration, or task-panel control changes.",
+ "pages": [
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py _executeDrilling: linking-move hunk only restores documented CollisionAvoidanceStrategy/KeepToolDown behaviour (issue #32778); Gui/Drilling.py changes are a license-header swap and an equivalent updateData condition",
+   "sections": []
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Drilling.py _executeTapping: only a clear_height local-variable refactor with identical output",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "54f1ce229b34c5caa61892d614cf478fe8ba6f80",
+  "merged_at": "2026-09-24T15:37:55Z",
+  "title": "CAM: Drilling - Fix linking",
+  "candidates": [
+   "operations/drilling.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.517478,
+  "duration_ms": 24642,
+  "session": "cf473e55-3d2b-436b-acec-4d73b5c0e1ae",
+  "generated": "2026-10-02T00:03:15+00:00"
+ }
+}

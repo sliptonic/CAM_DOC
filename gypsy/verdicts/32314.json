@@ -1,0 +1,23 @@
+{
+ "pr": 32314,
+ "summary": "Narrows the exception handling in the post-processor factory's module search and tightens an error message in the legacy-script wrapper's loader, without changing which posts are found, how they are named, or what they output.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "67ec8a3011bc6e83b3298bdfb63d51509132bdb8",
+  "merged_at": "2026-09-18T20:48:47Z",
+  "title": "CAM: Processor.py better catches",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.28835625000000004,
+  "duration_ms": 12089,
+  "session": "de5e36b6-1449-4459-ab02-2b5194f8c36e",
+  "generated": "2026-10-01T23:52:16+00:00"
+ }
+}

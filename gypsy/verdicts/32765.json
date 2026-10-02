@@ -1,0 +1,23 @@
+{
+ "pr": 32765,
+ "summary": "Stub-only PR that corrects Python .pyi type signatures (parameters, defaults, return types) for CAM Area, Path, FeaturePathCompound, Voronoi* and PathSim bindings to match the existing C++ implementation; generated bindings are unchanged except docstrings, so no scripting behaviour, property, command or panel changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e6c17c1507c9423eabbe97b87aa504ac47f7e963",
+  "merged_at": "2026-09-20T23:23:26Z",
+  "title": "Fix Python stub signatures in pyi files",
+  "candidates": [
+   "inspect/simulator-legacy.adoc",
+   "misc/area.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 111,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.9439702499999998,
+  "duration_ms": 17067,
+  "session": "e6d6f444-7673-4965-bd71-2a80018f3cbf",
+  "generated": "2026-10-02T00:01:47+00:00"
+ }
+}

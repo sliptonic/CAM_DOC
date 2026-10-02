@@ -1,0 +1,24 @@
+{
+ "pr": 32640,
+ "summary": "Lint fixes and refactoring in the Planar Surface operation; task-panel tooltips move from the .ui file to the property descriptions via getToolTipList(), with no change to properties, defaults, enumerations, panel controls, or generated toolpaths.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "19307bed9dc18aa16811b3a56ad0a128b4fc841e",
+  "merged_at": "2026-09-24T19:47:04Z",
+  "title": "CAM: Planar Surface - Minor fixes",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/planar-surface.adoc",
+   "operations/surface.adoc",
+   "operations/waterline.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.48279425,
+  "duration_ms": 16243,
+  "session": "7fc0aee6-1cd3-4d23-b9a5-e760c57c365f",
+  "generated": "2026-10-02T00:00:01+00:00"
+ }
+}

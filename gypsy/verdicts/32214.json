@@ -1,0 +1,53 @@
+{
+ "pr": 32214,
+ "summary": "Bug fix in the machine-based post-processor: the P word on G4 and canned-cycle commands is now formatted as a dwell time in seconds instead of being divided by 25.4 on imperial output, with format_parameter() gaining an optional, backward-compatible command_name argument.",
+ "pages": [
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: format_parameter() gains an optional third argument command_name with default None; two-argument callers keep working, and the page's hook/pipeline sections do not describe the P formatter's unit behaviour",
+   "sections": []
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: format_p_param restores the documented meaning of a dwell as seconds on imperial output; no dialog, property, or output option changes",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: internal P-word formatting fix; no new property, argument, or machine output option",
+   "sections": []
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Constants.py: new GCODE_P_IS_DWELL list is an internal constant and the G-code reference already treats G4/canned-cycle P as a time",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "3b2c969fe913f8328374db1a6a9b03581d226cdc",
+  "merged_at": "2026-08-30T23:06:27Z",
+  "title": "CAM: don't unit convert the dwell time on imperial output",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.35534325,
+  "duration_ms": 15490,
+  "session": "74b828d7-8637-470f-81f3-abe3380dba65",
+  "generated": "2026-10-01T23:47:10+00:00"
+ }
+}

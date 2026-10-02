@@ -1,0 +1,52 @@
+{
+ "pr": 32192,
+ "summary": "Regression fix: setFeedRate no longer overwrites the F word on G74/G84 tapping cycles, so the thread pitch is posted again as documented; adds a GCODE_MOVE_TAP constant and a unit test, with no user-facing property, panel, default or output change beyond restoring prior behaviour.",
+ "pages": [
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/FeedRate.py: skips Path.Geom.CmdMoveTap (G74/G84) when assigning feed rates, restoring the documented behaviour that F carries the pitch on tapping cycles; no property, default or output format changes",
+   "sections": []
+  },
+  {
+   "page": "tools/tool-controller.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/FeedRate.py: internal feed-assignment logic only; VertFeed/HorizFeed properties and their meaning are unchanged",
+   "sections": []
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Constants.py / Path/Geom.py: new internal GCODE_MOVE_TAP / CmdMoveTap list that the scripting page does not enumerate",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Geom.py: candidate from the source map is unrelated; the hunk only aliases a new constant and does not touch Path.Area",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "fb193884007b1631486c9a0c7dcaf5e25573d5f2",
+  "merged_at": "2026-08-30T00:24:36Z",
+  "title": "CAM: don't overwrite the tapping pitch with a feed rate",
+  "candidates": [
+   "misc/area.adoc",
+   "reference/scripting.adoc",
+   "tools/tool-controller.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.34999225,
+  "duration_ms": 14144,
+  "session": "8e448b3d-3605-4622-836d-19db3938808b",
+  "generated": "2026-10-01T23:46:05+00:00"
+ }
+}

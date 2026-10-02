@@ -1,0 +1,281 @@
+{
+ "pr": 32722,
+ "summary": "A Work Plane becomes a named Part::LocalCoordinateSystem held in the Job's Workplanes group that several Operations link to, with a new CAM_Workplane command, a Work plane selector and Reset to defaults button on every Operation's Heights page, a renamed context-menu action, and a rule that a Job without rotary axes refuses a tilted Work Plane.",
+ "pages": [
+  {
+   "page": "job/work-plane.adoc",
+   "verdict": "new page",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/WorkplaneCmd.py: new command CAM_Workplane added to projcmdlist in InitGui.py; creates a plane from a selected planar face or at Job origin; Path/Main/Workplane.py: tilted plane refused on a Job without rotary axes",
+   "sections": [
+    "Description",
+    "Usage",
+    "Notes",
+    "Scripting"
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "InitGui.py: projcmdlist gains CAM_Workplane; Path/Op/Gui/Base.py: context action renamed 'Set Work Plane from Face' and now creates a shared plane; PageHeightsEdit.ui: heights are measured along the tool axis of the work plane",
+   "sections": [
+    "General concepts",
+    "Heights and depths",
+    "Project Commands",
+    "Context menu"
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Job.py: setupWorkplanes adds a Workplanes group child under the Job (claimChildren in Gui/Job.py) and onDelete removes it with the Job; hidden Workplanes link property",
+   "sections": [
+    "Description",
+    "Properties",
+    "Context menu"
+   ]
+  },
+  {
+   "page": "reference/fourth-axis.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Base.py: Workplane changes from a PropertyVector tool axis to a PropertyLink to a Job work plane; Path/Main/Workplane.py: tilted plane only allowed when the machine has rotary axes; Op/Gui/Base.py: 'Set Work Plane from Face' creates a shared plane",
+   "sections": [
+    "3+2 indexed machining",
+    "Limitations"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink with new description",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/slot.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink (Slot.py baseShapes change is internal)",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/surface.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink (Surface.py baseShapes change is internal)",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/waterline.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink (Waterline.py baseShapes change is internal)",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/mill-facing.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: execute refuses with a message when FinalDepth lies outside the stock in the work plane (MillFacing.py self.model change is internal)",
+   "sections": [
+    "Properties",
+    "Heights",
+    "Notes"
+   ]
+  },
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/deburr.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/helix.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/mill-face.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/pocket-3d.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/vcarve.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/thread-milling.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "operations/probe.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "PageHeightsEdit.ui: shared Heights page gains a 'Work plane' combo and a 'Reset to defaults' button; Path/Op/Base.py: Workplane property becomes App::PropertyLink on every operation",
+   "sections": [
+    "Properties",
+    "Heights"
+   ]
+  },
+  {
+   "page": "contributing/development-roadmap.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "ADR-000.md gains Work Plane, Tool Axis and Indexed terms; the roadmap page points at the ADRs but does not reproduce the glossary",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py hunks touch the Heights page and the work plane context action, not the start point selection",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Util.py: getClearedAreas swaps an inline vector compare for PathUtil.sameWorkplane; internal to rest machining",
+   "sections": []
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Util.py jobHasRotaryMachine only reads machine.has_rotary_axes; the machine editor and .fcm format are unchanged, the rule is documented on the work plane page",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "df7dd2eefe5afa54e86b65b5a7a1ce721907c721",
+  "merged_at": "2026-09-23T02:40:33Z",
+  "title": "CAM: Shared work planes held by the Job",
+  "candidates": [
+   "contributing/development-roadmap.adoc",
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "job/job.adoc",
+   "job/work-plane.adoc",
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/mill-facing.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "operations/slot.adoc",
+   "operations/surface.adoc",
+   "operations/waterline.adoc",
+   "output/machine-configuration.adoc",
+   "reference/fourth-axis.adoc",
+   "reference/glossary.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 20,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.41327225,
+  "duration_ms": 64320,
+  "session": "571d5559-954c-4e57-b4cb-ea5935a259ae",
+  "generated": "2026-10-02T00:01:23+00:00"
+ }
+}

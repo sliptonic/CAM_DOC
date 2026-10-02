@@ -1,0 +1,52 @@
+{
+ "pr": 32293,
+ "summary": "Renames the machine-based generic_plasma post-processor to generic_sheet_cutting, replaces its boolean Torch Z-Axis Control property with a three-value Control Method For Cutter enumeration (Z_Control, G0_Control, Spindle_Control), and adds Strip Z Parameters and Strip F Parameters machine properties.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/generic_sheet_cutting_post.py: module renamed from generic_plasma_post (CMakeLists.txt PathPythonPostScripts_SRCS), so any listing of included post-processors by name is stale; get_property_schema replaces torch_zaxis_control (bool, default True) with cutter_control (choice, default Z_Control) and adds STRIP_Z and STRIP_F (bool, default False)",
+   "sections": [
+    "Included Post-Processors"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/generic_sheet_cutting_post.py: machine-based post-processor renamed and its machine-configurable properties changed (cutter_control enumeration, STRIP_Z, STRIP_F); page describing machine-based post-processors and their property schema needs the new name and properties",
+   "sections": [
+    "Properties",
+    "Options"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/generic_sheet_cutting_post.py: file and class renamed (GenericPlasma -> GenericSheetCutting); the 'Other existing Post-Processors' and 'Machine output options' sections that name the shipped machine-based posts and their property types need the new name and the choice-type cutter_control example",
+   "sections": [
+    "Other existing Post-Processors",
+    "Machine output options"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "74d738d022452ecb1f00eb48675b1c9efb92abed",
+  "merged_at": "2026-09-12T06:15:17Z",
+  "title": "CAM: (Machine Post Processor): Change Generic_Plasma_post to generic_sheet_cutter_post and extend",
+  "candidates": [
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 6,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5755055,
+  "duration_ms": 37577,
+  "session": "5a0a8c9d-a181-4c27-b921-a2b0ec616cf2",
+  "generated": "2026-10-01T23:51:25+00:00"
+ }
+}

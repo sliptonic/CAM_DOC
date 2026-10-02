@@ -1,0 +1,31 @@
+{
+ "pr": 32115,
+ "summary": "The Engrave task panel gains controls for Cut pattern, Sorting, Reverse and Approximation alongside the existing Start at vertex spinbox, exposing already-existing properties in the panel.",
+ "pages": [
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Gui/Resources/panels/PageOpEngraveEdit.ui: adds Cut pattern and Sorting combo boxes plus Reverse and Approximation checkboxes to the operation page; Path/Op/Gui/Engrave.py getFields/setFields wire them to CutPattern, SortingMode, Reverse, Approximation. Enumeration values and defaults are unchanged (Bidirectional remains default), so Properties stays as is.",
+   "sections": [
+    "Options"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "e42623bcca66958c20c2d49c12902f21f56186db",
+  "merged_at": "2026-09-02T13:48:22Z",
+  "title": "CAM: Engrave - Add widgets",
+  "candidates": [
+   "operations/engrave.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.32906625,
+  "duration_ms": 15627,
+  "session": "4fd8f88b-55b6-4f8a-8818-ff40ae7ba73a",
+  "generated": "2026-10-01T23:43:01+00:00"
+ }
+}

@@ -1,0 +1,94 @@
+{
+ "pr": 32129,
+ "summary": "Adds the machine-scope post-processor property translate_no_engagement_feed (bool, default False) that turns G0 moves annotated with NoEngagementFeed into G1 at the tool controller's No-Engagement feed, and changes the annotation's value from \"True\" to the feed rate string; Base.py attribute additions and test edits are internal.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py: get_common_property_schema gains 'translate_no_engagement_feed' (SCOPE_MACHINE, bool, default False) shown in the post-process property table; _expand_translate_rapids now emits G1 with F from the annotation when enabled",
+   "sections": [
+    "Post Processing dialog",
+    "Job properties"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Processor.py: new machine-scope property 'translate_no_engagement_feed' appears among the Machine's post-processor options",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: common property schema gains 'translate_no_engagement_feed'; _expand_translate_rapids hook now runs for TRANSLATE_NO_ENGAGEMENT_FEED and raises CAMAttributeError on a non-float annotation value",
+   "sections": [
+    "Common properties",
+    "Command filtering and annotations"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: new common machine output option 'translate_no_engagement_feed' (G0 to G1 at no-engagement feed)",
+   "sections": [
+    "Machine output options"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Constants.py / Adaptive.py: ANNOT_NO_ENGAGEMENT_FEED annotation value is now the feed rate as a float string (was 'True') and is consumed by the post-processor as the F parameter",
+   "sections": [
+    "Annotations"
+   ]
+  },
+  {
+   "page": "tools/tool-controller.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Base.py reads tc.NoEngagementFeed into the op and Processor.py now applies it when 'translate_no_engagement_feed' is enabled; the property's documented effect changes",
+   "sections": [
+    "Properties"
+   ]
+  },
+  {
+   "page": "operations/adaptive.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Adaptive.py: only the annotation value on link G0 moves changes (feed string instead of 'True', skipped when feed is 0); the operation's path and panel are unchanged",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "d8a7621262e7aefa36ffb683dfd77d1debc9eb23",
+  "merged_at": "2026-09-15T22:38:34Z",
+  "title": "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "operations/adaptive.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 6,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.5811485000000001,
+  "duration_ms": 41657,
+  "session": "ddd928fd-459d-4d28-aaf8-ddf520dd6666",
+  "generated": "2026-10-01T23:43:49+00:00"
+ }
+}

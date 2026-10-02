@@ -1,0 +1,21 @@
+{
+ "pr": 32438,
+ "summary": "Fixes a TypeError in Path.Geom.wiresForPath() when a path contains zero-length moves, and converts license headers to SPDX form with minor linter cleanups; no user-facing property, panel, command, or output changes.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "57bba19911ab0fbb1afea77945949ff9a6010719",
+  "merged_at": "2026-09-25T02:24:45Z",
+  "title": "CAM: Geom - fix wiresForPath() for zero length moves",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.32263425000000007,
+  "duration_ms": 6837,
+  "session": "a5b903e6-ffbe-4d28-aab0-5b5157175e3f",
+  "generated": "2026-10-01T23:56:34+00:00"
+ }
+}

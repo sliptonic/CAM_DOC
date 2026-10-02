@@ -1,0 +1,21 @@
+{
+ "pr": 32562,
+ "summary": "Bug fix in the rest-machining cleared-area visitor so arc (G2/G3) segments above the configured depth are no longer counted as cleared, restoring the documented rest machining behaviour without changing any property, default, control, or output.",
+ "pages": [],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "f2a261df718b2dcbe169d1df2226ecfd2099b664",
+  "merged_at": "2026-09-12T02:47:35Z",
+  "title": "CAM: do z-check on arc paths for rest machining",
+  "candidates": [
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.24632025,
+  "duration_ms": 4902,
+  "session": "1256b360-5e6b-4929-b5f5-85afb61e6abb",
+  "generated": "2026-10-01T23:57:54+00:00"
+ }
+}

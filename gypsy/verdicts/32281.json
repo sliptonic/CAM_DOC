@@ -1,0 +1,53 @@
+{
+ "pr": 32281,
+ "summary": "Drilling gains a PeckRetract property and task-panel control that drives the canned-cycle R plane (default SafeHeight, shown only when Strategy is Drilling and Peck is enabled), the ExtraOffset enumeration values are renamed from Drill Tip/2x Drill Tip to Tool Tip/2x Tool Tip with automatic migration, the old RetractHeight migration now renames to PeckRetract instead of folding into StartDepth, inter-hole linking climbs to SafeHeight when PeckRetract is below it, and several property descriptions and panel tooltips are rewritten.",
+ "pages": [
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Drilling.py: initCircularHoleOperation adds App::PropertyDistance PeckRetract (default SafeHeight, hidden unless Strategy=Drilling and PeckEnabled); ExtraOffset enumeration 'Drill Tip'/'2x Drill Tip' -> 'Tool Tip'/'2x Tool Tip'; KeepToolDown/PeckDepth/PeckEnabled/ChipBreakEnabled/DwellTime/DwellEnabled descriptions rewritten; _executeDrilling adds explicit climb to SafeHeight between holes when PeckRetract < SafeHeight. PageOpDrillingEdit.ui: new 'Peck retract' Gui::QuantitySpinBox, 'Depth' label -> 'Peck depth', combo items 'Drill tip'/'2x drill tip' -> 'Tool tip'/'2x tool tip'.",
+   "sections": [
+    "Properties",
+    "Tasks Window Editor Layout",
+    "Operation",
+    "Notes"
+   ]
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Op/Drilling.py: shared Tapping strategy; ExtraOffset enumeration values renamed to 'Tool Tip'/'2x Tool Tip' (explicitly because it applies to Tapping) and the opOnDocumentRestored migration for legacy RetractHeight now renames it to PeckRetract instead of migrating into StartDepth and removing it. PageOpDrillingEdit.ui: ExtraOffset combo item text changed (visible in Tapping panel).",
+   "sections": [
+    "Migration",
+    "Legacy properties"
+   ]
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Util.py: drillTipLength only downgrades a log message from error to debug for tools without TipAngle; return value unchanged and the mapping to CAM Area is spurious.",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "f3e8aa37693f29ff14d996435a9d35b68491e9b3",
+  "merged_at": "2026-09-15T22:39:01Z",
+  "title": "CAM Drilling: restore PeckRetract (R) control, safe inter-hole linking",
+  "candidates": [
+   "misc/area.adoc",
+   "operations/drilling.adoc",
+   "operations/tapping.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 7,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.7326172499999999,
+  "duration_ms": 23159,
+  "session": "1b8f0e52-9ac2-420a-a6e2-ecc762ced24e",
+  "generated": "2026-10-01T23:50:42+00:00"
+ }
+}

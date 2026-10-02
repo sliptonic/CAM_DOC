@@ -1,0 +1,29 @@
+{
+ "pr": 32359,
+ "summary": "Renames Draft make* helpers to make_* across BIM, Draft and CAM; in CAM only SurfaceSupport.py swaps one internal Draft.makeShape2DView call for Draft.make_shape_2d_view, with no change to any operation, property, panel or output.",
+ "pages": [
+  {
+   "page": "operations/surface.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/SurfaceSupport.py getProjectedFace: internal Draft.makeShape2DView -> Draft.make_shape_2d_view rename; same projection result, no user-visible property, default, panel or output change",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "58878a606b5f19067aa82fbd96a45ad90e4478c5",
+  "merged_at": "2026-09-23T10:19:26Z",
+  "title": "BIM/CAM/Draft: change makeLine etc. to make_line etc.",
+  "candidates": [
+   "operations/surface.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 71,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 1.16563325,
+  "duration_ms": 10379,
+  "session": "b72bf662-a878-4331-8389-8aaad1c3b455",
+  "generated": "2026-10-01T23:53:55+00:00"
+ }
+}

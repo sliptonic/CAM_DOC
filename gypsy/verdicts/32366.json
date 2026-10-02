@@ -1,0 +1,100 @@
+{
+ "pr": 32366,
+ "summary": "The base Post-Processor now emits a Sanity Check Squawk (WARNING) when a commanded Spindle Speed falls outside the Machine's single rotary Toolhead min_rpm/max_rpm range, a NOTE when the Machine has several Toolheads, and get_sanity_checks() is now composed from a new sanity_check_methods() hook that subclasses chain to.",
+ "pages": [
+  {
+   "page": "job/quick-validate.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: _sanity_spindle_speed() adds a machine-level WARNING for M3/M4 speeds below MIN_SPINDLE_SPEED or above MAX_SPINDLE_SPEED, and a NOTE when the machine defines more than one toolhead; these squawks surface through the post-processor hook that Quick Validate runs",
+   "sections": [
+    "Description",
+    "Checks",
+    "Usage"
+   ]
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: get_sanity_checks() now returns the spindle-speed range squawks by default (was an empty list), so the report gains a machine-dependent check; zero speed is skipped and a machine with no limits set (0 = unspecified) is never squawked at",
+   "sections": [
+    "Checks",
+    "Description"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: get_sanity_checks() composes sanity_check_methods() (new hook, default [_sanity_spindle_speed]) with per-check exception containment; subclasses that override get_sanity_checks() must call super(); _merge_toolhead_limits() puts MIN_SPINDLE_SPEED/MAX_SPINDLE_SPEED into values (None when unspecified, only for a single rotary toolhead)",
+   "sections": [
+    "Sanity checks",
+    "How values reach your code",
+    "Hooks"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: _merge_toolhead_limits() gives the existing Toolhead min_rpm/max_rpm fields in the Machine tab a user-visible effect (spindle speed sanity check); 0 means not specified, and the limits apply only when the machine has exactly one rotary toolhead",
+   "sections": [
+    "Machine Editor",
+    "Machine tab"
+   ]
+  },
+  {
+   "page": "output/machine-configuration.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Machine/models/machine.py: from_dict()/add_spindle() keyword-argument fixes are internal; no field, default or .fcm format changes. The behavioural note on rpm limits belongs on output/machine.adoc",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "generic_sheet_cutting_post.py and linuxcnc_post.py only chain get_sanity_checks() to super(); linuxcnc removed two checks reading MAX_SPINDLE_SPEED/MAX_RAPID_FEED that never fired. Hook details are covered on output/mbpp-postprocessor.adoc",
+   "sections": []
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "linuxcnc_post.py: removed checks were dead (keys never set); no post-processor output, property or dialog change",
+   "sections": []
+  },
+  {
+   "page": "contributing/development-roadmap.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Roadmap/ADR/ADR-000.md: vocabulary entries added (Toolhead, Squawk, Axis Velocity, Feed); the roadmap page does not reproduce the ADR-000 glossary",
+   "sections": []
+  }
+ ],
+ "unmapped": [
+  "src/Mod/CAM/Roadmap/ADR/ADR-000.md -> reference/glossary.adoc is mapped but that page does not exist; no glossary page to update"
+ ],
+ "meta": {
+  "merge_commit": "08b2357668451f0189f665ac8203c21e9763ceb8",
+  "merged_at": "2026-09-21T00:46:56Z",
+  "title": "CAM: Check spindle speed against the machine's toolhead limits",
+  "candidates": [
+   "contributing/development-roadmap.adoc",
+   "output/machine-configuration.adoc",
+   "output/machine.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "reference/glossary.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 6,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.7325562499999999,
+  "duration_ms": 40974,
+  "session": "3fff21ed-1000-47ca-8ec8-9e43ef6d0813",
+  "generated": "2026-10-01T23:54:41+00:00"
+ }
+}

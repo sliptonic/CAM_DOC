@@ -1,0 +1,57 @@
+{
+ "pr": 32328,
+ "summary": "The Custom operation no longer passes arbitrary G-code through the post-processor: lines that parse as Path commands must be supported (or non-conforming) or the post fails with an error that points the user at the Post Process Output checkbox or the '!' as-is prefix.",
+ "pages": [
+  {
+   "page": "operations/custom.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Op/Custom.py processLines: Path.Command no longer created with ANNOT_ALLOW_UNSUPPORTED, so unrecognised G-codes (e.g. G666) now raise 'Unsupported command ... (in the Custom op, uncheck Post Process Output, or put '!' in front of specific command)' at post time instead of being emitted; Processor.py adds the Custom-specific hint text",
+   "sections": [
+    "Task panel",
+    "Error handling",
+    "Notes"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: only the error message text gains a Custom-op hint; ANNOT_ALLOW_UNSUPPORTED handling and command filtering behaviour are unchanged (TestPostOutput test004 confirms the annotation still bypasses the check)",
+   "sections": []
+  },
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: no change to the Post Process dialog, output, or job properties; only an error-message suffix",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Processor.py: no change to the customization API or arguments; only an error-message suffix",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "864a752798cda7b096815538f15752b4a3244e11",
+  "merged_at": "2026-09-04T22:51:15Z",
+  "title": "CAM: Custom op is strict",
+  "candidates": [
+   "operations/custom.adoc",
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.32689825,
+  "duration_ms": 20503,
+  "session": "feb51642-60ad-4dd7-ae56-95cde4dc15df",
+  "generated": "2026-10-01T23:53:24+00:00"
+ }
+}

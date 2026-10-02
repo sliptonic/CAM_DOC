@@ -1,0 +1,129 @@
+{
+ "pr": 32211,
+ "summary": "The toolbit selector dialog (CAM_ToolBitDock) gains an \"All Tools\" library entry, prompts for a tool number when a tool has no library number or its number collides, replaces the removed ToolBitSelector in the Job panel Tools tab and the operation tool-controller combo, and the Job tool table and tool controller editor now refuse giving two different tools the same number.",
+ "pages": [
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/library/ui/dock.py: dock created with show_all_tools=True and askToolNumber=True; new 'All Tools' library entry, sort combo hidden in that view (browser.py _update_sort_combo), QInputDialog asks for a tool number defaulting to the next free one, conflict prompt 'Tool number N is already used by X'",
+   "sections": [
+    "Usage",
+    "Create Tool Controllers"
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Main/Gui/Job.py: toolControllerAdd now opens ToolBitLibraryDock (tools appear in the table as added, dialog stays open); toolControllerChanged refuses a Number edit that another tool already uses and shows 'Tool Number In Use' warning",
+   "sections": [
+    "Tools"
+   ]
+  },
+  {
+   "page": "tools/tool-controller.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Tool/Gui/Controller.py: editor's tool number spin box rejects a number used by a different tool (updateToolNumber, warning box), same tool may share a number for multiple feeds/speeds; CAM_ToolController command now opens the toolbit dock with askToolNumber instead of the removed selector",
+   "sections": [
+    "Usage",
+    "Task panel",
+    "Properties"
+   ]
+  },
+  {
+   "page": "tools/toolbit-library.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Tool/library/ui/dock.py _add_tool_controller_to_doc: a library's tool number is now only a suggestion; when it collides with a different tool in the job the user is asked for another number, and tools picked from 'All Tools' get the next free job number",
+   "sections": [
+    "Tool numbers",
+    "Usage"
+   ]
+  },
+  {
+   "page": "tools/library-manager.adoc",
+   "verdict": "capture only",
+   "needs_gui": true,
+   "reason": "Path/Tool/library/ui/browser.py: sort combo is hidden and sort forced to label when 'All Tools' is selected; only visible in the Library Manager if its browser exposes the All Tools entry, text otherwise unaffected",
+   "sections": [
+    "Filtering"
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py tcComboChanged: the 'new tool controller' entry still opens the toolbit dock, now single-selection with a tool number prompt; behaviour belongs to the shared dialog documented on add-toolbit.adoc",
+   "sections": [
+    "Tool Controller"
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py tcComboChanged: same shared dialog change as above, operation page text unaffected",
+   "sections": [
+    "Tool Controller"
+   ]
+  },
+  {
+   "page": "operations/profile.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py tcComboChanged: same shared dialog change as above, operation page text unaffected",
+   "sections": [
+    "Tool Controller"
+   ]
+  },
+  {
+   "page": "tools/toolbit.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Tool/toolbit/ui/selector.py removal is internal; toolbit attach now hides the ViewObject immediately but documented toolbit behaviour is unchanged",
+   "sections": []
+  },
+  {
+   "page": "index.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py mapping is generic; no command list or menu entry changes (CAM_ToolController was already absent from menus and stays registered)",
+   "sections": []
+  },
+  {
+   "page": "inspect/set-start-point.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Gui/Base.py mapping is generic; start point selection untouched",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "2b86d71f14c6e0f372aa075ccf2ab0558ce9f66c",
+  "merged_at": "2026-08-28T20:10:33Z",
+  "title": "CAM: Add toolbits from any library",
+  "candidates": [
+   "index.adoc",
+   "inspect/set-start-point.adoc",
+   "job/job.adoc",
+   "operations/drilling.adoc",
+   "operations/pocket.adoc",
+   "operations/profile.adoc",
+   "tools/add-toolbit.adoc",
+   "tools/library-manager.adoc",
+   "tools/tool-controller.adoc",
+   "tools/toolbit-library.adoc",
+   "tools/toolbit.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 8,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.6670292499999999,
+  "duration_ms": 39191,
+  "session": "97e95a1f-4cb8-4b29-a68e-fce37a34a88d",
+  "generated": "2026-10-01T23:46:49+00:00"
+ }
+}

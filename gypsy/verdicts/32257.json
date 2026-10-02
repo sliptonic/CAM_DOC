@@ -1,0 +1,39 @@
+{
+ "pr": 32257,
+ "summary": "Bug fix in the Lead In/Out dressup: zero-length plunge moves (when SafeHeight equals FinalDepth) are now skipped when building the Maneuver, so the tangent angle is defined and the entry move is correct; the rest is linter cleanup, moving hideModes to module scope, and a new test.",
+ "pages": [
+  {
+   "page": "dressups/lead-in-out.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Base/Generator/leadinout.py: FromPath(path, skipZeroLength=True) only fixes an incorrect entry move when SafeHeight == FinalDepth; Dressup/Gui/LeadInOut.py hunks move hideModes to module level and collapse guard clauses with identical behaviour, no property, default, enumeration or panel control changes",
+   "sections": []
+  },
+  {
+   "page": "misc/area.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Candidate dropped: Path/Base/Generator/leadinout.py is the Lead In/Out generator and has nothing to do with CAM Area; the source map entry looks wrong",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "c2b56826ec4fa261cdabaab3a43775ca8938a13d",
+  "merged_at": "2026-09-21T16:29:34Z",
+  "title": "CAM: LeadInOut - Skip zero length plunge moves",
+  "candidates": [
+   "dressups/lead-in-out.adoc",
+   "misc/area.adoc"
+  ],
+  "unmapped_by_map": [
+   "src/Mod/CAM/Path/Base/Language.py"
+  ],
+  "files": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.42509625,
+  "duration_ms": 28060,
+  "session": "a04ea9e5-dca1-4323-8382-800c4b847624",
+  "generated": "2026-10-01T23:49:05+00:00"
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "pr": 32615,
+ "summary": "Fixes output file name generation so the %T, %t, %W and %O substitutions are resolved against the split-output section name, suppresses the automatic \"-<subpart>\" suffix when the template already places one of those tokens, warns once when they are used without split output, updates the Post Process dialog tooltip accordingly, and makes cancelling the post-processor selection dialog abort quietly instead of logging an error.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/Utils.py generate_filenames(): %T/%t/%W/%O now resolve to the subpart name and suppress the automatic -<subpart> suffix when present in the template; a warning is printed when used without split output. DlgPostProcess.ui lineEditFilenameTemplate tooltip rewritten to list %S and state the split-output caveat.",
+   "sections": [
+    "Output file name",
+    "Post Processing dialog"
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Command.py _resolve_post_processor_name: cancelling the selection dialog returns None instead of raising; restores expected quiet abort, nothing the page describes changes.",
+   "sections": []
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py changes are confined to FilenameGenerator, which the machine-based post-processor authoring page does not cover.",
+   "sections": []
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Post/Utils.py FilenameGenerator is not part of the post-processor authoring API this page documents.",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "dcac03873f484098991485ff0f6c3ee6949d57cb",
+  "merged_at": "2026-09-21T00:46:36Z",
+  "title": "Cam:  Fix various bugs",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process-selected.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.47839149999999997,
+  "duration_ms": 50691,
+  "session": "f6ff7bb8-c299-4075-bf91-472bad137f0a",
+  "generated": "2026-10-01T23:59:40+00:00"
+ }
+}

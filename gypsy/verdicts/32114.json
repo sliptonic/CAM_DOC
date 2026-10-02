@@ -1,0 +1,29 @@
+{
+ "pr": 32114,
+ "summary": "Engrave now passes the wires of all selected shapes to buildpathocc in one call so inter-wire linking is optimised across shapes, which drops the retract-to-safe-height rapid between shapes; no property, panel, default, or documented behaviour changes.",
+ "pages": [
+  {
+   "page": "operations/engrave.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "Path/Op/Engrave.py opExecute: single buildpathocc call over all wires and removal of the internal self.wires attribute; properties (Reverse, StartVertex, depths) and their semantics are untouched, only the linking rapids between shapes change (seen in TestPathEngrave expected G-code)",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "3ecd1cc4dc61181c2d4715ca0cec84da2d11beae",
+  "merged_at": "2026-09-01T17:05:34Z",
+  "title": "CAM: Engrave - Process all shapes at once",
+  "candidates": [
+   "operations/engrave.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.3778135,
+  "duration_ms": 27177,
+  "session": "d2c2a664-8d63-43ce-bef5-736a36d1f2e0",
+  "generated": "2026-10-01T23:42:41+00:00"
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "pr": 32613,
+ "summary": "DressupAxisMap gains a Centre property (vector) that sets the rotation centre for the 3D path display, auto-fills Centre, Radius and AxisMap from the largest cylindrical face in the Job models/stock on creation, and the task panel's Reverse combo becomes an \"Invert Direction\" checkbox.",
+ "pages": [
+  {
+   "page": "dressups/axis-map.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Dressup/Gui/AxisMap.py: new App::PropertyVectorDistance 'Centre' (centre of rotation, replaces the implicit (0,0,-Radius) centre; migrated on restore); defineCylinder() sets Centre/Radius/AxisMap from the largest Part.Cylinder face in job.Model + Stock on creation (AxisMap -> 'X->B' when the cylinder axis is Y); AxisMapEdit.ui: 'Reverse' QComboBox replaced by QCheckBox 'Invert Direction', axis map combo now populated from the property enumeration",
+   "sections": [
+    "Usage",
+    "Options",
+    "Properties",
+    "Notes"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "72a998b63c7134a6aa9f8c26fec89ee42d561016",
+  "merged_at": "2026-09-22T20:08:51Z",
+  "title": "CAM: DressupAxisMap - Centre",
+  "candidates": [
+   "dressups/axis-map.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "cost_usd": 0.39586625,
+  "duration_ms": 10611,
+  "session": "d4912b19-7b91-43f3-97e8-834fa892c881",
+  "generated": "2026-10-01T23:58:43+00:00"
+ }
+}
