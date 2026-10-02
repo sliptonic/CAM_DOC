@@ -12,7 +12,8 @@ Exit 1 when any error is found. Checks:
   heading    level-2 heading outside the command-page skeleton, or out of order
   image      block image without alt text, with a width= attribute, or missing a manifest entry
   sentence   sentence over 30 words
-  xref       bare <<...>> cross-page reference or a link to the published site
+  xref       bare <<...>> cross-page reference, a link to the published site, or an xref whose target page does not exist
+  attribute  {name} outside a code block that is not a known attribute (Asciidoctor drops it)
 """
 import argparse, json, os, re, sys
 import yaml
@@ -25,6 +26,9 @@ SINCE_OK = re.compile(r"\[\.since\]#introduced in \d+(?:\.\d+)?#")
 SINCE_ANY = re.compile(r"\[\.since\]#[^#]*#")
 IMITATION = re.compile(r"^(\*_?Note_?\*:?|\*NOTE\*:?|Note:|NOTE\s*[-–:]|\*Important Note)", re.I)
 BLOCK_IMG = re.compile(r"^image::([^\[]+)\[([^\]]*)\]")
+XREF = re.compile(r"xref:([A-Za-z0-9_./-]+\.adoc)")
+ATTR = re.compile(r"(?<!\\)\{([a-zA-Z][a-zA-Z0-9_-]*)\}")
+KNOWN_ATTRS = {"freecad-version", "page-component-version", "site-en-url", "nbsp", "empty", "sp", "zwsp", "wj", "apos", "quot", "lsquo", "rsquo", "ldquo", "rdquo", "deg", "plus", "amp", "lt", "gt", "brvbar", "vbar", "caret", "asterisk", "tilde", "backslash", "backtick", "two-colons", "two-semicolons", "cpp", "pp"}
 MAX_WORDS = 30
 
 # Spans that are UI or code, exempt from vocabulary checks.
@@ -67,6 +71,8 @@ def lint_file(path, terms, style, ok, manifest):
     in_code = False
     in_header = True
     is_command = any(l.startswith(":page-command:") for l in lines[:40])
+    if any(l.strip() == ":page-status: generated" for l in lines[:40]):
+        return out  # generated from an upstream source; fix it there
     headings = []
     prose_buf = []  # (lineno, text) for sentence check
     for i, raw in enumerate(lines, 1):
@@ -112,6 +118,15 @@ def lint_file(path, terms, style, ok, manifest):
             err(i, "xref", "cross-page <<...>> reference; use xref:")
         if "sliptonic.github.io" in line:
             err(i, "xref", "link to the published site; use xref:")
+        for m in XREF.finditer(line):
+            tgt = m.group(1)
+            if "@" in tgt or "::" in tgt:
+                continue
+            if not os.path.exists(os.path.join(ROOT, "modules/ROOT/pages", tgt)):
+                err(i, "xref", f"target page does not exist: {tgt}")
+        for m in ATTR.finditer(re.sub(r"`\+[^`]*\+`", "", line)):
+            if m.group(1) not in KNOWN_ATTRS:
+                err(i, "attribute", f"{{{m.group(1)}}} is read as an attribute reference; escape it as \\{{{m.group(1)}}} or put it in monospace with +")
         # vocabulary on prose only
         prose = strip_exempt(line)
         if re.match(r"^(NOTE|WARNING|CAUTION):", prose):

@@ -68,6 +68,7 @@
 ** xref:tools/tool-controller.adoc[Tool Controller]
 ** xref:tools/feeds-speeds.adoc[Feeds and Speeds]
 * Additional
+** xref:reference/glossary.adoc[Glossary]
 ** xref:reference/preferences.adoc[Preferences]
 ** xref:reference/scripting.adoc[Scripting]
 * Other pages
