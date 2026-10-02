@@ -1,0 +1,959 @@
+{
+ "freecad_version": [
+  "26",
+  "3",
+  "0",
+  "49032 +5 (Git)",
+  "Unknown",
+  "2026/09/30 21:55:51",
+  "cam-misc-fixes",
+  "68b4bcf1deaf1f372157117fc91dc0f92b508103"
+ ],
+ "common_property_schema": [
+  {
+   "name": "file_extension",
+   "scope": "machine",
+   "type": "string",
+   "label": "File Extension",
+   "default": "nc",
+   "help": "Default file extension for output files (without the dot). Common extensions: nc, gcode, tap, ngc, sbp, etc."
+  },
+  {
+   "name": "supports_tool_radius_compensation",
+   "scope": "machine",
+   "type": "bool",
+   "label": "Tool Radius Compensation (G41/G42)",
+   "default": false,
+   "help": "Enable if this postprocessor supports G41/G42 tool radius compensation commands. When enabled, the postprocessor can output cutter compensation codes."
+  },
+  {
+   "name": "supported_commands",
+   "scope": "machine",
+   "type": "text",
+   "label": "Supported G-code Commands",
+   "default": "G0\nG00\nG1\nG01\nG2\nG02\nG3\nG03\nG4\nG04\nG73\nG81\nG82\nG83\nG85\nG74\nG84\nG88\nG89\nG80\nG38.2\nG90\nG91\nG92\nG93\nG94\nG95\nG96\nG97\nG98\nG99\nG43\nG54\nG55\nG56\nG57\nG58\nG59\nG59.1\nG59.2\nG59.3\nG59.4\nG59.5\nG59.6\nG59.7\nG59.8\nG59.9\nM0\nM00\nM1\nM01\nM3\nM03\nM4\nM04\nM5\nM05\nM6\nM06\nM7\nM07\nM8\nM08\nM9\nM09\nG40\nG41\nG42\nG90\nG91\nG20\nG21\nG98\nG99\nG80",
+   "help": "List of G-code commands supported by this postprocessor (one per line). Commands not in this list will be filtered out or cause warnings."
+  },
+  {
+   "name": "ignored_commands",
+   "scope": "machine",
+   "type": "text",
+   "label": "Ignore G-code Commands",
+   "default": "",
+   "help": "List of G-code commands, tolerated but ignored by this post-processor (one per line). Commands in this list will be filtered out."
+  },
+  {
+   "name": "drill_cycles_to_translate",
+   "scope": "machine",
+   "type": "text",
+   "label": "Drill Cycles to Translate",
+   "default": "G73\nG81\nG82\nG83\nG85",
+   "help": "List of drill cycle commands to translate to G0/G1 moves (one per line). Standard drill cycles: G73, G81, G82, G83, G85. Leave empty if postprocessor supports drill cycles natively."
+  },
+  {
+   "name": "preamble",
+   "scope": "machine",
+   "type": "text",
+   "label": "Preamble",
+   "default": "",
+   "help": "G-code commands inserted at the start of the program after the header."
+  },
+  {
+   "name": "postamble",
+   "scope": "machine",
+   "type": "text",
+   "label": "Postamble",
+   "default": "",
+   "help": "G-code commands inserted at the end of the program."
+  },
+  {
+   "name": "safetyblock",
+   "scope": "machine",
+   "type": "text",
+   "label": "Safety Block",
+   "default": "",
+   "help": "Safety commands to reset machine to known safe condition (e.g., G40, G49, G80)."
+  },
+  {
+   "name": "pre_job",
+   "scope": "machine",
+   "type": "text",
+   "label": "Pre-Job",
+   "default": "",
+   "help": "G-code commands inserted before each Job."
+  },
+  {
+   "name": "post_job",
+   "scope": "machine",
+   "type": "text",
+   "label": "Post-Job",
+   "default": "",
+   "help": "G-code commands inserted after each Job."
+  },
+  {
+   "name": "pre_fixture_change",
+   "scope": "machine",
+   "type": "text",
+   "label": "Pre-Fixture",
+   "default": "",
+   "help": "G-code commands inserted before fixture change."
+  },
+  {
+   "name": "post_fixture_change",
+   "scope": "machine",
+   "type": "text",
+   "label": "Post-Fixture",
+   "default": "",
+   "help": "G-code commands inserted after fixture change."
+  },
+  {
+   "name": "pre_operation",
+   "scope": "machine",
+   "type": "text",
+   "label": "Pre-Operation",
+   "default": "",
+   "help": "G-code commands inserted before each operation."
+  },
+  {
+   "name": "post_operation",
+   "scope": "machine",
+   "type": "text",
+   "label": "Post-Operation",
+   "default": "",
+   "help": "G-code commands inserted after each operation."
+  },
+  {
+   "name": "pre_tool_change",
+   "scope": "machine",
+   "type": "text",
+   "label": "Pre-Tool Change",
+   "default": "",
+   "help": "G-code commands inserted before tool changes."
+  },
+  {
+   "name": "post_tool_change",
+   "scope": "machine",
+   "type": "text",
+   "label": "Post-Tool Change",
+   "default": "",
+   "help": "G-code to execute immediately after a tool change (M6), before the spindle is turned on. Use for a custom tool length offset routine, custom cutter compensation, or a return motion before the spindle starts."
+  },
+  {
+   "name": "tool_return",
+   "scope": "machine",
+   "type": "text",
+   "label": "Tool Return after tool changes",
+   "default": "",
+   "help": "G-code to execute immediately after the spindle is turned on after a tool change."
+  },
+  {
+   "name": "pre_rotary_move",
+   "scope": "machine",
+   "type": "text",
+   "label": "Pre-Rotary Move",
+   "default": "",
+   "help": "G-code commands inserted before the rotary axes move: before a rotary positioning move, and before a tilted work plane is declared when the control positions the axes itself. Put the moves that bring the tool clear of the part here, in machine coordinates (for example G53 G0 Z0); an operation's clearance height is measured in its own work plane and says nothing about the tool while the table turns."
+  },
+  {
+   "name": "post_rotary_move",
+   "scope": "machine",
+   "type": "text",
+   "label": "Post-Rotary Move",
+   "default": "",
+   "help": "G-code commands inserted after the rotary axes have moved, and after a tilted work plane has been declared and aligned to."
+  },
+  {
+   "name": "twp_control_positions_rotaries",
+   "scope": "machine",
+   "type": "bool",
+   "label": "Tilted work plane: control positions the rotaries",
+   "default": true,
+   "help": "The plane command positions the rotary axes itself (G53.1, TURN). Off, the program commands them with a rotary move before declaring the plane."
+  },
+  {
+   "name": "twp_declare",
+   "scope": "machine",
+   "type": "string",
+   "label": "Tilted work plane: declare",
+   "default": "",
+   "help": "The line that declares a tilted work plane, with {x} {y} {z} the plane's origin and {a1} {a2} {a3} the plane command's angles. Empty uses the plane command's own form."
+  },
+  {
+   "name": "twp_align",
+   "scope": "machine",
+   "type": "string",
+   "label": "Tilted work plane: align",
+   "default": "",
+   "help": "The line that points the tool along a declared plane when the control positions the rotary axes itself. Empty uses the plane command's own form."
+  },
+  {
+   "name": "twp_cancel",
+   "scope": "machine",
+   "type": "string",
+   "label": "Tilted work plane: cancel",
+   "default": "",
+   "help": "The line that cancels a declared plane. Empty uses the plane command's own form."
+  },
+  {
+   "name": "show_dialog",
+   "scope": "run",
+   "type": "bool",
+   "label": "Show Pre-processing Dialogs",
+   "default": true,
+   "help": "Show interactive dialogs during post-processing. Disable for automated operation or testing."
+  },
+  {
+   "name": "parameter_order",
+   "scope": "machine",
+   "type": "text",
+   "label": "Generated Parameter Order for GCode",
+   "default": "XYZABCUVWFSIJKTQRPDHL",
+   "help": "Generated Parameter Order for GCode for output"
+  },
+  {
+   "name": "output_tool_length_offset",
+   "scope": "machine",
+   "type": "bool",
+   "label": "TLO after tool-change",
+   "default": true,
+   "help": "Output a G43 TLO after tool-change"
+  },
+  {
+   "name": "tool_change",
+   "scope": "job",
+   "type": "bool",
+   "label": "Allow tool-change",
+   "default": true,
+   "help": "Unchecked to suppress tool-change (M6)"
+  },
+  {
+   "name": "axis_precision",
+   "scope": "machine",
+   "type": "int",
+   "label": "Axis precision in output",
+   "default": 2,
+   "help": "Decimals of precision for axis motion"
+  },
+  {
+   "name": "feed_precision",
+   "scope": "machine",
+   "type": "int",
+   "label": "Feedrate precision in output",
+   "default": 3,
+   "help": "Decimals of precision for feedrate (F)"
+  },
+  {
+   "name": "spindle_decimals",
+   "scope": "machine",
+   "type": "int",
+   "label": "Spindle-speed precision in output",
+   "default": 1,
+   "help": "Decimals of precision for spindle-speed"
+  },
+  {
+   "name": "f_for_rapid_moves",
+   "scope": "machine",
+   "type": "bool",
+   "label": "Output F parameter for G0 (rapid)",
+   "default": false,
+   "help": "Whether to output the F parameter for G0 (rapid moves)"
+  },
+  {
+   "name": "translate_no_engagement_feed",
+   "scope": "machine",
+   "type": "bool",
+   "label": "Output non-engaging moves at the no-engagement feed rate",
+   "default": false,
+   "help": "Certain G0's become G1 for operations that have \"No-Engagement Feedrate\""
+  }
+ ],
+ "rotation_strategies": [
+  "dwo",
+  "twp"
+ ],
+ "plane_command_default": "PlaneCommand.G68_2",
+ "machine_enums": {
+  "MachineUnits": [
+   "G21",
+   "G20"
+  ],
+  "OutputUnits": [
+   "metric",
+   "imperial"
+  ],
+  "AxisRole": [
+   "table_linear",
+   "table_rotary",
+   "head_linear",
+   "head_rotary"
+  ],
+  "RotationStrategy": [
+   "none",
+   "dwo",
+   "twp",
+   "post_transform"
+  ],
+  "WrapStrategy": [
+   "unwound",
+   "modulo",
+   "rezero"
+  ],
+  "ToolheadType": [
+   "rotary",
+   "laser",
+   "waterjet",
+   "plasma",
+   "wire_edm"
+  ]
+ },
+ "machine_dataclasses": {
+  "HeaderOptions": [
+   {
+    "field": "include_date",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_description",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_document_name",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_machine_name",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_project_file",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_units",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_tool_list",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "include_fixture_list",
+    "type": "<class 'bool'>",
+    "default": true
+   }
+  ],
+  "CommentOptions": [
+   {
+    "field": "enabled",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "symbol",
+    "type": "<class 'str'>",
+    "default": "("
+   },
+   {
+    "field": "include_operation_labels",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "include_blank_lines",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "output_bcnc_comments",
+    "type": "<class 'bool'>",
+    "default": false
+   }
+  ],
+  "FormattingOptions": [
+   {
+    "field": "line_numbers",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "line_number_start",
+    "type": "<class 'int'>",
+    "default": 100
+   },
+   {
+    "field": "line_number_prefix",
+    "type": "<class 'str'>",
+    "default": "N"
+   },
+   {
+    "field": "line_increment",
+    "type": "<class 'int'>",
+    "default": 10
+   },
+   {
+    "field": "command_space",
+    "type": "<class 'str'>",
+    "default": " "
+   },
+   {
+    "field": "end_of_line_chars",
+    "type": "<class 'str'>",
+    "default": "\n"
+   }
+  ],
+  "PrecisionOptions": [
+   {
+    "field": "axis",
+    "type": "<class 'int'>",
+    "default": 3
+   },
+   {
+    "field": "feed",
+    "type": "<class 'int'>",
+    "default": 3
+   },
+   {
+    "field": "spindle",
+    "type": "<class 'int'>",
+    "default": 0
+   }
+  ],
+  "DuplicateOptions": [
+   {
+    "field": "commands",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "parameters",
+    "type": "<class 'bool'>",
+    "default": true
+   }
+  ],
+  "OutputOptions": [
+   {
+    "field": "units",
+    "type": "<enum 'OutputUnits'>",
+    "default": "metric"
+   },
+   {
+    "field": "output_tool_length_offset",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "remote_post",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "output_header",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "header",
+    "type": "<class 'Machine.models.machine.HeaderOptions'>",
+    "default": null
+   },
+   {
+    "field": "comments",
+    "type": "<class 'Machine.models.machine.CommentOptions'>",
+    "default": null
+   },
+   {
+    "field": "formatting",
+    "type": "<class 'Machine.models.machine.FormattingOptions'>",
+    "default": null
+   },
+   {
+    "field": "precision",
+    "type": "<class 'Machine.models.machine.PrecisionOptions'>",
+    "default": null
+   },
+   {
+    "field": "duplicates",
+    "type": "<class 'Machine.models.machine.DuplicateOptions'>",
+    "default": null
+   }
+  ],
+  "ProcessingOptions": [
+   {
+    "field": "early_tool_prep",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "filter_inefficient_moves",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "split_arcs",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "tool_change",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "translate_drill_cycles",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "translate_rapid_moves",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "xy_before_z_after_tool_change",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "return_to",
+    "type": "typing.Tuple[float, float, float] | None",
+    "default": null
+   }
+  ],
+  "BaseFrame": [
+   {
+    "field": "origin",
+    "type": "typing.List[float]",
+    "default": null
+   },
+   {
+    "field": "orientation_quaternion",
+    "type": "typing.List[float]",
+    "default": null
+   }
+  ],
+  "Kinematics": [
+   {
+    "field": "base_frame",
+    "type": "<class 'Machine.models.machine.BaseFrame'>",
+    "default": null
+   },
+   {
+    "field": "tcp_supported",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "rotation_strategy",
+    "type": "<enum 'RotationStrategy'>",
+    "default": "none"
+   },
+   {
+    "field": "notes",
+    "type": "<class 'str'>",
+    "default": ""
+   }
+  ],
+  "LinearAxis": [
+   {
+    "field": "name",
+    "type": "<class 'str'>",
+    "default": null
+   },
+   {
+    "field": "direction_vector",
+    "type": "<class 'Base.Vector'>",
+    "default": null
+   },
+   {
+    "field": "min_limit",
+    "type": "<class 'float'>",
+    "default": 0
+   },
+   {
+    "field": "max_limit",
+    "type": "<class 'float'>",
+    "default": 1000
+   },
+   {
+    "field": "max_velocity",
+    "type": "<class 'float'>",
+    "default": 10000
+   },
+   {
+    "field": "sequence",
+    "type": "<class 'int'>",
+    "default": 0
+   },
+   {
+    "field": "role",
+    "type": "<enum 'AxisRole'>",
+    "default": "table_linear"
+   },
+   {
+    "field": "parent",
+    "type": "str | None",
+    "default": null
+   },
+   {
+    "field": "joint_origin",
+    "type": "typing.List[float]",
+    "default": null
+   }
+  ],
+  "RotaryAxis": [
+   {
+    "field": "name",
+    "type": "<class 'str'>",
+    "default": null
+   },
+   {
+    "field": "rotation_vector",
+    "type": "<class 'Base.Vector'>",
+    "default": null
+   },
+   {
+    "field": "min_limit",
+    "type": "<class 'float'>",
+    "default": -360
+   },
+   {
+    "field": "max_limit",
+    "type": "<class 'float'>",
+    "default": 360
+   },
+   {
+    "field": "max_velocity",
+    "type": "<class 'float'>",
+    "default": 36000
+   },
+   {
+    "field": "sequence",
+    "type": "<class 'int'>",
+    "default": 0
+   },
+   {
+    "field": "prefer_positive",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "role",
+    "type": "<enum 'AxisRole'>",
+    "default": "table_rotary"
+   },
+   {
+    "field": "parent",
+    "type": "str | None",
+    "default": null
+   },
+   {
+    "field": "joint_origin",
+    "type": "typing.List[float]",
+    "default": null
+   },
+   {
+    "field": "solution_preference",
+    "type": "<class 'str'>",
+    "default": "shortest"
+   },
+   {
+    "field": "allow_flip",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "wrap_strategy",
+    "type": "<enum 'WrapStrategy'>",
+    "default": "unwound"
+   }
+  ],
+  "ToolheadCapabilities": [
+   {
+    "field": "can_rotate",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "can_move_z",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "can_move_xy",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "has_power_control",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "has_speed_control",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "has_pulse_control",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "uses_coolant",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "uses_assist_gas",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "uses_water",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "can_turn_on_off",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "has_probing",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "has_auto_focus",
+    "type": "<class 'bool'>",
+    "default": false
+   }
+  ],
+  "Toolhead": [
+   {
+    "field": "name",
+    "type": "<class 'str'>",
+    "default": null
+   },
+   {
+    "field": "toolhead_type",
+    "type": "<enum 'ToolheadType'>",
+    "default": "rotary"
+   },
+   {
+    "field": "id",
+    "type": "str | None",
+    "default": null
+   },
+   {
+    "field": "max_power_kw",
+    "type": "<class 'float'>",
+    "default": 0
+   },
+   {
+    "field": "max_rpm",
+    "type": "<class 'float'>",
+    "default": 0
+   },
+   {
+    "field": "min_rpm",
+    "type": "<class 'float'>",
+    "default": 0
+   },
+   {
+    "field": "tool_change",
+    "type": "<class 'str'>",
+    "default": "manual"
+   },
+   {
+    "field": "coolant_flood",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "coolant_mist",
+    "type": "<class 'bool'>",
+    "default": false
+   },
+   {
+    "field": "coolant_delay",
+    "type": "<class 'float'>",
+    "default": 0.0
+   },
+   {
+    "field": "toolhead_wait",
+    "type": "<class 'float'>",
+    "default": 0.0
+   },
+   {
+    "field": "laser_wavelength",
+    "type": "float | None",
+    "default": null
+   },
+   {
+    "field": "laser_focus_range",
+    "type": "typing.Tuple[float, float] | None",
+    "default": null
+   },
+   {
+    "field": "waterjet_pressure",
+    "type": "float | None",
+    "default": null
+   },
+   {
+    "field": "plasma_amperage",
+    "type": "float | None",
+    "default": null
+   },
+   {
+    "field": "capabilities",
+    "type": "Machine.models.machine.ToolheadCapabilities | None",
+    "default": null
+   }
+  ],
+  "Machine": [
+   {
+    "field": "name",
+    "type": "<class 'str'>",
+    "default": "Default Machine"
+   },
+   {
+    "field": "manufacturer",
+    "type": "<class 'str'>",
+    "default": ""
+   },
+   {
+    "field": "description",
+    "type": "<class 'str'>",
+    "default": ""
+   },
+   {
+    "field": "linear_axes",
+    "type": "typing.Dict[str, Machine.models.machine.LinearAxis]",
+    "default": null
+   },
+   {
+    "field": "rotary_axes",
+    "type": "typing.Dict[str, Machine.models.machine.RotaryAxis]",
+    "default": null
+   },
+   {
+    "field": "toolheads",
+    "type": "typing.List[Machine.models.machine.Toolhead]",
+    "default": null
+   },
+   {
+    "field": "kinematics",
+    "type": "<class 'Machine.models.machine.Kinematics'>",
+    "default": null
+   },
+   {
+    "field": "primary_rotary_axis",
+    "type": "str | None",
+    "default": null
+   },
+   {
+    "field": "secondary_rotary_axis",
+    "type": "str | None",
+    "default": null
+   },
+   {
+    "field": "compound_moves",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "prefer_positive_rotation",
+    "type": "<class 'bool'>",
+    "default": true
+   },
+   {
+    "field": "configuration_units",
+    "type": "<class 'str'>",
+    "default": "metric"
+   },
+   {
+    "field": "version",
+    "type": "<class 'int'>",
+    "default": 1
+   },
+   {
+    "field": "freecad_version",
+    "type": "<class 'str'>",
+    "default": null
+   },
+   {
+    "field": "output",
+    "type": "<class 'Machine.models.machine.OutputOptions'>",
+    "default": null
+   },
+   {
+    "field": "processing",
+    "type": "<class 'Machine.models.machine.ProcessingOptions'>",
+    "default": null
+   },
+   {
+    "field": "postprocessor_file_name",
+    "type": "<class 'str'>",
+    "default": ""
+   },
+   {
+    "field": "postprocessor_properties",
+    "type": "typing.Dict[str, typing.Any]",
+    "default": null
+   },
+   {
+    "field": "parameter_functions",
+    "type": "typing.Dict[str, typing.Callable]",
+    "default": null
+   }
+  ]
+ },
+ "machine_based_posts": [
+  "KineticNCBeamicon2_legacy",
+  "centroid",
+  "centroid_legacy",
+  "dxf",
+  "dynapath_4060_legacy",
+  "dynapath_legacy",
+  "estlcam_legacy",
+  "fablin_legacy",
+  "fangling_legacy",
+  "fanuc",
+  "fanuc_legacy",
+  "generic",
+  "generic_sheet_cutting",
+  "grbl",
+  "grbl_legacy",
+  "heidenhain",
+  "heidenhain_legacy",
+  "jtech_legacy",
+  "linuxcnc",
+  "linuxcnc_legacy",
+  "mach3_mach4",
+  "mach3_mach4_legacy",
+  "marlin",
+  "marlin_legacy",
+  "masso_g3",
+  "nccad_legacy",
+  "opensbp",
+  "opensbp_legacy",
+  "philips_legacy",
+  "rml_legacy",
+  "rrf_legacy",
+  "smoothie",
+  "snapmaker_legacy",
+  "svg",
+  "test",
+  "uccnc_legacy",
+  "wedm_legacy"
+ ],
+ "freecad_commit": "68b4bcf1dea"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["page_text", "changes", "unverified", "figures_wanted", "notes"],
+  "properties": {
+    "page_text": {"type": "string"},
+    "changes": {"type": "array", "items": {"type": "object", "required": ["pr", "what"],
+      "properties": {"pr": {"type": "integer"}, "what": {"type": "string"}}}},
+    "unverified": {"type": "array", "items": {"type": "string"}},
+    "figures_wanted": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}
