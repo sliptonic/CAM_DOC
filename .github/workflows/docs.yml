@@ -38,6 +38,14 @@ jobs:
           node-version: 22
           cache: npm
 
+      # gypsy lint: STYLE.md checks on the pages a pull request changes (advisory on push).
+      - name: Lint changed pages
+        if: github.event_name == 'pull_request'
+        run: |
+          python3 -m pip install --quiet pyyaml
+          files=$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'modules/ROOT/pages/*.adoc' | while read f; do [ -f "$f" ] && echo "$f"; done)
+          if [ -n "$files" ]; then python3 gypsy/lint.py $files; else echo "no pages changed"; fi
+
       - run: npm ci
 
       # Pull-request builds use the checked-out PR content (HEAD) in place of the branch it
