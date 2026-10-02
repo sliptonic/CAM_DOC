@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CAM Area :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/pr-1/cam/wiki-2026-08/misc/area.html">
+    <link rel="prev" href="../modify/simple-copy.html">
+    <link rel="next" href="area-workplane.html">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-1">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="area.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/misc/area.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Miscellaneous</li>
+    <li><a href="area.html">Area</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="area.html">DEV (pre-release)</a>
+    <a class="version" href="../../wiki-2026-08/misc/area.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/misc/area.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">CAM Area</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This is an experimental feature. See <a href="../reference/experimental.html" class="xref page">Enable Experimental Features</a>. The command appears in the <span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Area</b></span> menu and on the <em>Helpful Tools</em> toolbar only when experimental features are enabled.
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock fcinfobox">
+<div class="content">
+<div class="paragraph fcTitle">
+<p><span class="image"><img src="../_images/CAM_Area.svg" alt="CAM Area" width="32"></span> <strong>CAM Area</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Menu location</dt>
+<dd>
+<p><span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Area</b></span></p>
+</dd>
+<dt class="hdlist1">Workbenches</dt>
+<dd>
+<p><a href="../index.html" class="xref page">CAM</a></p>
+</dd>
+<dt class="hdlist1">Default shortcut</dt>
+<dd>
+<p><em>None</em></p>
+</dd>
+<dt class="hdlist1">Introduced in version</dt>
+<dd>
+<p>-</p>
+</dd>
+<dt class="hdlist1">See also</dt>
+<dd>
+<p><a href="area-workplane.html" class="xref page">CAM Area Workplane</a></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="description"><a class="anchor" href="#description"></a>Description</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Area command (tooltip: "Creates a feature area from the selected objects") creates a <code>Path::FeatureArea</code> object, a 2D geometry processor based on the libarea/Clipper2 engine that the Profile, Pocket and other Operations use internally. It performs boolean operations, offsets, pocket patterns and Z sections on planar faces or wires linked in its <strong>Sources</strong> property and exposes the result as a Part shape. It is a developer and debugging aid rather than a machining Operation: it produces no toolpath and is not post-processed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select one or more planar objects, faces or edges in the 3D View or Tree View (edges are expanded to the wire containing them; 3D sub-shapes are rejected with "Selected shape is not 2D").</p>
+</li>
+<li>
+<p>Press the <span class="image"><img src="../_images/CAM_Area.svg" alt="CAM Area" width="16"></span> Area button. A <em>FeatureArea</em> is created whose <strong>Sources</strong> property links the selected objects (sub-elements are first extracted into helper <code>Part::Feature</code> objects named <code>&lt;object&gt;_&lt;Face n&gt;</code>). The source objects are hidden; drag and drop in the Tree View adds or removes sources.</p>
+</li>
+<li>
+<p>Selecting a single existing FeatureArea and pressing the button instead creates a <em>FeatureAreaView</em> object showing individual sections of that area (<strong>Source</strong>; <strong>SectionIndex</strong>: start index of the section to show, negative for reverse index from bottom; <strong>SectionCount</strong>: number of sections to show, 0 for all).</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="properties"><a class="anchor" href="#properties"></a>Properties</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="data"><a class="anchor" href="#data"></a>Data</h3>
+<div class="ulist">
+<div class="title">Area</div>
+<ul>
+<li>
+<p><strong>Operation</strong> (<code>Enumeration</code>): Boolean operation: <code>Union</code>, <code>Difference</code>, <code>Intersection</code>, <code>Xor</code>, <code>Compound</code> (<code>Compound</code> = no operation, used for wire sorting).</p>
+</li>
+<li>
+<p><strong>Fill</strong> (<code>Enumeration</code>): <code>None</code>, <code>Face</code>, <code>Auto</code> — fill the output wires to make a face; <code>Auto</code> makes a face if any child has a face.</p>
+</li>
+<li>
+<p><strong>Coplanar</strong> (<code>Enumeration</code>): <code>None</code>, <code>Check</code>, <code>Force</code> — <code>Force</code> discards non-coplanar shapes, <code>Check</code> only warns.</p>
+</li>
+<li>
+<p><strong>Reorient</strong> (<code>Bool</code>): Re-orient closed wires so that inner wires become holes.</p>
+</li>
+<li>
+<p><strong>Outline</strong> (<code>Bool</code>): Remove all inner wires (holes) before output.</p>
+</li>
+<li>
+<p><strong>Explode</strong> (<code>Bool</code>): Explode the first shape into open edges so that <code>Difference</code> behaves like wire cutting.</p>
+</li>
+<li>
+<p><strong>OpenMode</strong> (<code>Enumeration</code>): <code>None</code>, <code>Union</code>, <code>Edges</code> — how open wires are handled.</p>
+</li>
+<li>
+<p><strong>Deflection</strong> (<code>Precision</code>): Deflection for non-circular curve discretization.</p>
+</li>
+<li>
+<p><strong>SubjectFill</strong> (<code>Enumeration</code>) and <strong>ClipFill</strong> (<code>Enumeration</code>): Clipper2 fill rules <code>EvenOdd</code>, <code>NonZero</code>, <code>Positive</code>, <code>Negative</code>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Base</div>
+<ul>
+<li>
+<p><strong>Sources</strong> (<code>LinkList</code>): The input shapes.</p>
+</li>
+<li>
+<p><strong>WorkPlane</strong> (<code>PartShape</code>): The workplane shape, set by <a href="area-workplane.html" class="xref page">Area Workplane</a>.</p>
+</li>
+<li>
+<p><strong>Placement</strong>, <strong>Label</strong>: generic properties.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Offset</div>
+<ul>
+<li>
+<p><strong>Offset</strong> (<code>Distance</code>): Offset value, positive for expansion, negative for shrinking.</p>
+</li>
+<li>
+<p><strong>ExtraPass</strong> (<code>Integer</code>): Number of extra offset passes to generate.</p>
+</li>
+<li>
+<p><strong>Stepover</strong> (<code>Length</code>): Cutter diameter to step over on each pass; 0 uses <strong>Offset</strong>.</p>
+</li>
+<li>
+<p><strong>JoinType</strong> (<code>Enumeration</code>): <code>Round</code>, <code>Square</code>, <code>Miter</code>.</p>
+</li>
+<li>
+<p><strong>EndType</strong> (<code>Enumeration</code>): <code>Round</code>, <code>Polygon</code>, <code>Joined</code>, <code>Square</code>, <code>Butt</code>.</p>
+</li>
+<li>
+<p><strong>MiterLimit</strong> (<code>Float</code>): Miter limit for join type <code>Miter</code>.</p>
+</li>
+<li>
+<p><strong>RoundPrecision</strong> (<code>Precision</code>): Round joint precision; 0 defaults to <strong>Accuracy</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Pocket</div>
+<ul>
+<li>
+<p><strong>PocketMode</strong> (<code>Enumeration</code>): <code>None</code>, <code>ZigZag</code>, <code>Offset</code>, <code>Spiral</code>, <code>ZigZagOffset</code>, <code>Line</code>, <code>Grid</code>, <code>Triangle</code> — pocket toolpath pattern.</p>
+</li>
+<li>
+<p><strong>ToolRadius</strong> (<code>Length</code>): Tool radius for pocketing.</p>
+</li>
+<li>
+<p><strong>PocketExtraOffset</strong> (<code>Distance</code>): Extra offset for pocketing.</p>
+</li>
+<li>
+<p><strong>PocketStepover</strong> (<code>Length</code>): Cutter diameter to step over on each pass; 0 uses <strong>ToolRadius</strong>.</p>
+</li>
+<li>
+<p><strong>FromCenter</strong> (<code>Bool</code>): Start pocketing from center.</p>
+</li>
+<li>
+<p><strong>Angle</strong> (<code>Angle</code>): Pattern angle in degrees.</p>
+</li>
+<li>
+<p><strong>AngleShift</strong> (<code>Angle</code>): Pattern angle shift for each section.</p>
+</li>
+<li>
+<p><strong>Shift</strong> (<code>Distance</code>): Pattern shift distance for each section (<code>Offset</code>, <code>Grid</code> and <code>Triangle</code> only).</p>
+</li>
+<li>
+<p><strong>ForceMaxStepover</strong> (<code>Bool</code>): Force maximum stepover even if not all area is cleared; otherwise large stepovers are reduced to ensure full coverage. <span class="since">introduced in 26.3</span></p>
+</li>
+<li>
+<p><strong>Thicken</strong> (<code>Bool</code>): Thicken the resulting wires with <strong>ToolRadius</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Section</div>
+<ul>
+<li>
+<p><strong>SectionCount</strong> (<code>Integer</code>): Number of sections to generate; -1 means full sections.</p>
+</li>
+<li>
+<p><strong>Stepdown</strong> (<code>Distance</code>): Step down distance for each section; positive from top down, negative upward.</p>
+</li>
+<li>
+<p><strong>SectionOffset</strong> (<code>Distance</code>): Offset for the first section.</p>
+</li>
+<li>
+<p><strong>SectionTolerance</strong> (<code>Precision</code>): Offset added when hitting the boundary.</p>
+</li>
+<li>
+<p><strong>SectionMode</strong> (<code>Enumeration</code>): <code>Absolute</code>, <code>BoundBox</code>, <code>Workplane</code> — section offset coordinate mode.</p>
+</li>
+<li>
+<p><strong>Project</strong> (<code>Bool</code>): Produce the section by projecting the outline of all shapes to the section plane instead of slicing.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">libarea</div>
+<ul>
+<li>
+<p><strong>Tolerance</strong> (<code>Precision</code>): Point coincidence tolerance.</p>
+</li>
+<li>
+<p><strong>FitArcs</strong> (<code>Bool</code>): Enable arc fitting.</p>
+</li>
+<li>
+<p><strong>Simplify</strong> (<code>Bool</code>): Simplify polygons after operation.</p>
+</li>
+<li>
+<p><strong>CleanDistance</strong> (<code>Length</code>): Clean polygons smaller than this distance.</p>
+</li>
+<li>
+<p><strong>Accuracy</strong> (<code>Precision</code>): Arc fitting accuracy.</p>
+</li>
+<li>
+<p><strong>Unit</strong> (<code>Float</code>): Scaling factor for conversion to inch.</p>
+</li>
+<li>
+<p><strong>MinArcPoints</strong> (<code>Integer</code>): Minimum segments for arc discretization.</p>
+</li>
+<li>
+<p><strong>MaxArcPoints</strong> (<code>Integer</code>): Maximum segments for arc discretization (currently ignored).</p>
+</li>
+<li>
+<p><strong>ClipperScale</strong> (<code>Float</code>): Scale factor to convert floating points to Clipper integers.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="until">1.1 and earlier</span>: The <strong>LastStepover</strong> (Offset group) and <strong>PocketLastStepover</strong> (Pocket group) properties were removed in 26.3.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="view"><a class="anchor" href="#view"></a>View</h3>
+<div class="paragraph">
+<p>The view provider hides the source objects while they are linked, claims them as children in the Tree View, and shows them again when the FeatureArea is deleted. A FeatureAreaView uses the icon <span class="image"><img src="../_images/CAM_Area_View.svg" alt="CAM Area View" width="16"></span>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scripting"><a class="anchor" href="#scripting"></a>Scripting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See also: <a href="https://wiki.freecad.org/FreeCAD_Scripting_Basics">FreeCAD Scripting Basics</a>.</p>
+</div>
+<div class="paragraph">
+<p>The same parameters listed above are the keyword arguments of <code>Path.Area.setParams()</code>, and the defaults can be set with <code>Path.Area.setDefaultParams()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import Path, Part
+
+area = Path.Area()
+area.add(FreeCAD.ActiveDocument.Sketch.Shape)
+area.setParams(Offset=-2.0)
+shape = area.getShape()
+Part.show(shape)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../modify/simple-copy.html">Simple Copy</a></span>
+  <span class="next"><a href="area-workplane.html">Area Workplane</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Glossary :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="prev" href="../tools/feeds-speeds.html">
+    <link rel="next" href="preferences.html">
+    <meta name="description" content="The CAM workbench vocabulary, generated from ADR-000, the ubiquitous-language glossary in the FreeCAD source tree.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-1">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="glossary.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/index.html">Wiki (Aug 2026) (page not in this version)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Additional</li>
+    <li><a href="glossary.html">Glossary</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="glossary.html">DEV (pre-release)</a>
+    <a class="version is-missing" href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/reference/glossary.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Glossary</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Generated from <code>src/Mod/CAM/Roadmap/ADR/ADR-000.md</code> in the FreeCAD source tree. Terms are used
+exactly as written here across this documentation; the <em>Avoid</em> lists name words that are not used.
+To change a definition, change ADR-000.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="job-containers"><a class="anchor" href="#job-containers"></a>Job &amp; containers</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="job"><a class="anchor" href="#job"></a>Job</h3>
+<div class="paragraph">
+<p>The top-level CAM document object that owns a single machining project. Holds the <strong>Model</strong>, <strong>Stock</strong>, <strong>Operations</strong>, <strong>Tool Controllers</strong>, <strong>Setup Sheet</strong>, <strong>Post-Processor</strong> selection, and <strong>Machine</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="job-template"><a class="anchor" href="#job-template"></a>Job Template</h3>
+<div class="paragraph">
+<p>A saved blueprint of a <strong>Job</strong>'s configuration (post-processor, fixtures, output settings, setup-sheet defaults, tool controllers, stock, machine reference) for reuse on new projects. Serialized via the <code>JobTemplate</code> class as XML attribute strings. Distinct from a <strong>Machine Template</strong> — different file format and scope.
+<strong>Avoid:</strong> bare "template" (always qualify as <strong>Job Template</strong> or <strong>Machine Template</strong>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="job-model-group"><a class="anchor" href="#job-model-group"></a>Job Model Group</h3>
+<div class="paragraph">
+<p>The <code>App::DocumentObjectGroup</code> named "Model" that the <strong>Job</strong> owns and exposes through its <code>Model</code> property. Holds one or more <strong>Models</strong> as <strong>Resource Clones</strong>. Access the individual models via <code>Job.Model.Group</code>.
+<strong>Avoid:</strong> "Models" (plural noun for the collection), bare "Model group" (always qualify as <strong>Job Model Group</strong>).
+<strong>Note:</strong> the property name is singular (<code>Job.Model</code>) but the contents are plural — a frequent source of confusion. The singular property holds the group container; the group holds the models.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="model"><a class="anchor" href="#model"></a>Model</h3>
+<div class="paragraph">
+<p>A part being machined. Referenced by the <strong>Job Model Group</strong> as a <strong>Resource Clone</strong> so the original geometry is not mutated. A <strong>Job</strong> may carry multiple Models (e.g. for multi-part fixturing or assemblies machined together); they are all held in the single <strong>Job Model Group</strong>.
+<strong>Avoid:</strong> Part, workpiece (in code/UI — "Model" is the canonical name).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stock"><a class="anchor" href="#stock"></a>Stock</h3>
+<div class="paragraph">
+<p>The raw material the <strong>Tool Bit</strong> cuts away from. Visualization-only — does not constrain toolpaths. Stock has a type: <code>FromBase</code> (derived from the <strong>Model</strong> with offsets — "base" here = the <strong>Model</strong>, not <strong>Base Geometry</strong>), <code>CreateBox</code>, <code>CreateCylinder</code>, or <code>NoStock</code>.
+<strong>Avoid:</strong> blank, billet, raw.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resource-clone"><a class="anchor" href="#resource-clone"></a>Resource Clone</h3>
+<div class="paragraph">
+<p>A <code>Draft.clone</code> of a base object tagged with a <code>PathResource</code> property identifying its role (e.g. <code>"Model"</code>). Used so the <strong>Job</strong> has its own reference to geometry without owning it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setup-sheet"><a class="anchor" href="#setup-sheet"></a>Setup Sheet</h3>
+<div class="paragraph">
+<p>A container on the <strong>Job</strong> holding default values and <strong>Job</strong>-specific defaults (rapid speeds, safe-height expressions, depth expressions, fixtures). New <strong>Operations</strong> read defaults from here.
+<strong>Avoid:</strong> defaults file, config (these are domain-vague).
+<strong>Note:</strong> clashes with the industry term "setup sheet" (a printed shop-floor document describing how to set up a part). In this codebase, "Setup Sheet" always means the defaults container — never the shop-floor document. The closest analogue to the industry meaning is the <strong>Sanity Check</strong> report.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="fixture"><a class="anchor" href="#fixture"></a>Fixture</h3>
+<div class="paragraph">
+<p>A work-coordinate-system selection (G54–G59.9) under which a set of <strong>Operations</strong> is output. A <strong>Job</strong> can output multiple fixtures.
+<strong>Avoid:</strong> WCS (used in code occasionally), work offset, clamping (this is <strong>not</strong> the physical workholding).
+<strong>Note:</strong> clashes with the industry term "fixture" meaning the physical workholding device. In this codebase, "Fixture" always means the WCS. A future initiative may revisit this naming.
+<strong>Note:</strong> distinct from <strong>Work Plane</strong>. A <strong>Fixture</strong> is a control-side selection that carries no geometry; a <strong>Work Plane</strong> is part geometry the workbench knows exactly. See <strong>Work Plane</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="operations"><a class="anchor" href="#operations"></a>Operations</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="operation"><a class="anchor" href="#operation"></a>Operation (also <strong>Op</strong>)</h3>
+<div class="paragraph">
+<p>A single machining step that produces a <strong>Toolpath</strong> — e.g. a pocket, a profile, a drilling cycle. <strong>Op</strong> is a synonym, used as code shorthand (filenames, variable names, <code>Path/Op/</code>). Inherits from the internal base class <code>ObjectOp</code> (<code>Path/Op/Base.py</code>). Configured by <strong>Feature</strong> flags + properties + <strong>Base Geometry</strong> + a <strong>Tool Controller</strong>.
+<strong>Avoid:</strong> step, task, action. <code>ObjectOp</code> is internal — not a domain term.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="strategy"><a class="anchor" href="#strategy"></a>Strategy</h3>
+<div class="paragraph">
+<p>A named selection between alternative algorithms within an <strong>Operation</strong> that share the operation&#8217;s framework but differ in their motion or behavior. Currently exposed concretely as the <code>App::PropertyEnumeration</code> property <code>Strategy</code> on <strong>Drilling</strong> (values: "Drilling", "Tapping"), which supersedes the standalone Tapping op. The concept extends informally to other algorithmic choices — for example, a <strong>linking strategy</strong> governs how rapids and lead-ins connect successive cuts; a clearing strategy chooses between offset, zigzag, and spiral patterns within a pocket — though those choices are not all yet exposed as named <code>Strategy</code> properties.
+<strong>Avoid:</strong> mode (acceptable in legacy properties like <code>CutMode</code>, but Strategy is the canonical forward-going term for "which algorithm"), pattern (use only when describing a geometric pattern itself, not the algorithm choice), kind, type. Distinct from <strong>Generator</strong> — a Strategy <strong>uses</strong> one or more Generators to build its motion; they are not interchangeable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="feature"><a class="anchor" href="#feature"></a>Feature (in operation context)</h3>
+<div class="paragraph">
+<p>A bit-flag (<code>FeatureTool</code>, <code>FeatureDepths</code>, <code>FeatureHeights</code>, …) that an <strong>Operation</strong> ORs together to declare which standard properties it supports. Distinct from FreeCAD&#8217;s generic notion of "feature" (a document object).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="base-geometry"><a class="anchor" href="#base-geometry"></a>Base Geometry</h3>
+<div class="paragraph">
+<p>The user-selected geometry on the <strong>Model</strong> (faces, edges, vertices) that an <strong>Operation</strong> acts on. Stored on the operation as the <code>Base</code> property. Canonical term — the bare word "Base" is <strong>not</strong> a domain term and only appears as code-internal naming (<code>Path/Base/</code>, <code>ObjectOp.Base</code>, <code>FromBase</code>).
+<strong>Avoid:</strong> target, selection, input geometry, "Base" alone.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="drillable"><a class="anchor" href="#drillable"></a>Drillable</h3>
+<div class="paragraph">
+<p>A predicate applied to a candidate face. A face is <strong>drillable</strong> with respect to a given <strong>Tool Bit</strong> diameter and an approach vector (machine pose). The <code>Path/Base/Drillable.py</code> module supplies the classifier predicates (e.g. <code>isDrillableCylinder</code>) used by <strong>Circular Hole</strong> operations to filter selectable <strong>Base Geometry</strong>.
+<strong>Avoid:</strong> "drill candidate", "hole feature" (those are not the predicate).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deprecated"><a class="anchor" href="#deprecated"></a>Deprecated (of an <strong>Operation</strong> or one of its configurations)</h3>
+<div class="paragraph">
+<p>Still loads, executes, and post-processes, but is superseded and will be removed in a future release. A deprecated op declares a <strong>Deprecation Notice</strong> by overriding <code>opDeprecationNotice(obj)</code> on its <code>ObjectOp</code> subclass; the base class logs the notice when a document is restored and the op&#8217;s task panel shows it as a banner. The notice names the replacement and says whether new instances can still be created — an op whose command has been removed from the menus (Tapping, Face) cannot be created, only edited. A notice may be conditional on property values, so a single configuration of an op can be deprecated while the op itself is not (<strong>Surface</strong> with <code>ScanType="Rotational"</code>). Wording comes from <code>Path.Op.Base.deprecationNotice()</code> so every notice reads the same.
+<strong>Avoid:</strong> legacy (says nothing about removal), obsolete, retired, "old X". Removing a command from the menus without a <strong>Deprecation Notice</strong> is not deprecation; it is silent removal.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="depth-profile"><a class="anchor" href="#depth-profile"></a>Depth profile (cluster of properties on most ops)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Start Depth</strong> — Z height where cutting begins.</p>
+</li>
+<li>
+<p><strong>Final Depth</strong> — Z height where cutting ends.</p>
+</li>
+<li>
+<p><strong>Step Down</strong> — Increment <strong>axial to the tool</strong> (along the tool&#8217;s own axis) between successive depth passes. For planar ops this is a Z decrement per pass; for <strong>Rotary Surface</strong> this is a <strong>radial</strong> decrement (each layer moves the cutter closer to the rotary axis). The geometric direction differs but the semantic is the same: each pass advances the cutter one step further through the material along the tool axis.</p>
+</li>
+<li>
+<p><strong>Step Over</strong> — Increment <strong>radial to the tool</strong> (perpendicular to the tool&#8217;s axis, across the surface) between adjacent passes. For planar facing/pocketing this is the lateral spacing between parallel passes; for <strong>Rotary Surface</strong> this is the <strong>axial</strong> advance per full revolution (the spiral pitch). The geometric direction differs but the semantic is the same: each pass shifts the cutter sideways by one tool-radial increment.</p>
+</li>
+<li>
+<p><strong>Finish Depth</strong> — the amount of material reserved for the <strong>Finish Pass</strong>. Controlled by the <code>FinDepth</code> expression or property on the operation. Zero means no separate finish pass.</p>
+</li>
+<li>
+<p><strong>Clearance Height</strong> — the height for safe rapids over fixtures, measured along the <strong>Tool Axis</strong>. For an operation with the default <strong>Work Plane</strong> this is a Z height, which is the usual case.</p>
+</li>
+<li>
+<p><strong>Safe Height</strong> — the height for rapids within the operation, measured the same way.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Avoid:</strong> "axial stepover", "radial stepdown" (qualifier is redundant — Step Over is always along-surface, Step Down is always into-material). For rotary ops, just say <strong>Step Over</strong> and <strong>Step Down</strong>; the axial/radial mapping is implicit.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="finish-pass"><a class="anchor" href="#finish-pass"></a>Finish Pass</h3>
+<div class="paragraph">
+<p>A final cutting pass that follows a new toolpath offset from the roughing passes, removing only a thin, controlled amount of material (the <strong>Finish Depth</strong> when depth-based, or a lateral allowance when offset-based). The purpose is surface quality: a light, consistent cut produces a better finish than the variable remainder left by roughing. A Finish Pass is <strong>not</strong> a repetition of the previous pass — it has its own geometry.
+<strong>Avoid:</strong> conflating with <strong>Spring Pass</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring-pass"><a class="anchor" href="#spring-pass"></a>Spring Pass</h3>
+<div class="paragraph">
+<p>An <strong>exact repetition</strong> of the immediately preceding cutting pass with no change in depth, offset, or feed. Its purpose is deflection recovery: the first pass leaves a thin witness of uncut material because tool and workpiece deflect under load; the repeat pass, seeing almost no load, springs back to true and cleans the witness. Not currently implemented as a first-class feature in the CAM workbench, but the concept is distinct from <strong>Finish Pass</strong>.
+<strong>Avoid:</strong> conflating with <strong>Finish Pass</strong>. A <strong>Finish Pass</strong> follows a <strong>new</strong> toolpath with a controlled allowance; a <strong>Spring Pass</strong> re-runs the <strong>same</strong> toolpath to recover deflection.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="operation-catalog"><a class="anchor" href="#operation-catalog"></a>Operation catalog (current operation types)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Pocket — 2.5D area clearing inside a boundary. Canonical implementation is <code>Path/Op/PocketShape.py</code>. <code>Path/Op/PocketBase.py</code> is an internal shared base class (also used by Mill Face, Engrave) and is not a user-facing concept.</p>
+</li>
+<li>
+<p>3D Pocket — 3D cavity clearing. Implemented in <code>Path/Op/Pocket.py</code>. Distinct from <strong>Pocket</strong>.</p>
+</li>
+<li>
+<p>Profile — cuts along a contour (inside/outside/on-line).</p>
+</li>
+<li>
+<p>Adaptive — high-efficiency clearing using a constant tool engagement strategy.</p>
+</li>
+<li>
+<p>Drilling — canned-cycle hole-making on circular holes. Carries a <strong>Strategy</strong> property selecting between "Drilling" and "Tapping" algorithms.</p>
+</li>
+<li>
+<p>Tapping — thread cutting in holes. <strong>Deprecated</strong>: superseded by <strong>Drilling</strong> with <code>Strategy="Tapping"</code>; command removed from the menus.</p>
+</li>
+<li>
+<p>ThreadMilling — milled thread on a hole.</p>
+</li>
+<li>
+<p>Helix — helical interpolation into a hole.</p>
+</li>
+<li>
+<p>Engrave — single-line engraving along edges.</p>
+</li>
+<li>
+<p>Vcarve — V-bit carving using a Voronoi medial-axis.</p>
+</li>
+<li>
+<p>Slot — slot cuts.</p>
+</li>
+<li>
+<p>Surface — 3D surface finishing (requires <strong>OCL</strong>). Its <code>ScanType="Rotational"</code> configuration is <strong>Deprecated</strong>: superseded by <strong>Rotary Surface</strong>. The op stays available for planar scans.</p>
+</li>
+<li>
+<p>Waterline — constant-Z surface finishing (requires <strong>OCL</strong>).</p>
+</li>
+<li>
+<p>Planar Surface — unified 3D surface finishing intended to replace <strong>Surface</strong> and <strong>Waterline</strong> (requires <strong>OCL</strong>). <code>Path/Op/PlanarSurface.py</code>.</p>
+</li>
+<li>
+<p>Rotary Surface — 4th-axis surface finishing around a rotary axis, using the rotary <strong>Generators</strong> (requires <strong>OCL</strong> and a <strong>Machine</strong> with a rotary axis). <code>Path/Op/RotarySurface.py</code>.</p>
+</li>
+<li>
+<p>Mill Facing — face-milling the top of stock. Canonical implementation is <code>Path/Op/MillFacing.py</code>.</p>
+</li>
+<li>
+<p>Face — the original facing op, <code>Path/Op/MillFace.py</code>. <strong>Deprecated</strong>: superseded by <strong>Mill Facing</strong>; command removed from the menus.</p>
+</li>
+<li>
+<p>Probe — probing routine.</p>
+</li>
+<li>
+<p>Deburr — edge-break pass.</p>
+</li>
+<li>
+<p>Custom — user-supplied G-code injected as a path.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> the F&amp;S subsystem groups these into a smaller cutting-kind vocabulary (<code>OP_TYPES</code> in <code>Path/Tool/FeedsSpeeds/types.py</code>: <code>profile</code>, <code>pocket</code>, <code>slot</code>, <code>drill</code>, <code>adaptive</code>, <code>surface_finish</code>). The mapping is many-to-one — Tapping/Drilling/Helix all map to <code>"drill"</code>, Mill Facing maps to <code>"surface_finish"</code>, etc. The two vocabularies are intentionally different: the Operation catalog enumerates user-facing op kinds; <code>OP_TYPES</code> enumerates F&amp;S-relevant cutting kinds.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tools"><a class="anchor" href="#tools"></a>Tools</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="tool"><a class="anchor" href="#tool"></a>Tool (bare)</h3>
+<div class="paragraph">
+<p>Not a domain term. Always disambiguate to <strong>Tool Bit</strong>, <strong>Tool Controller</strong>, <strong>Tool Library</strong>, or <strong>Tool Shape</strong>. The compound names below are the only canonical forms.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-controller"><a class="anchor" href="#tool-controller"></a>Tool Controller (also <strong>TC</strong>)</h3>
+<div class="paragraph">
+<p>The runtime pairing of a <strong>Tool Bit</strong> with <strong>Spindle Speed</strong>, <strong>Horizontal Feed</strong>, <strong>Vertical Feed</strong>, and rapids. <strong>Operations</strong> reference a <strong>Tool Controller</strong>, not a <strong>Tool Bit</strong> directly. Lives under the <strong>Job</strong>'s <code>Tools</code> group. F&amp;S values may be hand-entered (recorded as <code>"user"</code> provenance) or filled by the <strong>Resolver</strong> via the F&amp;S dialog; per-field source is tracked in <strong>Feed/Speed Provenance</strong>.
+<strong>Avoid:</strong> tool slot, tool assembly (in CAM-workbench code; "Tool Controller" or "TC" only).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-bit"><a class="anchor" href="#tool-bit"></a>Tool Bit</h3>
+<div class="paragraph">
+<p>The cutter itself — geometry, cutting edges, dimensional parameters. Has a <strong>Tool Shape</strong> classifier: <code>Endmill</code>, <code>Ballend</code>, <code>Bullnose</code>, <code>Chamfer</code>, <code>Drill</code>, <code>VBit</code>, <code>Dovetail</code>, <code>Reamer</code>, <code>SlittingSaw</code>, <code>Tap</code>, <code>ThreadMill</code>, <code>Probe</code>, <code>TaperedBallNose</code>, <code>Radius</code>, <code>Custom</code>. May carry one or more F&amp;S <strong>Presets</strong>, persisted in the <code>.fctb</code> file and editable in the ToolBit editor&#8217;s Presets tab.
+<strong>Avoid:</strong> cutter, bit, end mill (when speaking of the abstraction — use the specific shape name when speaking of the kind).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-library"><a class="anchor" href="#tool-library"></a>Tool Library</h3>
+<div class="paragraph">
+<p>A persisted collection of <strong>Tool Bits</strong>, serialized to disk. Independent of any <strong>Job</strong> — libraries are shared across projects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-shape"><a class="anchor" href="#tool-shape"></a>Tool Shape</h3>
+<div class="paragraph">
+<p>The geometric template for a <strong>Tool Bit</strong>. Defines the parametric shape used to render and (for some operations) compute engagement.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="feeds-speeds"><a class="anchor" href="#feeds-speeds"></a>Feeds &amp; Speeds</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="spindle-speed"><a class="anchor" href="#spindle-speed"></a>Spindle Speed</h3>
+<div class="paragraph">
+<p>The rotational speed of the cutter, in rpm. Stored on the <strong>Tool Controller</strong> as <code>SpindleSpeed</code>. The range a machine can actually deliver is stored separately, on the <strong>Machine</strong>'s <strong>Toolhead</strong> as <code>min_rpm</code>/<code>max_rpm</code>.
+<strong>Avoid:</strong> rpm (a unit, not a name), S-word (G-code term, not a domain term).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="feed"><a class="anchor" href="#feed"></a>Feed (umbrella)</h3>
+<div class="paragraph">
+<p>A commanded rate of travel along a <strong>Toolpath</strong>, in mm/min. <strong>Horizontal Feed</strong> and <strong>Vertical Feed</strong> are the stored forms. A feed is a property of the path, not of any one axis: relating a feed to a machine&#8217;s per-axis limits means resolving the move through the machine&#8217;s kinematic chain, and for a machine with rotary axes the meaning of the emitted F word is controller-specific.
+<strong>Avoid:</strong> velocity (reserved for the per-axis machine limit — see <strong>Axis Velocity</strong>), speed (reserved for <strong>Spindle Speed</strong>), feedrate.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="horizontal-feed"><a class="anchor" href="#horizontal-feed"></a>Horizontal Feed</h3>
+<div class="paragraph">
+<p>The cutting feed for XY motion, in mm/min. Stored on the <strong>Tool Controller</strong> as <code>HorizFeed</code>.
+<strong>Avoid:</strong> feedrate (ambiguous between horizontal and vertical), F-word (G-code term).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="vertical-feed"><a class="anchor" href="#vertical-feed"></a>Vertical Feed</h3>
+<div class="paragraph">
+<p>The plunge feed for −Z motion, in mm/min. Stored on the <strong>Tool Controller</strong> as <code>VertFeed</code>. May also be expressed as a ratio of <strong>Horizontal Feed</strong> (the <strong>Vert Feed Ratio</strong> on a <strong>Preset</strong>).
+<strong>Avoid:</strong> plunge rate (acceptable in user-facing prose; in code use <strong>Vertical Feed</strong>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="surface-speed"><a class="anchor" href="#surface-speed"></a>Surface Speed (also <strong>Vc</strong>)</h3>
+<div class="paragraph">
+<p>The speed of a point on the cutting edge relative to the workpiece, in m/min. Equivalent to "SFM" (Surface Feet per Minute) in imperial units. Determined primarily by the workpiece material and the tool&#8217;s material; together with tool diameter it gives <strong>Spindle Speed</strong>: <code>rpm = (Vc × 1000) / (π × diameter_mm)</code>.
+<strong>Avoid:</strong> SFM (imperial-only — the codebase uses m/min throughout). "Cutting speed" is acceptable in user-facing prose; in code identifiers use <code>surface_speed</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="chipload"><a class="anchor" href="#chipload"></a>Chipload (also <strong>Fz</strong>)</h3>
+<div class="paragraph">
+<p>The thickness of material removed by one cutting edge per revolution, in mm/tooth. Together with <strong>Spindle Speed</strong> and flute count it gives <strong>Horizontal Feed</strong>: <code>feed = rpm × flutes × chipload</code>.
+<strong>Avoid:</strong> feed per tooth (acceptable but verbose), chip thickness (overlaps with effective chip thickness in chip-thinning contexts).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="preset"><a class="anchor" href="#preset"></a>Preset</h3>
+<div class="paragraph">
+<p>A named F&amp;S record stored on a <strong>Tool Bit</strong> specifying <strong>Surface Speed</strong>, <strong>Chipload</strong>, and an optional vertical-feed ratio for a (material, op-type) combination. Multiple presets per tool. Storage is engineering-only — raw feed (mm/min) and raw spindle speed (rpm) are derived at use-time from preset values plus the tool&#8217;s geometry; they are not persisted.
+<strong>Avoid:</strong> default, recipe, profile (overlaps with the Profile op), rule (rules are a separate, broader concept planned for Phase 2).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="provider"><a class="anchor" href="#provider"></a>Provider</h3>
+<div class="paragraph">
+<p>A pluggable object that suggests F&amp;S values from one source (a <strong>Preset</strong>, a future vendor catalog, a future formula). Implements <code>suggest(tool, material, op) → PartialResult | None</code>. Phase 1 ships <code>ToolPresetProvider</code> and <code>ToolDefaultsProvider</code>.
+<strong>Avoid:</strong> source, lookup, calculator (these collide with adjacent concepts).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resolver"><a class="anchor" href="#resolver"></a>Resolver</h3>
+<div class="paragraph">
+<p>The pure function <code>resolve(tool, material, op) → FeedSpeedResult</code> that walks a chain of <strong>Providers</strong> in priority order and merges their contributions. GUI- and FreeCAD-Document-independent at the boundary; testable from fixtures without a running FreeCAD process.
+<strong>Avoid:</strong> calculator, suggester, engine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="feed-speed-provenance"><a class="anchor" href="#feed-speed-provenance"></a>Feed/Speed Provenance (property: <code>FeedSpeedProvenance</code>)</h3>
+<div class="paragraph">
+<p>A per-field record on a <strong>Tool Controller</strong> identifying where each F&amp;S value came from: <code>"user"</code> for hand-entered values, or a source string from a <strong>Provider</strong> (e.g. <code>"preset:tool/aluminum-6061/profile"</code>). The <strong>Resolver</strong> never overwrites a field whose provenance is <code>"user"</code>.
+<strong>Avoid:</strong> source (too generic — the property is named <code>FeedSpeedProvenance</code>), origin.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="toolpath-generation"><a class="anchor" href="#toolpath-generation"></a>Toolpath generation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="toolpath"><a class="anchor" href="#toolpath"></a>Toolpath</h3>
+<div class="paragraph">
+<p>A sequence of motion commands (<code>G0</code>/<code>G1</code>/<code>G2</code>/<code>G3</code>/…) attached to an <strong>Operation</strong>. The output of <code>opExecute()</code>. Canonical user-facing and docs term.
+<strong>Avoid:</strong> trajectory, motion plan, "path" (lowercase, as a noun).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="path"><a class="anchor" href="#path"></a>Path (namespace only)</h3>
+<div class="paragraph">
+<p>The Python namespace <code>Path.<strong></code> and source tree <code>Path/</code>. Legacy name, retained for backwards compatibility after the Path → CAM workbench rename. Not a domain term — never use bare "Path" to mean *Toolpath</strong> in docs or UI. The <code>PathScripts.*</code> namespace (e.g. <code>PathScripts/PathUtils.py</code>) is also legacy and is being migrated into <code>Path/</code>; treat it as code-internal only.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="generator"><a class="anchor" href="#generator"></a>Generator</h3>
+<div class="paragraph">
+<p>A low-level motion-pattern function in <code>Path/Base/Generator/</code> (drill, helix, tapping, spiral facing, zigzag facing, linking, etc.). <strong>Operations</strong> call generators to produce specific motion segments.
+<strong>Avoid:</strong> strategy, planner, G-code generator (use <strong>Post-Processor</strong> for that — never conflate the two).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="work-plane"><a class="anchor" href="#work-plane"></a>Work Plane</h3>
+<div class="paragraph">
+<p>The frame an <strong>Operation</strong> works in: a named <code>Part::LocalCoordinateSystem</code> held in the <strong>Job</strong>'s Workplanes group, which several <strong>Operations</strong> may link to. Its local +Z is the <strong>Tool Axis</strong>. An <strong>Operation</strong> with no <strong>Work Plane</strong> works in the <strong>Job</strong>'s own XY, which is ordinary Z-up milling. A <strong>Work Plane</strong> that is not parallel to the table makes an operation <strong>Indexed</strong>: the machine&#8217;s rotary axes position the part so the tool points along the frame&#8217;s +Z, then cut a conventional three-axis program in that frame. An <strong>Operation</strong> generates in its <strong>Work Plane</strong>'s frame: the plane&#8217;s origin is zero, its X is the plane&#8217;s X, and the <strong>Tool Axis</strong> is Z, so every depth and height is a distance along the <strong>Tool Axis</strong> from the plane and every direction-sensitive parameter is relative to the plane&#8217;s X. Its <strong>Toolpath</strong> is stored in that frame with no rotary words, and the <strong>Operation</strong>'s Placement positions it — the convention the simulators, Inspect and the posts read through <code>getPathWithPlacement()</code>. A <strong>Dressup</strong> generates in its base <strong>Operation</strong>'s frame and carries that operation&#8217;s Placement, so everything downstream reads a dressup as it reads an operation. Generation knows nothing about the <strong>Machine</strong>: the <strong>Post-Processor</strong> solves the rotary positions from the Placement at output time and expresses the path in the form the <strong>Machine</strong>'s <strong>Rotation Strategy</strong> names, so changing the <strong>Machine</strong> means re-posting, not recomputing. A plane the <strong>Machine</strong> cannot index to is refused there, naming the plane and the rotary limits; the <strong>Operation</strong> only warns. A <strong>Work Plane</strong> may name a <strong>Fixture</strong>: the <strong>Post-Processor</strong> selects it before positioning for the plane and returns to the <strong>Job</strong>'s <strong>Fixture</strong> afterwards; the <strong>Job</strong>'s Fixtures list, which repeats the program per part, is not involved. Any plane can be created on any <strong>Job</strong>, and every <strong>Operation</strong> generates its path in its plane; whether the <strong>Machine</strong> can reach a tilted one is the <strong>Post-Processor</strong>'s question, not creation&#8217;s or generation&#8217;s.
+<strong>Avoid:</strong> work coordinate system, WCS, local coordinate system, indexed frame, bare "plane", tilted plane.
+<strong>Note:</strong> <code>PathScripts.PathUtils.makeWorkplane()</code> uses the word for something unrelated — a circle at a shape&#8217;s <code>ZMin</code> handed to <code>Path.Area</code> as its projection plane. That is a non-use of the term; the function should be renamed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-axis"><a class="anchor" href="#tool-axis"></a>Tool Axis</h3>
+<div class="paragraph">
+<p>The direction the tool points, from the part toward the tool. For an <strong>Indexed</strong> <strong>Operation</strong> it is the <strong>Work Plane</strong>'s local +Z and is constant for the whole operation. Named separately from <strong>Work Plane</strong> because beyond indexed work it varies along a <strong>Toolpath</strong> and stops being a property of the operation.
+<strong>Avoid:</strong> tool vector, spindle axis, approach direction, "up".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="indexed"><a class="anchor" href="#indexed"></a>Indexed (also <strong>3+1</strong>, <strong>3+2</strong>)</h3>
+<div class="paragraph">
+<p>Rotary axes position the part or head and are stationary while cutting; each cut is three-axis-shaped in the <strong>Operation</strong>'s <strong>Work Plane</strong>. Contrast <strong>Simultaneous</strong>, where rotary axes move during the cut, which is not supported.
+<strong>Avoid:</strong> multi-axis as a synonym — it spans both; positional.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dressup"><a class="anchor" href="#dressup"></a>Dressup</h3>
+<div class="paragraph">
+<p>A wrapper object that takes an <strong>Operation</strong>'s <strong>Path</strong> and modifies it in-place: holding <strong>Tags</strong>, <strong>Boundary</strong> trimming, <strong>DogboneII</strong> corner relief, <strong>Array</strong> duplication. A dressup <strong>replaces</strong> its child operation in the <strong>Job</strong>'s output sequence. It has no <strong>Work Plane</strong> of its own: it reads its base operation&#8217;s stored <strong>Path</strong>, in that operation&#8217;s plane frame, edits it there, and stores the result in the same frame with the base operation&#8217;s Placement, re-derived on every recompute (<code>Path.Dressup.Utils.placeWithBase()</code>). <code>workplaneForOp()</code> resolves a dressup&#8217;s frame through its base.
+<strong>Avoid:</strong> post-modifier, path filter, decorator.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tag"><a class="anchor" href="#tag"></a>Tag (holding tag)</h3>
+<div class="paragraph">
+<p>A small bridge of uncut material left on a <strong>Profile</strong> so the part doesn&#8217;t move when fully cut through. Created via the <strong>Tags</strong> <strong>Dressup</strong>.
+<strong>Avoid:</strong> tab (industry alternate; we use "tag").</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="output-pipeline"><a class="anchor" href="#output-pipeline"></a>Output pipeline</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="post-processor"><a class="anchor" href="#post-processor"></a>Post-Processor (also <strong>Post</strong>)</h3>
+<div class="paragraph">
+<p>The component that converts a <strong>Job</strong>'s <strong>Paths</strong> into machine-specific G-code text. Selected per-<strong>Job</strong>. Lives in <code>Path/Post/scripts/</code> as <code>&lt;machine&gt;_post.py</code>.
+<strong>Avoid:</strong> G-code generator, exporter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="machine"><a class="anchor" href="#machine"></a>Machine</h3>
+<div class="paragraph">
+<p>A description of the physical CNC machine: axes (linear/rotary, table/head), units, limits, plus post-processor formatting settings (line numbers, comment style, header content). Configured via the <strong>Machine Editor</strong> UI and saved as <code>.fcm</code> files.
+<strong>Avoid:</strong> controller (overlaps with Tool Controller), CNC.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="toolhead"><a class="anchor" href="#toolhead"></a>Toolhead</h3>
+<div class="paragraph">
+<p>The powered element of a <strong>Machine</strong> that carries the tool: a rotary spindle, laser, plasma torch, or waterjet. Stored on <strong>Machine</strong> as <code>toolheads</code>, each carrying its type, power, tool-change mode, and — for rotary toolheads — the <code>min_rpm</code>/<code>max_rpm</code> range. Canonical term, because "spindle" names only the rotary kind. <code>Machine.spindles</code>, <code>add_spindle</code> and <code>get_spindle_by_*</code> are legacy aliases kept for compatibility; new code should say <strong>Toolhead</strong>. The model does not currently mark one <strong>Toolhead</strong> as active for a <strong>Job</strong>.
+<strong>Avoid:</strong> spindle (unless the rotary type specifically is meant), head, tool holder.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="axis-velocity"><a class="anchor" href="#axis-velocity"></a>Axis Velocity</h3>
+<div class="paragraph">
+<p>The maximum rate at which one machine axis can move, stored on <strong>Machine</strong> as <code>max_velocity</code> per <strong>LinearAxis</strong> (mm/min) or <strong>RotaryAxis</strong> (deg/min). A per-joint hardware limit, distinct from <strong>Feed</strong>, which is a commanded path rate. Consumed by simulation and cycle-time estimation, not by <strong>Sanity Check</strong>.
+<strong>Avoid:</strong> max feed, feed limit, rapid rate.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rotation-strategy"><a class="anchor" href="#rotation-strategy"></a>Rotation Strategy</h3>
+<div class="paragraph">
+<p>How a <strong>Machine</strong> runs an <strong>Indexed</strong> <strong>Operation</strong>, declared in its kinematics and read by the <strong>Post-Processor</strong>. One of:
+* <strong>DWO</strong> (dynamic work offset; Haas G254, Fanuc G54.2/G54.4) — the post commands the rotary positions and emits the path rotated into the frame the machine reaches; the control applies its pivot offsets.
+* <strong>TWP</strong> (tilted work plane; Fanuc <code>G68.2</code>, Haas <code>G268</code>, Heidenhain <code>PLANE SPATIAL</code>) — the post declares the <strong>Work Plane</strong>'s origin and orientation in its <strong>Plane Command</strong>, and emits the path in the plane&#8217;s own coordinates, exactly as stored; the control positions the rotaries and applies the pivot. The plane is cancelled before a tool or fixture change.
+* <strong>Post-transform</strong> — no control support; the post would rotate every coordinate about the machine&#8217;s measured pivots. Declared but not emitted yet.
+A <strong>Machine</strong> with rotary axes and no strategy refuses to post an <strong>Indexed</strong> <strong>Operation</strong>. The strategy is the machine&#8217;s, not the operation&#8217;s: the same <strong>Job</strong> posts to any of them. Whenever the rotary axes move, the <strong>Machine</strong>'s <strong>Pre-Rotary Move</strong> and <strong>Post-Rotary Move</strong> blocks wrap the move; the moves that bring the tool clear of the part belong in the first, in machine coordinates, and the <strong>Sanity Check</strong> warns when the rotaries move between <strong>Operations</strong> and that block is empty. Legacy <strong>Post-Processors</strong> refuse <strong>Indexed</strong> <strong>Operations</strong>: multi-axis output is for <strong>Post-Processors</strong> of the current kind.
+<strong>Avoid:</strong> output mode, rotation mode, 3+2 mode.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="plane-command"><a class="anchor" href="#plane-command"></a>Plane Command</h3>
+<div class="paragraph">
+<p>The <strong>Tilted Work Plane</strong> command family a <strong>Post-Processor</strong> writes for the <strong>TWP</strong> <strong>Rotation Strategy</strong>: the command words and, with them, the angle convention (<code>G68.2</code>/<code>G268</code> take intrinsic Z-X-Z Euler angles, <code>PLANE SPATIAL</code> takes spatial angles about the fixed machine axes). It belongs to the post, not the <strong>Machine</strong>, because the control family is what selecting a post means; the <strong>Machine</strong> declares only which strategy its control can run. Whether the command positions the rotaries itself (<code>G53.1</code>, <code>TURN</code>) is a <strong>Post-Processor Property</strong> at <strong>Machine scope</strong>, as are the declare, align and cancel lines for a control with a variant spelling.
+<strong>Avoid:</strong> TWP dialect, plane mode.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="machine-template"><a class="anchor" href="#machine-template"></a>Machine Template (<code>.fcm</code> file)</h3>
+<div class="paragraph">
+<p>JSON serialization of a <strong>Machine</strong> definition. Templates ship in <code>Machine/machines/</code> and are loaded into a <strong>Job</strong>. Distinct from a <strong>Job Template</strong> — different file format and scope.
+<strong>Avoid:</strong> machine config, machine profile, bare "template".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="post-processing-dialog"><a class="anchor" href="#post-processing-dialog"></a>Post-Processing Dialog</h3>
+<div class="paragraph">
+<p>The dialog shown when generating G-code from a <strong>Job</strong> (<code>DlgPostProcess</code>). Its Overview tab carries <strong>Run scope</strong> <strong>Post-Processor Properties</strong>; its Options tab carries <strong>Job scope</strong> ones.
+<strong>Avoid:</strong> export dialog, output dialog, post dialog.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="post-processor-property"><a class="anchor" href="#post-processor-property"></a>Post-Processor Property</h3>
+<div class="paragraph">
+<p>A single named setting in a <strong>Post-Processor</strong>'s property schema (<code>get_full_property_schema()</code>), stored by name in a <strong>Machine</strong>'s <code>postprocessor_properties</code>. Every property declares a <strong>Property Scope</strong>.
+<strong>Avoid:</strong> post argument, post option, post parameter (those name the legacy <code>--arg</code> command line, which is a different mechanism).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="property-scope"><a class="anchor" href="#property-scope"></a>Property Scope</h3>
+<div class="paragraph">
+<p>The tier at which a <strong>Post-Processor Property</strong> may be edited. Exactly one of:
+* <strong>Machine scope</strong> — edited in the <strong>Machine Editor</strong> only, and suppressed in the <strong>Post-Processing Dialog</strong>. Describes the machine or controller itself and must not vary between runs (e.g. file extension, comment style, axis precision).
+* <strong>Job scope</strong> — the <strong>Machine Editor</strong> sets the default; the <strong>Post-Processing Dialog</strong>'s Options tab overrides it for a single run. Persisted in the <strong>Machine Template</strong>, overridden via <code>Job.PostProcessorPropertyOverrides</code>.
+* <strong>Run scope</strong> — edited only on the <strong>Post-Processing Dialog</strong>'s Overview tab, never shown in the <strong>Machine Editor</strong>, and never persisted. Applies to one export (e.g. dry-run and marking-only switches).
+* <strong>Internal scope</strong> — never presented in any UI; derived rather than user-set.</p>
+</div>
+<div class="paragraph">
+<p>Scope declares <strong>where a property may be edited</strong>, which is independent of <strong>where it was declared</strong> (the common schema on <code>PostProcessor</code> versus a <strong>Post-Processor</strong>'s own <code>get_property_schema()</code>). The scopes correspond one-to-one with the merge tiers in <code>build_configuration_bundle()</code>.
+<strong>Avoid:</strong> runtime property (the deprecated <code>runtime: True</code> spelling means <strong>Run scope</strong>), per-run flag, override level.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sanity-check"><a class="anchor" href="#sanity-check"></a>Sanity Check (also <strong>CAMSanity</strong>)</h3>
+<div class="paragraph">
+<p>A pre-output validation pass over a <strong>Job</strong> that produces an HTML <strong>Sanity Check report</strong> flagging missing tools, unset feeds, suspicious depths, etc. Canonical user-facing term.
+<strong>Avoid:</strong> linter, validator, pre-flight check, job report.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="squawk"><a class="anchor" href="#squawk"></a>Squawk</h3>
+<div class="paragraph">
+<p>A single finding emitted by a <strong>Sanity Check</strong>. Carries a note, an originating operator, and one of four types: <code>NOTE</code>, <code>TIP</code>, <code>WARNING</code>, <code>CAUTION</code>. <code>WARNING</code> and <code>CAUTION</code> are treated as critical and can block output. The term is aviation-derived and is used throughout the code; keep it.
+<strong>Avoid:</strong> warning (that is one of the four types, not the category), message, issue, error, violation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="relationships"><a class="anchor" href="#relationships"></a>Relationships</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>Job</strong> has exactly one <strong>Job Model Group</strong> (containing one or more <strong>Models</strong>), one <strong>Stock</strong>, one <strong>Setup Sheet</strong>, one <strong>Machine</strong>, one <strong>Post-Processor</strong>, and many <strong>Operations</strong> and <strong>Tool Controllers</strong>.</p>
+</li>
+<li>
+<p>An <strong>Operation</strong> references exactly one <strong>Tool Controller</strong> (when it has <code>FeatureTool</code>).</p>
+</li>
+<li>
+<p>An <strong>Operation</strong> links to zero or one <strong>Work Plane</strong>; a <strong>Job</strong> holds zero or more, and several <strong>Operations</strong> may share one. A new <strong>Operation</strong> adopts the previous <strong>Operation</strong>'s <strong>Work Plane</strong>, as it adopts its <strong>Tool Controller</strong>.</p>
+</li>
+<li>
+<p>An <strong>Operation</strong> may carry a <strong>Strategy</strong> property selecting between alternative algorithms within its operation framework.</p>
+</li>
+<li>
+<p>An <strong>Operation</strong> may carry a <strong>Deprecation Notice</strong>, for the whole op or for one configuration of it; the base op logs it on restore, the task panel displays it, and <strong>Sanity Check</strong> emits a <strong>Squawk</strong> for it.</p>
+</li>
+<li>
+<p>A <strong>Tool Controller</strong> references exactly one <strong>Tool Bit</strong> and carries <strong>Spindle Speed</strong>, <strong>Horizontal Feed</strong>, <strong>Vertical Feed</strong>, and <strong>Feed/Speed Provenance</strong>.</p>
+</li>
+<li>
+<p>A <strong>Tool Bit</strong> belongs to zero or more <strong>Tool Libraries</strong> (libraries are independent of <strong>Jobs</strong>) and may carry zero or more F&amp;S <strong>Presets</strong>.</p>
+</li>
+<li>
+<p>A <strong>Dressup</strong> wraps exactly one <strong>Operation</strong> (and is itself treated as an <strong>Operation</strong> in the <strong>Job</strong>'s output order).</p>
+</li>
+<li>
+<p>An <strong>Operation</strong> uses zero or more <strong>Generators</strong> to build its <strong>Toolpath</strong>.</p>
+</li>
+<li>
+<p>The <strong>Resolver</strong> walks a chain of <strong>Providers</strong> to suggest F&amp;S for a (<strong>Tool Bit</strong>, material, op-type) combination; suggestions are written to a <strong>Tool Controller</strong> with <strong>Feed/Speed Provenance</strong> stamped per field.</p>
+</li>
+<li>
+<p>A <strong>Job</strong> + a <strong>Post-Processor</strong> + a <strong>Machine</strong> produce the final G-code output. The <strong>Machine</strong>'s <strong>Rotation Strategy</strong> decides how an <strong>Indexed</strong> <strong>Operation</strong> is written; the <strong>Post-Processor</strong> declares which strategies it can emit.</p>
+</li>
+<li>
+<p>A <strong>Post-Processor</strong> declares many <strong>Post-Processor Properties</strong>; each carries exactly one <strong>Property Scope</strong>, which determines whether the <strong>Machine Editor</strong>, the <strong>Post-Processing Dialog</strong>, or neither may edit it.</p>
+</li>
+<li>
+<p>A <strong>Machine</strong> has one or more <strong>Toolheads</strong> and two or more <strong>Axes</strong>, each axis carrying an <strong>Axis Velocity</strong>.</p>
+</li>
+<li>
+<p><strong>Sanity Check</strong> runs over a <strong>Job</strong> and emits a report of <strong>Squawks</strong>; it does not modify the <strong>Job</strong>. A <strong>Post-Processor</strong> contributes <strong>Squawks</strong> of its own, including the machine-level checks defined on the base post-processor.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../tools/feeds-speeds.html">Feeds and Speeds</a></span>
+  <span class="next"><a href="preferences.html">Preferences</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
