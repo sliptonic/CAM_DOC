@@ -21,15 +21,22 @@ def main():
     ap.add_argument("--base", required=True, help="branch the pull request targets")
     ap.add_argument("--url", required=True, help="site URL of the preview deployment")
     ap.add_argument("--playbook", default="antora-playbook.yml")
+    ap.add_argument("--only-base", action="store_true",
+                    help="build only the base branch, as the 'before' side of tools/render_diff.py")
     args = ap.parse_args()
 
     with open(args.playbook, encoding="utf-8") as fh:
         pb = yaml.safe_load(fh)
 
     refs = [b for b in CONTENT_BRANCHES if b != args.base] + ["HEAD"]
+    if args.only_base:
+        refs = [args.base]
     for src in pb["content"]["sources"]:
         if src.get("url") == ".":
             src["branches"] = refs
+            if args.only_base:
+                # the committed branch, also when it is the one checked out with local changes
+                src["worktrees"] = False
     pb["site"]["url"] = args.url
     pb["site"]["title"] = pb["site"]["title"] + " — pull request preview"
     yaml.safe_dump(pb, sys.stdout, sort_keys=False)

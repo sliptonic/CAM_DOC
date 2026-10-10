@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 """Generate modules/ROOT/pages/reference/glossary.adoc from FreeCAD's ADR-000 (ubiquitous language).
 
-    python3 tools/glossary_from_adr.py [--adr ~/FreeCAD/src/Mod/CAM/Roadmap/ADR/ADR-000.md]
+    python3 tools/glossary_from_adr.py [--adr ~/FreeCAD-gypsy/src/Mod/CAM/Roadmap/ADR/ADR-000.md]
 
 Every term gets an anchor from its name: "Tool Controller" -> tool-controller, so pages link
 with xref:reference/glossary.adoc#tool-controller[Tool Controller]. The page is generated; edit
@@ -30,7 +30,7 @@ def inline(s):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--adr", default=os.path.expanduser("~/FreeCAD/src/Mod/CAM/Roadmap/ADR/ADR-000.md"))
+    ap.add_argument("--adr", default=os.path.expanduser("~/FreeCAD-gypsy/src/Mod/CAM/Roadmap/ADR/ADR-000.md"))
     a = ap.parse_args()
     src = open(a.adr, encoding="utf-8").read().split("\n")
     try:

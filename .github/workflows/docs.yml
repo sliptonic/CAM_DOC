@@ -71,6 +71,22 @@ jobs:
             python3 tools/build_all.py
           fi
 
+      # Rendered diff: build the base branch too, then mark what the pull request changes in
+      # every page (<page>.diff.html) and list the changed pages (changes.html).
+      - name: Rendered diff (pull request)
+        if: github.event_name == 'pull_request'
+        run: |
+          python3 -m pip install --quiet pyyaml lxml
+          python3 tools/pr_playbook.py --base "${{ github.base_ref }}" --only-base \
+            --url "https://sliptonic.github.io/CAM_DOC" > antora-playbook-base.yml
+          npx antora --stacktrace --to-dir build/base antora-playbook-base.yml
+          python3 tools/render_diff.py --base build/base --head build/site \
+            --against "${{ github.base_ref }}" \
+            --head-label "pull request #${{ github.event.number }}" \
+            --url "https://sliptonic.github.io/CAM_DOC/pr-${{ github.event.number }}" \
+            --summary build/changes.md
+          cat build/changes.md >> "$GITHUB_STEP_SUMMARY"
+
       - uses: actions/upload-artifact@v4
         with:
           name: site
@@ -102,7 +118,9 @@ jobs:
           script: |
             const url = `https://sliptonic.github.io/CAM_DOC/pr-${context.issue.number}/`;
             const marker = '<!-- docs-preview -->';
-            const body = `${marker}\nDocumentation preview: ${url}\n\nBuilt from ${context.sha}.`;
+            const fs = require('fs');
+            const changes = fs.existsSync('build/changes.md') ? fs.readFileSync('build/changes.md', 'utf8') : '';
+            const body = `${marker}\nDocumentation preview: ${url}\n\n${changes}\nBuilt from ${context.sha}.`;
             const {data: comments} = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number});
             const mine = comments.find(c => c.body && c.body.startsWith(marker));
