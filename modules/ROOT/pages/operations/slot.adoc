@@ -8,6 +8,7 @@
 :page-since: 0.19
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -119,7 +120,7 @@ Visual reference for Depth properties (settings)
 * *Cycle Time*: The cycle time estimation for this operation.
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: The orientation of the tool for this operation. Default is (0, 0, 1) for standard Z-up milling. [.since]#introduced in 26.3# Used for 3+2 positioning with a Job of type Multiaxis; can be set from the context menu entry *Set Workplane from Face*.
+* `Workplane`: [.since]#introduced in 26.3#: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in.
 
 .Slot
 * *Custom Point1*: Enter custom start point for slot toolpath. Default: (0, 0, 0). Used, together with Custom Point2, when Base Geometry is empty. The two points must differ and share the same Z value; otherwise a warning is printed and no Toolpath is generated.

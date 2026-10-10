@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -86,7 +87,7 @@ Visual reference for Depth properties (settings)
 * *Split Arcs*: Split arcs into discrete segments
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: [.since]#introduced in 26.3# The orientation of the Tool Bit for this operation; default (0, 0, 1) for standard Z-up milling. Set with the _Set Workplane from Face_ context menu command for 3+2 machining.
+* `Workplane`: [.since]#introduced in 26.3# The xref:job/work-plane.adoc[Work Plane] that the Operation works in.
 
 .Op Values
 These read-only properties hold values calculated by the operation. They are useful as sources for expressions.

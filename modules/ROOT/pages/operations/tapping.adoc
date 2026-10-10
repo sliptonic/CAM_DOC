@@ -4,6 +4,7 @@
 :page-since: 1.1
 :page-workbench: CAM
 :page-audit: applied
+:page-source-pr: 32722
 
 [.obsolete]#obsolete since 26.3#
 
@@ -22,6 +23,8 @@ See also:: xref:operations/drilling.adoc[CAM Drilling]
 == Description
 
 The CAM Tapping command created a G84/G74 tapping Operation for circular holes. It was added as an experimental feature in 1.1 and superseded in 26.3 by the `Tapping` Strategy of the xref:operations/drilling.adoc[CAM Drilling] operation. The command is no longer available in the toolbar or menu; Tapping operations in existing documents continue to recompute, but print a deprecation warning and cannot be newly created.
+
+The *Workplane* property of a Tapping Operation links the Operation to a xref:job/work-plane.adoc[Work Plane] of the Job.
 
 == Migration
 

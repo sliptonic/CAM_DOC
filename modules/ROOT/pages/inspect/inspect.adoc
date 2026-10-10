@@ -8,6 +8,8 @@
 :page-shortcut: P I
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32903
+:page-status: draft
 
 [.fcinfobox]
 --
@@ -18,7 +20,7 @@ Menu location:: menu:CAM[Inspect Toolpath]
 Workbenches:: xref:index.adoc[CAM]
 Default shortcut:: kbd:[P] then kbd:[I]
 Introduced in version:: -
-See also:: _None_
+See also:: xref:job/work-plane.adoc[Work Plane]
 --
 
 == Description
@@ -27,11 +29,17 @@ The image:CAM_Inspect.svg[width=24] xref:inspect/inspect.adoc[Inspect Toolpath] 
 
 Selecting one or more lines in the viewer highlights the corresponding moves in the https://wiki.freecad.org/3D_View[3D View] (drawn with the _Highlight path_ color from menu:Edit[Preferences > CAM > Colors]) and moves the Tool Bit shape of the Operation's Tool Controller to the start point of the selection.
 
+[.since]#introduced in 26.3#: The Tool Bit shape in the 3D View points along the Tool Axis of the Operation.
+
+The figure shows the highlighted moves and the Tool Bit shape for an Operation on a tilted Work Plane.
+
+image::inspect/inspect/result-tool-axis.png["3D view of a Profile operation on a tilted Work Plane, with highlighted moves and the Tool Bit shape along the Tool Axis",600]
+
 [.since]#introduced in 26.3#: line numbers are shown. For very long toolpaths (more than 1000 lines by default, parameter `MaxHighlighterSize`) syntax highlighting is switched off.
 
-image:Path_inspector.jpg[]
+The figure shows the dialog for a Profile operation.
 
-NOTE: This screenshot predates line numbers and the unit note in the current dialog.
+image::inspect/inspect/dialog.png["CAM Inspect dialog with the G-code of a Profile operation, line numbers, the note about the units, and the Raw checkbox",400]
 
 == Usage
 
@@ -46,10 +54,20 @@ NOTE: This screenshot predates line numbers and the unit note in the current dia
 
 * The font and the Number/Keyword/Define name colors of the editor window follow the settings from menu:Edit[Preferences > Editor]. The 3D highlight color comes from the CAM Colors preference page.
 * The size and position of the dialog are stored in the user parameters.
+* *Raw*: shows the commands as the Operation stored them. The viewer does not round the values and does not convert the units when *Raw* is set.
+* [.since]#introduced in 26.3# The viewer does not apply the Placement of the Operation when *Raw* is set.
+* [.since]#introduced in 26.3# When *Raw* is set and the Placement of the Operation is not the identity, the note in the dialog shows one more line. The line gives the origin of the frame of the Operation. The line says that the viewer does not apply the origin and the rotation of the frame.
+
+The figure shows the dialog with *Raw* set for an Operation that links to a Work Plane.
+
+image::inspect/inspect/dialog-raw-work-plane.png["CAM Inspect dialog with Raw set for an Operation on a Work Plane; the note has one more line with the origin of the frame",400]
 
 == Notes
 
 * For an Operation deactivated with xref:inspect/op-active-toggle.adoc[Toggle Operation] the viewer only shows `(inactive operation)`.
+* [.since]#introduced in 26.3# An Operation that links to a xref:job/work-plane.adoc[Work Plane] stores its Toolpath in the frame of the Work Plane. The viewer shows the Toolpath in Job coordinates when *Raw* is not set. The viewer shows the Toolpath in the frame of the Work Plane when *Raw* is set.
+* [.since]#introduced in 26.3# The highlight in the 3D View has the Placement of the Operation. The highlight stays on the Toolpath of an Operation that links to a Work Plane.
+* [.since]#introduced in 26.3# The position of the Tool Bit shape is the position of the selected line in Job coordinates. The Tool Axis of an Operation that links to a Work Plane is the local +Z of the Work Plane.
 
 == Scripting
 

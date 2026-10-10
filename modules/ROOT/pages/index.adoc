@@ -3,6 +3,8 @@
 :page-origin-revision: 98ebc116a0 2026-07-08
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722, 32903
+:page-status: draft
 
 image::Workbench_CAM.svg[CAM workbench icon,128]
 
@@ -29,6 +31,8 @@ The FreeCAD CAM Workbench workflow creates these machine instructions as follows
 The CAM Workbench generates G-code defining the Toolpaths required to mill the model on the target machine in xref:reference/scripting.adoc#the-freecad-internal-gcode-format[the FreeCAD internal G-code dialect], which is later translated to the appropriate dialect for the target CNC controller by the selected Post-Processor.
 
 The G-code is generated from directives and Operations contained in a CAM Job. The Job Workflow lists these in the order they will be executed. The list is populated by adding Operations, Path Dressups, Supplemental Commands, and Path Modifications from the CAM menu, or GUI buttons.
+
+[.since]#introduced in 26.3#: An Operation works in a xref:job/work-plane.adoc[Work Plane], a named frame that the Job holds and that several Operations can share. An Operation with no Work Plane works in the XY of the Job, with the Tool Axis along +Z. The Operation generates its Toolpath in the frame of the Work Plane. The read-only *Placement* property of the Operation positions the Toolpath in the document.
 
 The CAM Workbench provides a xref:tools/library-manager.adoc[Toolbit Library Manager] and a xref:tools/add-toolbit.adoc[Toolbit selector], G-code inspection, and two simulators. It links the Post-Processor and allows importing and exporting Job Templates.
 
@@ -88,6 +92,8 @@ image::Path-DepthsAndHeights.gif[width=500]
 [.caption]
 Visual reference for Depth properties (settings)
 
+[.since]#introduced in 26.3#: Each height and each depth of an Operation is a distance along the Tool Axis, measured from the origin of the Work Plane of the Operation. The Tool Axis is the local +Z of the Work Plane. For an Operation with no Work Plane, each height and each depth is a Z value in the coordinates of the Job. The buttons that set *Start Depth* and *Final Depth* from the selected geometry measure from the Work Plane of the Operation. xref:job/work-plane.adoc[Work Plane] gives the detail.
+
 == Commands
 
 Some commands are hidden until OpenCamLib support or experimental features are enabled in the CAM Advanced preferences. See xref:reference/experimental.adoc[CAM experimental].
@@ -95,6 +101,8 @@ Some commands are hidden until OpenCamLib support or experimental features are e
 === Project Commands
 
 * image:CAM_Job.svg[width=32] xref:job/job.adoc[New Job]: Creates a new CNC Job.
+
+* [.since]#introduced in 26.3# xref:job/work-plane.adoc[Work Plane]: Creates a named Work Plane on a Job, from a selected planar face or at the Job origin.
 
 * image:CAM_Sanity.svg[width=32] xref:job/sanity-check.adoc[Sanity Check]: Checks the Job for common errors and produces an HTML report.
 
@@ -233,6 +241,7 @@ Right-clicking in the model tree offers context-dependent commands (improved in 
 * On shapes: xref:job/job.adoc[New Job].
 * On a Job: xref:inspect/op-active-toggle.adoc[Toggle Operation], xref:job/export-template.adoc[Export Template], xref:job/sanity-check.adoc[Sanity Check] and xref:output/post-process.adoc[Post Process].
 * On Operations: the Path Dressup submenu (single Operation), a Path Modification submenu with Array, Copy Operation and Simple Copy, Toggle Operation, xref:inspect/inspect.adoc[Inspect Toolpath] (single Operation), Post Process and xref:output/post-process-selected.adoc[Post Process Selected].
+* [.since]#introduced in 26.3# On an Operation: *Set Work Plane from Face* creates a xref:job/work-plane.adoc[Work Plane] from a picked planar face and links the Operation to the Work Plane.
 * On an Operation that has a Start Point: xref:inspect/set-start-point.adoc[Start Point Selection].
 * On a Tool Bit: Save Toolbit and Save Toolbit As.
 

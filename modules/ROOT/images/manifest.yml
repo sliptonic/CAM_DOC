@@ -10,6 +10,41 @@
 #   date: 2026-10-01
 #   alt: Profile task panel, Operation tab, with Side set to Outside
 figures:
+- file: inspect/inspect/dialog-raw-work-plane.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/dialog-raw-work-plane.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: CAM Inspect dialog with Raw set for an Operation on a Work Plane; the note has one more line with the origin of the frame
+- file: inspect/inspect/dialog.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: CAM Inspect dialog with the G-code of a Profile operation, line numbers, the note about the units, and the Raw checkbox
+- file: inspect/inspect/result-tool-axis.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/result-tool-axis.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 3D view of a Profile operation on a tilted Work Plane, with highlighted moves and the Tool Bit shape along the Tool Axis
+- file: job/job/context-menu.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/context-menu.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Context menu of a Job in the tree view, with the Update Tools from Library entry
+- file: job/job/output-file-warning.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/output-file-warning.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Warning message with the text This will replace filename template, and the Ok and Cancel buttons
 - file: job/job/task-panel-general.png
   page: job/job.adoc
   model: drilling-1
@@ -24,6 +59,13 @@ figures:
   freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Output tab, with Machine set to (Legacy post-processor)
+- file: job/job/task-panel-setup-stock-cylinder.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-setup-stock-cylinder.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Setup tab, with the Stock set to Create cylinder and the Axis, Radius and Height controls
 - file: job/job/task-panel-setup.png
   page: job/job.adoc
   model: drilling-1
@@ -31,6 +73,13 @@ figures:
   freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Setup tab, with the Layout section open
+- file: job/job/task-panel-tools-library.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-tools-library.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tool Library dialog with the All Tools view selected
 - file: job/job/task-panel-tools.png
   page: job/job.adoc
   model: drilling-1
@@ -45,6 +94,55 @@ figures:
   freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Workplan tab, with a Profile and a Drilling Operation
+- file: job/job/tool-number-in-use.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/tool-number-in-use.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tool Number In Use message, which names the Tool Controller that has the number
+- file: job/job/tree-workplanes.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/tree-workplanes.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tree view of a Job, with one Work Plane below the Workplanes group
+- file: job/sanity-check/report.png
+  page: job/sanity-check.adoc
+  model: drilling-1
+  recipe: recipes/job/sanity-check/report.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 'Setup Report for CAM Job: Job, with the Run Summary table and the Squawks section'
+- file: job/work-plane/properties-fixture.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/properties-fixture.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Property editor of a Work Plane, with the Fixture property set to G55
+- file: job/work-plane/result-face.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/result-face.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 3D view of a Model with the axes of a Work Plane at the centroid of a tilted planar face
+- file: job/work-plane/task-panel-heights.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/task-panel-heights.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Profile task panel, Heights page, with a Work Plane selected in the Work Plane selector and the Reset to defaults button
+- file: job/work-plane/tree-workplanes.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/tree-workplanes.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tree view of a Job, with two Work Planes below the Workplanes group
 - file: operations/profile/result-contour.png
   page: operations/profile.adoc
   model: drilling-1

@@ -1,218 +1,350 @@
-= CAM Job
+= Job
 :page-origin: https://wiki.freecad.org/CAM_Job
 :page-origin-revision: 375e2bddc0 2026-07-08
 :page-command: CAM_Job
 :page-icon: CAM_Job.svg
 :page-menu: CAM → New Job
+:page-toolbar: Project Setup
 :page-workbench: CAM
-:page-shortcut: P J
+:page-shortcut: P, J
 :page-see-also: CAM ExportTemplate, CAM SetupSheet, CAM Machine, CAM Sanity, CAM Post
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 31589, 32854
+:page-source-pr: 30421, 30644, 31208, 31300, 32211, 32722, 32903
 :page-status: draft
+:description: Create a Job, the top-level CAM object that holds the Models, the Stock, the Tool Controllers, the Operations, the Work Planes and the output configuration.
 
 [.fcinfobox]
 --
 [.fcTitle]
-image:CAM_Job.svg[CAM Job,32] *CAM Job*
+image:CAM_Job.svg[Job,32] *Job*
 
 Menu location:: menu:CAM[New Job]
 Workbenches:: xref:index.adoc[CAM]
-Default shortcut:: kbd:[P] kbd:[J]
+Default shortcut:: kbd:[P,J]
 Introduced in version:: -
-See also:: xref:job/export-template.adoc[CAM ExportTemplate], xref:job/setup-sheet.adoc[CAM SetupSheet], xref:output/machine.adoc[CAM Machine], xref:job/sanity-check.adoc[CAM Sanity], xref:output/post-process.adoc[CAM Post]
+See also:: xref:job/export-template.adoc[Export Template], xref:job/setup-sheet.adoc[Setup Sheet], xref:output/machine.adoc[Machine], xref:job/sanity-check.adoc[Sanity Check], xref:output/post-process.adoc[Post Process]
 --
 
 == Description
 
-The image:CAM_Job.svg[width=24] xref:job/job.adoc[CAM Job] command creates a new Job object in the active document. It is found in the *Project Setup* toolbar and in the menu:CAM[New Job] menu entry; its tooltip is _Creates a CAM job_. The Job object contains the following information:
+The image:CAM_Job.svg[Job,16] *New Job* command creates a xref:reference/glossary.adoc#job[Job] in the active document.
+A Job is the top-level CAM object of one project.
+The tooltip of the command is `Creates a CAM job`.
 
-. A list of Tool Controllers, each pairing a Tool Bit from the Tool Library with spindle speed, horizontal/vertical feed and rapid rates (Tools group).
-. A Workplan: the sequential list of Operations.
-. A Model group containing a clone of each base object (the Model) so the original geometry is never modified; a Job may hold several Models, including several copies of the same object.
-. A Stock object representing the raw material. Stock types are: extend the Model's bounding box (default), box, cylinder, or an existing solid of the document.
-. A Setup Sheet, containing default values and expressions applied to the Operations of this Job.
-. Output configuration: the destination path and file name template, the Post-Processor and its arguments (legacy argument-based posts), the Work Coordinate Systems (Fixtures) to output, the output ordering and file splitting, and optionally a Machine whose `.fcm` definition supplies the machine-based Post-Processor and its output options ([.since]#Machine introduced in 26.3#).
+A Job holds these objects and values:
 
-The Job's children (Operations, Model, Stock, Setup Sheet, Tool Controllers) are shown under the Job in the Tree View. Deleting the Job also deletes its Operations, Model clones, Stock, Tool Controllers and Setup Sheet.
+* A xref:reference/glossary.adoc#job-model-group[Job Model Group]. The Job Model Group holds a xref:reference/glossary.adoc#resource-clone[Resource Clone] of each xref:reference/glossary.adoc#model[Model], and the Job does not change the original geometry. A Job can hold several Models and several copies of one object.
+* A xref:reference/glossary.adoc#stock[Stock] object, which shows the material that the Tool Bit cuts. The Stock comes from the bounding box of the Models (default), a box, a cylinder, or an existing solid of the document.
+* A _Tools_ group of xref:reference/glossary.adoc#tool-controller[Tool Controllers] (TC). Each Tool Controller pairs a xref:reference/glossary.adoc#tool-bit[Tool Bit] with a Spindle Speed, a Horizontal Feed, a Vertical Feed and the speeds for rapid moves.
+* The xref:reference/glossary.adoc#operation[Operations] (Op), in the sequence in which the Job outputs them.
+* [.since]#introduced in 26.3# A _Workplanes_ group of xref:reference/glossary.adoc#work-plane[Work Planes]. Several Operations of the Job can share one Work Plane.
+* A xref:reference/glossary.adoc#setup-sheet[Setup Sheet]. The Setup Sheet is the container of the default values and expressions of the Job for new Operations. The Setup Sheet is not a shop document.
+* The output configuration: the output file, the xref:reference/glossary.adoc#post-processor[Post-Processor] (Post), the xref:reference/glossary.adoc#machine[Machine], the xref:reference/glossary.adoc#fixture[Fixtures], the output sequence and the split of the output into files. A Fixture is a G54 to G59.9 selection. A Fixture is not a clamp.
+
+The https://wiki.freecad.org/Tree_view[tree view] shows the Operations, the Job Model Group, the Stock, the Setup Sheet, the _Tools_ group and the _Workplanes_ group below the Job.
+The figure shows the tree view of a Job with one Work Plane.
+
+image::job/job/tree-workplanes.png["Tree view of a Job, with one Work Plane below the Workplanes group",400]
+
+When you delete the Job, FreeCAD also deletes the Operations, the Resource Clones, the Stock, the Tool Controllers, the Setup Sheet and the Work Planes of the Job.
 
 == Usage
 
-. There are several ways to invoke the command:
-* Press the image:CAM_Job.svg[width=16] xref:job/job.adoc[New Job] button in the *Project Setup* toolbar.
-* Select the menu:CAM[New Job] option from the menu.
-* Use the keyboard shortcut: kbd:[P] then kbd:[J].
-* Alternatively, right-click a solid or 2D object in the Tree View and select *New Job* from the context menu; the selected objects are preselected as the Model.
+. Optional: select the objects for the Model in the tree view.
+. Start the command with one of these controls:
+* Press the image:CAM_Job.svg[New Job,16] *New Job* button in the _Project Setup_ toolbar.
+* Select menu:CAM[New Job].
+* Press kbd:[P] then kbd:[J].
+* Right-click a solid or a 2D object in the tree view, then select *New Job*. The _New Job_ dialog shows the selected objects as selected Models.
+. Set the Job Template, the Models and the document units in the <<new-job-dialog,_New Job_ dialog>>.
+. Press btn:[OK]. The Job task panel opens with the _Setup_ tab active.
+. Set the Stock and the position of the Model on the _Setup_ tab.
+. Add a minimum of one Tool Controller on the _Tools_ tab.
+. Set the output file and the Machine or the Post-Processor on the _Output_ tab.
+. Press btn:[OK].
 
+Double-click the Job in the tree view to open the Job task panel again.
+The *Edit* entry of the Job context menu also opens the Job task panel.
+
+The Job task panel shows a message on btn:[OK] when the Job has no Model or no Tool Controller.
+The message has an *Add* button that adds the object.
+
+CAUTION: Do not cancel the Job task panel immediately after you create a Job. FreeCAD removes the new Job.
+
+=== Context menu
+
+Right-click a Job in the tree view to get these entries:
+
+* *Edit*: opens the Job task panel.
+* [.since]#introduced in 26.3# *Update Tools from Library*: compares the Tool Bits of the Job with the xref:reference/glossary.adoc#tool-library[Tool Library] and offers an update of the presets and the geometry. The command finds the related Tool Bit in the Tool Library by its Tool Bit ID. The command does not change a Tool Bit that the Tool Library does not have.
+* *Toggle operation active*
+* *Export Template*: see xref:job/export-template.adoc[Export Template].
+* *Sanity Check*: see xref:job/sanity-check.adoc[Sanity Check].
+* *Post Process*: see xref:output/post-process.adoc[Post Process].
+
+The figure shows the context menu of a Job.
+
+image::job/job/context-menu.png["Context menu of a Job in the tree view, with the Update Tools from Library entry",400]
+
+== Options
+
+[#new-job-dialog]
 === New Job dialog
 
-Invoking the command opens the *New Job* dialog with three groups:
+The command opens the _New Job_ dialog, which has three groups:
 
-* *Template*: select a Job Template; the list contains _(none)_ plus every `job_*.json` found in the asset Templates directory, the CAM file path and the macro directory. Hovering an entry shows its description ([.since]#introduced in 26.3#). See xref:job/export-template.adoc[CAM ExportTemplate].
-* *Model*: a tree with _Solids_, _2D_ and _Jobs_ categories. Check the objects to machine, and optionally raise the *Count* column to machine several copies of the same object. Checking another Job reuses that Job's Models with their placement.
-* *Document Units* ([.since]#introduced in 26.3#): the unit schema applied to the document on btn:[OK]. Schemas expressing velocity per minute are shown green; per-second schemas are shown red because they are unsafe for G-code feed rates.
+* _Template_: selects a xref:reference/glossary.adoc#job-template[Job Template]. The list contains `(none)` and each `job_*.json` file in the asset Templates directory, the CAM file path and the macro directory. [.since]#introduced in 26.3#: A list entry shows its description when the pointer is on it. See xref:job/export-template.adoc[Export Template].
+* _Model_: a tree with the categories `Solids`, `2D` and `Jobs`. Select the objects for the Model. Increase the value in the *Count* column to get several copies of one object. When you select a different Job, the new Job uses the Models of that Job with their placement.
+* [.since]#introduced in 26.3# _Document Units_: the unit schema that btn:[OK] applies to the document. The dialog shows a schema with velocity per minute in green. The dialog shows a schema with velocity per second in red, because that schema is not safe for G-code feed values.
 
 === Job task panel
 
-After creation the Job task panel opens (with the Setup tab active). It can be re-opened later by double-clicking the Job in the Tree View or via the Job context menu entry *Edit*. Cancelling the panel immediately after creating a Job removes the Job again. On btn:[OK], a warning is shown if the Job has no Model or no Tool Controller, with an *Add* button to add one.
+The Job task panel has six tabs, in this sequence: _Setup_, _General_, _Output_, _Tools_, _Workplan_ and _Advanced_.
+The Job task panel applies the changes and recomputes the Job when you select the _Setup_ tab again.
 
-The Job task panel has six tabs, in order: menu:Setup[], menu:General[], menu:Output[], menu:Tools[], menu:Workplan[] and menu:Advanced[] ([.since]#Advanced introduced in 1.1#). Switching back to the Setup tab applies and recomputes pending changes.
+=== Setup
 
-== Setup
+The _Setup_ tab sets the Stock, the position of the Model and the Stock, and the default values of the Job.
 
 image::job/job/task-panel-setup.png["Job task panel, Setup tab, with the Layout section open",600]
 
-=== Stock
+.Stock
+* Stock source: sets how the Job makes the Stock. Values `Create box`, `Create cylinder`, `Extend model's bounding box`, `Use existing solid`. Default: `Extend model's bounding box`.
+** `Create box`: enter *Length*, *Width* and *Height*.
+** `Create cylinder`: select *Axis*, then enter *Radius* and *Height*.
+** `Extend model's bounding box`: enter the added material in the negative and the positive direction of X, Y and Z. A negative value makes the Stock smaller.
+** `Use existing solid`: select a solid of the document. The Job makes a clone of the solid and uses the clone as the Stock.
+* [.since]#introduced in 26.3# *Axis*: the axis of the cylinder. Values `X`, `Y`, `Z`. Default: `Z`.
+* btn:[Refresh]: makes the Stock again from the values in the panel.
+* btn:[Assign Material]: assigns a material to the Stock. The xref:reference/glossary.adoc#sanity-check[Sanity Check] report and the feed and speed calculation use the material.
 
-Choose how the Stock is created:
+A new cylinder gets its dimensions from the bounding box of the Models.
+*Height* is the length of the bounding box along *Axis*, with a minimum of 1 mm.
+*Radius* is half of the diagonal of the two other dimensions of the bounding box.
+The cylinder starts at the minimum of the bounding box along *Axis*, and its axis goes through the center of the two other dimensions.
+The figure shows the _Stock_ group with `Create cylinder` selected.
 
-* *Create box*: enter Length, Width and Height.
-* *Create cylinder*: enter Radius and Height.
-* *Extend model's bounding box* (default): enter extra allowance in negative and positive X, Y and Z; entering a negative value shrinks the stock.
-* *Use existing solid*: pick a solid of the document; it is cloned as the Stock.
+image::job/job/task-panel-setup-stock-cylinder.png["Job task panel, Setup tab, with the Stock set to Create cylinder and the Axis, Radius and Height controls",600]
 
-btn:[Refresh] recreates the Stock from the current settings. btn:[Assign Material] assigns a machining material to the Stock (used by the xref:job/sanity-check.adoc[Sanity report] and feeds and speeds).
+.Selection Target
+* btn:[Model]: selections in the 3D view come from the Model. You cannot select the Stock.
+* btn:[Stock]: selections in the 3D view come from the Stock. You cannot select the Model.
 
-=== Alignment
+The two buttons are toggle buttons. Only one of the two buttons is active at a time.
 
-With a vertex, circular edge or face selected: btn:[Set Origin] moves Model and Stock so the selection becomes the origin; btn:[Move to Origin] moves only the selected object. btn:[Picking: Model]/btn:[Picking: Stock] ([.since]#introduced in 26.3#) toggles whether 3D picks target the Model or the Stock. btn:[Center in Stock] and btn:[XY in Stock] center the selected object in the Stock.
+.Origin & Alignment
+* btn:[Move to Origin]: moves only the selected object so that the selected point is at the origin.
+* btn:[Set Origin]: moves the Model and the Stock so that the selected point becomes the origin.
+* btn:[Center XYZ in Stock]: centers the selected object in the Stock in X, Y and Z.
+* btn:[Center XY in Stock]: centers the selected object in the Stock in X and Y. The Z position does not change.
+* btn:[X-Axis], btn:[Y-Axis], btn:[Z-Axis]: rotate the object so that the selected edge or planar face aligns with that axis.
+* btn:[X=0], btn:[Y=0], btn:[Z=0]: translate the object so that the selection is at zero on that axis.
+* *Link stock and model*: when selected, the Stock follows each translation and rotation of the Model that the Job task panel makes. When clear, you position the Stock independently of the Model.
 
-=== Origin & Orientation
+btn:[Move to Origin] and btn:[Set Origin] accept a vertex, an edge or a face.
+The selected point of a straight edge is its midpoint.
+The selected point of an arc is the center of the arc.
+The selected point of a face is the center of the face.
 
-With an edge or planar face selected, btn:[X-Axis], btn:[Y-Axis] and btn:[Z-Axis] rotate the object so the selection aligns with that axis; btn:[X=0], btn:[Y=0] and btn:[Z=0] translate the object so the selection sits at zero on that axis. *Link stock and model* makes the Stock follow Model moves.
+.Transform
+* Arrow buttons below *X/Y*: move the selection along -X, +X, -Y or +Y by the step distance.
+* [.since]#introduced in 26.3# Arrow buttons below *Z*: move the selection along +Z or -Z by the step distance.
+* Step distance field, between the *X/Y* arrow buttons: the distance of one move, in document units. Default: 1 mm, or 0.1 in when the unit system is imperial.
+* *Rotate* buttons: rotate the selection counter-clockwise or clockwise around the selected axis by the angle.
+* [.since]#introduced in 26.3# Rotation axis list: the axis of the rotation. Values `X Axis`, `Y Axis`, `Z Axis`. Default: `Z Axis`.
+* Angle field: the angle of one rotation. Minimum -180°, maximum 360°. Default: 90°.
+* *Compound*: has an effect only when you select more than one object. When selected, all selected objects rotate together around the center of their common bounding box. When clear, each object rotates around its own center. Default: selected.
 
-=== Move - XY / Rotate around Z
+.Default values
+* Expressions and offsets that the xref:job/setup-sheet.adoc[Setup Sheet] keeps for new Operations: start depth, final depth, step down, clearance height, safe height and coolant mode.
 
-Nudge the selected objects by the given distance in eight directions, or rotate them about Z by the given angle (*Compound* rotates several selected objects about their common center).
-
-=== Default values
-
-Expressions and offsets stored in the xref:job/setup-sheet.adoc[Setup Sheet] for new Operations: Start depth, Final depth, Step down, Clearance and Safe height expression/offset, and Coolant mode.
-
-== General
+=== General
 
 image::job/job/task-panel-general.png["Job task panel, General tab",600]
 
-* *Label*: The label of the Job as displayed in the Tree View.
-* *Model*: lists the Models of the Job (with a count for duplicates). Press btn:[Edit] to open the *Model Selection* dialog (the same tree as in the New Job dialog) and add, remove or multiply Models.
-* *Description*: You can add some notes to the Job here. Notes are only for your information and have no effect on the Toolpath.
+* *Label*: the label of the Job in the tree view.
+* *Model*: the list of the Models of the Job, with a count for copies. btn:[Edit] opens the _Model Selection_ dialog, which has the same tree as the _New Job_ dialog. Use the _Model Selection_ dialog to add Models, remove Models or change the count.
+* *Description*: notes about the Job. The notes have no effect on the xref:reference/glossary.adoc#toolpath[Toolpath].
 
-== Output
+=== Output
 
 image::job/job/task-panel-output.png["Job task panel, Output tab, with Machine set to (Legacy post-processor)",600]
 
-* [.since]#introduced in 26.3# *Machine*: selects the Machine for this Job from the `.fcm` files in the asset path. The first entry, `(Legacy post-processor)`, selects no Machine. With a Machine selected, post-processing uses the machine-based flow. The Machine definition supplies the Post-Processor and the output options, and the xref:output/post-process.adoc[Post-Processing Dialog] opens. btn:[New Machine] opens the Machine Editor to create a Machine; the new Machine is selected after saving. See xref:output/machine.adoc[Machine] and xref:output/machine-configuration.adoc[Machine Configuration].
-* *Output File*: Set the name, extension, and the file path of the G-code output. You can use the following placeholders:
-** *%D* directory of the active document
-** *%d* name of the active document
-** *%M* user macro directory
-** *%j* label of the Job
-+
-In the file-name part only, when Split Output is enabled: *%T* tool number, *%t* Tool Controller label, *%W* Work Coordinate System, *%O* operation label, *%S* sequence number (a sequence number is always appended when output is split if %S is absent). If no extension is given, `.nc` is used (machine-based posts use the machine's file extension).
-* *Processor*: selects a legacy argument-based xref:output/post-process.adoc[Post-Processor]. The list contains only the Post-Processors enabled in the preferences. The list does not contain machine-based Post-Processors; select a *Machine* to use a machine-based Post-Processor. The panel shows *Processor* only when *Machine* is `(Legacy post-processor)`.
-* *Arguments*: the arguments for the legacy xref:output/post-process.adoc[Post-Processor]. The panel shows *Arguments* only when *Machine* is `(Legacy post-processor)`.
-* *Work Coordinate Systems*:
-** *Order by* (Fixture, Tool or Operation) defines how the output is grouped when several coordinate systems are selected.
-** *Systems*: a checklist of G54 to G59.9 fixtures to output (default G54). See xref:job/fixture.adoc[CAM Fixture].
-** *Split Output*: writes a separate G-code file per group as defined by Order by.
+* [.since]#introduced in 26.3# *Machine*: selects the Machine of the Job from the `.fcm` files in the asset path. The first entry, `(Legacy post-processor)`, selects no Machine. With a Machine selected, the Machine supplies the Post-Processor and the output options, and the xref:output/post-process.adoc[Post-Processing Dialog] opens for output. See xref:output/machine.adoc[Machine] and xref:output/machine-configuration.adoc[Machine Configuration].
+* btn:[New Machine]: opens the Machine Editor to create a Machine. The Job selects the new Machine after you save it.
+* *Output File*: the directory, the name and the extension of the G-code output file. The value can contain the placeholders in the list that follows. Without an extension, the output uses `.nc`. A machine-based Post-Processor uses the file extension of the Machine.
+** `%D`: the directory of the active document.
+** `%d`: the name of the active document.
+** `%M`: the macro directory.
+** `%j`: the label of the Job.
+** `%T`: the *Tool Number*. `%t`: the label of the Tool Controller. `%W`: the Fixture. `%O`: the label of the Operation. `%S`: the sequence number. These five placeholders apply only in the file name, and only when *Split Output* is selected. Split output always gets a sequence number at the end of the file name when `%S` is absent.
+* *Processor*: selects an argument-based xref:output/post-process.adoc[Post-Processor]. The list contains only the Post-Processors that the preferences enable, and no machine-based Post-Processors. The panel shows *Processor* only when *Machine* is `(Legacy post-processor)`.
+* *Arguments*: the arguments for the argument-based Post-Processor. The panel shows *Arguments* only when *Machine* is `(Legacy post-processor)`.
+* _Work Coordinate Systems_ group:
+** *Order by*: sets the groups of the output when the Job outputs several Fixtures. Values `Fixture`, `Tool`, `Operation`.
+** *Systems*: a list of the Fixtures G54 to G59.9 with a check box for each. The Job outputs the selected Fixtures. Default: G54. See xref:job/fixture.adoc[Fixture].
+** *Split Output*: writes one G-code file for each group that *Order by* sets.
 
-== Tools
+The *Output File* field has a control that opens the _Select Output File_ dialog.
+The _Select Output File_ dialog starts at the file name that the current value of *Output File* gives.
+When that file and its directory do not exist, the dialog starts in the directory of the active document.
+After you select a file, a _Warning_ message shows `This will replace filename template` and `Are you sure?`.
+btn:[Ok] replaces the value of *Output File* with the selected file. btn:[Cancel] keeps the value.
+The figure shows the message.
+
+image::job/job/output-file-warning.png["Warning message with the text This will replace filename template, and the Ok and Cancel buttons",400]
+
+The *Systems* list repeats the program for each selected Fixture.
+A Work Plane can name a Fixture of its own, which the Post-Processor selects in each repetition.
+
+=== Tools
 
 image::job/job/task-panel-tools.png["Job task panel, Tools tab, with one Tool Controller",600]
 
-The table lists the Job's Tool Controllers (Name, tool number, horizontal feed, vertical feed and spindle speed; a negative spindle value means reverse direction). Cells can be edited in place.
+The table lists the Tool Controllers of the Job with the name, the *Tool Number*, the Horizontal Feed, the Vertical Feed and the Spindle Speed.
+A negative Spindle Speed value gives the reverse direction.
+You can edit a cell in the table.
 
-* btn:[Add] opens the Tool Bit selector to pick one or more Tool Bits from a xref:tools/library-manager.adoc[Tool Library]; a Tool Controller is created for each with the library tool number (or the next free number).
-* btn:[Edit] opens the xref:tools/tool-controller.adoc[Tool Controller] editor.
-* btn:[Remove] is only available for Tool Controllers not used by any Operation; at least one Tool Controller must remain.
+* btn:[Add]: opens the Tool Library dialog. Each Tool Bit that you add in the dialog gets a Tool Controller in the Job, and the table shows the Tool Controller immediately. The dialog stays open until you close it. See xref:tools/library-manager.adoc[Tool Library].
+* btn:[Edit]: opens the xref:tools/tool-controller.adoc[Tool Controller] editor.
+* btn:[Remove]: removes a Tool Controller. The button is available only for a Tool Controller that no Operation uses. A minimum of one Tool Controller stays in the Job.
 
-Changing feeds or speeds here does not modify the Tool Library. The *Default Values → Rapid Speeds* group sets the horizontal and vertical rapid rates applied to new Tool Controllers via the Setup Sheet.
+[.since]#introduced in 26.3#: The Tool Library dialog has an `All Tools` view that shows the Tool Bits of all Tool Libraries.
+A Tool Bit from `All Tools` has no number from a Tool Library, and the dialog asks for a *Tool Number*.
+The default is the subsequent free number in the Job.
+The figure shows the dialog with the `All Tools` view.
 
-== Workplan
+image::job/job/task-panel-tools-library.png["Tool Library dialog with the All Tools view selected",400]
+
+[.since]#introduced in 26.3#: The table refuses a *Tool Number* that a Tool Controller with a different Tool Bit uses.
+The _Tool Number In Use_ message names the Tool Controller that has the number, and the cell shows the previous number again.
+Two Tool Controllers with the same Tool Bit can have the same *Tool Number*.
+The figure shows the message for a number that `TC: 5mm Endmill` has.
+
+image::job/job/tool-number-in-use.png["Tool Number In Use message, which names the Tool Controller that has the number",400]
+
+A change of a feed or a speed in the table does not change the Tool Library.
+The _Rapid Speeds_ group of _Default Values_ sets the horizontal and vertical rapid speeds that the Setup Sheet applies to new Tool Controllers.
+
+=== Workplan
 
 image::job/job/task-panel-workplan.png["Job task panel, Workplan tab, with a Profile and a Drilling Operation",600]
 
-Lists the Operations in execution order. Select an Operation and use the up/down arrows to reorder it, or btn:[Delete] to remove it from the document.
+The _Workplan_ tab lists the Operations in the sequence in which the Job outputs them.
+Select an Operation and press an arrow button to move it up or down in the sequence.
+btn:[Delete] removes the selected Operation from the document.
 
 [.since]#introduced in 26.3#: The _Workplan_ list shows one row for each Operation, with these columns:
 
-* *#*: the position of the Operation in the execution order. The first Operation has the number 0.
+* *#*: the position of the Operation in the sequence. The first Operation has the number 0.
 * *Operation*: the label of the Operation.
 * *Tool*: the value of *Tool Number* of the Tool Controller of the Operation. The cell is empty when the Operation has no Tool Controller.
 * *Tool Controller*: the label of the Tool Controller of the Operation. The cell shows `???` when the Operation has no Tool Controller.
 * *Coolant*: the coolant mode of the Operation. The cell is empty when the coolant mode is `None`.
 * *Time*: the estimated cycle time of the Operation.
 
-== Advanced
+=== Advanced
 
-[.since]#introduced in 1.1#
-
-The *Operation Defaults* sub-tab shows a combo of Operation types; for the chosen type a table lists the Setup Sheet's per-operation default values that will be applied to newly created Operations of that type. See xref:job/setup-sheet.adoc[CAM SetupSheet].
-
-== Context menu
-
-Right-clicking a Job in the Tree View offers:
-
-* *Edit*: opens the task panel.
-* *Update Tools from Library* ([.since]#introduced in 26.3#): compares the embedded Tool Bits with the Tool Library and offers to update presets and geometry.
-* *Toggle operation active*
-* *Export Template*: see xref:job/export-template.adoc[CAM ExportTemplate].
-* *Sanity Check*: see xref:job/sanity-check.adoc[CAM Sanity].
-* *Post Process*: see xref:output/post-process.adoc[CAM Post].
+[.since]#introduced in 1.1#: The _Operation Defaults_ tab has a list of Operation types.
+For the selected Operation type, a table lists the default values that the Setup Sheet applies to new Operations of that type.
+See xref:job/setup-sheet.adoc[Setup Sheet].
 
 == Properties
 
 .Base
-* *Model* (`Link`): group holding the Model clones.
-* *Stock* (`Link`): solid used as stock.
-* *Tools* (`Link`): group of Tool Controllers.
-* *SetupSheet* (`Link`): the xref:job/setup-sheet.adoc[Setup Sheet] holding the defaults for this Job.
-* *Operations* (`Link`, hidden): group of all Operations in the order they are processed.
-* *JobType* (`Enumeration`, hidden): 2D, 2.5D, Lathe or Multiaxis; not used yet.
+* *Model* (`Link`): the Job Model Group, which holds the Resource Clones of the Models.
+* *Stock* (`Link`): the solid that the Job uses as the Stock.
+* *Tools* (`Link`): the group of Tool Controllers.
+* *Setup Sheet* (`Link`): the xref:job/setup-sheet.adoc[Setup Sheet] that holds the default values of the Job.
+* *Operations* (`Link`, hidden): the group of all Operations, in the sequence in which the Job outputs them.
+* [.since]#introduced in 26.3# `Workplanes` (`Link`, hidden): the group of named Work Planes that the Operations can share.
+* *Job Type* (`Enumeration`, hidden): values `2D`, `2.5D`, `Lathe`, `Multiaxis`. The workbench does not use the value.
 
 .Geometry
-* *GeometryTolerance* (`Length`): tolerance for computing Toolpaths; smaller increases accuracy but slows computation (default from preferences).
+* *Geometry Tolerance* (`Length`): the tolerance for the calculation of Toolpaths. A smaller value increases the accuracy and the calculation time. Default: the value in the preferences.
 
 .Output
-* *PostProcessorOutputFile* (`File`): G-code output path/file-name template (see placeholders above).
-* *PostProcessor* (`Enumeration`): legacy Post-Processor (enumeration of enabled legacy posts, may be empty).
-* *PostProcessorArgs* (`String`): arguments for the legacy Post-Processor.
-* *SplitOutput* (`Bool`): split output into multiple G-code files.
-* *Machine* (`String`) [.since]#introduced in 26.3#: name of the Machine (`.fcm`) for the Job; when set, machine-based post-processing is used.
-* *PostProcessorPropertyOverrides* (`Map`) [.since]#introduced in 26.3#: JSON dictionary of Post-Processor properties that override the machine defaults for this Job.
-* *LastPostProcessDate*, *LastPostProcessOutput* (hidden): recorded at the last post-processing.
+* `PostProcessorOutputFile` (`File`): the directory and file name of the G-code output, with the placeholders of <<_output,Output>>.
+* `PostProcessor` (`Enumeration`): the argument-based Post-Processor. The values are the argument-based Post-Processors that the preferences enable. The list can be empty.
+* `PostProcessorArgs` (`String`): the arguments for the argument-based Post-Processor.
+* *Split Output* (`Bool`): splits the output into several G-code files.
+* [.since]#introduced in 26.3# *Machine* (`String`): the name of the Machine (`.fcm`) of the Job. When the property has a value, output uses the machine-based Post-Processor.
+* [.since]#introduced in 26.3# `PostProcessorPropertyOverrides` (`Map`): a JSON dictionary of Post-Processor properties that replace the Machine defaults for this Job.
+* *Last Post Process Date*, *Last Post Process Output* (hidden): the date and the output file of the last output.
 
 .Path
-* *Description* (`String`): optional description.
-* *CycleTime* (`String`, read-only): estimated cycle time of all Operations.
+* *Description* (`String`): an optional description.
+* *Cycle Time* (`String`, read-only): the estimated cycle time of all Operations.
 
 .WCS
-* *Fixtures* (`StringList`): list of Work Coordinate Systems (G54 to G59.9) to output; default G54.
-* *OrderOutputBy* (`Enumeration`): Fixture, Tool or Operation.
+* *Fixtures* (`StringList`): the list of Fixtures (G54 to G59.9) that the Job outputs. Default: G54.
+* *Order Output By* (`Enumeration`): values `Fixture`, `Tool`, `Operation`.
 
-=== Stock properties
+.Stock object
+* *Base*, *Ext Xneg*, *Ext Xpos*, *Ext Yneg*, *Ext Ypos*, *Ext Zneg*, *Ext Zpos*: for a Stock from the bounding box of the Model. The six values give the added material on each side. Default: 1 mm, or 3.175 mm when the unit of the preferences is the inch. [.since]#introduced in 26.3#: The properties accept negative values.
+* *Length*, *Width*, *Height*: for a box.
+* *Radius*, *Height*: for a cylinder.
+* [.since]#introduced in 26.3# *Axis* (`Enumeration`): the axis of a cylinder. Values `X`, `Y`, `Z`. Default: `Z`.
+* *Placement*: the position of the Stock.
+* *Stock Type* (hidden): the method that made the Stock.
 
-Depending on the stock type the Stock object has:
+[.since]#introduced in 1.1#: The Stock of a flat Model has a minimum height of 1 mm.
 
-* *Base* and *ExtXneg*, *ExtXpos*, *ExtYneg*, *ExtYpos*, *ExtZneg*, *ExtZpos*: extra allowance from the Model bounding box ([.since]#negative values allowed in 26.3#); or
-* *Length*, *Width*, *Height* (box); or
-* *Radius*, *Height* (cylinder);
+[.since]#introduced in 26.3#: A new Stock shows as tan dotted lines in the `Flat Lines` display mode, with *Transparency* 95 and *Selectable* `false`.
 
-plus *Placement*. A hidden *StockType* records the creation method. Flat Models get a minimum stock height of 1 mm ([.since]#introduced in 1.1#).
+== Notes and limitations
 
-== Preferences
+.Work Planes
+* The Job creates the _Workplanes_ group when you create the Job. The Job also creates the group when you open a document in which the Job has none.
+* The *Work Plane* command puts each new Work Plane in the _Workplanes_ group of the Job.
+* When you open a document, the Job moves into the _Workplanes_ group each Work Plane that an Operation links to and the group does not hold.
+* When you open a document, the Job adds the *Fixture* property to each Work Plane that does not have it.
+* The Job accepts a Work Plane with any orientation. The Post-Processor refuses a Work Plane that the Machine cannot reach.
+* The *Fixtures* list of the Job and the *Fixture* of a Work Plane are independent. The *Fixtures* list repeats the program for each Fixture. The Post-Processor selects the *Fixture* of a Work Plane in each repetition, then goes back to the Fixture of the Job.
+* A Work Plane with an empty *Fixture* uses the Fixture of the Job.
 
-Defaults for new Jobs (template, geometry tolerance, stock shape and placement, Post-Processor, output path) are set in menu:Edit[Preferences > CAM > Job preferences]. See xref:reference/preferences.adoc[CAM Preferences].
+.Tool Bits
+* [.since]#introduced in 26.3# When you open a document, FreeCAD compares the Tool Bits of the Job with the Tool Library. When the Tool Library has newer presets, FreeCAD asks if you want the update. The default answer is no.
+
+.Preferences
+* menu:Edit[Preferences > CAM > Job preferences] sets the defaults for new Jobs: the Job Template, the geometry tolerance, the Stock shape and placement, the Post-Processor and the output directory. See xref:reference/preferences.adoc[Preferences].
 
 == Scripting
 
+The example creates a Job for a box, sets the output file, and replaces the Stock with a cylinder along X.
+
 [source,python]
 ----
+import FreeCAD
 import Path.Main.Job as PathJob
-job = PathJob.Create('Job', [FreeCAD.ActiveDocument.Box], templateFile=None)
-job.PostProcessorOutputFile = '/tmp/%j.nc'
-FreeCAD.ActiveDocument.recompute()
+import Path.Main.Stock as PathStock
+
+doc = FreeCAD.newDocument()
+box = doc.addObject("Part::Box", "Box")
+doc.recompute()
+
+job = PathJob.Create("Job", [box], templateFile=None)
+job.PostProcessorOutputFile = "/tmp/%j.nc"
+
+stock = PathStock.CreateCylinder(job, axis="X")
+doc.removeObject(job.Stock.Name)
+job.Stock = stock
+doc.recompute()
 ----
 
-In the GUI use `Path.Main.Gui.Job.Create(base, template=None, openTaskPanel=True)`. The legacy `PathScripts.PathJob` module is gone.
+`PathStock.CreateCylinder(job, radius=None, height=None, placement=None, axis=None)` calculates each value that you do not give from the bounding box of the Models.
+In the GUI, use `Path.Main.Gui.Job.Create(base, template=None, openTaskPanel=True)`.
+
+== Related
+
+* xref:job/setup-sheet.adoc[Setup Sheet]
+* xref:job/export-template.adoc[Export Template]
+* xref:job/fixture.adoc[Fixture]
+* xref:job/sanity-check.adoc[Sanity Check]
+* xref:tools/tool-controller.adoc[Tool Controller]
+* xref:tools/library-manager.adoc[Tool Library]
+* xref:output/machine.adoc[Machine]
+* xref:output/machine-configuration.adoc[Machine Configuration]
+* xref:output/post-process.adoc[Post Process]
+* xref:reference/preferences.adoc[Preferences]

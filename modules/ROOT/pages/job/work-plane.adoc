@@ -1,0 +1,183 @@
+= Work Plane
+:page-command: CAM_Workplane
+:page-icon: CAM_Area_Workplane.svg
+:page-menu: CAM → Work Plane
+:page-toolbar: Project Setup
+:page-workbench: CAM
+:page-since: 26.3
+:page-source-pr: 32722, 32903
+:page-status: draft
+:description: Create a named Work Plane on a Job, from a selected planar face or at the Job origin, and link Operations to it.
+
+[.fcinfobox]
+--
+[.fcTitle]
+image:CAM_Area_Workplane.svg[Work Plane,32] *Work Plane*
+
+Menu location:: menu:CAM[Work Plane]
+Workbenches:: xref:index.adoc[CAM]
+Default shortcut:: none
+Introduced in version:: 26.3
+See also:: xref:job/job.adoc[Job], xref:job/fixture.adoc[Fixture]
+--
+
+== Description
+
+The image:CAM_Area_Workplane.svg[Work Plane,16] *Work Plane* command creates a named xref:reference/glossary.adoc#work-plane[Work Plane] on a xref:reference/glossary.adoc#job[Job].
+The command creates the Work Plane from one selected planar face, or at the origin of the Job.
+The tooltip of the command is `Create a named work plane on the Job, from a selected planar face or at the Job origin. Operations can share one work plane.`
+
+A Work Plane is the frame in which an xref:reference/glossary.adoc#operation[Operation] (Op) works.
+The Work Plane object is a `Part::LocalCoordinateSystem` in the _Workplanes_ group of the Job.
+The local +Z of the Work Plane is the Tool Axis.
+
+The figure shows a Job with two Work Planes in the _Workplanes_ group.
+
+image::job/work-plane/tree-workplanes.png["Tree view of a Job, with two Work Planes below the Workplanes group",400]
+
+An Operation links to no Work Plane or to one Work Plane, and several Operations can share one Work Plane.
+An Operation with a Work Plane calculates its xref:reference/glossary.adoc#toolpath[Toolpath] in the frame of the Work Plane:
+
+* The origin of the Work Plane is zero.
+* The X axis of the Work Plane is the X axis of the Toolpath.
+* Each depth and each height of the Operation is a distance from the Work Plane along the Tool Axis.
+
+An Operation with no Work Plane works in the XY of the Job.
+A Work Plane that is not parallel to the table of the xref:reference/glossary.adoc#machine[Machine] makes the Operation Indexed.
+For an Indexed Operation, the rotary axes of the Machine point the Tool Bit along the Tool Axis before the cut, and do not move in the cut.
+
+== Usage
+
+. Optional: select one planar face of a xref:reference/glossary.adoc#model[Model] in the 3D view.
+. Start the command with one of these controls:
+* Press the image:CAM_Area_Workplane.svg[Work Plane,16] *Work Plane* button in the _Project Setup_ toolbar.
+* Select menu:CAM[Work Plane].
+. Find the new Work Plane in the _Workplanes_ group of the Job in the https://wiki.freecad.org/Tree_view[tree view]. The command selects the new Work Plane.
+. Optional: change the *Label* of the Work Plane.
+. Optional: change the *Attachment Offset* of the Work Plane to move its origin.
+. Optional: set the *Fixture* property of the Work Plane in the https://wiki.freecad.org/Property_editor[property editor].
+. Open the task panel of an Operation and select the Work Plane on the <<heights,_Heights_>> page.
+
+The command is available when the active document has a minimum of one Job.
+
+With one selected planar face, the command does these steps:
+
+* The command uses the Job that holds the Model of the face. When no Job holds that Model, the command uses the first Job of the document.
+* The command attaches the Work Plane to the face of the xref:reference/glossary.adoc#resource-clone[Resource Clone] in the Job. The selected face can be on the original object or on the Resource Clone.
+* The command sets the +Z of the Work Plane to the normal of the face.
+* The command puts the origin of the Work Plane at the centroid of the face.
+
+The figure shows a Work Plane on a tilted face of a Model.
+
+image::job/work-plane/result-face.png["3D view of a Model with the axes of a Work Plane at the centroid of a tilted planar face",600]
+
+With no selection, the command creates the Work Plane at the origin of the Job, aligned with the axes of the Job.
+The command also does so when the selection is not exactly one planar face.
+The https://wiki.freecad.org/Report_view[report view] then shows the message `Created Workplane at the Job origin. Select a planar face before the command to derive one from the model.`, with the label of the new Work Plane.
+The command uses the first Job of the document.
+
+== Options
+
+[#heights]
+=== Heights
+
+The _Heights_ page of the task panel of an Operation has a Work Plane selector and a btn:[Reset to defaults] button.
+The figure shows the _Heights_ page with a Work Plane selected.
+
+image::job/work-plane/task-panel-heights.png["Profile task panel, Heights page, with a Work Plane selected in the Work Plane selector and the Reset to defaults button",600]
+
+* Work Plane selector: sets the Work Plane that the Operation links to. The Operation stores the link in its `Workplane` property.
+
+A new Operation adopts the Work Plane of the previous Operation of the Job.
+
+== Properties
+
+The Work Plane object has the properties of a `Part::LocalCoordinateSystem` and one property that the CAM workbench adds.
+
+.Workplane
+* *Fixture* (`String`): the xref:reference/glossary.adoc#fixture[Fixture] that the control selects while the Operations of the Work Plane run. A Fixture is a G54 to G59.9 selection, not a clamp. Values `G54` to `G59.9`, or `G54.1 Pn`. Default: empty, which gives the Fixture of the Job.
+
+The figure shows the property editor of a Work Plane with *Fixture* set to `G55`.
+
+image::job/work-plane/properties-fixture.png["Property editor of a Work Plane, with the Fixture property set to G55",400]
+
+.Attachment
+* *Attachment Support*: the face that the Work Plane follows. The command sets the property to the face of the Resource Clone. The property is empty for a Work Plane at the origin of the Job.
+* *Map Mode*: the command sets `FlatFace` for a Work Plane from a face.
+* *Attachment Offset*: the offset of the Work Plane in the attached frame. The command sets the offset from the attachment origin to the centroid of the face.
+
+.Base
+* *Placement*: the position and orientation of the Work Plane. FreeCAD calculates the *Placement* of an attached Work Plane from the face. Set the *Placement* manually for a Work Plane that has no attachment.
+
+== Notes and limitations
+
+.Attachment
+* An attached Work Plane follows its face when the Model changes.
+* The `FlatFace` map mode puts the attachment origin at the projection of the global origin onto the face. The *Attachment Offset* moves the origin of the Work Plane from that point to the centroid of the face.
+* When the selected face is not on a Model of the Job, the command attaches the Work Plane to the selected object and writes a warning to the report view.
+
+.3D view
+* The 3D view shows the axes and the origin of a Work Plane. The three datum planes of the Work Plane are hidden.
+* You cannot select a Work Plane in the 3D view. A click on a face below the Work Plane selects the face. Select the Work Plane in the tree view to edit it.
+
+.Machine
+* You can create a Work Plane with any orientation on any Job. The command does not examine the Machine.
+* The xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) calculates the rotary positions for a Work Plane at output. The Post refuses a Work Plane that the Machine cannot reach.
+* A Work Plane that is parallel to the table is applicable to a Machine without rotary axes. Such a Work Plane gives a datum for depths and a different X direction.
+* A change of the Machine does not change the Toolpath of an Operation. Post-process the Job again after a change of the Machine.
+
+.Fixture
+* The Post selects the *Fixture* of a Work Plane before it positions the Machine for the Work Plane. The Post then goes back to the Fixture of the Job.
+* The *Fixture* of a Work Plane and the *Fixtures* list of the Job are independent. See xref:job/job.adoc[Job].
+
+.Dressups
+* A Dressup has no Work Plane of its own. A Dressup works in the frame of its base Operation.
+
+== Scripting
+
+The example creates a Job for a box and two Work Planes.
+The first Work Plane is on the top face of the box.
+The second Work Plane has no attachment, and the Tool Axis of that Work Plane points along +X.
+
+[source,python]
+----
+import FreeCAD
+import Path.Main.Job as PathJob
+import Path.Main.Workplane as PathWorkplane
+
+doc = FreeCAD.newDocument()
+box = doc.addObject("Part::Box", "Box")
+doc.recompute()
+
+job = PathJob.Create("Job", [box], templateFile=None)
+
+top = PathWorkplane.createWorkplane(job, box, "Face6", label="Top")
+top.Fixture = "G55"
+
+side = PathWorkplane.createWorkplaneFromToolAxis(job, FreeCAD.Vector(1, 0, 0), label="Side")
+doc.recompute()
+
+print([wp.Label for wp in PathWorkplane.workplanesOf(job)])
+print(PathWorkplane.fixtureOf(top))
+print(PathWorkplane.operationsUsing(job, top))
+----
+
+`PathWorkplane.createWorkplane(job, base=None, sub=None, label=None, placement=None)` adds a Work Plane to `job` and returns it.
+With `base` and `sub`, the function attaches the Work Plane to that planar face.
+With `placement` and no face, the function creates a Work Plane with no attachment at that placement.
+With no face and no placement, the function creates the Work Plane at the origin of the Job.
+
+* `createWorkplaneFromToolAxis(job, axis, origin=None, label=None)`: creates a Work Plane with no attachment, with `axis` as its +Z.
+* `workplanesOf(job)`: returns the Work Planes of the Job, in the sequence of the _Workplanes_ group.
+* `operationsUsing(job, workplane)`: returns the Operations of the Job that link to `workplane`.
+* `fixtureOf(workplane)`: returns the *Fixture* of the Work Plane, or `None` when the property is empty.
+* `resolveToJobModel(job, obj)`: returns the Model of the Job that agrees with `obj`, or `None`.
+
+Link an Operation to a Work Plane with its `Workplane` property, for example `op.Workplane = top`.
+
+== Related
+
+* xref:job/job.adoc[Job]
+* xref:job/fixture.adoc[Fixture]
+* xref:output/machine.adoc[Machine]
+* xref:output/post-process.adoc[Post Process]

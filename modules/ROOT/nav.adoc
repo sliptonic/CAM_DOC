@@ -76,6 +76,7 @@
 ** xref:contributing/development-roadmap.adoc[CAM Development Roadmap]
 ** xref:reference/faq.adoc[CAM FAQ]
 ** xref:job/fixture.adoc[CAM Fixture]
+** xref:job/work-plane.adoc[Work Plane]
 ** xref:output/postprocessor-customization.adoc[CAM Postprocessor Customization]
 ** xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
 ** xref:output/posts/fanuc.adoc[Fanuc Post-Processor]

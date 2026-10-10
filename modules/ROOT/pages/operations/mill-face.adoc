@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 WARNING: [.obsolete]#obsolete since 26.3# This command was replaced by xref:operations/mill-facing.adoc[Mill Facing] in 26.3 and is no longer in the toolbar or menu. Existing Face operations in saved documents keep working and can still be created from Python with `FreeCADGui.runCommand('CAM_MillFace')` or `Path.Op.MillFace.Create()`. They are not converted to Mill Facing automatically.
 
@@ -104,7 +105,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Sorting Mode*: [.since]#introduced in 26.3# `Automatic` sorts shapes with a nearest-neighbour algorithm; `Manual` follows the selection order.
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: [.since]#introduced in 26.3# The orientation of the Tool Bit for this operation; default (0, 0, 1) for standard Z-up milling.
+* [.since]#introduced in 26.3# xref:job/work-plane.adoc[Work Plane]: The link to the Work Plane that the Operation works in; an empty link means the XY of the Job, which is Z-up milling.
 
 .Op Values
 These read-only properties hold values calculated by the operation. They are useful as sources for expressions.

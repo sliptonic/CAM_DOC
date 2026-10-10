@@ -8,6 +8,7 @@
 :page-since: 0.19
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 WARNING: This operation requires xref:reference/opencamlib.adoc[OpenCamLib] and the preference menu:Edit[Preferences > CAM > Advanced > Enable OCL dependent features]. Enabling it requires a restart of FreeCAD.
 
@@ -166,7 +167,7 @@ These properties are hidden in the Property view.
 * *Cycle Time*: Read-only estimate of the Operation cycle time
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: The orientation of the Tool Bit for this Operation; default (0, 0, 1). [.since]#introduced in 26.3#
+* [.since]#introduced in 26.3# `Workplane`: Link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An empty link means the XY of the Job.
 
 .Op Values
 Read-only values computed by the Operation:

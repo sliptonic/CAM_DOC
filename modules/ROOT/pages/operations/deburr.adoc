@@ -8,6 +8,7 @@
 :page-since: 0.18
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -97,7 +98,7 @@ Above: the Operation section (screenshot predates the current version; the Join 
 * *Cycle Time*: Estimated cycle time for this operation.
 * *Tool Controller*: The Tool Controller that will be used to calculate the Toolpath.
 * *User Label*: User assigned label.
-* *Workplane*: The orientation of the tool for this operation. Default is (0, 0, 1) for standard Z-up milling. [.since]#introduced in 26.3# (3+2 support).
+* [.since]#introduced in 26.3#: *`Workplane`*: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in.
 
 == Notes
 
