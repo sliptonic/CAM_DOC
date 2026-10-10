@@ -516,7 +516,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>A Toolpath that starts at (0, 0, 0) and moves in the Y direction is a good first test. The centre of the Tool Bit must follow the Toolpath, thus do not apply tool radius compensation. One level in the XY plane is sufficient for the first test.</p>
 </div>
 <div class="paragraph">
+<p>The figure shows a sketch of such a test geometry.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/postprocessor-customization/test-geometry-sketch.png" alt="Sketch of the test geometry: straight lines and arcs that start at the origin and go in the Y direction" width="600">
+</div>
+</div>
+<div class="paragraph">
 <p>In the 3D view, a small blue arrow at the start point shows the start direction of the Toolpath.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows the arrow on the first move of the Toolpath, where the pointer is.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/postprocessor-customization/test-geometry-toolpath.png" alt="Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow near the start point" width="600">
+</div>
 </div>
 <div class="paragraph">
 <p>Compare the reference program with the output of an included Post, such as <code>linuxcnc_legacy_post.py</code> or <code>grbl_post.py</code>. Then adapt the Post that gives the nearest output.</p>

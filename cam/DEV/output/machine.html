@@ -503,12 +503,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 </li>
 <li>
 <p>Press <b class="button">Validate</b> to check the Machine for problems that would stop it loading or would silently drop settings. A <em>Validation</em> dialog reports "No problems found." or the number of errors and warnings, with each finding in its details.</p>
+<div class="paragraph">
+<p>The figure shows the dialog for a Machine that has one warning.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/machine/validation-dialog.png" alt="Validation dialog with one warning, and the details shown" width="400">
+</div>
+</div>
 </li>
 <li>
 <p>Press <b class="button">Save</b> to write the <code>.fcm</code> file. <b class="button">Close</b> discards the changes.</p>
 </li>
 <li>
 <p>On the <em>Output</em> tab of the Job task panel, select the Machine in the <strong>Machine</strong> list. The entry "(Legacy post-processor)" leaves the Job without a Machine. While a Machine is selected, the <strong>Processor</strong> and <strong>Arguments</strong> rows are hidden, because the Machine carries the Post-Processor and its settings.</p>
+<div class="paragraph">
+<p>The figure shows the <em>Output</em> tab with a Machine selected.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/machine/job-output-tab-machine.png" alt="Job task panel, Output tab, with the Machine Shop Router selected and no Processor and Arguments rows" width="600">
+</div>
+</div>
 </li>
 <li>
 <p>Run <a href="post-process.html" class="xref page">Post Process</a>. The Post-Processing Dialog uses the Machine&#8217;s Post-Processor and options and runs the Machine&#8217;s <a href="../reference/glossary.html#sanity-check" class="xref page">Sanity Check</a> contributions.</p>
@@ -525,6 +541,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 </li>
 <li>
 <p>Enter the URL of the machine&#8217;s MTConnect agent, for example <code><a href="http://machine:5000/probe" class="bare">machine:5000/probe</a></code>, or use the folder button to select a saved probe XML file. A URL without a path gets <code>/probe</code> appended. Only <code>http</code> and <code>https</code> URLs are accepted.</p>
+<div class="paragraph">
+<p>The figure shows the dialog with a URL entered.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/machine/mtconnect-import-dialog.png" alt="Import Machine from MTConnect dialog with the URL http://machine:5000/probe entered" width="400">
+</div>
+</div>
 </li>
 <li>
 <p>Press <b class="button">Import</b>. When the agent describes several machines, a <em>Select Device</em> dialog asks which one to import.</p>
@@ -615,6 +639,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <div class="sect2">
 <h3 id="toolheads-tab"><a class="anchor" href="#toolheads-tab"></a>Toolheads tab</h3>
+<div class="paragraph">
+<p>The figure shows the tab with one rotary Toolhead.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/machine/editor-toolheads-tab.png" alt="Machine Editor, Toolheads tab, with one rotary Toolhead and its Max RPM and Min RPM" width="400">
+</div>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -634,6 +666,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <div class="sect2">
 <h3 id="postprocessor-tab"><a class="anchor" href="#postprocessor-tab"></a>Postprocessor tab</h3>
+<div class="paragraph">
+<p>The figure shows the end of the property list for the <code>linuxcnc</code> Post, with Machine-scope and Job-scope properties.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/machine/editor-postprocessor-tab.png" alt="Machine Editor, Postprocessor tab, moved down to the last properties of the linuxcnc Post" width="400">
+</div>
+</div>
 <div class="ulist">
 <ul>
 <li>
