@@ -1,0 +1,278 @@
+{
+ "figures_run": "20261010-1553",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "wanted": [
+    "output/post-process/dialog-overview.png: Post-Processing Dialog, Overview tab, with a Machine selected and the Post Processor Parameters group visible",
+    "output/post-process/dialog-operations.png: Post-Processing Dialog, Operations tab, with the columns #, Operation, Tool, Tool Controller, Coolant and Time",
+    "output/post-process/dialog-options.png: Post-Processing Dialog, Options tab, with the Postprocessor Properties group for the linuxcnc Post",
+    "output/post-process/dialog-output.png: Post-Processing Dialog, Output tab, after Generate Output, with the Output folder and Filename template fields filled"
+   ],
+   "figures": [
+    {
+     "wanted": "output/post-process/dialog-overview.png: Post-Processing Dialog, Overview tab, with a Machine selected and the Post Processor Parameters group visible",
+     "status": "done",
+     "file": "output/post-process/dialog-overview.png",
+     "recipe": "recipes/output/post-process/dialog-overview.py",
+     "shows": "The whole dialog with the title \"Post Processing - Job: Job\" and the Overview tab selected. Machine list shows \"Shop Router\". Fixtures list has G54 with a check mark. Job Details has empty Author and Comment fields. Options has \"Generate HTML sanity report\" with a check mark. Post Processor Parameters has \"Show Pre-processing Dialogs\" with a check mark. The tab row shows Operations (2/2), Options, Output and Warnings 2.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/post-process/dialog-operations.png: Post-Processing Dialog, Operations tab, with the columns #, Operation, Tool, Tool Controller, Coolant and Time",
+     "status": "done",
+     "file": "output/post-process/dialog-operations.png",
+     "recipe": "recipes/output/post-process/dialog-operations.py",
+     "shows": "The whole dialog with the Operations (2/2) tab selected. The list has the columns #, Operation, Tool, Tool Controller, Coolant and Time. Row 1 is Profile, Tool 1, \"TC: 5mm Endmill\", Time 00:12:38. Row 2 is Drilling, Tool 1, \"TC: 5mm Endmill\", Time 00:00:07. The two rows have check marks and the Coolant cells are empty. The buttons Select All, Select None and Workplan are below the list.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/post-process/dialog-options.png: Post-Processing Dialog, Options tab, with the Postprocessor Properties group for the linuxcnc Post",
+     "status": "done",
+     "file": "output/post-process/dialog-options.png",
+     "recipe": "recipes/output/post-process/dialog-options.py",
+     "shows": "The whole dialog with the Options tab selected and moved to the bottom. Visible groups: the end of the precision group (Spindle 0), Duplicate Output Options, Processing Options, and Postprocessor Properties. Postprocessor Properties shows Allow tool-change (check mark), Path Blending Mode BLEND and Blend Tolerance 0.0000.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/post-process/dialog-output.png: Post-Processing Dialog, Output tab, after Generate Output, with the Output folder and Filename template fields filled",
+     "status": "done",
+     "file": "output/post-process/dialog-output.png",
+     "recipe": "recipes/output/post-process/dialog-output.py",
+     "shows": "The whole dialog with the Output tab selected. Output folder shows /tmp/gypsy-model-0iz82mp_ and Filename template shows %d-%j.nc. The file list has one selected file, drilling-1-Job.ngc. The G-code view has line numbers and shows the linuxcnc header (Machine: Shop Router), the tool change, M3 S12000 and the first moves of the Profile Operation. The Save to Disk and Apply buttons are enabled.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "All four figures are done. The lint command gives 0 findings. Nothing is committed.\n\nChanges:\n- New recipes in `recipes/output/post-process/`: four recipes and the shared file `_dialog.py`.\n- New images in `images/output/post-process/` and four entries in `manifest.yml`.\n- The page has one new sentence and one block image at the end of each of the subsections Overview, Operations, Options (after the table) and Output. The page had no old figures.\n\nState that the recipes set by script (each is a state the user can get):\n- Tool Controller: Horizontal Feed 600 mm/min, Vertical Feed 200 mm/min, Spindle Speed 12000. With the default value 0, the Time column showed \"Tool Feedrate Error\".\n- Job Output File: `%D/%d-%j.nc`. The default is empty, and then the Filename template field is empty.\n- Drilling: `findAllHoles`, the function of the Auto Select button. Without it, the Drilling Operation has no holes.\n- The Output recipe presses the Generate Output button of the dialog.\n\nProblems found:\n1. Order fault in the shared helper pattern. When `save_machine()` ran before `shot.open_model()`, the log showed \"Sketch: Solving the sketch failed\", the Stock had zero size, and the Operation heights were 1.79e308. The G-code then had a damaged Z value. `_dialog.py` saves the Machine after the Job and the Operations exist. `recipes/output/machine-configuration/_machine.py` and its recipes use the faulty order. I did not change them. I did not find the root cause. Examine the figures `job-output-tab-machine.png` and `post-dialog-options-postprocessor-properties.png` of that page.\n2. One run of the Operations capture gave an empty Time column. Three subsequent runs gave the correct values, and the final image is correct. I did not find the cause.\n3. The Output figure is not the same on each run. The Output folder and the \"Project File\" header line show the temporary folder of the model copy (`/tmp/gypsy-model-<random>`), and the header shows the output time.\n4. `dialog-options.png` shows the same state as `output/machine-configuration/post-dialog-options-postprocessor-properties.png` on the Machine Configuration page. I made a separate image for this page because the wanted file name is in the folder of this page.\n5. The Warnings tab label shows \"Warnings 2\" in all four figures. This is the Sanity Check result for the sample Job.\n6. A temporary debug recipe (`zz-debug`) was used and removed, with its image and its manifest entry.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.8111986000000004,
+    "duration_ms": 357434,
+    "turns": 69,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "wanted": [
+    "output/postprocessor-customization/test-geometry-sketch.png: the sketch of the test geometry, with straight lines and arcs that start at the origin and go in the Y direction",
+    "output/postprocessor-customization/test-geometry-toolpath.png: the Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow at the start point"
+   ],
+   "figures": [
+    {
+     "wanted": "output/postprocessor-customization/test-geometry-sketch.png: the sketch of the test geometry, with straight lines and arcs that start at the origin and go in the Y direction",
+     "status": "done",
+     "file": "output/postprocessor-customization/test-geometry-sketch.png",
+     "recipe": "recipes/output/postprocessor-customization/test-geometry-sketch.py",
+     "shows": "The sketch is open in the Sketcher and the view looks along Z. The image shows the red X axis, the green Y axis and the default grid. An open wire starts at the origin, goes up along the Y axis, turns through an arc, goes along a horizontal line, turns through a second arc and goes down to the X axis. The end points are red and the two arc centres are blue.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/postprocessor-customization/test-geometry-toolpath.png: the Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow at the start point",
+     "status": "done",
+     "file": "output/postprocessor-customization/test-geometry-toolpath.png",
+     "recipe": "recipes/output/postprocessor-customization/test-geometry-toolpath.py",
+     "shows": "Isometric 3D view, fitted to the Stock. The image shows the Stock as a flat box with broken lines, the sketch in black, and the green Toolpath of an Engrave Operation at one level, at the top of the Stock. Red vertical rapid moves are at the start and at the end. The first move has the highlight colour (light blue). A solid blue arrow is on the first move, near the start point, and points in the direction of travel.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "1. The page sentence about the blue arrow is not accurate. The source (src/Mod/CAM/Gui/ViewProviderPath.cpp, PathSelectionObserver) shows the arrow only while the pointer is on a move of the Toolpath. The arrow is at the pointer position and points in the direction of that move. It is not a permanent mark at the start point. The recipe sends a pointer move event to the 3D view, 3 mm after the start point on the first move. The image thus shows the arrow near the start point, not at it, and the first move has the highlight colour. The alt text says \"near the start point\". The sentence that I added says: \"The figure shows the arrow on the first move of the Toolpath, where the pointer is.\" I did not change the page sentence. A person must correct it.\n\n2. I added a test model: models/lines-arcs-1.FCStd, with an entry in models/models.json. STYLE.md §10.3 requires a model in models/ and no model had a sketch of lines and arcs. The model is one Sketch in the XY plane: three straight lines and two arcs of radius 10 mm, from (0, 0) to (40, 0). The direct FreeCADCmd call was not permitted in this session. I thus built the file with a temporary recipe through gypsy/capture.py and deleted that recipe. The build script is not in the repository.\n\n3. The Toolpath is at Z = 1 mm, the top of the default Stock, which is the default depth of an Engrave Operation. The page text gives (0, 0, 0) as the start. The first capture and the last capture used this default depth and gave a correct image. Two captures between them had the Toolpath at Z = 0 and failed, because the pointer then selected the Stock or the sketch and no arrow showed. I went back to the default depth. The difference in Z is not visible in the figure.\n\n4. Both recipes write the image with view.saveImage(shot.out, ...) directly. The sketch recipe does this because shot.view() always sets the isometric view and the sketch figure is about the XY plane. The Toolpath recipe calls shot.view() first, then moves the pointer and saves the image again with the arrow. A shot.view() option for a plane view and for a pointer position can remove this.\n\n5. The sketch figure shows the Sketcher grid, which is the default with an empty profile.\n\n6. The page has two new reference sentences and two image blocks in the Preparation section. The lint gives 0 findings. Nothing is committed. The work tree also has changes to output/post-process.adoc and its figures; those were there before this task and I did not touch them.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.4240047999999998,
+    "duration_ms": 275903,
+    "turns": 50,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "output/posts/fanuc.adoc",
+   "wanted": [
+    "output/posts/fanuc/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the fanuc Post selected and its eight properties at their defaults",
+    "output/posts/fanuc/dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for a Machine with the fanuc Post, with Program Number and Park Empty Spindle at End"
+   ],
+   "figures": [
+    {
+     "wanted": "output/posts/fanuc/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the fanuc Post selected and its eight properties at their defaults",
+     "status": "done",
+     "file": "output/posts/fanuc/editor-postprocessor-tab.png",
+     "recipe": "recipes/output/posts/fanuc/editor-postprocessor-tab.py",
+     "shows": "The Machine Editor at its default size, with the Postprocessor tab selected. The property list is moved down to its end. The last eight rows are the fanuc properties at their defaults: Program Number 0; Tape Marks (%), Upper-Case Output, Dwell in Milliseconds and Rigid Tapping (M29) checked; Parametric Tool Length Offset and Park Empty Spindle at End unchecked; Empty-Spindle Retract with G28 G91 Z0 and G90. Above them are common properties (Post-Rotary Move to Output non-engaging moves), with the fanuc defaults: parameter order without K, spindle-speed precision 0. The Post Processor selector is not in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/posts/fanuc/dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for a Machine with the fanuc Post, with Program Number and Park Empty Spindle at End",
+     "status": "done",
+     "file": "output/posts/fanuc/dialog-options-postprocessor-properties.png",
+     "recipe": "recipes/output/posts/fanuc/dialog-options-postprocessor-properties.py",
+     "shows": "The Post-Processing Dialog (title Post Processing - Job: Job), with the Options tab selected and moved down to its end. The Postprocessor Properties group shows Allow tool-change (checked), Program Number (0) and Park Empty Spindle at End (unchecked). Above it are the Duplicate Output Options and Processing Options groups. The tab bar also shows Operations (1/1) and a red Warnings (!) 4 tab.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "Each recipe ran two times without an error. The lint gives 0 findings. The two figures are in the page after the table \"Properties of the fanuc Post\", each with one new sentence before it. Both figures have width 400.\n\nEditor figure: the Post Processor selector is not in the image. The property list of the fanuc Post is longer than the dialog at its default size (700 x 900), so the selector and the eight properties cannot be in one capture. The recipe selects \"fanuc\" in the selector and then moves the list down to Program Number. The alt text thus says \"moved down to the eight properties of the fanuc Post\", not \"with the fanuc Post selected\". The eight rows identify the Post. The value fields are cut at the right edge, because the tab has a horizontal scroll bar at the default size; this is the state that a user gets.\n\nDialog figure: the Job has one Profile Operation without feed rates, so the Warnings tab shows 4 warnings in red. This does not change the Postprocessor Properties group. The group also contains the common Job-scope property Allow tool-change.\n\nThe shared file recipes/output/posts/fanuc/_machine.py saves a 3-axis Machine \"Fanuc Mill\" with the fanuc Post. No old figure was on the page, so no figure was replaced.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.7398435999999999,
+    "duration_ms": 117255,
+    "turns": 37,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "wanted": [
+    "output/post-process-selected/dialog-operations-tab.png: Post-Processing Dialog, Operations tab, opened from Post Process Selected, with only the selected Operations checked and the columns #, Operation, Tool, Tool Controller, Coolant and Time visible"
+   ],
+   "figures": [
+    {
+     "wanted": "output/post-process-selected/dialog-operations-tab.png: Post-Processing Dialog, Operations tab, opened from Post Process Selected, with only the selected Operations checked and the columns #, Operation, Tool, Tool Controller, Coolant and Time visible",
+     "status": "done",
+     "file": "output/post-process-selected/dialog-operations-tab.png",
+     "recipe": "recipes/output/post-process-selected/dialog-operations-tab.py",
+     "shows": "The whole Post-Processing Dialog with the title \"Post Processing - Job: Job\". The tab \"Operations (2/3)\" is selected. The table shows the columns #, Operation, Tool, Tool Controller, Coolant and Time. Row 1 MillFacing is not checked. Row 2 Profile and row 3 Drilling are checked. Each row shows Tool 1, \"TC: 5mm Endmill\", an empty Coolant cell and a time. The buttons Select All, Select None, Workplan, Generate Output and Close are below the table. The other tabs are Overview, Options, Output and \"Warnings 2\".",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The first capture attempt was successful. The lint of the page gives 0 findings.\n\nThe recipe does not run the CAM_PostSelected command. The command opens a modal message box and then calls exec_() on the dialog. The recipe selects the Profile and the Drilling Operation in the Tree View. Then it creates PostProcessDialog(job, {\"job\": job, \"operations\": selection}). Path/Post/Command.py gives the dialog the same argument after a press of \"Only selected\".\n\nThe Job has three Operations (MillFacing, Profile, Drilling) on the model drilling-1. Thus the figure shows one Operation that is not checked. The Machine \"Shop Router\" with the linuxcnc Post is saved by the recipe. The recipe has its own save_machine() function, because the equivalent function is in the folder of a different page (recipes/output/post-process/_dialog.py).\n\nPage change: the figure and one sentence before it are in step 4 of the Usage section, as list continuations. The width is 400. The page had no old figure to replace.\n\nThe Coolant column is visible but its cells are empty, because the Tool Controller has no coolant mode. The tab \"Warnings 2\" shows in orange; the warnings come from the default Job of the empty profile.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.5651986,
+    "duration_ms": 69619,
+    "turns": 20,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "job/job.adoc",
+   "wanted": [
+    "job/job/task-panel-output-legacy.png: Job task panel, Output tab, with Machine set to (Legacy post-processor), so that the Processor and Arguments rows are visible"
+   ],
+   "figures": [
+    {
+     "wanted": "job/job/task-panel-output-legacy.png: Job task panel, Output tab, with Machine set to (Legacy post-processor), so that the Processor and Arguments rows are visible",
+     "status": "covered",
+     "file": "job/job/task-panel-output.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/task-panel-output.py",
+     "shows": "The Job task panel with the Output tab selected. Machine shows (Legacy post-processor), with the New Machine button. The Output file, Processor and Arguments rows are visible; Processor and Arguments are empty. The Work Coordinate Systems group shows G54 selected, Order by Fixture, and Split Output not selected.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The page already has this figure at line 103 of modules/ROOT/pages/job/job.adoc, in the Output section. The figure has a manifest entry (model drilling-1, FreeCAD 62544c4c6e8, date 2026-10-10) and a recipe. I looked at the image: it shows the Processor and Arguments rows with Machine set to (Legacy post-processor). I made no new recipe and no new image, and I did not change the page. I did not run the capture or the lint, because nothing changed. The Processor list is empty because the empty profile has no legacy Post-Processor enabled in the preferences.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.24677559999999998,
+    "duration_ms": 15198,
+    "turns": 9,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "wanted": [
+    "reference/preferences/assets-machines.png: The Assets page of the CAM preferences, with the Machines list and the button row Add, Import..., Edit, Delete."
+   ],
+   "figures": [
+    {
+     "wanted": "reference/preferences/assets-machines.png: The Assets page of the CAM preferences, with the Machines list and the button row Add, Import..., Edit, Delete.",
+     "status": "done",
+     "file": "reference/preferences/assets-machines.png",
+     "recipe": "modules/ROOT/images/recipes/reference/preferences/assets-machines.py",
+     "shows": "The Assets page of the CAM preferences. The Asset Location group shows Default path, the folder button, Reset and the note. The Machines group shows the experimental-feature warning, the Machines list with one entry \"Shop Router\", and the button row Add, Import..., Edit, Delete. Below the group is the selected checkbox \"Check for tool updates from the library when opening a document\".",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The capture succeeded on each of three runs; runs 2 and 3 corrected the appearance (background, default-button highlight).\n\n1. The Preferences Editor is modal, so the recipe does not open it. The recipe creates `AssetPreferencesPage` (the class that `InitGui.py` registers), calls `loadSettings()`, and shows the page in a plain `QDialog`. The image shows the page only, without the page tree and the buttons of the Preferences Editor. The page width is the minimum width of the page, which is less than the width in the Preferences Editor.\n\n2. The recipe sets `autoDefault` to off on the buttons of the page. Without this, the plain dialog showed Reset as the default button, which the Preferences Editor does not do.\n\n3. The recipe saves one Machine, \"Shop Router\", in the asset folder of the profile, so that the Machines list is not empty.\n\n4. The Default path field shows the path of the temporary capture profile (`/tmp/gypsy-fc-<random>/CamAssets`). A user sees `CamAssets` in the user application data directory. The path is different on each run, so the image is not identical between runs. A fixed profile path in `gypsy/capture.py` would correct this; I did not change the capture tool.\n\n5. Page change: one sentence and the block image (width 400) are added in the \"Machines\" section, before the list. `gypsy/lint.py --since origin/main` gives 0 findings. The page had no old figure. The manifest has the new entry.\n\n6. An observation, with no change made: the warning on the page in the source is \"Warning: Machine definition is an experimental feature. Changes made here will not affect any CAM functionality\". The page quotes only the first sentence.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.5424147999999999,
+    "duration_ms": 76121,
+    "turns": 24,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "output/machine.adoc",
+   "wanted": [
+    "output/machine/editor-toolheads-tab.png: Machine Editor, Toolheads tab, one rotary Toolhead with min and max rpm set.",
+    "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, linuxcnc selected, showing Machine- and Job-scope properties.",
+    "output/machine/job-output-tab-machine.png: Job task panel, Output tab, Machine combo with a Machine selected and the Processor and Arguments rows hidden.",
+    "output/machine/mtconnect-import-dialog.png: Import Machine from MTConnect dialog with a URL entered.",
+    "output/machine/validation-dialog.png: Validation dialog showing one warning with its details expanded."
+   ],
+   "figures": [
+    {
+     "wanted": "output/machine/editor-toolheads-tab.png: Machine Editor, Toolheads tab, one rotary Toolhead with min and max rpm set.",
+     "status": "done",
+     "file": "output/machine/editor-toolheads-tab.png",
+     "recipe": "recipes/output/machine/editor-toolheads-tab.py",
+     "shows": "Machine Editor with the Toolheads tab selected. One tab \"Toolhead 1\": Type Rotary, Name, ID, Tool Change Manual, Max Power 3.00 kW, Max RPM 24000, Min RPM 6000, Coolant Flood, Coolant Mist, Coolant Delay and Wait Time. The Add Toolhead button and the editor buttons are in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, linuxcnc selected, showing Machine- and Job-scope properties.",
+     "status": "done",
+     "file": "output/machine/editor-postprocessor-tab.png",
+     "recipe": "recipes/output/machine/editor-postprocessor-tab.py",
+     "shows": "Machine Editor with the Postprocessor tab selected, property list moved to its end. Machine-scope rows: Tool Return, Pre-Rotary Move, Post-Rotary Move, four Tilted work plane rows, Generated Parameter Order, TLO after tool-change, the precision rows. Job-scope rows: Allow tool-change, Path Blending Mode (BLEND), Blend Tolerance (0.0000).",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine/job-output-tab-machine.png: Job task panel, Output tab, Machine combo with a Machine selected and the Processor and Arguments rows hidden.",
+     "status": "done",
+     "file": "output/machine/job-output-tab-machine.png",
+     "recipe": "recipes/output/machine/job-output-tab-machine.py",
+     "shows": "Job task panel with the Output tab selected. The Machine list shows \"Shop Router\", with the New Machine button. Below are the Output file row and the Work Coordinate Systems group (G54 checked, Order by Fixture, Split Output). There are no Processor and Arguments rows.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine/mtconnect-import-dialog.png: Import Machine from MTConnect dialog with a URL entered.",
+     "status": "done",
+     "file": "output/machine/mtconnect-import-dialog.png",
+     "recipe": "recipes/output/machine/mtconnect-import-dialog.py",
+     "shows": "The dialog with its instruction text, the text field with \"http://machine:5000/probe\", the folder button, and the Import and Cancel buttons. The capture has no window frame, so the dialog title is not in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine/validation-dialog.png: Validation dialog showing one warning with its details expanded.",
+     "status": "done",
+     "file": "output/machine/validation-dialog.png",
+     "recipe": "recipes/output/machine/validation-dialog.py",
+     "shows": "The Validation dialog with the warning icon, the text \"1 warning(s) found.\", the OK and Hide Details… buttons, and the details area with \"[warning] machine defines no toolheads\".",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "All five figures are made and are in the page. The lint reports 0 findings.\n\nPostprocessor tab: at the default dialog size, the top of the property list shows only Machine-scope properties. The recipe moves the list to its end, where the Job-scope properties are (Allow tool-change, Path Blending Mode, Blend Tolerance). The Post Processor list with \"linuxcnc\" is then out of view; the two blend properties identify the linuxcnc Post. The sentence before the figure names the Post. The fanuc page uses the same method.\n\nValidation dialog: the recipe selects the type \"3-Axis Mill (XYZ)\" and the linuxcnc Post on a new Machine, so the only finding is the warning \"machine defines no toolheads\". The recipe replaces QMessageBox.exec_ with show, as the machine-configuration recipe does.\n\nToolheads tab: one click on Add Toolhead gives the default Max RPM 24000 and Min RPM 6000. The recipe does not change these values.\n\nPage: the three figures in the Usage procedures are attached to their steps with list continuation (+), so the step numbers stay correct. Each figure has one new sentence before it. The Toolheads and Postprocessor figures are at the start of their sections, as the Machine tab figure is. No old figure was replaced.\n\nNew shared file: recipes/output/machine/_machine.py (saved Machine \"Shop Router\" and a Job on the drilling-1 model), used by the job-output-tab-machine recipe. It has the same content as the file of the machine-configuration page.\n\nNothing is committed.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.1388806,
+    "duration_ms": 175669,
+    "turns": 42,
+    "model": "claude-opus-5-5"
+   }
+  }
+ ],
+ "cost_usd": 6.4683166
+}

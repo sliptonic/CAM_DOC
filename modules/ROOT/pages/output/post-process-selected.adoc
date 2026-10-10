@@ -34,6 +34,10 @@ The image:CAM_PostSelected.svg[width=24] xref:output/post-process-selected.adoc[
 * Use the keyboard shortcut: kbd:[P] then kbd:[O].
 . A *Post Process* message box asks _What needs to be exported?_ — press btn:[Only selected] to export just the selected Operations or btn:[All] (default) to export the whole Job. The box is skipped when the selection already equals the whole workplan.
 . Post-processing continues as for xref:output/post-process.adoc[CAM Post]: the Post Processing dialog (Job with Machine) or the legacy flow; in the dialog the selected Operations are pre-checked on the Operations tab.
++
+The figure shows the _Operations_ tab for a Job with three Operations, after a press of btn:[Only selected] with two Operations selected.
++
+image::output/post-process-selected/dialog-operations-tab.png["Post-Processing Dialog, Operations tab, opened from Post Process Selected, with the two selected Operations checked and the third Operation not checked",400]
 
 == Notes
 

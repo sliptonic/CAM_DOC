@@ -80,6 +80,14 @@ Each xref:reference/glossary.adoc#post-processor-property[Post-Processor Propert
 |The retract lines between `M05` and `M6 T0`. The Post uses this property only when *Park Empty Spindle at End* is checked.
 |===
 
+The figure shows the eight properties, below the common properties, on the _Postprocessor_ tab of the Machine Editor.
+
+image::output/posts/fanuc/editor-postprocessor-tab.png["Machine Editor, Postprocessor tab, moved down to the eight properties of the fanuc Post at their defaults",400]
+
+The next figure shows the two Job-scope properties in the *Postprocessor Properties* group of the Post-Processing Dialog.
+
+image::output/posts/fanuc/dialog-options-postprocessor-properties.png["Post-Processing Dialog, Options tab, Postprocessor Properties group of the fanuc Post, with Program Number and Park Empty Spindle at End",400]
+
 === Defaults of the common properties
 
 The `fanuc` Post changes the defaults of these common properties. Each other common property has the default that xref:output/machine.adoc[Machine] gives.
