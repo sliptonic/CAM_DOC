@@ -176,7 +176,7 @@ def untriaged(since):
     """Merged FreeCAD 'Mod: CAM' pull requests since the newest verdict that have no verdict."""
     have = {int(os.path.basename(f)[:-5]) for f in glob.glob(os.path.join(HERE, "verdicts", "*.json"))}
     out, page = [], 1
-    q = f'repo:{triage.REPO} is:pr is:merged label:"Mod: CAM" merged:>={since}'
+    q = f'repo:{triage.REPO} is:pr is:merged base:main label:"Mod: CAM" merged:>={since}'
     while True:
         res = triage.gh("search/issues", q=q, per_page=100, page=page)
         out += [{"pr": i["number"], "title": i["title"]} for i in res["items"] if i["number"] not in have]

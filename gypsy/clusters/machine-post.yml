@@ -14,6 +14,8 @@ partial:
 pages:
   reference:            # already revised (CAM_DOC#1); given to the drafter, not changed
     - output/machine.adoc
+  generated:            # written by a tool from the FreeCAD source; requirement of the issue
+    - {page: output/posts/genealogy.adoc, command: [tools/post_genealogy.py]}
   rewrite:
     - output/machine-configuration.adoc
     - output/post-process.adoc
@@ -31,6 +33,7 @@ pages:
     - reference/preferences.adoc
     - reference/scripting.adoc
 nav:
+  - {after: 'xref:output/mbpp-postprocessor.adoc', line: '** xref:output/posts/genealogy.adoc[Post-Processor Genealogy]'}
   - {after: 'xref:output/mbpp-postprocessor.adoc', line: '** xref:output/posts/heidenhain.adoc[Heidenhain Post-Processor]'}
   - {after: 'xref:output/mbpp-postprocessor.adoc', line: '** xref:output/posts/fanuc.adoc[Fanuc Post-Processor]'}
 facts:
