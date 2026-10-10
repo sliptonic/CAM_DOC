@@ -338,6 +338,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -516,6 +525,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <ul>
 <li>
 <p>List of Machine templates (<code>.fcm</code> files in the <code>Machines</code> folder plus templates provided by add-ons). <b class="button">Add</b> creates a new machine in the Machine Editor, <b class="button">Edit</b> (or double-click) opens the selected machine in the Machine Editor, <b class="button">Delete</b> removes the file after confirmation. See <a href="../output/machine.html" class="xref page">CAM Machine</a>.</p>
+</li>
+<li>
+<p><b class="button">Import&#8230;&#8203;</b> is between <b class="button">Add</b> and <b class="button">Edit</b>. <b class="button">Import&#8230;&#8203;</b> creates a Machine from the probe document of an MTConnect agent. The import dialog reads the probe document from the URL of the agent or from an XML file. The Machine Editor then opens with the imported Machine. The list shows the imported Machine after the Machine Editor is accepted.</p>
 </li>
 <li>
 <p>The page shows the note <em>Warning: Machine definition is an experimental feature.</em></p>

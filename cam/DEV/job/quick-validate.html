@@ -337,6 +337,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -468,6 +477,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="paragraph">
 <p>The command is not on any toolbar, menu or context menu; it is reachable only through its keyboard shortcut <kbd>P</kbd> then <kbd>V</kbd>, or by adding it to a toolbar via <span class="menuseq"><b class="menu">Tools</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Customize</b></span>.</p>
 </div>
+<div class="paragraph">
+<p>The findings include the Squawks of the Job&#8217;s Post-Processor. A machine-based Post-Processor compares each commanded Spindle Speed with the limits of the Toolhead of the <a href="../output/machine.html" class="xref page">Machine</a>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Post-Processor reads the speeds from the <code>M3</code> and <code>M4</code> commands of the Tool Controllers and the Operations of the Job. The Post-Processor does not check a speed of 0.</p>
+</li>
+<li>
+<p>A speed below the <code>min_rpm</code> limit or above the <code>max_rpm</code> limit of the Toolhead gives a <code>WARNING</code> Squawk. The Squawk shows the label of the Tool Controller or the Operation.</p>
+</li>
+<li>
+<p>The Post-Processor uses the limits only when the Machine defines exactly one Toolhead and the type of that Toolhead is <code>rotary</code>.</p>
+</li>
+<li>
+<p>A limit of 0 is a limit that is not specified. The Post-Processor does not check a speed against a limit that is not specified.</p>
+</li>
+<li>
+<p>A Machine that defines more than one Toolhead gives a <code>NOTE</code> Squawk. The Post-Processor does not check the speeds of that Machine.</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -485,6 +516,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>Read the output in the Report view: <code>Quick Validate: No issues found.</code> or a block <code>=== Quick Validation Results ===</code> with one line per finding prefixed by its severity (<code>[WARNING]</code>, <code>[CAUTION]</code> or <code>[NOTE]</code>), followed by <code>N issue(s) found, M critical</code>. Warnings and cautions are printed in the warning color.</p>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>The Spindle Speed findings of the Post-Processor have these texts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>'&lt;label&gt;' commands spindle speed &lt;speed&gt; rpm, below the machine minimum of &lt;limit&gt; rpm</code></p>
+</li>
+<li>
+<p><code>'&lt;label&gt;' commands spindle speed &lt;speed&gt; rpm, above the machine maximum of &lt;limit&gt; rpm</code></p>
+</li>
+<li>
+<p><code>Machine defines &lt;count&gt; toolheads; spindle speed was not checked against their limits</code></p>
+</li>
+</ul>
 </div>
 </div>
 </div>

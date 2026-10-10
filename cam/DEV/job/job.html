@@ -338,6 +338,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -543,26 +552,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="paragraph">
 <p>The Job task panel has six tabs, in order: <b class="menuref">Setup</b>, <b class="menuref">General</b>, <b class="menuref">Output</b>, <b class="menuref">Tools</b>, <b class="menuref">Workplan</b> and <b class="menuref">Advanced</b> (<span class="since">Advanced introduced in 1.1</span>). Switching back to the Setup tab applies and recomputes pending changes.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The screenshots below show the pre-1.1 tab order and lack the Machine group, the Assign Material button, the Picking toggle and the Work Coordinate Systems group.
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="setup"><a class="anchor" href="#setup"></a>Setup</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Job_3.jpg" alt="Job 3"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-setup.png" alt="Job task panel, Setup tab, with the Layout section open" width="600">
+</div>
 </div>
 <div class="sect2">
 <h3 id="stock"><a class="anchor" href="#stock"></a>Stock</h3>
@@ -618,8 +617,10 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 <div class="sect1">
 <h2 id="general"><a class="anchor" href="#general"></a>General</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Job_1.jpg" alt="Job 1"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-general.png" alt="Job task panel, General tab" width="600">
+</div>
 </div>
 <div class="ulist">
 <ul>
@@ -632,9 +633,6 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 <li>
 <p><strong>Description</strong>: You can add some notes to the Job here. Notes are only for your information and have no effect on the Toolpath.</p>
 </li>
-<li>
-<p><strong>Machine</strong> (<span class="since">introduced in 26.3</span>): selects the machine configuration (<code>.fcm</code>) for this Job from the machines in the asset path (<em>&lt;any&gt;</em> means none). When a Machine is set, post-processing uses the machine-based flow: the Post-Processor and output options come from the machine definition and the Post Process dialog is shown. <b class="button">New Machine</b> opens the Machine Editor to create a machine; it is selected after saving. See <a href="../output/machine.html" class="xref page">CAM Machine</a>.</p>
-</li>
 </ul>
 </div>
 </div>
@@ -642,11 +640,16 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 <div class="sect1">
 <h2 id="output"><a class="anchor" href="#output"></a>Output</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Job_2.jpg" alt="Job 2"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-output.png" alt="Job task panel, Output tab, with Machine set to (Legacy post-processor)" width="600">
+</div>
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Machine</strong>: selects the Machine for this Job from the <code>.fcm</code> files in the asset path. The first entry, <code>(Legacy post-processor)</code>, selects no Machine. With a Machine selected, post-processing uses the machine-based flow. The Machine definition supplies the Post-Processor and the output options, and the <a href="../output/post-process.html" class="xref page">Post-Processing Dialog</a> opens. <b class="button">New Machine</b> opens the Machine Editor to create a Machine; the new Machine is selected after saving. See <a href="../output/machine.html" class="xref page">Machine</a> and <a href="../output/machine-configuration.html" class="xref page">Machine Configuration</a>.</p>
+</li>
 <li>
 <p><strong>Output File</strong>: Set the name, extension, and the file path of the G-code output. You can use the following placeholders:</p>
 <div class="ulist">
@@ -670,10 +673,10 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 </div>
 </li>
 <li>
-<p><strong>Processor</strong>: select a legacy argument-based <a href="../output/post-process.html" class="xref page">Post-Processor</a>. Only Post-Processors enabled in the preferences are listed. Machine-based Post-Processors (<span class="since">introduced in 26.3</span>) are not listed here; they are chosen by assigning a Machine on the General tab.</p>
+<p><strong>Processor</strong>: selects a legacy argument-based <a href="../output/post-process.html" class="xref page">Post-Processor</a>. The list contains only the Post-Processors enabled in the preferences. The list does not contain machine-based Post-Processors; select a <strong>Machine</strong> to use a machine-based Post-Processor. The panel shows <strong>Processor</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
 </li>
 <li>
-<p><strong>Arguments</strong>: Add arguments for the legacy <a href="../output/post-process.html" class="xref page">Post-Processor</a> as needed.</p>
+<p><strong>Arguments</strong>: the arguments for the legacy <a href="../output/post-process.html" class="xref page">Post-Processor</a>. The panel shows <strong>Arguments</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
 </li>
 <li>
 <p><strong>Work Coordinate Systems</strong>:</p>
@@ -698,8 +701,10 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 <div class="sect1">
 <h2 id="tools"><a class="anchor" href="#tools"></a>Tools</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Job_4.jpg" alt="Job 4"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-tools.png" alt="Job task panel, Tools tab, with one Tool Controller" width="600">
+</div>
 </div>
 <div class="paragraph">
 <p>The table lists the Job&#8217;s Tool Controllers (Name, tool number, horizontal feed, vertical feed and spindle speed; a negative spindle value means reverse direction). Cells can be edited in place.</p>
@@ -725,11 +730,38 @@ The screenshots below show the pre-1.1 tab order and lack the Machine group, the
 <div class="sect1">
 <h2 id="workplan"><a class="anchor" href="#workplan"></a>Workplan</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="../_images/Job_5.jpg" alt="Job 5"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-workplan.png" alt="Job task panel, Workplan tab, with a Profile and a Drilling Operation" width="600">
+</div>
 </div>
 <div class="paragraph">
 <p>Lists the Operations in execution order. Select an Operation and use the up/down arrows to reorder it, or <b class="button">Delete</b> to remove it from the document.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The <em>Workplan</em> list shows one row for each Operation, with these columns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>#</strong>: the position of the Operation in the execution order. The first Operation has the number 0.</p>
+</li>
+<li>
+<p><strong>Operation</strong>: the label of the Operation.</p>
+</li>
+<li>
+<p><strong>Tool</strong>: the value of <strong>Tool Number</strong> of the Tool Controller of the Operation. The cell is empty when the Operation has no Tool Controller.</p>
+</li>
+<li>
+<p><strong>Tool Controller</strong>: the label of the Tool Controller of the Operation. The cell shows <code>???</code> when the Operation has no Tool Controller.</p>
+</li>
+<li>
+<p><strong>Coolant</strong>: the coolant mode of the Operation. The cell is empty when the coolant mode is <code>None</code>.</p>
+</li>
+<li>
+<p><strong>Time</strong>: the estimated cycle time of the Operation.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

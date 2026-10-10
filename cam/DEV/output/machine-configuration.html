@@ -6,6 +6,7 @@
     <title>Machine Configuration :: FreeCAD CAM documentation (experiment)</title>
     <link rel="prev" href="machine.html">
     <link rel="next" href="../job/sanity-check.html">
+    <meta name="description" content="How a Machine definition is edited, stored as a .fcm file, validated, and applied to a Job at export.">
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/freecad.css">
@@ -337,6 +338,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -421,13 +431,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 </aside>
 <article class="doc">
 <h1 class="page">Machine Configuration</h1>
-<div id="preamble">
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><span class="since">Introduced in 26.3.</span> A <strong>Machine</strong> describes a real CNC machine to FreeCAD: its axes and their limits, its kinematic layout, its toolheads, which <a href="post-process.html" class="xref page">Post-Processor</a> it needs, and how its G-code should be formatted. The definition lives in one JSON file with the <code>.fcm</code> extension. Assign a Machine to a <a href="../job/job.html" class="xref page">Job</a> and post-processing runs through the machine-based pipeline; everything the old system scattered across script flags and argument strings sits in this one file.</p>
+<p><span class="since">introduced in 26.3</span>: A <a href="../reference/glossary.html#machine" class="xref page">Machine</a> describes a physical CNC machine to the CAM workbench. The description holds the axes and their limits, the kinematics, the <a href="../reference/glossary.html#toolhead" class="xref page">Toolheads</a>, the <a href="../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post) and the format of the G-code output. One JSON file with the <code>.fcm</code> extension stores the description. A <a href="../job/job.html" class="xref page">Job</a> that has a Machine uses machine-based post-processing.</p>
 </div>
 <div class="paragraph">
-<p>This page covers configuring machines: the editor, the file format, and how machine settings interact with the Job. To write a new Post-Processor for the machine-based system, see <a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a>. For the command-page summary, see <a href="machine.html" class="xref page">CAM Machine</a>.</p>
+<p>This page explains the Machine Editor, the <code>.fcm</code> file format, the validation of a Machine, and the Machine settings in the Job. <a href="machine.html" class="xref page">Machine</a> is the command page and lists the common Post-Processor Properties. <a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a> explains how to write a Post for this system.</p>
 </div>
 </div>
 </div>
@@ -435,24 +446,72 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="how-the-pieces-fit"><a class="anchor" href="#how-the-pieces-fit"></a>How the pieces fit</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Job stores only the machine&#8217;s display name in its <strong>Machine</strong> property. At post time FreeCAD looks the name up (case-insensitively) among the available <code>.fcm</code> files, loads the file, and reads <code>postprocessor.file_name</code> from it to pick the Post-Processor. The machine&#8217;s output options, processing options, and post properties then configure that Post-Processor. A Job with no Machine still uses the legacy flow — its <strong>PostProcessor</strong> and <strong>PostProcessorArgs</strong> properties — so both systems coexist.</p>
+<p>A Job stores only the display name of its Machine, in the <strong>Machine</strong> property. At export, the workbench finds the <code>.fcm</code> file whose <code>machine.name</code> field matches that name. The comparison ignores case. The <code>postprocessor.file_name</code> key of the file selects the Post. The <code>output</code> options, the <code>processing</code> options and the <a href="../reference/glossary.html#post-processor-property" class="xref page">Post-Processor Properties</a> of the Machine then configure that Post.</p>
 </div>
 <div class="paragraph">
-<p>Configuration reaches the Post-Processor in a fixed priority order. Later stages win:</p>
+<p>A Job with no Machine uses its <code>PostProcessor</code> and <code>PostProcessorArgs</code> properties. The two systems exist together.</p>
+</div>
+<div class="paragraph">
+<p>A Machine starts in the Machine Editor as a new Machine, as a copy of a <a href="../reference/glossary.html#machine-template" class="xref page">Machine Template</a>, or as an import from an MTConnect agent. The Machine Editor accepts an imported Machine that is not yet saved to a file.</p>
+</div>
+<div class="paragraph">
+<p>Each Post-Processor Property has one <a href="../reference/glossary.html#property-scope" class="xref page">Property Scope</a>. The scope sets where the property is edited.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 50%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Where the property is edited</th>
+<th class="tableblock halign-left valign-top">Where the value is stored</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Machine Editor only. The Post-Processing Dialog does not show the property.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>.fcm</code> file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Machine Editor sets the default. The <em>Options</em> tab of the Post-Processing Dialog overrides the default for one run.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>.fcm</code> file; overrides in the Job&#8217;s <code>PostProcessorPropertyOverrides</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <em>Overview</em> tab of the Post-Processing Dialog only.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not stored</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No interface shows the property.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not stored; the Post derives the value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A property that declares no scope has Job scope.</p>
+</div>
+<div class="paragraph">
+<p>The Post gets each value from these sources. A source later in the list has priority over the sources before it.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Values stored in the machine&#8217;s <code>.fcm</code> file (<code>postprocessor.properties</code>).</p>
+<p>The default in the property schema of the Post.</p>
 </li>
 <li>
-<p>Schema defaults, for any property the file doesn&#8217;t mention.</p>
+<p>The value in the <code>.fcm</code> file (<code>postprocessor.properties</code>).</p>
 </li>
 <li>
-<p>Job-level overrides from the Job&#8217;s <strong>PostProcessorPropertyOverrides</strong> property.</p>
+<p>The override in the Job&#8217;s <code>PostProcessorPropertyOverrides</code> property.</p>
 </li>
 <li>
-<p>Per-export overrides entered in the <a href="post-process.html" class="xref page">Post Processing</a> dialog.</p>
+<p>The value entered in the <a href="post-process.html" class="xref page">Post-Processing Dialog</a> for one export.</p>
 </li>
 </ol>
 </div>
@@ -461,21 +520,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="sect1">
 <h2 id="where-machine-files-live"><a class="anchor" href="#where-machine-files-live"></a>Where machine files live</h2>
 <div class="sectionbody">
-<div class="dlist">
-<dl>
-<dt class="hdlist1">User machines</dt>
-<dd>
-<p><code>.fcm</code> files in the <code>Machines</code> folder of the CAM asset directory (by default <code>&lt;user application data&gt;/CamAssets/Machines/</code>). These are the machines offered in the Job task panel and the Post Processing dialog. The file is named after the machine with spaces replaced by underscores (<code>My Router</code> → <code>My_Router.fcm</code>), but the display name always comes from the <code>machine.name</code> field inside the file.</p>
-</dd>
-<dt class="hdlist1">Add-on machines</dt>
-<dd>
-<p>Any installed add-on whose <code>package.xml</code> declares a <code>machine</code> content item contributes the <code>.fcm</code> files of the declared subdirectory as read-only templates, grouped under the add-on&#8217;s name (the <strong>FreeCAD/Machines</strong> add-on in the Addon Manager is the community collection). Subdirectories nest to any depth in the template picker. Selecting a template copies its settings into your own machine, so an add-on update never silently changes your configuration. An add-on can be hidden with an <code>ADDON_DISABLED</code> file in its folder; <code>ALL_ADDONS_DISABLED</code> in the <code>Mod</code> folder hides them all.</p>
-</dd>
-<dt class="hdlist1">Built-in templates</dt>
-<dd>
-<p>The editor&#8217;s <strong>Type</strong> presets (below) generate standard 2- to 5-axis configurations without any file. A <code>Machine/machines</code> folder inside the CAM module is also scanned for shipped <code>.fcm</code> templates.</p>
-</dd>
-</dl>
+<div class="sect2">
+<h3 id="saved-machines"><a class="anchor" href="#saved-machines"></a>Saved Machines</h3>
+<div class="paragraph">
+<p>Saved Machines are <code>.fcm</code> files in the <code>Machines</code> folder of the CAM asset directory. The default location is <code>&lt;user application data&gt;/CamAssets/Machines/</code>. The Job task panel and the Post-Processing Dialog offer these Machines.</p>
+</div>
+<div class="paragraph">
+<p>The file name is the Machine name with each space replaced by an underscore: <code>My Router</code> becomes <code>My_Router.fcm</code>. The display name always comes from the <code>machine.name</code> field in the file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="add-on-machine-templates"><a class="anchor" href="#add-on-machine-templates"></a>Add-on Machine Templates</h3>
+<div class="paragraph">
+<p>An installed add-on whose <code>package.xml</code> declares a <code>machine</code> content item supplies the <code>.fcm</code> files of the declared folder as read-only Machine Templates. The Template list groups them by the add-on name. Folders nest to any depth in the list. The <strong>FreeCAD/Machines</strong> add-on in the Addon Manager is the community collection.</p>
+</div>
+<div class="paragraph">
+<p>The selection of a Machine Template copies its settings into your own Machine. An update of the add-on does not change your Machine.</p>
+</div>
+<div class="paragraph">
+<p>A file named <code>ADDON_DISABLED</code> in the add-on folder hides that add-on. A file named <code>ALL_ADDONS_DISABLED</code> in the <code>Mod</code> folder hides all add-ons.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="built-in-machine-templates"><a class="anchor" href="#built-in-machine-templates"></a>Built-in Machine Templates</h3>
+<div class="paragraph">
+<p>The <strong>Type</strong> values of the Machine Editor make standard 2-axis to 5-axis configurations without a file. The Machine Editor also reads <code>.fcm</code> Machine Templates from the <code>Machine/machines</code> folder of the CAM module.</p>
+</div>
 </div>
 </div>
 </div>
@@ -483,12 +553,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="the-machine-editor"><a class="anchor" href="#the-machine-editor"></a>The Machine Editor</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Open the editor from <b class="button">New Machine</b> on the General tab of the <a href="../job/job.html" class="xref page">Job</a> task panel, or from <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Assets</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Machines</b></span> with <b class="button">Add</b> and <b class="button">Edit</b>. It has three tabs. The <strong>Postprocessor</strong> and <strong>Options</strong> tabs are hidden if the boolean parameter <code>Mod/CAM/EnableMachinePostprocessor</code> is set to false (it defaults to true).</p>
+<p>Open the Machine Editor from one of these locations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">New Machine</b> on the <em>Output</em> tab of the <a href="../job/job.html" class="xref page">Job</a> task panel.</p>
+</li>
+<li>
+<p><span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Assets</b></span>, in the <strong>Machines</strong> group, with <b class="button">Add</b> or <b class="button">Edit</b>.</p>
+</li>
+<li>
+<p><b class="button">Import…</b> in the same <strong>Machines</strong> group, after an MTConnect import. <a href="machine.html" class="xref page">Machine</a> gives the import procedure.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Machine Editor has four tabs: <em>Machine</em>, <em>Toolheads</em>, <em>Postprocessor</em> and <em>Options</em>. The <em>Postprocessor</em> and <em>Options</em> tabs are hidden when the boolean parameter <code>Mod/CAM/EnableMachinePostprocessor</code> is false. The default of the parameter is true.</p>
+</div>
+<div class="paragraph">
+<p>Below the tabs are the buttons <b class="button">Edit as Text</b>, <b class="button">Validate</b>, <b class="button">Save</b> and <b class="button">Close</b>. <b class="button">Save</b> writes the <code>.fcm</code> file. <b class="button">Close</b> discards the changes.</p>
 </div>
 <div class="sect2">
 <h3 id="machine-tab"><a class="anchor" href="#machine-tab"></a>Machine tab</h3>
 <div class="paragraph">
-<p><strong>Name</strong>, <strong>Manufacturer</strong>, and <strong>Description</strong> identify the machine; the name doubles as the key a Job uses to find it. <strong>Units</strong> (Metric or Imperial) sets the unit system for the values you enter here — it&#8217;s independent of the G-code output units on the Options tab. <strong>Template</strong> loads settings from an add-on machine. <strong>Type</strong> rebuilds the axis set from a preset:</p>
+<p><strong>Name</strong>, <strong>Manufacturer</strong> and <strong>Description</strong> identify the Machine. The Job uses the name to find the Machine. <strong>Units</strong> sets Metric or Imperial for the values on this tab. <strong>Units</strong> is independent of the G-code output units on the <em>Options</em> tab.</p>
+</div>
+<div class="paragraph">
+<p><strong>Template</strong> loads the settings of a machine type, of a saved Machine, or of a built-in or add-on Machine Template.</p>
+</div>
+<div class="paragraph">
+<p><strong>Type</strong> builds the axis set again from one of these values:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -503,40 +598,59 @@ document.addEventListener('DOMContentLoaded', async () => {
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Machine</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">none — define axes yourself</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Custom Machine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None. Define each axis manually.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2-Axis Lathe (X, Z)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2-Axis Lathe (X, Z)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">X, Z linear</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3-Axis Mill (XYZ)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3-Axis Mill (XYZ)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4-Axis Mill (XYZ + A)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4-Axis Mill (XYZ + A)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; A rotary about X</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4-Axis Mill (XYZ + B)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4-Axis Mill (XYZ + B)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; B rotary about Y</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5-Axis Mill (XYZ + A, C)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; C azimuth carrying an A tilt (table/table)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5-Axis Mill (XYZ + A, C)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; C rotary that carries an A tilt (table and table)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5-Axis Mill (XYZ + B, C)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; B tilt carrying a C azimuth (head/head)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5-Axis Mill (XYZ + B, C)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X, Y, Z linear; B tilt that carries a C rotary (head and head)</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p><strong>Kinematics</strong> holds two capability flags — <strong>TCP Supported</strong> (the controller does tool-center-point control, e.g. G43.4) and <strong>DWO Supported</strong> (dynamic work offsets, e.g. G54.2) — plus free-form notes.</p>
+<p>The <em>Kinematics</em> group has three controls:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TCP Supported</strong>: the control does tool-center-point control, for example G43.4. Default: unchecked.</p>
+</li>
+<li>
+<p><strong>Rotation Strategy</strong>: how the control runs an Operation on a tilted <a href="../reference/glossary.html#work-plane" class="xref page">Work Plane</a>. Values <code>Not declared</code>, <code>Dynamic work offset (DWO)</code>, <code>Tilted work plane (TWP)</code>, <code>Post transform (not available yet)</code>. Default: <code>Not declared</code>.</p>
+</li>
+<li>
+<p><strong>Kinematics Notes</strong>: free text.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Every axis has:</p>
+<p>With DWO, the Post commands the rotary axes and the control applies its pivot offsets. With TWP, the Post declares the plane and the control positions the rotary axes. The command that declares the plane comes from the Post, not from the Machine. A Machine with rotary axes and no strategy cannot post an Operation on a tilted Work Plane. <a href="machine.html" class="xref page">Machine</a> lists the conditions that the export checks.</p>
+</div>
+<div class="paragraph">
+<p>An MTConnect import writes one line with the source of the import into <strong>Description</strong>. The import writes the same line into <strong>Kinematics Notes</strong>, then the text "Import assumptions:" and one line for each assumption. Examine these assumptions before you save the Machine.</p>
+</div>
+<div class="paragraph">
+<p>Each axis has these fields:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -552,80 +666,155 @@ document.addEventListener('DOMContentLoaded', async () => {
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Role</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Where the axis sits in the kinematic chain: <code>table_linear</code>, <code>head_linear</code>, <code>table_rotary</code>, or <code>head_rotary</code>. Table axes move the workpiece, head axes move the tool.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The position of the axis in the kinematic chain: <code>table_linear</code>, <code>head_linear</code>, <code>table_rotary</code> or <code>head_rotary</code>. A table axis moves the Model. A head axis moves the Toolhead.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Parent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The axis this one is mounted on, for stacked axes (an A tilt riding on a C rotary has parent C).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The axis that carries this axis. An A tilt on a C rotary has the parent C.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sequence</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Order of the axis within its chain.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The order of the axis in its chain.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Joint origin</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The point the axis acts through, in machine coordinates.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Joint Origin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The point through which the axis acts, in machine coordinates.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Direction / Rotation axis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unit vector of travel (linear) or of the rotation axis (rotary), selectable as ±X, ±Y, ±Z.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Direction, Rotation Axis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unit vector of travel for a linear axis, or of the rotation axis for a rotary axis. Values ±X, ±Y, ±Z.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Min limit / Max limit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Travel limits (mm/inch, or degrees for rotary). Sanity checks compare toolpaths against them.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Min Limit, Max Limit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The travel limits, in mm or inch for a linear axis and in degrees for a rotary axis. The Sanity Check compares each Toolpath with the limits.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Max velocity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Peak axis speed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max Velocity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum speed of the axis.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Rotary axes add three fields that control how angles come out in G-code:</p>
+<p>A rotary axis has three more fields. These fields control the angles in the G-code.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Solution preference</strong> — when two rotary solutions reach the same orientation, prefer <code>shortest</code>, <code>positive</code>, or <code>negative</code> motion.</p>
+<p><strong>Solution Preference</strong>: when two rotary solutions give the same orientation, the preferred motion. Values <code>shortest</code>, <code>positive</code>, <code>negative</code>. Default: <code>shortest</code>.</p>
 </li>
 <li>
-<p><strong>Allow flip</strong> — permit the 180°-flipped solution when it keeps motion inside the limits.</p>
+<p><strong>Allow Flip</strong>: permits the solution that is turned 180° when that solution keeps the motion in the limits. Default: checked.</p>
 </li>
 <li>
-<p><strong>Wrap strategy</strong> — what to emit as an axis accumulates whole revolutions:</p>
+<p><strong>Wrap Strategy</strong>: the angle output when an axis turns through full revolutions. Default: <code>unwound</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>unwound</code> — monotonic angles, growing without bound (4613.86°). For controllers that treat the rotary like a linear axis.</p>
+<p><code>unwound</code>: the angle increases without a limit, for example 4613.86°. Use this value for a control that moves the rotary axis as a linear axis.</p>
 </li>
 <li>
-<p><code>modulo</code> — angles kept in [0°, 360°). For indexers, and any controller where direction across the wrap doesn&#8217;t matter.</p>
+<p><code>modulo</code>: the angle stays in the range 0° to 360°. Use this value for an indexer, or when the direction across the wrap is not important.</p>
 </li>
 <li>
-<p><code>rezero</code> — angles in [0°, 360°) with a <code>G92 A0</code> injected at each full revolution and a closing <code>G92.1</code> to clear the offset. For shortest-path wrapping controllers (LinuxCNC wrapped rotary) when continuous direction matters.</p>
+<p><code>rezero</code>: the angle stays in the range 0° to 360°. The Post adds <code>G92 A0</code> at each full revolution and <code>G92.1</code> at the end. Use this value for a control that wraps on the shortest route, when a continuous direction is necessary.</p>
 </li>
 </ul>
 </div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="toolheads-tab"><a class="anchor" href="#toolheads-tab"></a>Toolheads tab</h3>
+<div class="paragraph">
+<p>The <em>Toolheads</em> tab is the second tab of the Machine Editor. A Machine can have more than one Toolhead.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">Add Toolhead</b> adds a Toolhead. Each Toolhead has its own tab. The close button of the tab removes the Toolhead.</p>
+</li>
+<li>
+<p>Toolhead type: <code>Rotary</code>, <code>Laser</code>, <code>Waterjet</code>, <code>Plasma</code> or <code>Wire EDM</code>. The type sets the capabilities of the Toolhead.</p>
+</li>
+<li>
+<p>Common fields: minimum and maximum rpm, maximum power in kW, tool change mode (<code>manual</code> or automatic), coolant flood and mist, coolant delay, and the wait time after start.</p>
+</li>
+<li>
+<p>Fields for one type: laser wavelength and focus range, waterjet pressure, plasma amperage.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>Toolheads</strong> is a tabbed list — a machine can carry several. Each has a type (<code>rotary</code>, <code>laser</code>, <code>waterjet</code>, <code>plasma</code>), which sets its capability profile, plus min/max RPM, maximum power (kW), tool change mode (<code>manual</code> or automatic), flood and mist coolant availability, a coolant delay, and a wait time after start. Type-specific extras: laser wavelength and focus range, waterjet pressure, plasma amperage.</p>
+<p>A <code>Wire EDM</code> Toolhead moves along Z and the table supplies X and Y. This Toolhead has power control and pulse control, uses water, and has no speed control.</p>
+</div>
+<div class="paragraph">
+<p>The Sanity Check compares each commanded Spindle Speed with the rpm range of a rotary Toolhead. <a href="machine.html" class="xref page">Machine</a> gives the conditions.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="postprocessor-tab"><a class="anchor" href="#postprocessor-tab"></a>Postprocessor tab</h3>
 <div class="paragraph">
-<p>Pick the Post-Processor here. The combo lists only machine-based posts — the ones declaring <code>POST_TYPE = "machine"</code> — never legacy script posts. Below the combo the editor renders one widget per entry of the selected post&#8217;s property schema: file extension, preamble, postamble, safety block, the pre/post G-code blocks, supported commands, precision settings, and any post-specific properties (LinuxCNC adds its blend mode, the plasma post its pierce and cooling delays). Widgets and defaults come straight from the post&#8217;s schema, so a new post needs no editor changes to be fully configurable. Properties marked <code>runtime</code> in the schema don&#8217;t appear here — they&#8217;re per-run choices offered in the Post Processing dialog instead (see <a href="mbpp-postprocessor.html#property-visibility" class="xref page">property visibility</a>).</p>
+<p>Select the Post in the list at the top of the tab. The list holds the Posts on the post search path that the machine-based system can run, for example <code>generic</code>, <code>grbl</code>, <code>linuxcnc</code> and <code>fanuc</code>. <a href="posts/genealogy.html" class="xref page">Post-Processor Genealogy</a> lists the Post classes.</p>
 </div>
 <div class="paragraph">
-<p>Only values you actually change are written to the <code>.fcm</code> file. Everything else stays at the schema default, so posts can improve their defaults later without stale copies in every machine file.</p>
+<p>Below the list, the tab shows one control for each Post-Processor Property of the selected Post that has Machine scope or Job scope. The controls and the defaults come from the property schema of the Post. A new Post needs no change to the Machine Editor.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A Machine-scope property is edited on this tab only. Examples are <strong>File Extension</strong>, <strong>Preamble</strong>, <strong>Postamble</strong>, <strong>Safety Block</strong>, the G-code blocks, <strong>Supported G-code Commands</strong> and the precision properties.</p>
+</li>
+<li>
+<p>A Job-scope property gets its default on this tab. Examples are <strong>Allow tool-change</strong> and the blend mode and blend tolerance of the <code>linuxcnc</code> Post. The <em>Options</em> tab of the Post-Processing Dialog overrides the default for one run.</p>
+</li>
+<li>
+<p>A Run-scope property, such as <strong>Show Pre-processing Dialogs</strong>, does not appear in the Machine Editor.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The common properties include these entries:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Ignore G-code Commands</strong>: one command on each line. The Post accepts a command in this list and removes it from the output. The command is not necessary in <strong>Supported G-code Commands</strong>. Default: empty.</p>
+</li>
+<li>
+<p><strong>Drill Cycles to Translate</strong>: Default: <code>G73</code>, <code>G81</code>, <code>G82</code>, <code>G83</code>, <code>G85</code>, one on each line.</p>
+</li>
+<li>
+<p><strong>Generated Parameter Order for GCode</strong>: Default: <code>XYZABCUVWFSIJKTQRPDHL</code>.</p>
+</li>
+<li>
+<p><strong>Post-Tool Change</strong>: G-code written immediately after the tool change (M6), before the G43 line and before the spindle start.</p>
+</li>
+<li>
+<p><strong>Tool Return after tool changes</strong>: G-code written immediately after the spindle start that follows a tool change.</p>
+</li>
+<li>
+<p><strong>Pre-Rotary Move</strong> and <strong>Post-Rotary Move</strong>: G-code written before and after the rotary axes move.</p>
+</li>
+<li>
+<p><strong>Tilted work plane: control positions the rotaries</strong>, <strong>Tilted work plane: declare</strong>, <strong>Tilted work plane: align</strong> and <strong>Tilted work plane: cancel</strong>: the lines that the Post writes for the TWP strategy.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="machine.html" class="xref page">Machine</a> describes every common property. <a href="postprocessor-customization.html" class="xref page">Postprocessor Customization</a> describes the properties of each Post.</p>
+</div>
+<div class="paragraph">
+<p>The <code>.fcm</code> file stores only the values that you change. All other properties use the schema default. A Post can thus change a default and each Machine file gets the new default.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="options-tab"><a class="anchor" href="#options-tab"></a>Options tab</h3>
 <div class="paragraph">
-<p>These are the output-formatting and processing options — the machine-based replacement for the legacy posts' argument strings. The groups are generated from the machine model itself, so the editor and the Post Processing dialog always show the same set:</p>
+<p>The <em>Options</em> tab holds the output format options and the <code>processing</code> options of the Machine. The groups come from the Machine model. The Machine Editor and the Post-Processing Dialog thus show the same set.</p>
+</div>
+<div class="paragraph">
+<p>The table gives each option by its section in the <code>.fcm</code> file.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -635,91 +824,113 @@ document.addEventListener('DOMContentLoaded', async () => {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Group</th>
+<th class="tableblock halign-left valign-top">Section</th>
 <th class="tableblock halign-left valign-top">Field</th>
 <th class="tableblock halign-left valign-top">Effect</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" rowspan="4"><p class="tableblock">Main</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Units</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">G-code output units, metric (G21) or imperial (G20). Independent of the configuration units on the Machine tab.</p></td>
+<td class="tableblock halign-left valign-top" rowspan="4"><p class="tableblock"><code>output</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Units</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The G-code output units: metric (G21) or imperial (G20). Independent of <strong>Units</strong> on the <em>Machine</em> tab.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Output Header</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Master switch for the generated header block.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Output Header</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the header block.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Output Tool Length Offset (G43)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Emit <code>G43 H&lt;tool&gt;</code> after each <code>M6</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Output Tool Length Offset (G43)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes <code>G43 H&lt;tool&gt;</code> after each <code>M6</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable Remote Posting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Send output to a network endpoint after generation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Enable Remote Posting</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends the output to a network endpoint after the export.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Header</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">include_date, include_description, include_document_name, include_machine_name, include_project_file, include_units, include_tool_list, include_fixture_list</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Which lines the header contains.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output.header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>include_date</code>, <code>include_description</code>, <code>include_document_name</code>, <code>include_machine_name</code>, <code>include_project_file</code>, <code>include_units</code>, <code>include_tool_list</code>, <code>include_fixture_list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lines that the header contains. Default: all <code>true</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comments</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enabled, symbol, include_operation_labels, include_blank_lines, output_bcnc_comments</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comment output on/off, the comment character (default <code>(</code>), operation-label comments, blank-line preservation, and bCNC block markers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output.comments</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code>, <code>symbol</code>, <code>include_operation_labels</code>, <code>include_blank_lines</code>, <code>output_bcnc_comments</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comment output, the comment character (default <code>(</code>), Operation label comments, empty lines, and bCNC block markers.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Formatting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">line_numbers, line_number_start, line_number_prefix, line_increment, command_space, end_of_line_chars</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Line numbering (<code>N100</code>, +10 per line by default), the separator between command and parameters (set it to an empty string for packed output like <code>G0X10</code>), and line endings.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output.formatting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>line_numbers</code>, <code>line_number_start</code>, <code>line_number_prefix</code>, <code>line_increment</code>, <code>command_space</code>, <code>end_of_line_chars</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Line numbers (<code>N100</code> and an increment of 10 by default), the separator between the command and its parameters, and the line end. An empty <code>command_space</code> gives packed output such as <code>G0X10</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Precision</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">axis, feed, spindle</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Decimal places for coordinates, feed rates, and spindle speed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output.precision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>axis</code>, <code>feed</code>, <code>spindle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of decimal places for coordinates, feed values and the spindle speed. Defaults: 3, 3, 0.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duplicates</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commands, parameters</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unchecked = modal suppression. <code>commands</code> off drops repeated G/M words (<code>G1 X1</code> then <code>X2</code>); <code>parameters</code> off drops parameters whose value didn&#8217;t change.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output.duplicates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commands</code>, <code>parameters</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unchecked gives modal suppression. <code>commands</code> unchecked removes a repeated G or M word. <code>parameters</code> unchecked removes a parameter whose value did not change.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" rowspan="8"><p class="tableblock">Processing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Early tool prep</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Emit the next tool number before the current operation ends, so a tool changer can stage it. Changes postable ordering.</p></td>
+<td class="tableblock halign-left valign-top" rowspan="8"><p class="tableblock"><code>processing</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Early tool prep</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes the next tool number before the current Operation ends, for a tool changer. This option changes the order of the output items.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter inefficient moves</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Collapse chains of redundant G0 rapids.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Filter inefficient moves</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Combines a sequence of redundant G0 moves.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Split Arcs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replace G2/G3 with line segments for controllers without arc support.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Split Arcs</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaces G2 and G3 with line segments, for a control without arc support.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tool change</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unchecked suppresses <code>M6</code> output entirely.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tool change</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unchecked suppresses all <code>M6</code> output.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Translate Drill Cycles</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Expand canned drill cycles (G73, G81–G83, G85) into explicit G0/G1 moves.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Translate Drill Cycles</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expands the drill cycles into G0 and G1 moves.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Translate Rapid Moves</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Output rapids as G1 at a rapid feed rate.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Translate Rapid Moves</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes each rapid move as G1 at a rapid feed.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">XY Before Z After Tool Change</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Decompose the first move after a tool change: travel in XY first, plunge Z second.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>XY Before Z After Tool Change</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Divides the first move after a tool change: the XY travel first, then the Z move.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Return to</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional x,y,z position to end the program at.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Return to</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional x, y, z position at which the program ends.</p></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="text-view-and-validation"><a class="anchor" href="#text-view-and-validation"></a>Text view and validation</h3>
 <div class="paragraph">
-<p><b class="button">Edit as Text</b> switches the whole dialog to a JSON editor of the file. <b class="button">Save</b> writes the <code>.fcm</code>; <b class="button">Close</b> discards.</p>
+<p><b class="button">Edit as Text</b> changes the Machine Editor to a JSON text view of the full file. The same button changes the editor back.</p>
+</div>
+<div class="paragraph">
+<p><b class="button">Validate</b> examines the Machine for problems that stop the load or that silently drop settings. A <em>Validation</em> dialog shows the result:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"No problems found." when the Machine has no errors and no warnings.</p>
+</li>
+<li>
+<p>The number of warnings, or the number of errors and warnings. The details of the dialog list each finding with its severity.</p>
+</li>
+<li>
+<p>"Invalid JSON" or "This machine does not load", with the cause, when the text view does not hold a correct Machine.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the text view, the validation also compares the JSON text with the Machine that the loader makes from it. This comparison finds keys that the loader does not read. In the tab view, the comparison does not run, because no file text exists for the comparison.</p>
 </div>
 </div>
 </div>
@@ -728,7 +939,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="the-fcm-file-format"><a class="anchor" href="#the-fcm-file-format"></a>The .fcm file format</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A <code>.fcm</code> file is plain JSON. A complete, working 3-axis example:</p>
+<p>A <code>.fcm</code> file is plain JSON. This example is a complete 3-axis Machine:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -738,7 +949,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     "machine": {
         "name": "Shop Router",
         "manufacturer": "",
-        "description": "3-axis router, LinuxCNC controller",
+        "description": "3-axis router, LinuxCNC control",
         "units": "metric",
         "kinematics": {
             "base_frame": {
@@ -747,6 +958,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             "tcp_supported": false,
             "dwo_supported": false,
+            "rotation_strategy": "none",
             "notes": ""
         },
         "axes": {
@@ -847,32 +1059,95 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 </div>
 <div class="paragraph">
-<p>Key points about the format:</p>
+<p>These rules apply to the format:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>postprocessor.file_name</code> is the module stem: <code>linuxcnc</code> loads <code>linuxcnc_post.py</code> and instantiates its <code>Linuxcnc</code> class.</p>
+<p><code>postprocessor.file_name</code> is the module name without <code>_post.py</code>. The value <code>linuxcnc</code> loads <code>linuxcnc_post.py</code> and its <code>Linuxcnc</code> class.</p>
 </li>
 <li>
-<p><code>postprocessor.properties</code> is <strong>sparse</strong>. Only user-changed values belong here; every property the post&#8217;s schema defines gets its schema default at load time. Post-specific properties (like the LinuxCNC <code>blend_mode</code>) go in the same dict.</p>
+<p><code>postprocessor.properties</code> holds only the changed values. Each other property of the schema gets its schema default at load. The properties of one Post, such as <code>blend_mode</code> of <code>linuxcnc</code>, go in the same object.</p>
 </li>
 <li>
-<p>Each <code>joint</code> is <code>[origin, axis_vector]</code>. The object form <code>{"origin": [&#8230;&#8203;], "axis": [&#8230;&#8203;]}</code> is also accepted, as is the older axis type name <code>angular</code> for <code>rotary</code>. Rotary axes may also carry <code>solution_preference</code>, <code>allow_flip</code>, and <code>wrap_strategy</code>.</p>
+<p><code>kinematics.rotation_strategy</code> is one of <code>none</code>, <code>dwo</code>, <code>twp</code> or <code>post_transform</code>. Default: <code>none</code>. When the key is absent, <code>"dwo_supported": true</code> selects <code>dwo</code>. A saved file contains the two keys.</p>
 </li>
 <li>
-<p>Toolheads accept type-specific keys: <code>laser_wavelength</code>, <code>laser_focus_range</code>, <code>waterjet_pressure</code>, <code>plasma_amperage</code>.</p>
+<p>Each <code>joint</code> is <code>[origin, axis_vector]</code>. The object form <code>{"origin": [&#8230;&#8203;], "axis": [&#8230;&#8203;]}</code> is also accepted. The axis type <code>angular</code> is accepted for <code>rotary</code>.</p>
+</li>
+<li>
+<p>A rotary axis can also have <code>solution_preference</code>, <code>allow_flip</code> and <code>wrap_strategy</code>. The <code>wrap_strategy</code> values are <code>unwound</code>, <code>modulo</code> and <code>rezero</code>.</p>
+</li>
+<li>
+<p><code>toolhead_type</code> is one of <code>rotary</code>, <code>laser</code>, <code>waterjet</code>, <code>plasma</code> or <code>wire_edm</code>. A different value stops the load of the Machine.</p>
+</li>
+<li>
+<p>A Toolhead accepts the keys <code>laser_wavelength</code>, <code>laser_focus_range</code>, <code>waterjet_pressure</code> and <code>plasma_amperage</code>.</p>
 </li>
 <li>
 <p><code>processing.return_to</code> is an optional <code>[x, y, z]</code> array.</p>
 </li>
 <li>
-<p>Older flat layouts (a boolean <code>header</code>, top-level <code>line_numbers</code>, <code>axis_precision</code>, <code>output_comments</code>) still load; saving rewrites them in the nested structure shown above.</p>
+<p>A file with the flat layout (a boolean <code>header</code>, top-level <code>line_numbers</code>, <code>axis_precision</code>, <code>output_comments</code>) loads. <b class="button">Save</b> writes the nested structure of the example.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Hand-editing the JSON is fine — the editor&#8217;s <b class="button">Edit as Text</b> view exists for exactly that — but keep it valid; a machine that fails to parse simply won&#8217;t load.</p>
+<p>You can edit the JSON manually in the text view or in a text editor. A file that is not correct JSON does not load.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="validation-from-the-command-line"><a class="anchor" href="#validation-from-the-command-line"></a>Validation from the command line</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The checks of <b class="button">Validate</b> also run from the command line, on one file or on a folder of <code>.fcm</code> files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">FreeCADCmd path/to/Mod/CAM/Machine/models/validate.py --pass MACHINES_DIR</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>--pass</code> is required, because FreeCAD opens each argument after the script as a document when <code>--pass</code> is absent.</p>
+</div>
+<div class="paragraph">
+<p>A finding has one of three severities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ERROR</code>: the definition does not load, or loads into a Machine that is not usable. The file causes are incorrect JSON, an unknown Toolhead type and a broken kinematic chain. The content causes are an empty Machine name, a Machine with no axes and a Post that cannot be found. An axis whose minimum limit is not less than its maximum limit is an error. A Machine name that a second file also uses is an error.</p>
+</li>
+<li>
+<p><code>WARNING</code>: the file holds keys that the loader does not read, the Machine names Post-Processor Properties that the Post does not declare, or the Machine has no Toolheads.</p>
+</li>
+<li>
+<p><code>INFO</code>: the model has fields that the file does not contain.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These options are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--strict</code>: a warning gives exit code 1.</p>
+</li>
+<li>
+<p><code>--json</code>: the output is JSON.</p>
+</li>
+<li>
+<p><code>--verbose</code>: the output includes <code>INFO</code> findings and the files with no findings.</p>
+</li>
+<li>
+<p><code>--no-postprocessor-check</code>: the validation does not look for the Post.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The exit code is 0 when no error was found, 1 when an error was found, and 2 when no <code>.fcm</code> file was found.</p>
 </div>
 </div>
 </div>
@@ -880,52 +1155,80 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="machine-settings-in-the-job"><a class="anchor" href="#machine-settings-in-the-job"></a>Machine settings in the Job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Set the machine on the General tab of the Job task panel, or write the <strong>Machine</strong> property directly. With a machine assigned:</p>
+<p>Select the Machine in the <strong>Machine</strong> list on the <em>Output</em> tab of the Job task panel, or write the <strong>Machine</strong> property directly. The first entry of the list, "(Legacy post-processor)", leaves the Job without a Machine and empties the <strong>Machine</strong> property.</p>
+</div>
+<div class="paragraph">
+<p>With a Machine selected:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The Job&#8217;s <strong>PostProcessor</strong> and <strong>PostProcessorArgs</strong> properties are ignored. The machine decides the post and its configuration.</p>
+<p>The <em>Output</em> tab hides the rows for the Post-Processor and its arguments. The Machine holds the Post and its settings.</p>
 </li>
 <li>
-<p>The <a href="post-process.html" class="xref page">Post Process</a> command opens the multi-tab Post Processing dialog and runs the machine-based pipeline (<code>export2()</code>).</p>
+<p>The Job&#8217;s <code>PostProcessor</code> and <code>PostProcessorArgs</code> properties are ignored.</p>
 </li>
 <li>
-<p>Machine limits, toolhead RPM range, and any post-specific checks feed the sanity system — the dialog&#8217;s Warnings tab and <a href="../job/quick-validate.html" class="xref page">Quick Validate</a>.</p>
+<p>The <a href="post-process.html" class="xref page">Post Process</a> command opens the Post-Processing Dialog and runs the machine-based sequence (<code>export2()</code>).</p>
+</li>
+<li>
+<p>The axis limits, the rpm range of the Toolhead and the checks of the Post supply Squawks to the <a href="../reference/glossary.html#sanity-check" class="xref page">Sanity Check</a>. The <em>Warnings</em> tab of the dialog and <a href="../job/quick-validate.html" class="xref page">Quick Validate</a> show them.</p>
+</li>
+<li>
+<p>The Sanity Check gives a <code>WARNING</code> Squawk when the rotary axes move between Operations and <strong>Pre-Rotary Move</strong> is empty.</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="job-level-overrides"><a class="anchor" href="#job-level-overrides"></a>Job-level overrides</h3>
 <div class="paragraph">
-<p>The Job property <strong>PostProcessorPropertyOverrides</strong> holds a JSON dictionary of post properties that this Job overrides, so one machine file can serve several Jobs with small variations:</p>
+<p>The Job property <code>PostProcessorPropertyOverrides</code> holds a JSON object of Post-Processor Properties that this Job overrides. One Machine file can thus serve many Jobs that have small differences.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{"file_extension": "tap", "post_operation": "M9"}</code></pre>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{"tool_change": false}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Two rules. Keys must exist in the post&#8217;s property bundle — unknown keys are warned about and dropped. And the string must be valid JSON — a malformed value stops post-processing with an error rather than silently ignoring your settings. Job templates save and restore both <strong>Machine</strong> and these overrides.</p>
+<p>Two rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Each key must exist in the properties of the Post. The export gives a warning for an unknown key and drops it.</p>
+</li>
+<li>
+<p>The text must be correct JSON. Incorrect JSON stops the export with an error.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A Job Template saves and restores the <strong>Machine</strong> property and these overrides.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="per-export-overrides"><a class="anchor" href="#per-export-overrides"></a>Per-export overrides</h3>
 <div class="paragraph">
-<p>The Post Processing dialog offers one more layer, applied only to that export and never saved:</p>
+<p>The Post-Processing Dialog gives one more level of overrides for one export:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The <strong>Overview</strong> tab shows the post&#8217;s <code>runtime</code> properties (per-run choices like a dry-run flag or blend mode).</p>
+<p>The <em>Overview</em> tab shows the Run-scope properties of the Post, such as <strong>Show Pre-processing Dialogs</strong>. These values are not stored.</p>
 </li>
 <li>
-<p>The <strong>Options</strong> tab shows the machine&#8217;s full output and processing groups, editable in place.</p>
+<p>The <em>Options</em> tab shows the <code>output</code> and <code>processing</code> groups of the Machine. You can edit them there for the export.</p>
 </li>
 <li>
-<p>The machine combo lets you post against a different machine than the Job&#8217;s, once.</p>
+<p>The <em>Options</em> tab also shows a <em>Postprocessor Properties</em> group with the Job-scope properties of the Post. The group starts with the Machine values and the Job overrides applied.</p>
+</li>
+<li>
+<p>The Machine list lets you export with a different Machine from that of the Job, one time. The first entry of the list is "(Legacy post-processor)".</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The dialog does not show Machine-scope properties.</p>
 </div>
 </div>
 </div>
@@ -935,22 +1238,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Machine.models.machine import Machine, MachineFactory
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Machine.models.machine import Machine, MachineFactory, RotationStrategy
+from Machine.models.validate import validate_file
 
-m = Machine.create_3axis_config()          # or create_4axis_A_config(), create_AC_table_config(), ...
+m = Machine.create_3axis_config()          # or create_4axis_A_config(), create_AC_table_config()
 m.name = "Shop Router"
 m.postprocessor_file_name = "linuxcnc"
 m.postprocessor_properties["file_extension"] = "ngc"
 m.output.comments.enabled = False
 m.linear_axes["X"].max_limit = 840
+m.kinematics.rotation_strategy = RotationStrategy.NONE
 MachineFactory.save_configuration(m)       # writes &lt;CamAssets&gt;/Machines/Shop_Router.fcm
 
+for finding in validate_file(MachineFactory.get_config_directory() / "Shop_Router.fcm"):
+    print(finding)
+
+# job is an existing CAM Job object
 job.Machine = "Shop Router"
 
 from Path.Post.Processor import PostProcessorFactory
 post = PostProcessorFactory.get_post_processor(job, "linuxcnc")
 sections = post.export2()                  # [(section_name, gcode), ...]</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p><code>validate_machine(machine)</code> examines a Machine object that is not saved. <code>validate_paths(paths)</code> examines files and folders, and also finds a Machine name that two files use.</p>
 </div>
 </div>
 </div>
@@ -960,16 +1272,25 @@ sections = post.export2()                  # [(section_name, gcode), ...]</code>
 <div class="ulist">
 <ul>
 <li>
-<p><span class="image"><img src="../_images/CAM_Machine.svg" alt="CAM Machine" width="24"></span> <a href="machine.html" class="xref page">CAM Machine</a></p>
+<p><span class="image"><img src="../_images/CAM_Machine.svg" alt="Machine" width="16"></span> <a href="machine.html" class="xref page">Machine</a></p>
 </li>
 <li>
-<p><span class="image"><img src="../_images/CAM_Post.svg" alt="CAM Post" width="24"></span> <a href="post-process.html" class="xref page">CAM Post</a></p>
+<p><span class="image"><img src="../_images/CAM_Post.svg" alt="Post Process" width="16"></span> <a href="post-process.html" class="xref page">Post Process</a></p>
+</li>
+<li>
+<p><a href="../job/job.html" class="xref page">Job</a></p>
 </li>
 <li>
 <p><a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a></p>
 </li>
 <li>
-<p><a href="postprocessor-customization.html" class="xref page">CAM Postprocessor Customization</a></p>
+<p><a href="postprocessor-customization.html" class="xref page">Postprocessor Customization</a></p>
+</li>
+<li>
+<p><a href="posts/genealogy.html" class="xref page">Post-Processor Genealogy</a></p>
+</li>
+<li>
+<p><a href="../reference/glossary.html" class="xref page">Glossary</a></p>
 </li>
 </ul>
 </div>

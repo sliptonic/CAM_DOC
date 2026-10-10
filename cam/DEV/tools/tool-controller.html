@@ -338,6 +338,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -521,7 +530,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 <li>
 <p><strong>LeadOutFeed</strong> (<code>Speed</code>) <span class="since">introduced in 26.3</span>: feed rate for lead-out moves; bound to <strong>HorizFeed</strong> by default.</p>
 </li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>NoEngagementFeed</strong>: feed for moves in which the Tool Bit does not engage material. An Operation reads the value when it recomputes.</p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A machine-based Post-Processor uses <strong>NoEngagementFeed</strong> only when the Post-Processor Property <strong>Output non-engaging moves at the no-engagement feed rate</strong> is enabled. The Post-Processor then writes each <code>G0</code> move that carries a no-engagement feed annotation as a <code>G1</code> move with that feed as the <code>F</code> value. The Post-Processor Property is off by default and is set in the Machine Editor; see <a href="../output/machine.html" class="xref page">Machine</a>.</p>
 </div>
 <div class="ulist">
 <div class="title">Rapid</div>
