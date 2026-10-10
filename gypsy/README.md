@@ -46,6 +46,8 @@ python3 gypsy/triage.py 32711 32903          # verdicts for these PRs
 python3 gypsy/triage.py --since 2026-08-15   # every merged Mod: CAM PR since the date
 python3 gypsy/triage.py 32711 --dry          # print the stage-2 prompt, write nothing
 python3 gypsy/lint.py modules/ROOT/pages/operations/drilling.adoc
+python3 gypsy/status.py                                      # state of every page, ranked
+python3 gypsy/status.py --page job/job.adoc                  # one page in detail
 python3 gypsy/lint.py --since origin/main PAGE.adoc           # only the lines changed since main
 python3 gypsy/draft.py --cluster gypsy/clusters/machine-post.yml --pr   # in ~/CAM_DOC-gypsy
 python3 gypsy/capture.py output/machine/editor-machine-tab   # replay one figure recipe
@@ -75,6 +77,8 @@ uses `gh` read-only and gives the model no tools.
 | `verdicts/` | one JSON per upstream PR, with `meta` (merge commit, candidates, model, cost) |
 | `vocabulary.yml` | ADR-000 avoid lists and STYLE.md §2 banned words, as regexes |
 | `lint.py` | the mechanical checks |
+| `status.py` | step 1 of an iteration: one record for each page (pending verdicts, lint, status, figures, links in, cluster), ranked by need x how central the page is |
+| `importance.yml` | optional: `page: weight` to replace the weight that `status.py` takes from the links |
 | `capture.py`, `capture_host.py` | the figure runner, and the part of it that runs inside FreeCAD |
 
 Not yet written: the bot runner and systemd units. The recipes do not use GuiDriver yet; they
