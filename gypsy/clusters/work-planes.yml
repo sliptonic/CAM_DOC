@@ -10,6 +10,18 @@ partial:
   31208: Stock cylinder
   31300: tool presets; 6 more pages, Tool Bit cluster
   32211: Tool Bits from any library; 4 more pages, Tool Bit cluster
+# From the confirmation of issue 9 (sliptonic, 2026-10-10).
+decisions:
+  - >-
+    job/work-plane.adoc is the one place that describes the Work Plane: the object, the Work Plane
+    selector and the Reset to defaults button on the Heights page of an Operation.
+  - >-
+    An Operation page does not describe the Work Plane selector. It gets one sentence that names
+    the Work Plane and links to xref:job/work-plane.adoc[]. Change nothing else on an Operation
+    page unless the pull requests make a statement of the page false.
+  - >-
+    job/job.adoc gets a full rewrite. It says what the Job does with Work Planes and links to
+    job/work-plane.adoc for the detail.
 pages:
   new:
     - job/work-plane.adoc
