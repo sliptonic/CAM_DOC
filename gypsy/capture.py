@@ -7,7 +7,7 @@
     python3 gypsy/capture.py --all --freecad ~/FreeCAD/build/bin/FreeCAD   # a different build
 
 A recipe is modules/ROOT/images/recipes/<page>/<what>.py. It sets PAGE, ALT and defines
-capture(shot); see gypsy/capture_host.py for the shot object. The image is written to
+capture(shot); a file whose name starts with "_" is a helper that recipes import; see gypsy/capture_host.py for the shot object. The image is written to
 modules/ROOT/images/<page>/<what>.png and its entry in modules/ROOT/images/manifest.yml is
 replaced (STYLE.md §10.3).
 
@@ -134,7 +134,8 @@ def main():
     names = list(a.recipes)
     if a.all:
         names = sorted(os.path.relpath(p, RECIPES)[:-3]
-                       for p in glob.glob(os.path.join(RECIPES, "**/*.py"), recursive=True))
+                       for p in glob.glob(os.path.join(RECIPES, "**/*.py"), recursive=True)
+                       if not os.path.basename(p).startswith("_"))      # _name.py: shared helper
     if not names:
         ap.error("give a recipe name or --all")
     if not shutil.which("Xvfb"):

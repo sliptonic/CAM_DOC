@@ -12,7 +12,8 @@ does not fail on the old lines. Checks:
   since      [.since] marker not in the form `[.since]#introduced in 26.3#`
   admonition imitation admonition (*_Note_*:, *NOTE*:, Note: paragraph) or TIP:/IMPORTANT:
   heading    level-2 heading outside the command-page skeleton, or out of order
-  image      block image without alt text, with a width= attribute, or missing a manifest entry
+  image      block image without alt text or with a width= attribute; a block image without a
+             manifest entry is a warning and does not change the exit code
   sentence   sentence over 30 words
   xref       bare <<...>> cross-page reference, a link to the published site, or an xref whose target page does not exist
   attribute  {name} outside a code block that is not a known attribute (Asciidoctor drops it)
@@ -26,7 +27,8 @@ SKELETON = ["Description", "Usage", "Options", "Properties", "Strategies",
             "Notes and limitations", "Scripting", "Related"]
 SINCE_OK = re.compile(r"\[\.since\]#introduced in \d+(?:\.\d+)?#")
 SINCE_ANY = re.compile(r"\[\.since\]#[^#]*#")
-IMITATION = re.compile(r"^(\*_?Note_?\*:?|\*NOTE\*:?|Note:|NOTE\s*[-–:]|\*Important Note)", re.I)
+# Case matters: `NOTE:` is the real admonition, `Note:` and `NOTE -` are imitations.
+IMITATION = re.compile(r"^(\*_?[Nn]ote_?\*:?|\*NOTE\*:?|Note:|NOTE\s*[-–]|\*[Ii]mportant [Nn]ote)")
 BLOCK_IMG = re.compile(r"^image::([^\[]+)\[([^\]]*)\]")
 XREF = re.compile(r"xref:([A-Za-z0-9_./-]+\.adoc)")
 ATTR = re.compile(r"(?<!\\)\{([a-zA-Z][a-zA-Z0-9_-]*)\}")
@@ -113,7 +115,10 @@ def lint_file(path, terms, style, ok, manifest):
             if "width=" in attrs:
                 err(i, "image", f"use positional width, not width=: {target}")
             if manifest is not None and target not in manifest:
-                err(i, "image", f"no images/manifest.yml entry: {target}")
+                # An old figure is replaced when its page is revised (STYLE.md §10.3); until then it
+                # is better than no figure, so this does not fail the page.
+                out.append({"file": path, "line": i, "kind": "image", "level": "warning",
+                            "msg": f"no images/manifest.yml entry: {target}"})
             continue
         # xrefs
         if re.search(r"<<[^>,]*\.adoc[^>]*>>", line):
@@ -198,16 +203,18 @@ def main():
             if changed is not None:
                 found = [f for f in found if f["line"] in changed]
         findings += found
+    errors = [f for f in findings if f.get("level") != "warning"]
     if a.json:
         print(json.dumps(findings, indent=1))
     else:
         for f in findings:
-            print(f"{f['file']}:{f['line']}: {f['kind']}: {f['msg']}")
+            print(f"{f['file']}:{f['line']}: {'warning: ' if f.get('level') == 'warning' else ''}{f['kind']}: {f['msg']}")
         by = {}
-        for f in findings:
+        for f in errors:
             by[f["kind"]] = by.get(f["kind"], 0) + 1
-        print(f"-- {len(findings)} findings " + " ".join(f"{k}={v}" for k, v in sorted(by.items())), file=sys.stderr)
-    sys.exit(1 if findings else 0)
+        print(f"-- {len(errors)} findings " + " ".join(f"{k}={v}" for k, v in sorted(by.items()))
+              + (f" ({len(findings) - len(errors)} warnings)" if len(findings) != len(errors) else ""), file=sys.stderr)
+    sys.exit(1 if errors else 0)
 
 
 if __name__ == "__main__":

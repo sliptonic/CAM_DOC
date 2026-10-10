@@ -39,12 +39,22 @@ jobs:
           cache: npm
 
       # gypsy lint: STYLE.md checks on the lines a pull request changes (advisory on push).
+      # The result goes into the preview comment. A finding does not stop the build: the
+      # reviewer needs the preview also when lint is not clean.
       - name: Lint changed pages
         if: github.event_name == 'pull_request'
         run: |
           python3 -m pip install --quiet pyyaml
+          mkdir -p build
           files=$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'modules/ROOT/pages/*.adoc' | while read f; do [ -f "$f" ] && echo "$f"; done)
-          if [ -n "$files" ]; then python3 gypsy/lint.py --since "origin/${{ github.base_ref }}" $files; else echo "no pages changed"; fi
+          if [ -z "$files" ]; then
+            echo "**Lint:** no pages changed." > build/lint.md
+          elif python3 gypsy/lint.py --since "origin/${{ github.base_ref }}" $files > build/lint.txt 2>&1; then
+            echo "**Lint:** clean on the changed lines." > build/lint.md
+          else
+            { echo "**Lint:** findings on the changed lines."; echo; echo '```'; sed "s|^$PWD/||" build/lint.txt; echo '```'; } > build/lint.md
+          fi
+          cat build/lint.md | tee -a "$GITHUB_STEP_SUMMARY"
 
       - run: npm ci
 
@@ -120,7 +130,8 @@ jobs:
             const marker = '<!-- docs-preview -->';
             const fs = require('fs');
             const changes = fs.existsSync('build/changes.md') ? fs.readFileSync('build/changes.md', 'utf8') : '';
-            const body = `${marker}\nDocumentation preview: ${url}\n\n${changes}\nBuilt from ${context.sha}.`;
+            const lint = fs.existsSync('build/lint.md') ? fs.readFileSync('build/lint.md', 'utf8') : '';
+            const body = `${marker}\nDocumentation preview: ${url}\n\n${changes}\n${lint}\nBuilt from ${context.sha}.`;
             const {data: comments} = await github.rest.issues.listComments({
               owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number});
             const mine = comments.find(c => c.body && c.body.startsWith(marker));

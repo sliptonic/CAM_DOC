@@ -115,6 +115,7 @@ def add_lint_and_figures(pages):
         if not rec["exists"]:
             continue
         found = lint.lint_file(os.path.join(PAGES, rel), terms, style, ok, manifest)
+        found = [f for f in found if f.get("level") != "warning"]
         rec["lint"] = len(found)
         rec["lint_kinds"] = dict(collections.Counter(f["kind"] for f in found))
         images = [t.strip() for t in BLOCK_IMG.findall(rec["text"])]
@@ -167,6 +168,10 @@ def add_work(pages, offline):
         for c in clusters.values():
             if c["issue"]:
                 c["state"] = "open" if c["issue"] in open_numbers else "closed"
+                if c["state"] == "closed":                    # delivered: it holds no page now
+                    for p in c["pages"]:
+                        if p in pages and pages[p]["cluster"] in clusters and clusters[pages[p]["cluster"]] is c:
+                            pages[p]["cluster"] = None
     except Exception as exc:                                  # no network, no login
         info["error"] = str(exc)[:200]
     return info
