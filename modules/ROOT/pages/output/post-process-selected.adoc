@@ -6,6 +6,8 @@
 :page-shortcut: P O
 :page-since: 26.3
 :page-audit: applied
+:page-source-pr: 31589, 32274, 32854
+:page-status: draft
 
 [.fcinfobox]
 --
@@ -37,4 +39,7 @@ The image:CAM_PostSelected.svg[width=24] xref:output/post-process-selected.adoc[
 
 * Check that the exported subset is safe to run without the omitted Operations (the message box reminds you).
 * Operations inside an Array with several Tool Controllers are resolved to their parent Job through the Array's Base.
+* The _Operations_ tab of the Post-Processing Dialog shows one row for each active Operation. The check box of each row is in the `#` column.
+* The _Operations_ tab shows the columns `#`, `Operation`, `Tool`, `Tool Controller`, `Coolant` and `Time`. xref:output/post-process.adoc[Post Process] gives the content of each column.
+* The Machine list of the Post-Processing Dialog shows `(Legacy post-processor)` as its first entry. The `(Legacy post-processor)` entry selects no Machine.
 * The command was added in [.since]#26.3#.

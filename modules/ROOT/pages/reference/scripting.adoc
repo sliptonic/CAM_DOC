@@ -3,6 +3,8 @@
 :page-origin-revision: 5446a45b21 2025-11-05
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31722,32129
+:page-status: draft
 
 == Introduction
 
@@ -162,6 +164,22 @@ Annotations attach machine-independent metadata to a command without changing it
 ----
 
 `toGCode()` writes the annotations after the command as a comment. Post-processors and dressups can read Annotations to decide how to treat a move (for example drilling retracts or rigid tapping).
+
+The `Constants` module defines the annotation keys that a machine-based xref:reference/glossary.adoc#post-processor[Post-Processor] reads during export.
+
+[cols="2,2,2,5",options="header"]
+|===
+|Constant |Key |Value |Effect
+|`ANNOT_NO_ENGAGEMENT_FEED` |`NoEngagementFeed` |The feed rate, as the string of a float |The annotation marks a G0 move that the Post-Processor can write as a G1 move. The value of the annotation becomes the F parameter of the G1 move.
+|`ANNOT_MODAL_BARRIER` |`modal_barrier` |`True`, `False` or absent |The annotation stops the removal of duplicates at this command. The Post-Processor does not compare later commands with this command or with the commands before it.
+|`ANNOT_NO_COLLAPSE_G0` |`no_collapse_g0` |`True` |The annotation keeps this G0 move as a separate move. The Post-Processor does not merge the move with the G0 move before it or after it.
+|===
+
+The Post-Processor writes a `NoEngagementFeed` move as a G1 move only when the Machine sets the Post-Processor Property `translate_no_engagement_feed`. The property has the label *Output non-engaging moves at the no-engagement feed rate*, has Machine scope, and is off by default.
+
+The Adaptive Operation sets `NoEngagementFeed` on G0 moves in X and Y when its no-engagement feed is not zero. `Path.Post.DrillCycleExpander` sets `no_collapse_g0` on the G0 retract moves of the G73 and G83 cycles that it expands.
+
+xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] describes how a Post-Processor uses annotations and removes duplicates.
 
 == The Path object
 

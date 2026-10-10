@@ -1,0 +1,1271 @@
+{
+ "cluster": "machine-post",
+ "issue": 3,
+ "branch": "gypsy/machine-post",
+ "pages": [
+  {
+   "page": "output/machine-configuration.adoc",
+   "mode": "rewrite",
+   "prs": [
+    31819,
+    32081,
+    32132,
+    32250,
+    32274,
+    32323,
+    32367,
+    32485,
+    32854,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32250,
+     "what": "The Machine Editor has four tabs. A new Toolheads tab section holds the Add Toolhead button and one tab for each Toolhead. The Machine tab section no longer describes Toolheads."
+    },
+    {
+     "pr": 32081,
+     "what": "The page says that a Machine can start as an MTConnect import, that the editor accepts a Machine not yet saved, and that the import writes its source line into Description and its assumptions into Kinematics Notes. The import procedure stays on the Machine command page."
+    },
+    {
+     "pr": 32274,
+     "what": "A Property Scope table (Machine, Job, Run, Internal) replaces the `runtime` description. The Postprocessor tab shows Machine-scope and Job-scope properties, with blend mode and blend tolerance as Job scope and Show Pre-processing Dialogs as Run scope. The per-export section describes the Postprocessor Properties group on the Options tab of the Post-Processing Dialog."
+    },
+    {
+     "pr": 32132,
+     "what": "The Postprocessor tab section adds the Machine-scope property Ignore G-code Commands, default empty."
+    },
+    {
+     "pr": 32367,
+     "what": "The page adds the Validate button and the Validation dialog results, a section for validation from the command line (severities, options, exit codes), and validate_file, validate_machine and validate_paths in Scripting."
+    },
+    {
+     "pr": 32323,
+     "what": "The Postprocessor tab section gives the new output positions of Post-Tool Change (after M6, before G43 and the spindle start) and Tool Return after tool changes (after the spindle start)."
+    },
+    {
+     "pr": 32485,
+     "what": "The Toolhead type list adds Wire EDM with its capabilities. The file format section adds `wire_edm` to the `toolhead_type` values and says that an unknown value stops the load."
+    },
+    {
+     "pr": 31819,
+     "what": "The defaults of Drill Cycles to Translate (G73, G81, G82, G83, G85) and Generated Parameter Order for GCode (XYZABCUVWFSIJKTQRPDHL) are given from the extracted facts."
+    },
+    {
+     "pr": 32854,
+     "what": "The Machine list and the New Machine button are on the Output tab of the Job task panel. The first entry is \"(Legacy post-processor)\". The Post-Processor and arguments rows are hidden while a Machine is selected. The Post-Processing Dialog list has the same first entry."
+    },
+    {
+     "pr": 32903,
+     "what": "The Rotation Strategy list replaces the DWO Supported checkbox on the Machine tab. The file format adds `kinematics.rotation_strategy` with the `dwo_supported` fallback. The Postprocessor tab section names the four Tilted work plane properties and the Pre-Rotary and Post-Rotary Move blocks. The Job section adds the Sanity Check warning for an empty Pre-Rotary Move."
+    }
+   ],
+   "unverified": [
+    "The Machine Editor shows the tabs in the order Machine, Toolheads, Postprocessor, Options, and the buttons in the order Edit as Text, Validate, Save, Close.",
+    "The labels of the fields on each Toolhead tab, and that Wire EDM appears in the type list with that label.",
+    "The Kinematics group box title and the position of Rotation Strategy between TCP Supported and Kinematics Notes.",
+    "The Preferences location of the Import… button (Machines group of Edit > Preferences > CAM > Assets) and its label; the diff does not show that file.",
+    "The Output tab of the Job task panel shows the Machine list with the label Machine and the New Machine button; the diff shows only the widget names.",
+    "The Postprocessor tab shows Ignore G-code Commands and the four Tilted work plane properties with the schema labels.",
+    "The Post-Processing Dialog Options tab shows the group box Postprocessor Properties with the Job-scope properties, and the Overview tab shows Show Pre-processing Dialogs.",
+    "The Validation dialog text for each result, and that the details section lists each finding with its severity.",
+    "A file saved by the editor contains the two keys dwo_supported and rotation_strategy (taken from to_dict in the diff, not from a saved file).",
+    "The Scripting example runs on the FreeCAD commit of the change set; it was not run.",
+    "The Job-level override example {\"tool_change\": false} has an effect on the export; taken from the Job scope of tool_change in the schema.",
+    "The Sanity Check compares each Toolpath with the axis limits (statement kept from the current page; no diff confirms it)."
+   ],
+   "figures_wanted": [
+    "output/machine-configuration/editor-toolheads-tab.png: Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button",
+    "output/machine-configuration/editor-kinematics-rotation-strategy.png: Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open",
+    "output/machine-configuration/editor-validation-dialog.png: Validation dialog with one error and one warning, details shown",
+    "output/machine-configuration/job-output-tab-machine.png: Job task panel, Output tab, with a Machine selected and the Post-Processor rows hidden",
+    "output/machine-configuration/post-dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for the linuxcnc Post"
+   ],
+   "notes": "Lint fix: the 44-word sentence in the `ERROR` item of \"Validation from the command line\" is now four sentences, each less than 30 words. No other text changed from the previous draft.\n\nNo pending gypsy text exists; the page builds on the text of `main`.\n\nPage type: concept page (STYLE.md §5.2), first heading `== Overview`, last heading `== Related`. The description lists of the current page are now level-three headings, because §6.4 prohibits description lists outside the infobox.\n\nPriority list: the current page put the `.fcm` values before the schema defaults. The draft puts the schema default first, because a file value has priority over a default. The result for the reader is the same.\n\nJob-level override example: the current page used `file_extension` and `post_operation`. These are Machine scope after PR 32274, thus the example now uses the Job-scope property `tool_change`. The diff does not show that the export refuses a Machine-scope key in `PostProcessorPropertyOverrides`; the page makes no such claim.\n\nDifferences from output/machine.adoc in this change set:\n- machine.adoc lists `:page-source-pr:` without 32132, but it documents Ignore G-code Commands, which PR 32132 added.\n- machine.adoc gives the `WARNING` and `ERROR` causes in a shorter list; this page adds \"empty Machine name\" and \"no axes\" from validate.py. The two pages do not contradict.\n- machine.adoc says the exit-code options \"change the exit code\"; this page gives the codes 0, 1 and 2 from `main()`.\n\nDrill cycle default: the verdict for PR 31819 names G81 G82 G83 G73; the extracted facts give G73, G81, G82, G83, G85. The page uses the extracted facts, as does machine.adoc.\n\nThe page links to output/mbpp-postprocessor.adoc, output/postprocessor-customization.adoc, output/post-process.adoc, job/job.adoc, job/quick-validate.adoc and reference/glossary.adoc. These pages are not in the change set; the current page or machine.adoc already links to each of them. The glossary anchors `#toolhead`, `#post-processor-property`, `#property-scope` and `#machine-template` are the same as machine.adoc uses; the build must confirm them. The link to `mbpp-postprocessor.adoc#property-visibility` was removed with the `runtime` text.\n\nSTYLE.md has priority over the global STE instruction where they differ (for example the 30-word ceiling and the fixed UI strings). Interface strings such as \"Postprocessor\" are quoted as the interface spells them.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 1.484216,
+     "duration_ms": 198401,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.308123,
+     "duration_ms": 100672,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 2.792339,
+   "verdicts": [
+    [
+     "2026-08-30T15:03:21Z",
+     32250,
+     "CAM: Move toolheads to their own tab in the machine editor",
+     "revise"
+    ],
+    [
+     "2026-09-01T17:00:25Z",
+     32081,
+     "CAM: Add mtconnect import to machine editor",
+     "revise"
+    ],
+    [
+     "2026-09-01T18:16:00Z",
+     32274,
+     "CAM: Give postprocessor properties an explicit editing scope",
+     "revise"
+    ],
+    [
+     "2026-09-05T14:10:14Z",
+     32132,
+     "CAM: more support for Machines and MBPP",
+     "revise"
+    ],
+    [
+     "2026-09-07T18:54:40Z",
+     32367,
+     "CAM: add a validator for machine (.fcm) definitions",
+     "revise"
+    ],
+    [
+     "2026-09-15T16:08:54Z",
+     32323,
+     "CAM: tool change blocks",
+     "revise"
+    ],
+    [
+     "2026-09-17T21:52:07Z",
+     32485,
+     "CAM: Add wire EDM toolhead type",
+     "revise"
+    ],
+    [
+     "2026-09-18T20:48:08Z",
+     31819,
+     "CAM: Processor.py related code-quality",
+     "revise"
+    ],
+    [
+     "2026-09-28T14:20:20Z",
+     32854,
+     "CAM: In Job Dialog, move machines dropdown to output tab",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "mode": "rewrite",
+   "prs": [
+    30644,
+    31589,
+    31819,
+    32099,
+    32129,
+    32274,
+    32282,
+    32293,
+    32313,
+    32615,
+    32854,
+    32863,
+    32903,
+    33069
+   ],
+   "changes": [
+    {
+     "pr": 30644,
+     "what": "Output tab: the Output folder and Filename template fields get defaults from the Job output settings; the folder dialog starts in the document folder when the field folder does not exist."
+    },
+    {
+     "pr": 31589,
+     "what": "Operations tab: documented the columns #, Operation, Tool, Tool Controller, Coolant and Time."
+    },
+    {
+     "pr": 31819,
+     "what": "opensbp: the bare T command is not accepted; the probe failure message names the Job and the Operation."
+    },
+    {
+     "pr": 32099,
+     "what": "The 'Expand drill-cycles' Post-Processor Property is not listed on the page."
+    },
+    {
+     "pr": 32129,
+     "what": "No text on this page; the Machine-scope property translate_no_engagement_feed is on the Machine page, and the page says the dialog does not show Machine-scope properties."
+    },
+    {
+     "pr": 32274,
+     "what": "Overview tab shows Run-scope properties (Show Pre-processing Dialogs); Options tab has a Postprocessor Properties group with Job-scope properties; Machine-scope properties are not in the dialog."
+    },
+    {
+     "pr": 32282,
+     "what": "Legacy Posts write G98/G99 and G80 around canned cycle groups and follow Keep Tool Down; heidenhain_legacy does not."
+    },
+    {
+     "pr": 32293,
+     "what": "generic_plasma renamed to generic_sheet_cutting; Control Method For Cutter (Z_Control, Spindle_Control, G0_Control), Strip Z Parameters and Strip F Parameters added."
+    },
+    {
+     "pr": 32313,
+     "what": "Tapping cycles: F is pitch multiplied by Spindle Speed for machine-based Posts; linuxcnc rigid tapping writes G33.1 with K."
+    },
+    {
+     "pr": 32615,
+     "what": "Filename substitutions: %S listed; %T, %t, %W, %O name a split section, suppress the automatic suffix, and are ignored with a warning without split output. Closing the Post selection dialog stops the command."
+    },
+    {
+     "pr": 32854,
+     "what": "Machine list first entry is \"(Legacy post-processor)\"; the Job Output tab hides the Processor and Arguments rows while a Machine is selected."
+    },
+    {
+     "pr": 32863,
+     "what": "Added the machine-based heidenhain Post (Klartext, .h extension, Program Name and Output BLK FORM as Job-scope properties)."
+    },
+    {
+     "pr": 32903,
+     "what": "Added the Work Planes section: refusal conditions for tilted Work Planes, legacy Post refusal, Work Plane Fixture selection, and the related Sanity Check Squawks."
+    },
+    {
+     "pr": 33069,
+     "what": "Added the machine-based fanuc Post to the included Posts."
+    }
+   ],
+   "unverified": [
+    "Post-Processing Dialog, Operations tab: the checkbox is in the '#' column and the column headers show as '#', 'Operation', 'Tool', 'Tool Controller', 'Coolant', 'Time'.",
+    "Post-Processing Dialog, Options tab: the group title 'Postprocessor Properties' and its position after the Machine output groups.",
+    "Post-Processing Dialog, Overview tab: 'Show Pre-processing Dialogs' shows in the 'Post Processor Parameters' group for every machine-based Post.",
+    "Post-Processing Dialog, Output tab: the default text of 'Output folder' and 'Filename template' for a Job with an empty Output File property.",
+    "Job task panel, Output tab: the row labels 'Processor' and 'Arguments' and that the two rows are hidden while a Machine is selected.",
+    "The labels of the Job-scope properties of generic_sheet_cutting and heidenhain as the Options tab shows them.",
+    "The Report view is where the warning for %T, %t, %W, %O without split output shows.",
+    "The 'Time' column content and format (CycleTime of the Operation).",
+    "The header item that the current page called 'exporter': the exact content of that header line.",
+    "fanuc Post: the '%' tape marks and 'O' program number (the diff of PR 33069 was truncated; only the module docstring was visible).",
+    "The Drilling property label 'Keep Tool Down' as the property editor shows it."
+   ],
+   "figures_wanted": [
+    "output/post-process/dialog-overview.png: Post-Processing Dialog, Overview tab, with a Machine selected and the Post Processor Parameters group visible",
+    "output/post-process/dialog-operations.png: Post-Processing Dialog, Operations tab, with the columns #, Operation, Tool, Tool Controller, Coolant and Time",
+    "output/post-process/dialog-options.png: Post-Processing Dialog, Options tab, with the Postprocessor Properties group for the linuxcnc Post",
+    "output/post-process/dialog-output.png: Post-Processing Dialog, Output tab, after Generate Output, with the Output folder and Filename template fields filled"
+   ],
+   "notes": "All 19 lint findings are fixed. Three points need a decision.\n\n1. The lint flags UI labels in bold when they are on a bullet line ('Post Processor', 'Post Processor Property Overrides', 'Control Method For Cutter'). STYLE.md §4.1 requires these labels as the interface spells them. The lint probably pairs the bullet asterisk with the first bold asterisk, so the label text is examined as prose. I moved these labels off bullet lines:\n- Properties: 'Post Processor', 'Arguments' and 'Post Processor Property Overrides' are now in two paragraphs after the .Job list. This departs from the §5.1 list form for those three properties.\n- Options tab: the Job-scope examples are now a table (Post, Job-scope properties).\n- Notes on individual Posts are now a table.\nA correction of the lint (remove list markers before bold spans) lets these go back to bullet lists.\n\n2. 'work coordinate system' is replaced by 'G54 to G59.9 word, or G54.1 Pn'. 'CNC' and 'cutter' are removed from the list of typical targets. 'exporter' in the header list is now 'the name of the program that made the file'; the exact header content is in `unverified`.\n\n3. 'declares a Postprocessor content item' is now 'declares a Post-Processor content item'. If 'Postprocessor' is the literal content item name in package.xml, a monospace literal is better; I could not confirm the literal from the diffs.\n\nOther notes kept from the previous draft:\n- The extracted facts list every post name under `machine_based_posts`, legacy scripts included. The page keeps the three groups of the current page, and adds `fanuc`, `heidenhain` and `generic_sheet_cutting` to the machine-based group. genealogy.adoc shows `Grbl`, `Masso_G3`, `Svg`, `Test` and `Snapmaker` (`snapmaker_legacy`) as PostProcessor classes; the grouping on this page ('Class-based, available as legacy Posts') comes from the current page and is not confirmed by a diff.\n- genealogy.adoc lists `dxf_post.py` as a script post and `snapmaker_legacy` as a class; this page lists both with the legacy Posts with arguments, as the current page does.\n- machine.adoc and machine-configuration.adoc agree with this page on the '(Legacy post-processor)' entry, the Property Scope rules and the Work Plane refusal conditions. No contradiction found.\n- STE conflict: STYLE.md permits sentences to 30 words; the global STE rule sets 25 for descriptive text. I obeyed STYLE.md as the project rule, and most sentences are below 25 words.\n- No pending gypsy text was given; the page builds on the previous draft.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 1.534119,
+     "duration_ms": 147857,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.6483949999999998,
+     "duration_ms": 164274,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 3.182514,
+   "verdicts": [
+    [
+     "2026-08-21T17:31:36Z",
+     30644,
+     "CAM: Use current file path as default for file selection dialog",
+     "revise"
+    ],
+    [
+     "2026-08-21T19:24:16Z",
+     31589,
+     "CAM: MBPP and Job Dialog - Operations data",
+     "revise"
+    ],
+    [
+     "2026-08-30T01:01:48Z",
+     32099,
+     "CAM: Mbpp drill expand bug",
+     "revise"
+    ],
+    [
+     "2026-09-01T18:16:00Z",
+     32274,
+     "CAM: Give postprocessor properties an explicit editing scope",
+     "revise"
+    ],
+    [
+     "2026-09-12T06:15:17Z",
+     32293,
+     "CAM: (Machine Post Processor): Change Generic_Plasma_post to generic_sheet_cutter_post and extend",
+     "revise"
+    ],
+    [
+     "2026-09-12T08:41:41Z",
+     32313,
+     "CAM: tapping pitch->speed by default",
+     "revise"
+    ],
+    [
+     "2026-09-15T22:38:34Z",
+     32129,
+     "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+     "revise"
+    ],
+    [
+     "2026-09-18T20:48:08Z",
+     31819,
+     "CAM: Processor.py related code-quality",
+     "revise"
+    ],
+    [
+     "2026-09-21T00:46:36Z",
+     32615,
+     "Cam:  Fix various bugs",
+     "revise"
+    ],
+    [
+     "2026-09-23T02:20:19Z",
+     32863,
+     "CAM: Heidenhain MBPP post",
+     "revise"
+    ],
+    [
+     "2026-09-28T14:20:20Z",
+     32854,
+     "CAM: In Job Dialog, move machines dropdown to output tab",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:04:19Z",
+     33069,
+     "CAM: Machine-based postprocessor for Fanuc ",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ],
+    [
+     "2026-09-30T17:14:16Z",
+     32282,
+     "CAM: legacy post scripts silently drop G99 retract mode",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "mode": "rewrite",
+   "prs": [
+    31722,
+    32096,
+    32099,
+    32129,
+    32132,
+    32274,
+    32282,
+    32293,
+    32323,
+    32863,
+    32886,
+    32903,
+    33069
+   ],
+   "changes": [
+    {
+     "pr": 31722,
+     "what": "Added the section 'Modal output and line numbers': modal suppression and line numbers operate on Path.Command objects, line numbers start again in each section, comments get no number, text blocks are counted but not numbered, an existing N word stays. Stated that filter_inefficient_moves has no effect on machine-based output and removed it from the list of processing options. Rewrote the export sequence."
+    },
+    {
+     "pr": 32096,
+     "what": "Removed the 'Expand drill-cycles' switch from the common properties. Stated that 'Drill Cycles to Translate' is the only common property for the expansion and that opensbp always expands drill cycles."
+    },
+    {
+     "pr": 32099,
+     "what": "Stated that the Post ends each group of canned cycles before the drill cycle expansion, thus the expansion knows the retract mode."
+    },
+    {
+     "pr": 32129,
+     "what": "Added the common property translate_no_engagement_feed (marked G0 moves become G1 moves at the no-engagement feed)."
+    },
+    {
+     "pr": 32132,
+     "what": "Added the common property 'Ignore G-code Commands', the hook _expand_tool_length_offset_post_command(), and the opensbp default for the ignored commands. Removed the opensbp property 'Suppressed (tolerated) G-code Commands'."
+    },
+    {
+     "pr": 32274,
+     "what": "Replaced the 'runtime' key with the 'scope' key in the example and the schema table. Added the four scopes, the SCOPE_* constants, the default-scope rules, property_scope() and properties_in_scope(). Listed linuxcnc blend properties as Job scope and opensbp hardware switches as Machine scope."
+    },
+    {
+     "pr": 32282,
+     "what": "Script Post example and rules now call PostUtils.cannedCycleTerminator(PathUtils.getPathWithPlacement(pathobj)) before the command scan, return the output text, and accept the file name '-'."
+    },
+    {
+     "pr": 32293,
+     "what": "Renamed generic_plasma to generic_sheet_cutting (class GenericSheetCutting). Added 'Control Method For Cutter' with its three values, 'Strip Z Parameters' and 'Strip F Parameters'."
+    },
+    {
+     "pr": 32323,
+     "what": "Added the section 'Tool change' with the output sequence: Pre-Tool Change, comment, M6, Post-Tool Change, G43, spindle start, Tool Return. Stated that Post-Tool Change is not written when tool change is off."
+    },
+    {
+     "pr": 32863,
+     "what": "Added heidenhain_post.py to the example Posts and its properties to the property table. Stated that the Post replaces every conversion method and numbers its own blocks."
+    },
+    {
+     "pr": 32886,
+     "what": "Added G85 to the default list of expanded drill cycles and described the G85 expansion (G1 to depth, G1 to the retract height, G0 to clearance)."
+    },
+    {
+     "pr": 32903,
+     "what": "Added the section 'Work Planes and rotary axes': ROTATION_STRATEGIES, PLANE_COMMAND and the three PlaneCommand families with their declare, align and cancel lines. Stated that a legacy Post stops the export for a tilted Work Plane and receives each Toolpath in world coordinates."
+    },
+    {
+     "pr": 33069,
+     "what": "Added fanuc_post.py to the example Posts as the example of changed common defaults, and its 'Program Number' and 'Tape Marks (%)' properties to the property table."
+    }
+   ],
+   "unverified": [
+    "The fanuc_post.py diff is truncated after the 'Tape Marks (%)' property. The fanuc Post has more properties (rigid tapping, dwell units, parametric tool length offset, empty-spindle park, upper-case output) that the property table does not list.",
+    "The interface label of translate_no_engagement_feed in the Machine Editor. The page names the property by its schema name because the label contains a prohibited term.",
+    "The preference 'Post processors selection' applies only to legacy Posts and does not filter the Post list of the Machine Editor.",
+    "The Job task panel must be opened again, or FreeCAD started again, before a new Post file shows in the lists.",
+    "The unit test module names TestPostCore and TestLinuxCNCPost and the folder Mod/CAM/Tests/ come from the current page and were not checked against the FreeCAD commit.",
+    "The class-based argument Posts still accept every argument in the 'Common arguments' table; the list comes from the current page.",
+    "The blue arrow at the start point of a Toolpath in the 3D view; the statement comes from the current page and its removed figure.",
+    "The position of pre_processing_dialog() as the first stage of export2(); the diffs do not show that part of the method."
+   ],
+   "figures_wanted": [
+    "output/postprocessor-customization/test-geometry-sketch.png: the sketch of the test geometry, with straight lines and arcs that start at the origin and go in the Y direction",
+    "output/postprocessor-customization/test-geometry-toolpath.png: the Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow at the start point"
+   ],
+   "notes": "Lint fixes in this revision:\n- Lines 47 and 51 (images without a manifest entry): the two wiki-era images Path_PostProcessorSketch.png and Path_PostProcessorModel.png are removed from the page. The drafting stage cannot write images/manifest.yml, and STYLE.md §10.3 says that a figure without an entry is replaced at the next revision. The two replacements are in figures_wanted. This departs from the rule \"keep existing images\"; put the macros back if you add manifest entries instead.\n- Lines 64 and 79 ('legacy'): the two sentences now say \"script Post\". Other uses of \"legacy Post\" and \"legacy script Post\" were not flagged and stay, because ADR-000 uses \"Legacy Post-Processors\" for this kind of post.\n- Line 309 ('the tool'): the sentence now says \"a tool length offset\".\n- Line 342 ('feed rate'): the interface label is removed and the property is named as `translate_no_engagement_feed`, the same as on output/machine.adoc.\n\nSTE conflict: STYLE.md permits sentences to 30 words; the page keeps to the shorter STE limits where possible. Code identifiers and interface strings are not changed.\n\nContradictions in the other pages of the set:\n- output/machine-configuration.adoc says that *Filter inefficient moves* \"Combines a sequence of redundant G0 moves\". PR 31722 removed filter_inefficient_moves from the machine-based sequence; the option has no effect. output/machine.adoc also lists the option without this limit.\n- output/post-process.adoc lists `grbl`, `masso_g3`, `svg` and `test` as class-based legacy Posts and `snapmaker_legacy` as a legacy Post with arguments. The genealogy page shows all of them as PostProcessor subclasses, and the extracted facts list them with the machine-based posts. This page does not classify them and refers to post-process.adoc.\n- output/machine-configuration.adoc gives the `output.precision` defaults as 3, 3, 0, while the common properties axis_precision and spindle_decimals default to 2 and 1. The two are different settings; this page does not give either default.\n\nNo pending gypsy pull request text was given; the page builds on the previous draft.",
+   "lint_rc": 1,
+   "lint": "/home/sliptonic/CAM_DOC-gypsy/modules/ROOT/pages/output/postprocessor-customization.adoc:305: vocab: 'a tool' -> Tool (bare)",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 1.682051,
+     "duration_ms": 186741,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.659015,
+     "duration_ms": 124108,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 3.3410659999999996,
+   "verdicts": [
+    [
+     "2026-08-22T14:02:39Z",
+     32096,
+     "CAM: Remove redundant \"translate drill cycle\" from MBPP ui",
+     "revise"
+    ],
+    [
+     "2026-08-28T16:43:35Z",
+     31722,
+     "CAM: mbpp optimizations & line-numbers in Path.Command world ",
+     "revise"
+    ],
+    [
+     "2026-08-30T01:01:48Z",
+     32099,
+     "CAM: Mbpp drill expand bug",
+     "revise"
+    ],
+    [
+     "2026-09-01T18:16:00Z",
+     32274,
+     "CAM: Give postprocessor properties an explicit editing scope",
+     "revise"
+    ],
+    [
+     "2026-09-05T14:10:14Z",
+     32132,
+     "CAM: more support for Machines and MBPP",
+     "revise"
+    ],
+    [
+     "2026-09-12T06:15:17Z",
+     32293,
+     "CAM: (Machine Post Processor): Change Generic_Plasma_post to generic_sheet_cutter_post and extend",
+     "revise"
+    ],
+    [
+     "2026-09-15T16:08:54Z",
+     32323,
+     "CAM: tool change blocks",
+     "revise"
+    ],
+    [
+     "2026-09-15T22:38:34Z",
+     32129,
+     "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+     "revise"
+    ],
+    [
+     "2026-09-23T02:20:19Z",
+     32863,
+     "CAM: Heidenhain MBPP post",
+     "revise"
+    ],
+    [
+     "2026-09-26T16:18:49Z",
+     32886,
+     "CAM: expand g85 Fixes #32607",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:04:19Z",
+     33069,
+     "CAM: Machine-based postprocessor for Fanuc ",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ],
+    [
+     "2026-09-30T17:14:16Z",
+     32282,
+     "CAM: legacy post scripts silently drop G99 retract mode",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "mode": "rewrite",
+   "prs": [
+    31035,
+    31720,
+    31722,
+    31819,
+    32096,
+    32099,
+    32129,
+    32132,
+    32274,
+    32282,
+    32293,
+    32313,
+    32323,
+    32366,
+    32863,
+    32903,
+    33069
+   ],
+   "changes": [
+    {
+     "pr": 31035,
+     "what": "MachineState section rewritten: `machine_state` is None outside `use_machine_state()`, starts new for each section, is updated before each conversion hook, has `.previous`, `[key]` access, `updateState`, and becomes unknown after a tool change, a `str` postable or an as-is command."
+    },
+    {
+     "pr": 31720,
+     "what": "Added the `as-is` annotation (`ANNOT_AS_IS`) and its position as the first step of the command filter."
+    },
+    {
+     "pr": 31722,
+     "what": "Removed the text-level optimization stage. Added the modal suppression pass (`_optimize_duplicates_doubles`) and `_add_line_numbers` on Path.Command objects, the N parameter rule for `_convert_move`, `all_postables` of `_edit_command_list`, and the `modal_barrier` and `no_collapse_g0` annotations."
+    },
+    {
+     "pr": 31819,
+     "what": "Updated the defaults of `drill_cycles_to_translate` and `parameter_order`, renamed the stages to match the code (postable list; expansion and block insertion), and listed the CAMErrors classes."
+    },
+    {
+     "pr": 32096,
+     "what": "Removed `translate_drill_cycles` from the common properties; `drill_cycles_to_translate` alone lists the cycles."
+    },
+    {
+     "pr": 32099,
+     "what": "Export order: `_expand_canned_cycles` now comes before `_expand_translate_drill_cycles`; added the reason and the error for a missing position or retract mode."
+    },
+    {
+     "pr": 32129,
+     "what": "Added the `translate_no_engagement_feed` common property and the behaviour of `_expand_translate_rapids` for the `NoEngagementFeed` annotation."
+    },
+    {
+     "pr": 32132,
+     "what": "Added `ignored_commands`, the `_expand_tool_length_offset_post_command` hook, the `tool_length_offset` annotation, and the `_merge_machine_config` pattern for forced values (marlin)."
+    },
+    {
+     "pr": 32274,
+     "what": "Replaced the `runtime` flag with the `scope` key and the four Property Scopes; added `property_scope()` and `properties_in_scope()`; rewrote \"Where properties appear\"; added the scope column to the common property table."
+    },
+    {
+     "pr": 32282,
+     "what": "Described `cannedCycleTerminator()`: tapping cycles in a group, annotations on inserted G98/G99/G80, fallback to the last literal G98/G99, and the retract word before M29."
+    },
+    {
+     "pr": 32293,
+     "what": "Renamed `generic_plasma` to `generic_sheet_cutting` in the Post list, the property example and the reference implementations; named `cutter_control`, `STRIP_Z` and `STRIP_F`."
+    },
+    {
+     "pr": 32313,
+     "what": "Added the `_tapping_to_speed` hook and the Tapping feed section with its two errors."
+    },
+    {
+     "pr": 32323,
+     "what": "Added the Tool change section: `_expand_tool_change` after M6 (post_tool_change, then G43), `_suppress_tool_change`, `tool_return` after the Tool Controller item; updated the two property descriptions."
+    },
+    {
+     "pr": 32366,
+     "what": "Sanity checks section rewritten around `sanity_check_methods()`, exception containment, the `super()` rule and the spindle speed check; added `_merge_toolhead_limits()` and `MIN_SPINDLE_SPEED`/`MAX_SPINDLE_SPEED`."
+    },
+    {
+     "pr": 32863,
+     "what": "Added `heidenhain` to the machine-based Post list and to the reference implementations; used it as the example for the class alias and the line number hook."
+    },
+    {
+     "pr": 33069,
+     "what": "Added `fanuc` to the machine-based Post list and to the reference implementations."
+    },
+    {
+     "pr": 32903,
+     "what": "Added the four `twp_*` common properties, the new Pre/Post-Rotary Move meanings, `ROTATION_STRATEGIES`, `PLANE_COMMAND`, the `_expand_workplane_frames` pass, the refusal conditions, the Work Plane Sanity Checks, and the A/B/C unit rule of `format_parameter()`."
+    }
+   ],
+   "unverified": [
+    "The position of `_expand_workplane_frames` in the export2 expansion order. The PR 32903 diff is truncated before the export2 change, thus the page does not give its position.",
+    "The names and the number of the Work Plane Sanity Check methods in the default `sanity_check_methods()` list. The PR 32903 diff is truncated; the page says only that the default list has the Work Plane checks.",
+    "The exact conditions of the Work Plane Fixture Squawk (post-process.adoc says the Job's Fixtures list must have more than one Fixture). The diff text for this check is truncated.",
+    "The refusal when the Post class does not list the Machine's strategy in `ROTATION_STRATEGIES`, and the refusal for a Work Plane the Machine cannot index to. The related code is in the truncated part of the diff.",
+    "The `_Postprocessor Properties_` group name on the Options tab and the `_Overview_` placement of Run-scope properties in the Post-Processing Dialog. These need a running FreeCAD.",
+    "The control that each schema type gives (checkbox, spin box, list, editor, line edit). The statement comes from the current page and is not in the diffs.",
+    "That `_buildPostList()` is the method name in all code paths (the diff shows `self._buildPostList()` in export2; the current page said `buildPostList()`).",
+    "That `fanuc_post.py`, `centroid_post.py`, `mach3_mach4_post.py` and `smoothie_post.py` each have a `_legacy_post.py` version to compare (the extracted Post list shows `smoothie` without a `smoothie_legacy`).",
+    "That the axis-limit comparison of each Toolpath is done by the `PostProcessor` class. The statement comes from the current page; no diff shows it.",
+    "That the test example output `G0 X10.000 Y5.000` and the test module registration in `CAMTests/__init__.py` are still correct on the current commit."
+   ],
+   "figures_wanted": [],
+   "notes": "Lint fixes in this revision: all prose uses of \"legacy\" are removed (the script Posts are now \"script Post\", the term that output/posts/genealogy.adoc uses; `_legacy_post.py` stays only in monospace as a file name). All prose uses of \"the base\" are replaced by `PostProcessor` or \"the default list\". No facts changed from the previous draft.\n\nNo pending gypsy text existed; the page builds on the `main` text.\n\nConflicts and inconsistencies with other pages of the set:\n- output/post-process.adoc, output/machine.adoc and output/machine-configuration.adoc use \"legacy Post\" / \"legacy post-processing\" in prose. The same lint rule will flag them. This page now says \"script Post\", thus the set does not use one term until those pages are changed. The interface string \"(Legacy post-processor)\" is a UI fact and can stay quoted there.\n- output/post-process.adoc lists `grbl`, `masso_g3`, `svg` and `test` as class-based Posts that are available in the Job, but the extracted `machine_based_posts` list and machine.adoc's Post list include `grbl`. This page keeps the ten-Post list of post-process.adoc and does not include `grbl`; a check against the source is necessary.\n- output/postprocessor-customization.adoc was given as an outline only. The link text \"Postprocessor Customization\" follows its title.\n- The smoothie reference row says \"compare with its `_legacy_post.py` version\", but the extracted list has no `smoothie_legacy`. Listed in `unverified`.\n\nSTYLE.md conflict with the global STE instruction: the page follows STYLE.md (the project rule), which permits sentences of up to 30 words; most sentences are in the STE limits. The page is a developer reference and its headings are those of a concept page with `== Overview` first and `== Related` last.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 1.817135,
+     "duration_ms": 230690,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.7629029999999999,
+     "duration_ms": 132837,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 3.580038,
+   "verdicts": [
+    [
+     "2026-08-15T13:47:28Z",
+     31035,
+     "CAM: MachineState for MBPP (Processor.py)",
+     "revise"
+    ],
+    [
+     "2026-08-22T14:02:39Z",
+     32096,
+     "CAM: Remove redundant \"translate drill cycle\" from MBPP ui",
+     "revise"
+    ],
+    [
+     "2026-08-28T16:43:35Z",
+     31722,
+     "CAM: mbpp optimizations & line-numbers in Path.Command world ",
+     "revise"
+    ],
+    [
+     "2026-08-29T22:53:00Z",
+     31720,
+     "CAM: Custom - Allow any string",
+     "revise"
+    ],
+    [
+     "2026-08-30T01:01:48Z",
+     32099,
+     "CAM: Mbpp drill expand bug",
+     "revise"
+    ],
+    [
+     "2026-09-01T18:16:00Z",
+     32274,
+     "CAM: Give postprocessor properties an explicit editing scope",
+     "revise"
+    ],
+    [
+     "2026-09-05T14:10:14Z",
+     32132,
+     "CAM: more support for Machines and MBPP",
+     "revise"
+    ],
+    [
+     "2026-09-12T06:15:17Z",
+     32293,
+     "CAM: (Machine Post Processor): Change Generic_Plasma_post to generic_sheet_cutter_post and extend",
+     "revise"
+    ],
+    [
+     "2026-09-12T08:41:41Z",
+     32313,
+     "CAM: tapping pitch->speed by default",
+     "revise"
+    ],
+    [
+     "2026-09-15T16:08:54Z",
+     32323,
+     "CAM: tool change blocks",
+     "revise"
+    ],
+    [
+     "2026-09-15T22:38:34Z",
+     32129,
+     "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+     "revise"
+    ],
+    [
+     "2026-09-18T20:48:08Z",
+     31819,
+     "CAM: Processor.py related code-quality",
+     "revise"
+    ],
+    [
+     "2026-09-21T00:46:56Z",
+     32366,
+     "CAM: Check spindle speed against the machine's toolhead limits",
+     "revise"
+    ],
+    [
+     "2026-09-23T02:20:19Z",
+     32863,
+     "CAM: Heidenhain MBPP post",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:04:19Z",
+     33069,
+     "CAM: Machine-based postprocessor for Fanuc ",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ],
+    [
+     "2026-09-30T17:14:16Z",
+     32282,
+     "CAM: legacy post scripts silently drop G99 retract mode",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/posts/fanuc.adoc",
+   "mode": "new",
+   "prs": [
+    33069
+   ],
+   "changes": [
+    {
+     "pr": 33069,
+     "what": "New reference page for the machine-based fanuc Post-Processor. The page gives the eight properties of the Post with scope, type and default, the changed defaults of the common properties, the exceptions to the Machine output options, the output (tape marks, O number, canned cycles, rigid tapping with M29, dwell in milliseconds, tool length offset, arcs, Work Planes) and the limitations. This revision removes the two lint findings: 'dynamic work offset' in the Description list is now 'the DWO Rotation Strategy', and 'the tool number' in the Tool length offset section is now 'the number of the Tool Bit'."
+    }
+   ],
+   "unverified": [
+    "The Machine Editor shows the eight fanuc properties on the Postprocessor tab with the labels of the schema, and shows each bool property as a checkbox.",
+    "The Options tab of the Post-Processing Dialog shows Program Number and Park Empty Spindle at End in the Postprocessor Properties group.",
+    "The example start of the program ('%' then 'O0012 (BRACKET)'): the upper-case conversion of the O line comment and the position of the two lines before the header.",
+    "The park block example: the sequence M05, G28 G91 Z0, G90, M6 T0 immediately before the postamble, and the last '%' line after the postamble.",
+    "The base Post-Processor writes G43 H<n> with the tool number after a tool change. The diff shows only the fanuc replacement of that line.",
+    "The TWP output lines G68.2, G53.1 and G69 come from the base PlaneCommand.G68_2. The diff does not show the lines that the base class writes.",
+    "Duplicate Commands and Duplicate Parameters have no effect on a canned cycle block. The code sets the modal barrier and OUTPUT_DOUBLES; the output was not examined.",
+    "A G80 line follows each sequence of tapping blocks, also when Rigid Tapping (M29) is unchecked.",
+    "The dwell examples G4 P1500 and G82 P500 come from the module docstring, not from output that was examined.",
+    "A helical arc gives its pitch through the Z word when the K word is absent from the parameter order. The statement comes from a code comment."
+   ],
+   "figures_wanted": [
+    "output/posts/fanuc/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the fanuc Post selected and its eight properties at their defaults",
+    "output/posts/fanuc/dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for a Machine with the fanuc Post, with Program Number and Park Empty Spindle at End"
+   ],
+   "notes": "The page did not exist on main and no pending gypsy text exists. This text is the previous draft with the two lint findings corrected; no fact changed.\n\nPage type: reference page (STYLE.md 5.3). The headings follow the sections that the verdict names (Description, Properties, Machine output options, Output, Limitations), plus Related.\n\nThe WARNING in Limitations says that the Post was not tested on a Fanuc control. The source is the description of the pull request, not the diff. Remove it if the page must not carry that statement.\n\nContradictions in the other pages of the set:\n- output/post-process.adoc says that a machine-based Post stops the export when a tapping cycle has no S word. The fanuc Post, with Rigid Tapping (M29) checked, first uses the last spindle speed of an M3 or M4 command and stops only when that speed is also absent.\n- output/post-process.adoc lists grbl as a class-based Post that is available as a legacy Post. output/machine.adoc and the extracted facts list grbl as a machine-based Post.\n- output/machine.adoc gives a default of 1 for 'Spindle-speed precision in output' and 2 for 'Axis precision in output'. output/machine-configuration.adoc gives 3, 3, 0 for output.precision. These are two different settings, but the pages do not say which one has priority. This page gives only the fanuc default of the Post-Processor Property (0).\n- output/machine.adoc gives 'nc' as the common default of File Extension, thus the fanuc value is the same as the common default. The page lists it because the Post sets it explicitly.\n\nConflict with the global STE instruction: STYLE.md permits sentences to 30 words and requires fixed interface strings. The page obeys STYLE.md. Most sentences are also in the STE limits.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.9026069999999999,
+     "duration_ms": 129702,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.805975,
+     "duration_ms": 58561,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.7085819999999998,
+   "verdicts": [
+    [
+     "2026-09-30T02:04:19Z",
+     33069,
+     "CAM: Machine-based postprocessor for Fanuc ",
+     "new page"
+    ]
+   ]
+  },
+  {
+   "page": "output/posts/heidenhain.adoc",
+   "mode": "new",
+   "prs": [
+    32863
+   ],
+   "changes": [
+    {
+     "pr": 32863,
+     "what": "New reference page for the machine-based heidenhain Post-Processor. The page gives the nine properties of the Post with scope, values and defaults, the changed defaults of the common properties, the Machine output options that the Post sets to fixed values, and the Klartext output: BEGIN PGM and END PGM, BLK FORM, block numbers, L, CC, C, CR and CP blocks, radius compensation words, drill and tapping cycles in the two cycle formats, dwell, TOOL CALL, spindle and coolant words, and Fixture selection. This revision corrects the six lint findings: the two prose uses of the 'Rapid Feed Rate' label now use the property name `rapid_feed_rate`, 'A legacy cycle' is now 'A cycle of the `legacy` format', and each bare 'tool' in prose is now 'Tool Bit' or a command word."
+    }
+   ],
+   "unverified": [
+    "The appearance of the nine heidenhain properties on the Postprocessor tab of the Machine Editor: the control type for each property and the sequence of the controls. The labels come from the property schema in the diff.",
+    "That Program Name and Output BLK FORM appear in the Postprocessor Properties group on the Options tab of the Post-Processing Dialog. The diff gives only their Job scope.",
+    "That the Machine Editor continues to show the comment symbol, Duplicate Commands and Line Numbers options for a Machine with the heidenhain Post, although the Post ignores their values.",
+    "The exact command words in the Constants lists that the diff does not show: that GCODE_TOOL_LENGTH_OFFSET is G43, that the coolant list is M7, M8 and M9, and which M words the stop and end lists contain.",
+    "That the header comments come after the BEGIN PGM block in a real export. The source is a code comment in _expand_prefix().",
+    "That a T command with only a number reaches the Post only when the Early tool prep option of the Machine is on.",
+    "The Klartext output was not run on a Heidenhain control. The author of the upstream pull request states that the output was not validated on a machine."
+   ],
+   "figures_wanted": [],
+   "notes": "The page is a reference page (STYLE.md 5.3). Its headings follow the companion page output/posts/fanuc.adoc: Description, Properties, Machine output options, Output, Limitations, Related. The verdict named Description, Properties, Output and Limitations; 'Machine output options' is added because the Post sets three Machine options to fixed values. No pending gypsy text exists for this page; the base is the previous draft. Lint corrections: (1) the label 'Rapid Feed Rate (0 = FMAX)' stays only in the property table, where it is a quoted interface string; prose uses the code identifier `rapid_feed_rate`. If the linter also flags the table cell, the label needs an exemption, because STYLE.md 4.1 requires the interface spelling. (2) The enumeration value `legacy` stays in monospace; the `heidenhain_legacy` Post is now called a script Post, the term that output/posts/genealogy.adoc uses. (3) Each bare 'tool' in prose is replaced; 'Tool Bit table' replaces the Heidenhain term 'tool table'. The interface strings 'Tool Axis', 'TLO after tool-change' and 'Allow tool-change' and the heading 'Tool change, spindle and coolant' keep their spelling. No contradiction was found between this page and the other pages of the change set. output/post-process.adoc states that `heidenhain` writes the pitch into its tapping cycle and uses the extension `.h`; this page agrees. No conflict between STYLE.md and the STE writing standard needed a decision on this page; STYLE.md limits were applied where the two differ (sentence length ceiling of 30 words).",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 1.035891,
+     "duration_ms": 167068,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.960263,
+     "duration_ms": 90045,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.9961539999999998,
+   "verdicts": [
+    [
+     "2026-09-23T02:20:19Z",
+     32863,
+     "CAM: Heidenhain MBPP post",
+     "new page"
+    ]
+   ]
+  },
+  {
+   "page": "output/post-process-selected.adoc",
+   "mode": "amend",
+   "prs": [
+    31589,
+    32274,
+    32854
+   ],
+   "changes": [
+    {
+     "pr": 31589,
+     "what": "Added two items to Notes: the Operations tab of the Post-Processing Dialog shows one row for each active Operation with the columns #, Operation, Tool, Tool Controller, Coolant and Time, and the check box is in the # column. The description of the preselection did not change."
+    },
+    {
+     "pr": 32274,
+     "what": "No change to the text. The command uses the same dialog, and this page does not describe the Options tab. Added the number to :page-source-pr: only."
+    },
+    {
+     "pr": 32854,
+     "what": "Added one item to Notes: the first entry of the Machine list in the Post-Processing Dialog is `(Legacy post-processor)`, and that entry selects no Machine."
+    }
+   ],
+   "unverified": [
+    "The header row of the Operations tab is visible and shows the column titles #, Operation, Tool, Tool Controller, Coolant and Time. The diff removes setHeaderHidden(True), but a running FreeCAD must confirm the result.",
+    "The check box of each Operation row shows in the # column. The code sets the check state on column 0.",
+    "The label and the tab of the Machine list (comboBoxMachine) in the Post-Processing Dialog. The diff shows only the entry text `(Legacy post-processor)`.",
+    "The dialog continues with the legacy Post-Processor flow when `(Legacy post-processor)` is selected. The diff shows only that the entry holds no Machine."
+   ],
+   "figures_wanted": [
+    "output/post-process-selected/dialog-operations-tab.png: Post-Processing Dialog, Operations tab, opened from Post Process Selected, with only the selected Operations checked and the columns #, Operation, Tool, Tool Controller, Coolant and Time visible"
+   ],
+   "notes": "Mode was AMEND ONLY. All lines of the current page stay as they are; the only changes are two page attributes and three new items in the Notes section. No pending gypsy text exists for this page, so the text builds on `main`.\n\nThe three pull requests make no statement of the current page false. The page did not name the `(none)` entry that PR 32854 renamed, so the new entry is an addition, not a correction.\n\n`:page-status: draft` is new on this page, because `unverified` is not empty.\n\nParts of the page that do not follow STYLE.md stay unchanged, as the mode requires: the title `CAM PostSelected`, the `== Notes` heading, the `[.since]#26.3#` marker form, the history statement \"The command was added in\", the `width=` image attributes, and the missing `:description:` and `:page-toolbar:` attributes.\n\nThe new items use \"Post-Processing Dialog\" (ADR-000). Step 4 of Usage keeps the older spelling \"Post Processing dialog\", because the pull requests do not make that line false.\n\nThe new items link to output/post-process.adoc for the column content. I saw only the outline of that page, so I did not compare its column names or its Machine list text with the diffs. The xref has no section anchor, because the outline does not show the anchor IDs.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.485671,
+     "duration_ms": 37032,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.485671,
+   "verdicts": [
+    [
+     "2026-08-21T19:24:16Z",
+     31589,
+     "CAM: MBPP and Job Dialog - Operations data",
+     "capture only"
+    ],
+    [
+     "2026-09-01T18:16:00Z",
+     32274,
+     "CAM: Give postprocessor properties an explicit editing scope",
+     "capture only"
+    ],
+    [
+     "2026-09-28T14:20:20Z",
+     32854,
+     "CAM: In Job Dialog, move machines dropdown to output tab",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/job.adoc",
+   "mode": "amend",
+   "prs": [
+    31589,
+    32854
+   ],
+   "changes": [
+    {
+     "pr": 31589,
+     "what": "Workplan section: added the six columns of the Operations list (#, Operation, Tool, Tool Controller, Coolant, Time) and the content of each cell, with the empty and `???` cases. The sentence about the stale screenshots now includes the Workplan columns."
+    },
+    {
+     "pr": 32854,
+     "what": "Moved the Machine item from the General section to the Output section as the first control. Replaced the `<any>` entry with `(Legacy post-processor)`. Stated that the panel shows Processor and Arguments only when no Machine is selected. Removed the reference to the General tab from the Processor item."
+    }
+   ],
+   "unverified": [
+    "Workplan list: the visible column headers and their sequence (#, Operation, Tool, Tool Controller, Coolant, Time) as the running panel shows them.",
+    "Workplan list: the # column starts at 0 (from `str(index)` in the diff); confirm in a running FreeCAD.",
+    "Workplan list: the Time column shows the `CycleTime` of each Operation; the format of the value is not confirmed.",
+    "Output tab: the Machine row is the first row, above Output file, with the label `Machine` and the button `New Machine`.",
+    "Output tab: the Processor and Arguments rows are hidden (not disabled) when a Machine is selected, and visible when `(Legacy post-processor)` is selected.",
+    "Output tab: the first entry of the Machine list reads `(Legacy post-processor)` in the English interface.",
+    "The diff of PR 31589 removes the `InternalMove` drag-and-drop mode from the Workplan list; the page does not make a statement about drag-and-drop, and the behaviour is not confirmed."
+   ],
+   "figures_wanted": [
+    "job/job/task-panel-output.png: Job task panel, Output tab, with a Machine selected, so that the Processor and Arguments rows are hidden",
+    "job/job/task-panel-output-legacy.png: Job task panel, Output tab, with Machine set to (Legacy post-processor), so that the Processor and Arguments rows are visible",
+    "job/job/task-panel-workplan.png: Job task panel, Workplan tab, with the columns #, Operation, Tool, Tool Controller, Coolant and Time filled for some Operations",
+    "job/job/task-panel-general.png: Job task panel, General tab, without the Machine group"
+   ],
+   "notes": "Lint fixes in this revision:\n\n- Line 62 (imitation admonition): the line was a real `NOTE:` admonition, and I could not identify which part of it the lint rule matched. I replaced it with a plain sentence that has no admonition prefix and no inline markup. The sentence names the controls in general words, because unmarked interface strings do not obey STYLE.md §6.3. If the rule has a defect for real `NOTE:` lines, the admonition can go back after the rule is corrected.\n- Line 144 (bare \"the tool\"): the *Tool* column item now refers to the *Tool Number* property of the Tool Controller.\n\nOther points, unchanged from the previous draft:\n\n- No pending gypsy text was given. The draft builds on the text of `main`.\n- The original line about the screenshots contained history (\"pre-1.1 tab order\") and the removed \"Machine group\". The new sentence describes only the current differences.\n- `output/machine.adoc` and `output/machine-configuration.adoc` are in the change set as outlines only. Make sure that they also put the Machine selection on the Output tab of the Job task panel and name the `(Legacy post-processor)` entry.\n- The existing images (Job_1.jpg to Job_5.jpg) stay. They do not show a control that the diffs removed, but they are stale; see `figures_wanted`.\n- Mode is AMEND ONLY, thus the headings that do not follow the command page skeleton and the other lines that do not follow STYLE.md stay as they are.",
+   "lint_rc": 1,
+   "lint": "/home/sliptonic/CAM_DOC-gypsy/modules/ROOT/pages/job/job.adoc:62: sentence: 33 words: The screenshots on this page do not show the current tab ord…",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.654267,
+     "duration_ms": 82070,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.7446550000000001,
+     "duration_ms": 110325,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.3989220000000002,
+   "verdicts": [
+    [
+     "2026-08-21T19:24:16Z",
+     31589,
+     "CAM: MBPP and Job Dialog - Operations data",
+     "revise"
+    ],
+    [
+     "2026-09-28T14:20:20Z",
+     32854,
+     "CAM: In Job Dialog, move machines dropdown to output tab",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "mode": "amend",
+   "prs": [
+    32366
+   ],
+   "changes": [
+    {
+     "pr": 32366,
+     "what": "Added the Spindle Speed range check of the machine-based Post-Processor to the Squawks section: the source of the speeds (M3 and M4 commands), the two WARNING Squawks, the NOTE Squawk for a Machine with more than one Toolhead, and the conditions (one rotary Toolhead, a limit of 0 is not specified, a speed of 0 is ignored). Added a link to the Machine page and to the page for Post-Processor authors. Added 32366 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The page has no \"Checks\" heading. The checks are in \"=== Squawks\", thus the new text is there. No statement in \"== Description\" became false, thus that section did not change.\n\nThe page had no :page-source-pr: attribute. I added it after :page-audit:. The page has no :page-status: attribute and `unverified` is empty, thus I did not add one, as the AMEND ONLY mode tells me.\n\nThe `M3` and `M4` command names come from the pull request description. The diff shows only the constant `Constants.MCODE_SPINDLE_ON`, and its content is not in the diff. Make sure that the constant contains no other commands (for example `M03` and `M04` are possibly included as alternative spellings).\n\nThe `<label>`, `<speed>`, `<minimum>`, `<maximum>` and `<count>` placeholders replace the `{}` fields of the interface strings. The other characters of the strings are as the code spells them.\n\nThe new text does not name the field labels of the Toolhead limits in the Machine Editor, because the diff and the facts give only the model fields `min_rpm` and `max_rpm`. The page output/machine.adoc is the applicable place for those labels. Make sure that its Toolheads tab section says that a value of 0 means \"not specified\".\n\nThe new text does not link terms to reference/glossary.adoc, because I cannot confirm that the glossary page exists and it is not in the change set.\n\nThe existing sentence \"When a Machine is assigned, the machine-based Post-Processor can add its own checks\" stays. The diff does not contradict it.\n\nThe link to output/mbpp-postprocessor.adoc has no section anchor, because the outline does not give the anchor ID of its \"Sanity checks\" section.\n\nThe lines that I did not change do not follow STYLE.md (title with \"CAM \" prefix, no :description:, headings outside the command skeleton, bare \"tool\"). The AMEND ONLY mode keeps them. There is no conflict between STYLE.md and ASD-STE100 in the lines that I added.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.538443,
+     "duration_ms": 54430,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.538443,
+   "verdicts": [
+    [
+     "2026-09-21T00:46:56Z",
+     32366,
+     "CAM: Check spindle speed against the machine's toolhead limits",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/quick-validate.adoc",
+   "mode": "amend",
+   "prs": [
+    32366
+   ],
+   "changes": [
+    {
+     "pr": 32366,
+     "what": "Description: added the Post-Processor Squawks to the findings of Quick Validate. Added the Spindle Speed check of the machine-based Post-Processor: source of the speeds (M3/M4 commands of Tool Controllers and Operations), the WARNING below min_rpm or above max_rpm, the conditions (exactly one Toolhead, type rotary, a limit of 0 is not specified, a speed of 0 is not checked), and the NOTE for a Machine with more than one Toolhead. Usage: added the three message texts. Added :page-source-pr: 32366 and set :page-status: draft."
+    }
+   ],
+   "unverified": [
+    "Quick Validate calls get_sanity_checks() of the Job's Post-Processor and prints its Squawks in the Report view. The verdict and the removed docstring say so, but the Quick Validate code is not in the diff.",
+    "The Report view prints the Post-Processor Squawks with the same `[WARNING]` and `[NOTE]` prefixes and includes them in the `N issue(s) found, M critical` line.",
+    "The commands that the check reads are `M3` and `M4`. The diff uses Constants.MCODE_SPINDLE_ON and does not show its content; the PR description says M3/M4."
+   ],
+   "figures_wanted": [],
+   "notes": "The verdict lists a section 'Checks'. The page has no such heading and AMEND ONLY keeps the heading structure, so the check description is in Description and the message texts are in Usage. The limits are written as the model field names `min_rpm` and `max_rpm`, because the diff does not give the Machine Editor labels; output/machine.adoc (Toolheads tab) must give the labels. job/sanity-check.adoc must state the same facts for the full Sanity Check: one rotary Toolhead only, a limit of 0 is not specified, NOTE for more than one Toolhead. No glossary xrefs were added, because reference/glossary.adoc is not in the change set. No pending gypsy text was given; the page builds on `main`. STYLE.md permits sentences of 30 words; the added lines stay in the 25-word limit of the user's STE rule, so no conflict occurred. The unchanged lines do not follow STE or STYLE.md and were kept as the mode requires.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.472651,
+     "duration_ms": 35979,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.472651,
+   "verdicts": [
+    [
+     "2026-09-21T00:46:56Z",
+     32366,
+     "CAM: Check spindle speed against the machine's toolhead limits",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "tools/tool-controller.adoc",
+   "mode": "amend",
+   "prs": [
+    32129
+   ],
+   "changes": [
+    {
+     "pr": 32129,
+     "what": "Added the *NoEngagementFeed* property to the Feed group of Properties. Added one paragraph that tells how a machine-based Post-Processor uses the value: when the Post-Processor Property `translate_no_engagement_feed` (\"Output non-engaging moves at the no-engagement feed rate\", Machine scope, default off) is enabled, each annotated `G0` move becomes a `G1` move with the feed as `F`. Added a link to output/machine.adoc. Added `:page-source-pr: 32129` and set `:page-status: draft`."
+    }
+   ],
+   "unverified": [
+    "The property type of NoEngagementFeed. The diff shows only `tc.NoEngagementFeed.Value`, thus the page gives no type. The other feed properties are `Speed`.",
+    "The default value of NoEngagementFeed, and if an expression binds it to another feed property. The page gives no default.",
+    "The meaning of NoEngagementFeed as \"feed for moves in which the Tool Bit does not engage material\". This comes from the property name and the Post-Processor label, not from a property description in the diff.",
+    "The version marker `introduced in 26.3` for NoEngagementFeed. Upstream PR 31691 added the property and its diff was not supplied.",
+    "If the Tool Controller task panel shows a field for NoEngagementFeed, and the label of that field. The Task panel section is not changed.",
+    "Which Operations put the no-engagement feed annotation on their G0 moves. The diff shows only that Path/Op/Base.py reads the value into `self.noEngagementFeed`.",
+    "That the Machine Editor shows \"Output non-engaging moves at the no-engagement feed rate\" on the Postprocessor tab. The schema gives only Machine scope."
+   ],
+   "figures_wanted": [],
+   "notes": "The text builds on the `main` text of the page; no pending gypsy text was supplied. All lines other than the two added attributes, the added list item and the added paragraph are unchanged.\n\nThe added list item uses the identifier form `NoEngagementFeed`, not the property editor form that STYLE.md §4.1 specifies. The other items of the list use the identifier form, and a mixed list is not clear. Change the full list when the page is rewritten.\n\nThe added paragraph is between the `.Feed` list and the `.Rapid` block title. A reviewer can move it to a different position if the block layout must stay strict.\n\nBehaviour that the diff shows but the page does not include: when `translate_rapid_moves` is also enabled, that branch has priority. The G0 move then becomes G1 and does not get the no-engagement feed as `F`. This detail belongs on output/postprocessor-customization.adoc (Commands and rapid moves) or output/machine.adoc. Make sure that those pages describe `translate_no_engagement_feed` with the same label, Machine scope and default `False`.\n\nThe existing sentence \"Rapid rates are only used for cycle-time estimation and by post-processors that output rapids as feed moves\" is not changed. The diff does not make it false.\n\nOnly the outlines of the other pages of the change set were supplied, thus a check for contradictions with their text was not possible.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.495351,
+     "duration_ms": 45476,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.495351,
+   "verdicts": [
+    [
+     "2026-09-15T22:38:34Z",
+     32129,
+     "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "mode": "amend",
+   "prs": [
+    32081
+   ],
+   "changes": [
+    {
+     "pr": 32081,
+     "what": "Assets > Machines: added one list item for the new `Import...` button. The item gives the button position (between `Add` and `Edit`), its function (create a Machine from the probe document of an MTConnect agent), the two sources (agent URL or XML file), and the sequence (import dialog, then Machine Editor, then the new entry in the list). Added 32081 to `:page-source-pr:` and set `:page-status: draft`."
+    }
+   ],
+   "unverified": [
+    "The button shows the label `Import...` and is between `Add` and `Edit` in the Machines button row. The diff gives the label string and the widget sequence; a screenshot must confirm the result.",
+    "The import dialog accepts the URL of an MTConnect agent and also an XML file. This fact comes from the PR description. The diff of `mtconnect_import_dialog.py` was not supplied, thus the control labels and the dialog title are not known.",
+    "The Machine Editor saves the imported Machine as a `.fcm` file in the `Machines` folder when it is accepted. The diff shows only that the handler reads `editor.filename` and adds the entry to the list.",
+    "The tooltip of the button is `Create a machine from the probe document of an MTConnect agent`. The page does not quote the tooltip; the page uses its content as the description of the button."
+   ],
+   "figures_wanted": [
+    "reference/preferences/assets-machines.png: The Assets page of the CAM preferences, with the Machines list and the button row Add, Import..., Edit, Delete."
+   ],
+   "notes": "Mode AMEND ONLY: I added one list item and two page attributes. All other lines are the same as on `main`, also the lines that do not obey STYLE.md (title with the \"CAM \" prefix, no `:description:`, \"CAM Machine\" link text, lower-case \"post-processor\").\n\nThe page had no `:page-source-pr:` and no `:page-status:` attribute. I added the two attributes. `:page-status:` is `draft` because `unverified` is not empty.\n\nI did not add a `[.since]` marker to the new item. The _Machines_ section already has the marker `introduced in 26.3`, and it applies to the full section.\n\nThe new item does not describe the controls of the MTConnect import dialog. The diff for that dialog was not in the input. `output/machine.adoc` and `output/machine-configuration.adoc` are the correct pages for that detail. I received only the outlines of those pages, thus I could not compare their text with this page. Make sure that those pages use the label `Import...` and the same sequence (import dialog, then Machine Editor).\n\nThe existing links to `output/machine.adoc` use the link text \"CAM Machine\". The title of that page in this change set is \"Machine\". I did not change the link text because of the mode.\n\nConflict between the global STE instruction and the project rules: STYLE.md permits sentences of 30 words and is the project rule. The added lines obey the two standards (each sentence has fewer than 20 words).",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.485047,
+     "duration_ms": 39645,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.485047,
+   "verdicts": [
+    [
+     "2026-09-01T17:00:25Z",
+     32081,
+     "CAM: Add mtconnect import to machine editor",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "mode": "amend",
+   "prs": [
+    31722,
+    32129
+   ],
+   "changes": [
+    {
+     "pr": 31722,
+     "what": "Annotations: added a table of the annotation keys in `Constants`. The table includes `ANNOT_MODAL_BARRIER` (`modal_barrier`) and `ANNOT_NO_COLLAPSE_G0` (`no_collapse_g0`). Added the statement that `Path.Post.DrillCycleExpander` sets `no_collapse_g0` on the G0 retract moves of expanded G73 and G83 cycles. Added a link to the machine-based Post-Processor page."
+    },
+    {
+     "pr": 32129,
+     "what": "Annotations: added `ANNOT_NO_ENGAGEMENT_FEED` (`NoEngagementFeed`) to the table. The value is the feed rate as the string of a float, and the Post-Processor uses it as the F parameter of a G1 move. Added the Post-Processor Property `translate_no_engagement_feed` (label, Machine scope, default off). Added the statement that the Adaptive Operation sets the annotation only when its no-engagement feed is not zero."
+    }
+   ],
+   "unverified": [
+    "The name of the Adaptive property that holds the no-engagement feed is not in the diff (the code reads `op.noEngagementFeed`). The page does not give the property name.",
+    "The unit of the `NoEngagementFeed` value is not in the diff. The page does not give the unit.",
+    "The diff passes the Python value `True` for `no_collapse_g0`. The page says that annotation values are strings or numbers. A test in FreeCAD must show how `Path.Command` stores a boolean annotation value.",
+    "The Adaptive diff shows the annotation on a `G0` move with X and Y in one link branch. The motion type of that branch is not visible in the diff, thus the page says only \"G0 moves in X and Y\".",
+    "The diff of `Path/Post/Processor.py` for PR 32129 was not supplied. The G0-to-G1 behaviour comes from the comment in `Constants.py` and the help text of `translate_no_engagement_feed`."
+   ],
+   "figures_wanted": [],
+   "notes": "Mode AMEND ONLY: all changes are in the `=== Annotations` section and in the page attributes. All other lines are the same as on `main`. No pending gypsy text existed, thus the draft uses the `main` text.\n\nAttributes: added `:page-source-pr: 31722,32129` (no earlier numbers existed). Added `:page-status: draft` because `unverified` is not empty; the page had no `:page-status:` attribute before.\n\nThe new link `xref:reference/glossary.adoc#post-processor[Post-Processor]` follows STYLE.md section 4. The glossary page is not in this change set, and the anchor was not examined. If the anchor does not exist, remove the xref and keep the term.\n\nThe new link to `output/mbpp-postprocessor.adoc` points to the page and not to a section, because the section anchors of that page were not supplied. That page must use the same key names (`NoEngagementFeed`, `modal_barrier`, `no_collapse_g0`) and the same property name (`translate_no_engagement_feed`).\n\nPossible conflict for other pages of the set: the extracted facts still show `filter_inefficient_moves` in `ProcessingOptions`, but the description of PR 31722 says that the function was removed. Pages that describe that option must examine this.\n\nThe existing sentence \"string keys to string or number values\" was not changed. The diff passes a boolean, which can make that sentence incomplete; see `unverified`.\n\nSTE conflict: the STYLE.md limits (30 words, project terms such as \"Post-Processor\") have priority for the page text. The added lines also obey the STE limit of 25 words.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [
+    "gypsy/facts/machine.json"
+   ],
+   "facts_commit": "68b4bcf1dea",
+   "runs": [
+    {
+     "cost_usd": 0.788395,
+     "duration_ms": 117905,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.788395,
+   "verdicts": [
+    [
+     "2026-08-28T16:43:35Z",
+     31722,
+     "CAM: mbpp optimizations & line-numbers in Path.Command world ",
+     "revise"
+    ],
+    [
+     "2026-09-15T22:38:34Z",
+     32129,
+     "CAM: implement ANNOT_NO_ENGAGEMENT_FEED in Processor.py (for #31691)",
+     "revise"
+    ]
+   ]
+  }
+ ],
+ "cost_usd": 21.265173,
+ "generated": "2026-10-10T17:23:44+00:00"
+}

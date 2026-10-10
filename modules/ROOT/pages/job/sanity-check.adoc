@@ -9,6 +9,7 @@
 :page-since: 0.19
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32366
 
 [.fcinfobox]
 --
@@ -70,6 +71,24 @@ Lists the Work Offsets (Fixtures) and the output order, with an image showing th
 === Squawks
 
 This section lists warnings and errors detected by xref:job/sanity-check.adoc[CAM Sanity]. Each squawk has a type (Note, Tip, Caution, Warning) shown by an icon, a date, an operator and a note. Current checks: Job not yet post-processed; last G-code file missing; no stock material assigned; legacy tool; tool number used by several Tool Bits; Tool Controller without feed rate or spindle speed; unused Tool Controller; Job without Operations or Model. When a Machine is assigned, the machine-based Post-Processor can add its own checks. These items may or may not be actual problems, but they should be reviewed before post-processing or running the Job.
+
+[.since]#introduced in 26.3#: A machine-based Post-Processor checks each commanded Spindle Speed of the Job against the speed limits of the Toolhead of the xref:output/machine.adoc[Machine]. The check reads the Spindle Speed from the `M3` and `M4` commands in the Toolpaths of the Tool Controllers and the Operations. The check does not read the *Spindle Speed* property of the Tool Controller.
+
+The Spindle Speed check gives these Squawks:
+
+* A Spindle Speed below the minimum speed of the Toolhead gives a `WARNING` Squawk: `'<label>' commands spindle speed <speed> rpm, below the machine minimum of <minimum> rpm`.
+* A Spindle Speed above the maximum speed of the Toolhead gives a `WARNING` Squawk: `'<label>' commands spindle speed <speed> rpm, above the machine maximum of <maximum> rpm`.
+* A Machine with more than one Toolhead gives a `NOTE` Squawk: `Machine defines <count> toolheads; spindle speed was not checked against their limits`.
+
+The `<label>` in a `WARNING` Squawk is the label of the Tool Controller or the Operation that commands the Spindle Speed. The Spindle Speed check reports each combination of label and Spindle Speed one time.
+
+The Spindle Speed check has these conditions:
+
+* The check applies only when the Machine has exactly one Toolhead and the type of that Toolhead is `rotary`.
+* A Toolhead limit of 0 is a limit that is not specified. The check does not compare the Spindle Speed with a limit that is not specified.
+* The check ignores a commanded Spindle Speed of 0.
+
+A Post-Processor can replace, add or remove a check. Refer to xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor].
 
 == Usage
 

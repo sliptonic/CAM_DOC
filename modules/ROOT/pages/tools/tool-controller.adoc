@@ -3,6 +3,8 @@
 :page-origin-revision: 50f2b935e9 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32129
+:page-status: draft
 
 == Description
 
@@ -43,6 +45,9 @@ When the editor is embedded in an operation's task panel, a warning states how m
 * *RampFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for ramp moves; bound to *HorizFeed* by an expression until changed.
 * *LeadInFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for lead-in moves; bound to *HorizFeed* by default.
 * *LeadOutFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for lead-out moves; bound to *HorizFeed* by default.
+* [.since]#introduced in 26.3# *NoEngagementFeed*: feed for moves in which the Tool Bit does not engage material. An Operation reads the value when it recomputes.
+
+A machine-based Post-Processor uses *NoEngagementFeed* only when the Post-Processor Property *Output non-engaging moves at the no-engagement feed rate* is enabled. The Post-Processor then writes each `G0` move that carries a no-engagement feed annotation as a `G1` move with that feed as the `F` value. The Post-Processor Property is off by default and is set in the Machine Editor; see xref:output/machine.adoc[Machine].
 
 .Rapid
 * *HorizRapid* (`Speed`): rapid rate for horizontal moves.

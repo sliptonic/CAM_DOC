@@ -6,6 +6,8 @@
 :page-workbench: CAM
 :page-shortcut: P V
 :page-audit: applied
+:page-source-pr: 32366
+:page-status: draft
 
 [.fcinfobox]
 --
@@ -27,8 +29,22 @@ The Quick Validate command (menu text: _Quick Validate_; tooltip: "Validates the
 
 The command is not on any toolbar, menu or context menu; it is reachable only through its keyboard shortcut kbd:[P] then kbd:[V], or by adding it to a toolbar via menu:Tools[Customize].
 
+The findings include the Squawks of the Job's Post-Processor. A machine-based Post-Processor compares each commanded Spindle Speed with the limits of the Toolhead of the xref:output/machine.adoc[Machine].
+
+* The Post-Processor reads the speeds from the `M3` and `M4` commands of the Tool Controllers and the Operations of the Job. The Post-Processor does not check a speed of 0.
+* A speed below the `min_rpm` limit or above the `max_rpm` limit of the Toolhead gives a `WARNING` Squawk. The Squawk shows the label of the Tool Controller or the Operation.
+* The Post-Processor uses the limits only when the Machine defines exactly one Toolhead and the type of that Toolhead is `rotary`.
+* A limit of 0 is a limit that is not specified. The Post-Processor does not check a speed against a limit that is not specified.
+* A Machine that defines more than one Toolhead gives a `NOTE` Squawk. The Post-Processor does not check the speeds of that Machine.
+
 == Usage
 
 . Select the Job in the https://wiki.freecad.org/Tree_View[Tree View] (the command is enabled only for a Job).
 . Press kbd:[P] then kbd:[V].
 . Read the output in the Report view: `Quick Validate: No issues found.` or a block `=== Quick Validation Results ===` with one line per finding prefixed by its severity (`[WARNING]`, `[CAUTION]` or `[NOTE]`), followed by `N issue(s) found, M critical`. Warnings and cautions are printed in the warning color.
+
+The Spindle Speed findings of the Post-Processor have these texts:
+
+* `'<label>' commands spindle speed <speed> rpm, below the machine minimum of <limit> rpm`
+* `'<label>' commands spindle speed <speed> rpm, above the machine maximum of <limit> rpm`
+* `Machine defines <count> toolheads; spindle speed was not checked against their limits`
