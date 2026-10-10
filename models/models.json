@@ -1,0 +1,8 @@
+{
+  "drilling-1": {
+    "file": "drilling-1.FCStd",
+    "description": "Plate with through holes, counterbores, pockets, a boss and side holes. PartDesign Body named Body, no Job.",
+    "source": "FreeCAD src/Mod/CAM/CAMTests/Drilling_1.FCStd",
+    "units": "metric"
+  }
+}

@@ -54,6 +54,10 @@ The Machine Editor has four tabs. The _Postprocessor_ and _Options_ tabs are hid
 
 === Machine tab
 
+The _Machine_ tab is the first tab of the Machine Editor. The figure shows the tab for a new Machine.
+
+image::output/machine/editor-machine-tab.png["Machine Editor, Machine tab, for a new Machine",400]
+
 * *Name*, *Manufacturer*, *Description*.
 * *Template*: load settings from a machine type, from one of your saved Machines, or from a built-in or add-on xref:reference/glossary.adoc#machine-template[Machine Template].
 * *Units*: Metric or Imperial for the values entered.
