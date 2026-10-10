@@ -9,6 +9,18 @@
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="stylesheet" href="../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
   </head>
   <body class="article">
 <header class="header">
