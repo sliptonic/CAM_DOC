@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Heidenhain Post-Processor :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="prev" href="fanuc.html">
+    <link rel="next" href="genealogy.html">
+    <meta name="description" content="Reference for the heidenhain Post-Processor: its properties, its defaults and the Klartext program that it writes for Heidenhain TNC controls.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../../_/css/site.css">
+<link rel="stylesheet" href="../../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-7">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="heidenhain.html" selected>DEV (pre-release)</option>
+            <option value="../../../wiki-2026-08/index.html">Wiki (Aug 2026) (page not in this version)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
+    <li><a href="heidenhain.html">Heidenhain Post-Processor</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="heidenhain.html">DEV (pre-release)</a>
+    <a class="version is-missing" href="../../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/output/posts/heidenhain.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Heidenhain Post-Processor</h1>
+<div class="sect1">
+<h2 id="description"><a class="anchor" href="#description"></a>Description</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The <code>heidenhain</code> <a href="../../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post) writes a Heidenhain Klartext (conversational) program. Klartext is not G-code. The Post translates each command of a Toolpath into a Klartext block and passes no command through unchanged. The target dialect is common to the TNC 4xx, iTNC 530, TNC 620, TNC 640 and TNC7 controls. A second cycle format serves controls that have no Q-parameter cycles.</p>
+</div>
+<div class="paragraph">
+<p>The <code>heidenhain</code> Post is a machine-based Post. Select it in the Post-Processor list on the <em>Postprocessor</em> tab of the Machine Editor, as <a href="../machine.html" class="xref page">Machine</a> describes. A <a href="../../job/job.html" class="xref page">Job</a> uses the Post through its <a href="../../reference/glossary.html#machine" class="xref page">Machine</a>. The <code>heidenhain_legacy</code> Post is a different Post, a script Post, and this page does not describe it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="properties"><a class="anchor" href="#properties"></a>Properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each <a href="../../reference/glossary.html#post-processor-property" class="xref page">Post-Processor Property</a> has one <a href="../../reference/glossary.html#property-scope" class="xref page">Property Scope</a>. A Machine-scope property is edited in the Machine Editor only. A Job-scope property gets its default in the Machine Editor, and the <em>Options</em> tab of the Post-Processing Dialog overrides it for one export. <a href="../machine-configuration.html" class="xref page">Machine Configuration</a> gives the priority of the value sources.</p>
+</div>
+<div class="sect2">
+<h3 id="properties-of-the-heidenhain-post"><a class="anchor" href="#properties-of-the-heidenhain-post"></a>Properties of the heidenhain Post</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 8.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 8.3333%;">
+<col style="width: 33.3336%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Label</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Values</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Program Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>program_name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Empty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name in the <code>BEGIN PGM</code> and <code>END PGM</code> blocks. When the value is empty, the Post uses the Job label. <a href="#_program_start_and_end">Program start and end</a> gives the name rules.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tool Axis</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tool_axis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code>, <code>Y</code>, <code>Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The axis letter in the <code>TOOL CALL</code> and <code>BLK FORM</code> blocks. The Post always writes arcs in the XY plane.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Rapid Feed Rate (0 = FMAX)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rapid_feed_rate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 to 999999</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A feed in mm/min that the Post writes on rapid blocks as a replacement for <code>FMAX</code>. The value 0 writes <code>FMAX</code>. With imperial output, the Post divides the value by 25.4.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Drill Cycle Format</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cycle_format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q_parameter</code>, <code>legacy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q_parameter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q_parameter</code> writes <code>CYCL DEF 200</code>, <code>202</code>, <code>203</code> and <code>207</code> with Q parameters. <code>legacy</code> writes <code>CYCL DEF 1</code> and <code>CYCL DEF 17</code> for a control without Q-parameter cycles.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Drill Cycle Set-Up Clearance</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>drill_setup_clearance</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 to 1000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The set-up clearance (<code>Q200</code>) in mm. The Post puts the surface coordinate of the cycle this distance below the retract height of the Operation. The feed motion thus starts at the retract height.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Chip Breaking Retract</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>chip_break_retract</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 to 100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The retraction distance (<code>Q256</code>) in mm for <code>G73</code> chip breaking in <code>CYCL DEF 203</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fixture Output</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fixture_output</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preset</code>, <code>datum</code>, <code>none</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preset</code> selects an entry of the preset table with <code>CYCL DEF 247</code>. <code>datum</code> selects an entry of the datum table with <code>CYCL DEF 7</code>. <code>none</code> writes no block for a Fixture command.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fixture Number for G54</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fixture_first_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 to 9999</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The preset number or datum number that <code>G54</code> selects. <code>G55</code> selects the next number, and each subsequent Fixture adds 1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Output BLK FORM</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>output_blk_form</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checkbox</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checked</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes the Stock bounding box as <code>BLK FORM 0.1</code> and <code>BLK FORM 0.2</code> blocks after <code>BEGIN PGM</code>. The control uses these blocks for its graphic simulation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="defaults-of-the-common-properties"><a class="anchor" href="#defaults-of-the-common-properties"></a>Defaults of the common properties</h3>
+<div class="paragraph">
+<p>The <code>heidenhain</code> Post changes the defaults of these common properties. <a href="../machine.html" class="xref page">Machine</a> describes each common property.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 22.2222%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>File Extension</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>h</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The extension of a Klartext program.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tool Radius Compensation (G41/G42)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checked</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Post writes radius compensation as the words <code>RL</code>, <code>RR</code> and <code>R0</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Supported G-code Commands</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The list under <a href="#_accepted_commands">Accepted commands</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Post always uses this list. A value in the Machine has no effect.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Drill Cycles to Translate</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Empty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Post writes each drill cycle as a Klartext cycle.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>TLO after tool-change</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unchecked</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TOOL CALL</code> applies the length of the Tool Bit from the Tool Bit table of the control. The Post always uses this default. A value in the Machine has no effect.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Axis precision in output</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>feed_precision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Spindle-speed precision in output</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="machine-output-options"><a class="anchor" href="#machine-output-options"></a>Machine output options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Post sets three output options of the Machine to fixed values. The values on the <em>Options</em> tab of the Machine Editor have no effect for these options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The comment symbol is <code>;</code>. A Klartext comment is a block that starts with <code>;</code>.</p>
+</li>
+<li>
+<p><strong>Duplicate Commands</strong> is on. Each motion block needs its block word, such as <code>L</code> or <code>C</code>.</p>
+</li>
+<li>
+<p>The <strong>Line Numbers</strong> options are off. The Post writes the Klartext block numbers itself, as <a href="#_block_numbers">Block numbers</a> describes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Post removes empty lines from the program. <strong>Output Units</strong> selects the units word in the <code>BEGIN PGM</code> and <code>END PGM</code> blocks.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="output"><a class="anchor" href="#output"></a>Output</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="accepted-commands"><a class="anchor" href="#accepted-commands"></a>Accepted commands</h3>
+<div class="paragraph">
+<p>The Post accepts these commands from a Toolpath:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Motion: <code>G0</code>, <code>G1</code>, <code>G2</code>, <code>G3</code>.</p>
+</li>
+<li>
+<p>Dwell: <code>G4</code>.</p>
+</li>
+<li>
+<p>Drill cycles: <code>G73</code>, <code>G81</code>, <code>G82</code>, <code>G83</code>, <code>G85</code>, and the tapping cycles <code>G74</code> and <code>G84</code>.</p>
+</li>
+<li>
+<p>Radius compensation: <code>G40</code>, <code>G41</code>, <code>G42</code>.</p>
+</li>
+<li>
+<p>Fixture commands: <code>G54</code> to <code>G59.9</code>. A <a href="../../reference/glossary.html#fixture" class="xref page">Fixture</a> is a G54 to G59.9 selection, not the workholding.</p>
+</li>
+<li>
+<p>Spindle, coolant and <code>M6</code>: <code>M3</code>, <code>M4</code>, <code>M5</code>, <code>M6</code>, <code>M7</code>, <code>M8</code>, <code>M9</code>.</p>
+</li>
+<li>
+<p>Program stop, optional stop and program end M commands.</p>
+</li>
+<li>
+<p>Modal commands that have no Klartext equivalent: <code>G17</code>, <code>G20</code>, <code>G21</code>, <code>G43</code>, <code>G80</code>, <code>G90</code>, <code>G94</code>, <code>G97</code>, <code>G98</code>, <code>G99</code>. The Post accepts these commands and writes no block for them.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="program-start-and-end"><a class="anchor" href="#program-start-and-end"></a>Program start and end</h3>
+<div class="paragraph">
+<p><code>BEGIN PGM &lt;name&gt; &lt;units&gt;</code> is block 0 of each output file. The header comments follow it. <code>END PGM &lt;name&gt; &lt;units&gt;</code> is the last block, after the postamble.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The units word is <code>INCH</code> when the output units of the Machine are imperial, and <code>MM</code> in all other conditions. The Post writes no <code>G20</code> or <code>G21</code> equivalent.</p>
+</li>
+<li>
+<p>The program name is <strong>Program Name</strong>, or the Job label when <strong>Program Name</strong> is empty.</p>
+</li>
+<li>
+<p>The Post replaces each sequence of characters that are not letters or digits with one underscore.</p>
+</li>
+<li>
+<p>The Post removes underscores at the two ends of the name and changes the letters to upper case.</p>
+</li>
+<li>
+<p>When the result is empty, the name is <code>FREECAD</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With <strong>Output BLK FORM</strong> checked, two blocks follow <code>BEGIN PGM</code>. <code>BLK FORM 0.1</code> has the <strong>Tool Axis</strong> letter and the minimum corner of the Stock bounding box. <code>BLK FORM 0.2</code> has the maximum corner. The Post writes no <code>BLK FORM</code> block when the Job has no Stock shape.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="block-numbers"><a class="anchor" href="#block-numbers"></a>Block numbers</h3>
+<div class="paragraph">
+<p>Each block has a number. The numbers are the physical line numbers of the file and start at 0 in each output file. A line that ends in a tilde (<code>~</code>) continues its block on the next line. A continuation line has no number.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coordinates-and-feed"><a class="anchor" href="#coordinates-and-feed"></a>Coordinates and feed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Each coordinate has an explicit sign, for example <code>X+10.000</code> or <code>Z-2.000</code>. A negative zero gets a plus sign.</p>
+</li>
+<li>
+<p>The words <code>A</code>, <code>B</code> and <code>C</code> are in degrees with the axis precision. The Post does not convert them between millimetres and inches.</p>
+</li>
+<li>
+<p>A rapid block ends with <code>FMAX</code>, or with the feed of the <code>rapid_feed_rate</code> property.</p>
+</li>
+<li>
+<p>A feed block has the F word of its command. When the command has no F word, the block has the last programmed feed.</p>
+</li>
+<li>
+<p>A command with a block-delete annotation gets the prefix <code>/</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="linear-moves"><a class="anchor" href="#linear-moves"></a>Linear moves</h3>
+<div class="paragraph">
+<p><code>G0</code> and <code>G1</code> become an <code>L</code> block. The block has the axis words of the command, then the radius compensation word, then the feed word. The Post writes no block when the command has no axis words.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="radius-compensation"><a class="anchor" href="#radius-compensation"></a>Radius compensation</h3>
+<div class="paragraph">
+<p><code>G40</code>, <code>G41</code> and <code>G42</code> write no block. They set the word that each subsequent <code>L</code> block and arc block contains.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Word</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G40</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G41</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RL</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G42</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RR</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An <code>M6</code> command sets the word to <code>R0</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="arcs"><a class="anchor" href="#arcs"></a>Arcs</h3>
+<div class="paragraph">
+<p><code>G2</code> writes <code>DR-</code> and <code>G3</code> writes <code>DR+</code>. The form of the arc block depends on the parameters of the command.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Blocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An arc with R and no I or J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>CR</code> block with the X and Y end point, the signed radius, the direction, the compensation word and the feed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An arc with I or J and no change in Z</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>CC</code> block with the X and Y centre, then a <code>C</code> block with the X and Y end point.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An arc with I or J and a change in Z</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>CC</code> block with the X and Y centre, then a <code>CP</code> block with the swept angle (<code>IPA</code>) and the incremental Z distance (<code>IZ</code>).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Post writes the <code>CC</code> block only when the centre is different from the centre of the last <code>CC</code> block. An arc whose start point and end point are the same has a swept angle of 360 degrees.</p>
+</div>
+<div class="paragraph">
+<p>The export stops with an error in these conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The start position of the arc is not known. Program a move before the arc.</p>
+</li>
+<li>
+<p>The radius of an arc with R is zero.</p>
+</li>
+<li>
+<p>The arc has no I, no J and no R.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="drill-cycles"><a class="anchor" href="#drill-cycles"></a>Drill cycles</h3>
+<div class="paragraph">
+<p><strong>Drill Cycle Format</strong> selects the cycle that the Post writes for each command.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top"><code>q_parameter</code></th>
+<th class="tableblock halign-left valign-top"><code>legacy</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G81</code>, <code>G82</code>, <code>G83</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 200 DRILLING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 1.0 PECKING</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G73</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 203 UNIVERSAL DRILLING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 1.0 PECKING</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G84</code>, <code>G74</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 207 RIGID TAPPING NEW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 17.0 RIGID TAPPING</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G85</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 202 BORING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None. The export stops with an error.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Post calculates the cycle values from the drill command:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The set-up clearance is <strong>Drill Cycle Set-Up Clearance</strong>.</p>
+</li>
+<li>
+<p>The surface coordinate is the R value of the command minus the set-up clearance.</p>
+</li>
+<li>
+<p>The depth is the Z value of the command minus the surface coordinate. The depth is negative.</p>
+</li>
+<li>
+<p>The second set-up clearance is the Z position before the cycle minus the R value. It applies when the return mode is not the R level and that Z position is above R. In all other conditions the value is 0.</p>
+</li>
+<li>
+<p>The dwell time at depth is the P value of the command.</p>
+</li>
+<li>
+<p>The plunging depth of <code>G83</code> and <code>G73</code> is the Q value of the command. For the other commands, and when Q is absent, it is the full depth.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the <code>q_parameter</code> format, the first line of a cycle definition is the cycle title with a continuation mark. Each Q parameter follows on its own line with its value and a <code>;</code> comment that names the parameter. The Post writes a cycle definition only when it is different from the last definition in the file. Each hole is one rapid <code>L</code> block to the X and Y position that ends with <code>M99</code>, which calls the cycle.</p>
+</div>
+<div class="paragraph">
+<p><code>CYCL DEF 203</code> for <code>G73</code> has the number of chip breaks in <code>Q213</code>. That number is the depth divided by the plunging depth, increased to the next integer. <code>Q256</code> has the value of <strong>Chip Breaking Retract</strong>. <code>CYCL DEF 202</code> for <code>G85</code> uses the feed of the command as the retraction feed.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>legacy</code> format, the definition is a sequence of numbered blocks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CYCL DEF 1.0 PECKING</code> to <code>CYCL DEF 1.5</code> have the set-up clearance, the depth, the pecking depth, the dwell and the feed.</p>
+</li>
+<li>
+<p><code>CYCL DEF 17.0 RIGID TAPPING</code> to <code>CYCL DEF 17.3</code> have the set-up clearance, the depth and the pitch.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A cycle of the <code>legacy</code> format starts from the current position. For each hole the Post writes a rapid <code>L</code> block to the X and Y position, a rapid <code>L</code> block to the retract height, and <code>CYCL CALL</code>. The Post writes each <code>L</code> block only when the position changes. When the second set-up clearance is more than 0, a rapid <code>L</code> block then moves to the initial Z position.</p>
+</div>
+<div class="paragraph">
+<p>The export stops with an error in these conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The cycle has no R value or no Z value.</p>
+</li>
+<li>
+<p>The X and Y position is not known.</p>
+</li>
+<li>
+<p>A drill cycle that is not a tapping cycle has no feed.</p>
+</li>
+<li>
+<p>The Z value is not below the R value minus the set-up clearance.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tapping"><a class="anchor" href="#tapping"></a>Tapping</h3>
+<div class="paragraph">
+<p><code>G84</code> and <code>G74</code> write the thread pitch into the cycle: <code>Q239</code> of <code>CYCL DEF 207</code>, or <code>CYCL DEF 17.3 PITCH</code>. The pitch of <code>G74</code> is negative, for a left-hand thread.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When the tapping generator of the Drilling Operation made the command, the F word is the pitch.</p>
+</li>
+<li>
+<p>For all other tapping commands, the Post calculates the pitch from the F word and the Spindle Speed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The export stops with an error when the command has no F word, when the pitch is not more than 0, or when the calculation has no Spindle Speed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dwell"><a class="anchor" href="#dwell"></a>Dwell</h3>
+<div class="paragraph">
+<p><code>G4</code> becomes two blocks: <code>CYCL DEF 9.0 DWELL TIME</code> and <code>CYCL DEF 9.1 DWELL</code> with the P value in seconds.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-change-spindle-and-coolant"><a class="anchor" href="#tool-change-spindle-and-coolant"></a>Tool change, spindle and coolant</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>M6</code> becomes <code>TOOL CALL</code> with the Tool Bit number, the <strong>Tool Axis</strong> letter and the S word. The S value comes from the <code>M3</code> or <code>M4</code> that follows the <code>M6</code>.</p>
+</li>
+<li>
+<p>The Post writes no <code>G43</code> equivalent. <code>TOOL CALL</code> applies the length of the Tool Bit from the Tool Bit table of the control.</p>
+</li>
+<li>
+<p><code>M3</code> and <code>M4</code> become <code>M3</code> and <code>M4</code>. When the Spindle Speed is different from the speed of the last <code>TOOL CALL</code>, the block <code>TOOL CALL S&lt;speed&gt;</code> comes first. This block changes only the Spindle Speed.</p>
+</li>
+<li>
+<p><code>M5</code> becomes <code>M5</code>.</p>
+</li>
+<li>
+<p>Coolant commands, program stop commands and program end commands become M words with no zero before the number: <code>M08</code> becomes <code>M8</code>.</p>
+</li>
+<li>
+<p>A <code>T</code> command with only a number becomes <code>TOOL DEF &lt;number&gt;</code>. This block selects the next Tool Bit before the <code>M6</code> for that Tool Bit.</p>
+</li>
+<li>
+<p>With <strong>Allow tool-change</strong> unchecked, the Post writes no <code>TOOL CALL</code> that has a Tool Bit number. The first <code>M3</code> or <code>M4</code> then sets the Spindle Speed with <code>TOOL CALL S&lt;speed&gt;</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="fixtures"><a class="anchor" href="#fixtures"></a>Fixtures</h3>
+<div class="paragraph">
+<p><strong>Fixture Output</strong> selects the blocks for a Fixture command.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Value</th>
+<th class="tableblock halign-left valign-top">Blocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 247 PRESETTING</code>, with the preset number in <code>Q339</code> on a continuation line.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>datum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CYCL DEF 7.0 DATUM SHIFT</code>, then <code>CYCL DEF 7.1 #&lt;number&gt;</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>none</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No block.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The number for <code>G54</code> is <strong>Fixture Number for G54</strong>. Each subsequent Fixture adds 1, to <code>G59.9</code>, which is the fifteenth Fixture.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limitations"><a class="anchor" href="#limitations"></a>Limitations</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The Post writes arcs in the XY plane only. <strong>Tool Axis</strong> changes the axis letter in <code>TOOL CALL</code> and <code>BLK FORM</code> and does not change the arc plane.</p>
+</li>
+<li>
+<p>The <code>legacy</code> cycle format has no cycle for <code>G85</code>. Use the <code>q_parameter</code> format for a Job that contains <code>G85</code>.</p>
+</li>
+<li>
+<p>The Post accepts only the commands under <a href="#_accepted_commands">Accepted commands</a>. <code>G38.2</code>, <code>G88</code> and <code>G89</code> are examples of commands that are not in the list.</p>
+</li>
+<li>
+<p>A command that has no Klartext equivalent and is not in the list stops the export with an error.</p>
+</li>
+<li>
+<p>The <code>rapid_feed_rate</code>, <code>drill_setup_clearance</code> and <code>chip_break_retract</code> properties are in millimetres for metric output and for imperial output.</p>
+</li>
+<li>
+<p>The Machine values of <strong>Supported G-code Commands</strong> and <strong>TLO after tool-change</strong>, and the Machine options for the comment symbol, duplicate commands and line numbers, have no effect.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><span class="image"><img src="../../_images/CAM_Machine.svg" alt="Machine" width="16"></span> <a href="../machine.html" class="xref page">Machine</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../../_images/CAM_Post.svg" alt="Post Process" width="16"></span> <a href="../post-process.html" class="xref page">Post Process</a></p>
+</li>
+<li>
+<p><a href="../machine-configuration.html" class="xref page">Machine Configuration</a></p>
+</li>
+<li>
+<p><a href="../postprocessor-customization.html" class="xref page">Postprocessor Customization</a></p>
+</li>
+<li>
+<p><a href="../mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a></p>
+</li>
+<li>
+<p><a href="genealogy.html" class="xref page">Post-Processor Genealogy</a></p>
+</li>
+<li>
+<p><a href="fanuc.html" class="xref page">Fanuc Post-Processor</a></p>
+</li>
+<li>
+<p><a href="../../reference/glossary.html" class="xref page">Glossary</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="fanuc.html">Fanuc Post-Processor</a></span>
+  <span class="next"><a href="genealogy.html">Post-Processor Genealogy</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+  </body>
+</html>
