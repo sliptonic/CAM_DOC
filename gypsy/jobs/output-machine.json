@@ -1,0 +1,118 @@
+{
+ "page": "output/machine.adoc",
+ "prs": [
+  31819,
+  32081,
+  32096,
+  32129,
+  32250,
+  32274,
+  32323,
+  32366,
+  32367,
+  32427,
+  32485,
+  32854,
+  32903
+ ],
+ "branch": "gypsy/output-machine",
+ "changes": [
+  {
+   "pr": 32096,
+   "what": "Removed the 'Expand drill-cycles' checkbox from the common Post-Processor Property list; only 'Drill Cycles to Translate' remains."
+  },
+  {
+   "pr": 32250,
+   "what": "Machine Editor now has a separate Toolheads tab holding Add Toolhead and the per-Toolhead tabs; Options section lists four tabs and the Usage step names them."
+  },
+  {
+   "pr": 32081,
+   "what": "Added the Import… button on the Assets preference page, the Import Machine from MTConnect dialog procedure, what the import populates and assumes, and a scripting example for machine_from_probe."
+  },
+  {
+   "pr": 32274,
+   "what": "Postprocessor tab description now explains Property Scope: Machine- and Job-scope properties appear in the editor, Run-scope ones (Show Pre-processing Dialogs) do not; LinuxCNC blend properties are Job scope."
+  },
+  {
+   "pr": 32367,
+   "what": "Added the Validate button and Validation dialog to Usage, the command-line validator with its severities and options to Notes and limitations, and validate_file to Scripting."
+  },
+  {
+   "pr": 32427,
+   "what": "Removed the duplicate 'Unit-command in output' row from the common property list; output units are documented under the Options tab only."
+  },
+  {
+   "pr": 32323,
+   "what": "Rewrote Post-Tool Change and Tool Return after tool changes: Post-Tool Change is emitted directly after M6 before G43 and the spindle start, and only when M6 is written; Tool Return follows the spindle start."
+  },
+  {
+   "pr": 32129,
+   "what": "Added the Machine-scope property translate_no_engagement_feed (G0 moves marked with a no-engagement feed become G1 at that feed)."
+  },
+  {
+   "pr": 32485,
+   "what": "Toolhead type list gains Wire EDM; .fcm toolhead_type values include wire_edm."
+  },
+  {
+   "pr": 31819,
+   "what": "Updated defaults: Drill Cycles to Translate is G73, G81, G82, G83, G85; Generated Parameter Order for GCode is XYZABCUVWFSIJKTQRPDHL."
+  },
+  {
+   "pr": 32366,
+   "what": "Documented that a rotary Toolhead's min and max rpm feed the Sanity Check spindle-speed check, that 0 means not specified, and that the check applies only with exactly one rotary Toolhead."
+  },
+  {
+   "pr": 32854,
+   "what": "Machine selection moved to the Output tab of the Job task panel with '(Legacy post-processor)' as the no-Machine entry; Processor and Arguments rows are hidden while a Machine is selected; the '<any>' placeholder is gone from the Template list."
+  },
+  {
+   "pr": 32903,
+   "what": "Kinematics group: 'DWO Supported' replaced by the 'Rotation Strategy' combo; added the rotation_strategy file key and dwo_supported fallback, the Tilted work plane properties, rewritten Pre/Post-Rotary Move help, the refusal rules for tilted Work Planes, and the Pre-Rotary Move Sanity Check warning."
+  }
+ ],
+ "unverified": [
+  "Menu path and infobox fields (page-command CAM_Machine, icon CAM_Machine.svg) were carried over from the existing page and not checked against a running FreeCAD.",
+  "Exact labels of the Machine Editor button row: Edit as Text, Validate, Save, Close.",
+  "Label of the Validation dialog and its exact wording for the error and warning summary.",
+  "Exact field labels on the Machine tab (Name, Manufacturer, Description, Template, Units, Type) and the Type combo entries.",
+  "Exact field labels in each Axes group (Role, Parent, Sequence, Direction, Min Limit, Max Limit, Max Velocity, Joint Origin, Rotation Axis, Solution Preference, Allow Flip, Wrap Strategy).",
+  "Exact field labels on each Toolhead tab (min and max rpm, power, tool change mode, coolant flood, coolant mist, coolant delay, toolhead wait).",
+  "Label of the Post-Processor combo and of the property group on the Postprocessor tab.",
+  "Exact group and field labels on the Options tab (Output Units, Header Options, Comment Options, Formatting Options, Precision Options, Duplicate Output Options, processing options, Output Tool Length Offset, Enable Remote Posting).",
+  "Whether the Postprocessor and Options tabs are hidden by the parameter Mod/CAM/EnableMachinePostprocessor on the current commit.",
+  "The Assets preference page's experimental-feature wording.",
+  "Appearance of the Import Machine from MTConnect dialog, the Select Device prompt and the Machine Imported summary.",
+  "That the Machine combo on the Job Output tab shows the Machine display name exactly as the .fcm name field.",
+  "The job.Machine lookup being case-insensitive, and Machine.create_3axis_config / MachineFactory.save_configuration / get_config_directory signatures in the Scripting example."
+ ],
+ "figures_wanted": [
+  "output/machine/editor-machine-tab.png: Machine Editor, Machine tab, 5-Axis Mill (XYZ + A, C) type, Kinematics group showing the Rotation Strategy combo.",
+  "output/machine/editor-toolheads-tab.png: Machine Editor, Toolheads tab, one rotary Toolhead with min and max rpm set.",
+  "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, linuxcnc selected, showing Machine- and Job-scope properties.",
+  "output/machine/job-output-tab-machine.png: Job task panel, Output tab, Machine combo with a Machine selected and the Processor and Arguments rows hidden.",
+  "output/machine/mtconnect-import-dialog.png: Import Machine from MTConnect dialog with a URL entered.",
+  "output/machine/validation-dialog.png: Validation dialog showing one warning with its details expanded."
+ ],
+ "notes": "No pending gypsy pull request text was given, so this draft builds on the previous draft of this page. All lint findings were applied: 'head' replaced by the axis role identifiers table_rotary and head_rotary; the Post Processor combo and property group are described without quoting unverified labels; 'Include Blank Lines' rewritten as empty lines; 'cutter compensation' is now 'radius compensation'; 'the base post' is now 'every machine-based post'; 'the tool' replaced by Tool Bit or Tool Axis; the Type and processing-options sentences were split; the validator paragraph is now a severity list; the Assets page NOTE is a plain sentence. Two common properties whose UI labels contain prohibited words ('Feedrate precision in output' and 'Output non-engaging moves at the no-engagement feed rate') are now listed by their schema names feed_precision and translate_no_engagement_feed, because the lint rejects the UI spelling; a reviewer may prefer to restore the labels with a lint exemption. The Properties list of common Post-Processor Properties is taken from the extracted common_property_schema at commit 68b4bcf1dea, which postdates the covered PRs and includes ignored_commands; the Job-property section uses the Python name PostProcessorPropertyOverrides for the same lint reason. The Options tab field names remain unverified because none of the covered diffs touch output_options_layout.py.",
+ "lint_rc": 0,
+ "lint": "",
+ "pending_prs": [],
+ "facts": [
+  "gypsy/facts/machine.json"
+ ],
+ "facts_commit": "68b4bcf1dea",
+ "runs": [
+  {
+   "cost_usd": 3.98153375,
+   "duration_ms": 257996,
+   "model": "claude-haiku-4-5-20251001"
+  },
+  {
+   "cost_usd": 3.2913425,
+   "duration_ms": 198405,
+   "model": "claude-haiku-4-5-20251001"
+  }
+ ],
+ "cost_usd": 7.2728762499999995,
+ "generated": "2026-10-02T13:56:21+00:00"
+}
