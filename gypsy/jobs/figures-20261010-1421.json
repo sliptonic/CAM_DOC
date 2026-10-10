@@ -1,0 +1,72 @@
+{
+ "figures_run": "20261010-1421",
+ "pages": [
+  {
+   "page": "output/machine-configuration.adoc",
+   "wanted": [
+    "output/machine-configuration/editor-toolheads-tab.png: Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button",
+    "output/machine-configuration/editor-kinematics-rotation-strategy.png: Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open",
+    "output/machine-configuration/editor-validation-dialog.png: Validation dialog with one error and one warning, details shown",
+    "output/machine-configuration/job-output-tab-machine.png: Job task panel, Output tab, with a Machine selected and the Post-Processor rows hidden",
+    "output/machine-configuration/post-dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for the linuxcnc Post"
+   ],
+   "figures": [
+    {
+     "wanted": "output/machine-configuration/editor-toolheads-tab.png: Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button",
+     "status": "done",
+     "file": "output/machine-configuration/editor-toolheads-tab.png",
+     "recipe": "recipes/output/machine-configuration/editor-toolheads-tab.py",
+     "shows": "The full Machine Editor with the Toolheads tab selected. The Add Toolhead button is at the top right. One tab \"Toolhead 1\" with a close button shows Type Rotary, Name, ID, Tool Change Manual, Max Power 3.00 kW, and the Type-Specific Settings group (Max RPM 24000, Min RPM 6000, Coolant Flood, Coolant Mist, Coolant Delay, Wait Time).",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine-configuration/editor-kinematics-rotation-strategy.png: Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open",
+     "status": "done",
+     "file": "output/machine-configuration/editor-kinematics-rotation-strategy.png",
+     "recipe": "recipes/output/machine-configuration/editor-kinematics-rotation-strategy.py",
+     "shows": "The full Machine Editor on the Machine tab for a new Machine. In the Kinematics group the Rotation Strategy list is open with four entries: Not declared (checked), Dynamic work offset (DWO), Tilted work plane (TWP), Post transform (not available yet). The open list covers the Notes field.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine-configuration/editor-validation-dialog.png: Validation dialog with one error and one warning, details shown",
+     "status": "done",
+     "file": "output/machine-configuration/editor-validation-dialog.png",
+     "recipe": "recipes/output/machine-configuration/editor-validation-dialog.py",
+     "shows": "The Validation message box with the error icon and the text \"1 error(s) and 1 warning(s) found.\", the buttons OK and Hide Details..., and the details text \"[error] machine defines no axes\" and \"[warning] machine defines no toolheads\".",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine-configuration/job-output-tab-machine.png: Job task panel, Output tab, with a Machine selected and the Post-Processor rows hidden",
+     "status": "done",
+     "file": "output/machine-configuration/job-output-tab-machine.png",
+     "recipe": "recipes/output/machine-configuration/job-output-tab-machine.py",
+     "shows": "The Job task panel on the Output tab. The Machine list shows \"Shop Router\" with the New Machine button. Below are the Output file row and the Work Coordinate Systems group (G54 checked, Order by Fixture, Split Output). No Post-Processor row and no arguments row are visible.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "output/machine-configuration/post-dialog-options-postprocessor-properties.png: Post-Processing Dialog, Options tab, Postprocessor Properties group for the linuxcnc Post",
+     "status": "done",
+     "file": "output/machine-configuration/post-dialog-options-postprocessor-properties.png",
+     "recipe": "recipes/output/machine-configuration/post-dialog-options-postprocessor-properties.py",
+     "shows": "The full Post-Processing Dialog (title \"Post Processing - Job: Job\") on the Options tab, with the list moved to its end. The Duplicate Output Options and Processing Options groups are above. The Postprocessor Properties group at the bottom shows Allow tool-change (checked), Path Blending Mode BLEND and Blend Tolerance 0.0000. The Generate Output and Close buttons are below.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "All five figures are done and are in the page. The lint of the page gives 0 findings. The page had no old figures, so no figure was replaced. Each figure has one new short sentence before it.\n\nShared code is in recipes/output/machine-configuration/_machine.py. It saves a 3-axis Machine \"Shop Router\" with the linuxcnc Post in the asset folder and makes a Job with a Profile and a Drilling Operation on the drilling-1 model.\n\nTwo recipes do not use the standard procedure. Examine them:\n\n1. editor-kinematics-rotation-strategy.py does not use shot.widget(). The open list is a window of its own, and shot.widget(dialog) does not include it. The recipe captures the area of the dialog from the screen with QScreen.grabWindow, writes shot.out and sets shot.saved. A shot method for a dialog with an open list would remove this code from the recipe.\n\n2. editor-validation-dialog.py replaces QMessageBox.exec_ with QMessageBox.show for the capture. The Validate button calls box.exec_() in validate_current_machine(), which stops the capture. With the replacement, the recipe clicks the real Validate button and captures the real message box. The recipe also selects the linuxcnc Post on the Postprocessor tab first. Without a Post, a new Machine gives two errors (no axes, empty postprocessor_file_name) and one warning. The first attempt showed this state and was corrected.\n\nThe details area of the Validation dialog has its default size, so the warning line wraps to two lines.\n\nThe width is 400 for the three Machine Editor and dialog figures and for the Post-Processing Dialog, and 600 for the Job task panel.\n\nNothing was committed. Changed or new: the page, manifest.yml, five images in images/output/machine-configuration/, and six files in images/recipes/output/machine-configuration/.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.4230870000000002,
+    "duration_ms": 197874,
+    "turns": 58,
+    "model": "claude-opus-5-5"
+   }
+  }
+ ],
+ "cost_usd": 1.4230870000000002
+}
