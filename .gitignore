@@ -6,3 +6,4 @@ antora-playbook-pr.yml
 *.pyc
 __pycache__/
 .venv/
+antora-playbook-base.yml
