@@ -9,6 +9,8 @@
 :page-see-also: CAM ExportTemplate, CAM SetupSheet, CAM Machine, CAM Sanity, CAM Post
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31589, 32854
+:page-status: draft
 
 [.fcinfobox]
 --
@@ -57,11 +59,9 @@ After creation the Job task panel opens (with the Setup tab active). It can be r
 
 The Job task panel has six tabs, in order: menu:Setup[], menu:General[], menu:Output[], menu:Tools[], menu:Workplan[] and menu:Advanced[] ([.since]#Advanced introduced in 1.1#). Switching back to the Setup tab applies and recomputes pending changes.
 
-NOTE: The screenshots below show the pre-1.1 tab order and lack the Machine group, the Assign Material button, the Picking toggle and the Work Coordinate Systems group.
-
 == Setup
 
-image:Job_3.jpg[]
+image::job/job/task-panel-setup.png["Job task panel, Setup tab, with the Layout section open",600]
 
 === Stock
 
@@ -92,17 +92,17 @@ Expressions and offsets stored in the xref:job/setup-sheet.adoc[Setup Sheet] for
 
 == General
 
-image:Job_1.jpg[]
+image::job/job/task-panel-general.png["Job task panel, General tab",600]
 
 * *Label*: The label of the Job as displayed in the Tree View.
 * *Model*: lists the Models of the Job (with a count for duplicates). Press btn:[Edit] to open the *Model Selection* dialog (the same tree as in the New Job dialog) and add, remove or multiply Models.
 * *Description*: You can add some notes to the Job here. Notes are only for your information and have no effect on the Toolpath.
-* *Machine* ([.since]#introduced in 26.3#): selects the machine configuration (`.fcm`) for this Job from the machines in the asset path (_<any>_ means none). When a Machine is set, post-processing uses the machine-based flow: the Post-Processor and output options come from the machine definition and the Post Process dialog is shown. btn:[New Machine] opens the Machine Editor to create a machine; it is selected after saving. See xref:output/machine.adoc[CAM Machine].
 
 == Output
 
-image:Job_2.jpg[]
+image::job/job/task-panel-output.png["Job task panel, Output tab, with Machine set to (Legacy post-processor)",600]
 
+* [.since]#introduced in 26.3# *Machine*: selects the Machine for this Job from the `.fcm` files in the asset path. The first entry, `(Legacy post-processor)`, selects no Machine. With a Machine selected, post-processing uses the machine-based flow. The Machine definition supplies the Post-Processor and the output options, and the xref:output/post-process.adoc[Post-Processing Dialog] opens. btn:[New Machine] opens the Machine Editor to create a Machine; the new Machine is selected after saving. See xref:output/machine.adoc[Machine] and xref:output/machine-configuration.adoc[Machine Configuration].
 * *Output File*: Set the name, extension, and the file path of the G-code output. You can use the following placeholders:
 ** *%D* directory of the active document
 ** *%d* name of the active document
@@ -110,8 +110,8 @@ image:Job_2.jpg[]
 ** *%j* label of the Job
 +
 In the file-name part only, when Split Output is enabled: *%T* tool number, *%t* Tool Controller label, *%W* Work Coordinate System, *%O* operation label, *%S* sequence number (a sequence number is always appended when output is split if %S is absent). If no extension is given, `.nc` is used (machine-based posts use the machine's file extension).
-* *Processor*: select a legacy argument-based xref:output/post-process.adoc[Post-Processor]. Only Post-Processors enabled in the preferences are listed. Machine-based Post-Processors ([.since]#introduced in 26.3#) are not listed here; they are chosen by assigning a Machine on the General tab.
-* *Arguments*: Add arguments for the legacy xref:output/post-process.adoc[Post-Processor] as needed.
+* *Processor*: selects a legacy argument-based xref:output/post-process.adoc[Post-Processor]. The list contains only the Post-Processors enabled in the preferences. The list does not contain machine-based Post-Processors; select a *Machine* to use a machine-based Post-Processor. The panel shows *Processor* only when *Machine* is `(Legacy post-processor)`.
+* *Arguments*: the arguments for the legacy xref:output/post-process.adoc[Post-Processor]. The panel shows *Arguments* only when *Machine* is `(Legacy post-processor)`.
 * *Work Coordinate Systems*:
 ** *Order by* (Fixture, Tool or Operation) defines how the output is grouped when several coordinate systems are selected.
 ** *Systems*: a checklist of G54 to G59.9 fixtures to output (default G54). See xref:job/fixture.adoc[CAM Fixture].
@@ -119,7 +119,7 @@ In the file-name part only, when Split Output is enabled: *%T* tool number, *%t*
 
 == Tools
 
-image:Job_4.jpg[]
+image::job/job/task-panel-tools.png["Job task panel, Tools tab, with one Tool Controller",600]
 
 The table lists the Job's Tool Controllers (Name, tool number, horizontal feed, vertical feed and spindle speed; a negative spindle value means reverse direction). Cells can be edited in place.
 
@@ -131,9 +131,18 @@ Changing feeds or speeds here does not modify the Tool Library. The *Default Val
 
 == Workplan
 
-image:Job_5.jpg[]
+image::job/job/task-panel-workplan.png["Job task panel, Workplan tab, with a Profile and a Drilling Operation",600]
 
 Lists the Operations in execution order. Select an Operation and use the up/down arrows to reorder it, or btn:[Delete] to remove it from the document.
+
+[.since]#introduced in 26.3#: The _Workplan_ list shows one row for each Operation, with these columns:
+
+* *#*: the position of the Operation in the execution order. The first Operation has the number 0.
+* *Operation*: the label of the Operation.
+* *Tool*: the value of *Tool Number* of the Tool Controller of the Operation. The cell is empty when the Operation has no Tool Controller.
+* *Tool Controller*: the label of the Tool Controller of the Operation. The cell shows `???` when the Operation has no Tool Controller.
+* *Coolant*: the coolant mode of the Operation. The cell is empty when the coolant mode is `None`.
+* *Time*: the estimated cycle time of the Operation.
 
 == Advanced
 

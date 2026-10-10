@@ -1,0 +1,310 @@
+= Heidenhain Post-Processor
+:page-since: 26.3
+:page-source-pr: 32863
+:page-status: draft
+:description: Reference for the heidenhain Post-Processor: its properties, its defaults and the Klartext program that it writes for Heidenhain TNC controls.
+
+== Description
+
+[.since]#introduced in 26.3#: The `heidenhain` xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) writes a Heidenhain Klartext (conversational) program. Klartext is not G-code. The Post translates each command of a Toolpath into a Klartext block and passes no command through unchanged. The target dialect is common to the TNC 4xx, iTNC 530, TNC 620, TNC 640 and TNC7 controls. A second cycle format serves controls that have no Q-parameter cycles.
+
+The `heidenhain` Post is a machine-based Post. Select it in the Post-Processor list on the _Postprocessor_ tab of the Machine Editor, as xref:output/machine.adoc[Machine] describes. A xref:job/job.adoc[Job] uses the Post through its xref:reference/glossary.adoc#machine[Machine]. The `heidenhain_legacy` Post is a different Post, a script Post, and this page does not describe it.
+
+== Properties
+
+Each xref:reference/glossary.adoc#post-processor-property[Post-Processor Property] has one xref:reference/glossary.adoc#property-scope[Property Scope]. A Machine-scope property is edited in the Machine Editor only. A Job-scope property gets its default in the Machine Editor, and the _Options_ tab of the Post-Processing Dialog overrides it for one export. xref:output/machine-configuration.adoc[Machine Configuration] gives the priority of the value sources.
+
+=== Properties of the heidenhain Post
+
+[cols="2,2,1,2,1,4",options="header"]
+|===
+|Label |Name |Scope |Values |Default |Effect
+
+|*Program Name*
+|`program_name`
+|Job
+|Text
+|Empty
+|The name in the `BEGIN PGM` and `END PGM` blocks. When the value is empty, the Post uses the Job label. <<_program_start_and_end,Program start and end>> gives the name rules.
+
+|*Tool Axis*
+|`tool_axis`
+|Machine
+|`X`, `Y`, `Z`
+|`Z`
+|The axis letter in the `TOOL CALL` and `BLK FORM` blocks. The Post always writes arcs in the XY plane.
+
+|*Rapid Feed Rate (0 = FMAX)*
+|`rapid_feed_rate`
+|Machine
+|0 to 999999
+|0
+|A feed in mm/min that the Post writes on rapid blocks as a replacement for `FMAX`. The value 0 writes `FMAX`. With imperial output, the Post divides the value by 25.4.
+
+|*Drill Cycle Format*
+|`cycle_format`
+|Machine
+|`q_parameter`, `legacy`
+|`q_parameter`
+|`q_parameter` writes `CYCL DEF 200`, `202`, `203` and `207` with Q parameters. `legacy` writes `CYCL DEF 1` and `CYCL DEF 17` for a control without Q-parameter cycles.
+
+|*Drill Cycle Set-Up Clearance*
+|`drill_setup_clearance`
+|Machine
+|0 to 1000
+|2.0
+|The set-up clearance (`Q200`) in mm. The Post puts the surface coordinate of the cycle this distance below the retract height of the Operation. The feed motion thus starts at the retract height.
+
+|*Chip Breaking Retract*
+|`chip_break_retract`
+|Machine
+|0 to 100
+|0.5
+|The retraction distance (`Q256`) in mm for `G73` chip breaking in `CYCL DEF 203`.
+
+|*Fixture Output*
+|`fixture_output`
+|Machine
+|`preset`, `datum`, `none`
+|`preset`
+|`preset` selects an entry of the preset table with `CYCL DEF 247`. `datum` selects an entry of the datum table with `CYCL DEF 7`. `none` writes no block for a Fixture command.
+
+|*Fixture Number for G54*
+|`fixture_first_number`
+|Machine
+|0 to 9999
+|1
+|The preset number or datum number that `G54` selects. `G55` selects the next number, and each subsequent Fixture adds 1.
+
+|*Output BLK FORM*
+|`output_blk_form`
+|Job
+|Checkbox
+|Checked
+|Writes the Stock bounding box as `BLK FORM 0.1` and `BLK FORM 0.2` blocks after `BEGIN PGM`. The control uses these blocks for its graphic simulation.
+|===
+
+=== Defaults of the common properties
+
+The `heidenhain` Post changes the defaults of these common properties. xref:output/machine.adoc[Machine] describes each common property.
+
+[cols="3,2,4",options="header"]
+|===
+|Property |Default |Reason
+
+|*File Extension*
+|`h`
+|The extension of a Klartext program.
+
+|*Tool Radius Compensation (G41/G42)*
+|Checked
+|The Post writes radius compensation as the words `RL`, `RR` and `R0`.
+
+|*Supported G-code Commands*
+|The list under <<_accepted_commands,Accepted commands>>
+|The Post always uses this list. A value in the Machine has no effect.
+
+|*Drill Cycles to Translate*
+|Empty
+|The Post writes each drill cycle as a Klartext cycle.
+
+|*TLO after tool-change*
+|Unchecked
+|`TOOL CALL` applies the length of the Tool Bit from the Tool Bit table of the control. The Post always uses this default. A value in the Machine has no effect.
+
+|*Axis precision in output*
+|3
+|
+
+|`feed_precision`
+|0
+|
+
+|*Spindle-speed precision in output*
+|0
+|
+|===
+
+== Machine output options
+
+The Post sets three output options of the Machine to fixed values. The values on the _Options_ tab of the Machine Editor have no effect for these options.
+
+* The comment symbol is `;`. A Klartext comment is a block that starts with `;`.
+* *Duplicate Commands* is on. Each motion block needs its block word, such as `L` or `C`.
+* The *Line Numbers* options are off. The Post writes the Klartext block numbers itself, as <<_block_numbers,Block numbers>> describes.
+
+The Post removes empty lines from the program. *Output Units* selects the units word in the `BEGIN PGM` and `END PGM` blocks.
+
+== Output
+
+=== Accepted commands
+
+The Post accepts these commands from a Toolpath:
+
+* Motion: `G0`, `G1`, `G2`, `G3`.
+* Dwell: `G4`.
+* Drill cycles: `G73`, `G81`, `G82`, `G83`, `G85`, and the tapping cycles `G74` and `G84`.
+* Radius compensation: `G40`, `G41`, `G42`.
+* Fixture commands: `G54` to `G59.9`. A xref:reference/glossary.adoc#fixture[Fixture] is a G54 to G59.9 selection, not the workholding.
+* Spindle, coolant and `M6`: `M3`, `M4`, `M5`, `M6`, `M7`, `M8`, `M9`.
+* Program stop, optional stop and program end M commands.
+* Modal commands that have no Klartext equivalent: `G17`, `G20`, `G21`, `G43`, `G80`, `G90`, `G94`, `G97`, `G98`, `G99`. The Post accepts these commands and writes no block for them.
+
+=== Program start and end
+
+`BEGIN PGM <name> <units>` is block 0 of each output file. The header comments follow it. `END PGM <name> <units>` is the last block, after the postamble.
+
+* The units word is `INCH` when the output units of the Machine are imperial, and `MM` in all other conditions. The Post writes no `G20` or `G21` equivalent.
+* The program name is *Program Name*, or the Job label when *Program Name* is empty.
+* The Post replaces each sequence of characters that are not letters or digits with one underscore.
+* The Post removes underscores at the two ends of the name and changes the letters to upper case.
+* When the result is empty, the name is `FREECAD`.
+
+With *Output BLK FORM* checked, two blocks follow `BEGIN PGM`. `BLK FORM 0.1` has the *Tool Axis* letter and the minimum corner of the Stock bounding box. `BLK FORM 0.2` has the maximum corner. The Post writes no `BLK FORM` block when the Job has no Stock shape.
+
+=== Block numbers
+
+Each block has a number. The numbers are the physical line numbers of the file and start at 0 in each output file. A line that ends in a tilde (`~`) continues its block on the next line. A continuation line has no number.
+
+=== Coordinates and feed
+
+* Each coordinate has an explicit sign, for example `X+10.000` or `Z-2.000`. A negative zero gets a plus sign.
+* The words `A`, `B` and `C` are in degrees with the axis precision. The Post does not convert them between millimetres and inches.
+* A rapid block ends with `FMAX`, or with the feed of the `rapid_feed_rate` property.
+* A feed block has the F word of its command. When the command has no F word, the block has the last programmed feed.
+* A command with a block-delete annotation gets the prefix `/`.
+
+=== Linear moves
+
+`G0` and `G1` become an `L` block. The block has the axis words of the command, then the radius compensation word, then the feed word. The Post writes no block when the command has no axis words.
+
+=== Radius compensation
+
+`G40`, `G41` and `G42` write no block. They set the word that each subsequent `L` block and arc block contains.
+
+[cols="1,1",options="header"]
+|===
+|Command |Word
+|`G40` |`R0`
+|`G41` |`RL`
+|`G42` |`RR`
+|===
+
+An `M6` command sets the word to `R0`.
+
+=== Arcs
+
+`G2` writes `DR-` and `G3` writes `DR+`. The form of the arc block depends on the parameters of the command.
+
+[cols="2,3",options="header"]
+|===
+|Command |Blocks
+|An arc with R and no I or J |A `CR` block with the X and Y end point, the signed radius, the direction, the compensation word and the feed.
+|An arc with I or J and no change in Z |A `CC` block with the X and Y centre, then a `C` block with the X and Y end point.
+|An arc with I or J and a change in Z |A `CC` block with the X and Y centre, then a `CP` block with the swept angle (`IPA`) and the incremental Z distance (`IZ`).
+|===
+
+The Post writes the `CC` block only when the centre is different from the centre of the last `CC` block. An arc whose start point and end point are the same has a swept angle of 360 degrees.
+
+The export stops with an error in these conditions:
+
+* The start position of the arc is not known. Program a move before the arc.
+* The radius of an arc with R is zero.
+* The arc has no I, no J and no R.
+
+=== Drill cycles
+
+*Drill Cycle Format* selects the cycle that the Post writes for each command.
+
+[cols="1,2,2",options="header"]
+|===
+|Command |`q_parameter` |`legacy`
+|`G81`, `G82`, `G83` |`CYCL DEF 200 DRILLING` |`CYCL DEF 1.0 PECKING`
+|`G73` |`CYCL DEF 203 UNIVERSAL DRILLING` |`CYCL DEF 1.0 PECKING`
+|`G84`, `G74` |`CYCL DEF 207 RIGID TAPPING NEW` |`CYCL DEF 17.0 RIGID TAPPING`
+|`G85` |`CYCL DEF 202 BORING` |None. The export stops with an error.
+|===
+
+The Post calculates the cycle values from the drill command:
+
+* The set-up clearance is *Drill Cycle Set-Up Clearance*.
+* The surface coordinate is the R value of the command minus the set-up clearance.
+* The depth is the Z value of the command minus the surface coordinate. The depth is negative.
+* The second set-up clearance is the Z position before the cycle minus the R value. It applies when the return mode is not the R level and that Z position is above R. In all other conditions the value is 0.
+* The dwell time at depth is the P value of the command.
+* The plunging depth of `G83` and `G73` is the Q value of the command. For the other commands, and when Q is absent, it is the full depth.
+
+In the `q_parameter` format, the first line of a cycle definition is the cycle title with a continuation mark. Each Q parameter follows on its own line with its value and a `;` comment that names the parameter. The Post writes a cycle definition only when it is different from the last definition in the file. Each hole is one rapid `L` block to the X and Y position that ends with `M99`, which calls the cycle.
+
+`CYCL DEF 203` for `G73` has the number of chip breaks in `Q213`. That number is the depth divided by the plunging depth, increased to the next integer. `Q256` has the value of *Chip Breaking Retract*. `CYCL DEF 202` for `G85` uses the feed of the command as the retraction feed.
+
+In the `legacy` format, the definition is a sequence of numbered blocks:
+
+* `CYCL DEF 1.0 PECKING` to `CYCL DEF 1.5` have the set-up clearance, the depth, the pecking depth, the dwell and the feed.
+* `CYCL DEF 17.0 RIGID TAPPING` to `CYCL DEF 17.3` have the set-up clearance, the depth and the pitch.
+
+A cycle of the `legacy` format starts from the current position. For each hole the Post writes a rapid `L` block to the X and Y position, a rapid `L` block to the retract height, and `CYCL CALL`. The Post writes each `L` block only when the position changes. When the second set-up clearance is more than 0, a rapid `L` block then moves to the initial Z position.
+
+The export stops with an error in these conditions:
+
+* The cycle has no R value or no Z value.
+* The X and Y position is not known.
+* A drill cycle that is not a tapping cycle has no feed.
+* The Z value is not below the R value minus the set-up clearance.
+
+=== Tapping
+
+`G84` and `G74` write the thread pitch into the cycle: `Q239` of `CYCL DEF 207`, or `CYCL DEF 17.3 PITCH`. The pitch of `G74` is negative, for a left-hand thread.
+
+* When the tapping generator of the Drilling Operation made the command, the F word is the pitch.
+* For all other tapping commands, the Post calculates the pitch from the F word and the Spindle Speed.
+
+The export stops with an error when the command has no F word, when the pitch is not more than 0, or when the calculation has no Spindle Speed.
+
+=== Dwell
+
+`G4` becomes two blocks: `CYCL DEF 9.0 DWELL TIME` and `CYCL DEF 9.1 DWELL` with the P value in seconds.
+
+=== Tool change, spindle and coolant
+
+* `M6` becomes `TOOL CALL` with the Tool Bit number, the *Tool Axis* letter and the S word. The S value comes from the `M3` or `M4` that follows the `M6`.
+* The Post writes no `G43` equivalent. `TOOL CALL` applies the length of the Tool Bit from the Tool Bit table of the control.
+* `M3` and `M4` become `M3` and `M4`. When the Spindle Speed is different from the speed of the last `TOOL CALL`, the block `TOOL CALL S<speed>` comes first. This block changes only the Spindle Speed.
+* `M5` becomes `M5`.
+* Coolant commands, program stop commands and program end commands become M words with no zero before the number: `M08` becomes `M8`.
+* A `T` command with only a number becomes `TOOL DEF <number>`. This block selects the next Tool Bit before the `M6` for that Tool Bit.
+* With *Allow tool-change* unchecked, the Post writes no `TOOL CALL` that has a Tool Bit number. The first `M3` or `M4` then sets the Spindle Speed with `TOOL CALL S<speed>`.
+
+=== Fixtures
+
+*Fixture Output* selects the blocks for a Fixture command.
+
+[cols="1,3",options="header"]
+|===
+|Value |Blocks
+|`preset` |`CYCL DEF 247 PRESETTING`, with the preset number in `Q339` on a continuation line.
+|`datum` |`CYCL DEF 7.0 DATUM SHIFT`, then `CYCL DEF 7.1 #<number>`.
+|`none` |No block.
+|===
+
+The number for `G54` is *Fixture Number for G54*. Each subsequent Fixture adds 1, to `G59.9`, which is the fifteenth Fixture.
+
+== Limitations
+
+* The Post writes arcs in the XY plane only. *Tool Axis* changes the axis letter in `TOOL CALL` and `BLK FORM` and does not change the arc plane.
+* The `legacy` cycle format has no cycle for `G85`. Use the `q_parameter` format for a Job that contains `G85`.
+* The Post accepts only the commands under <<_accepted_commands,Accepted commands>>. `G38.2`, `G88` and `G89` are examples of commands that are not in the list.
+* A command that has no Klartext equivalent and is not in the list stops the export with an error.
+* The `rapid_feed_rate`, `drill_setup_clearance` and `chip_break_retract` properties are in millimetres for metric output and for imperial output.
+* The Machine values of *Supported G-code Commands* and *TLO after tool-change*, and the Machine options for the comment symbol, duplicate commands and line numbers, have no effect.
+
+== Related
+
+* image:CAM_Machine.svg[Machine,16] xref:output/machine.adoc[Machine]
+* image:CAM_Post.svg[Post Process,16] xref:output/post-process.adoc[Post Process]
+* xref:output/machine-configuration.adoc[Machine Configuration]
+* xref:output/postprocessor-customization.adoc[Postprocessor Customization]
+* xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
+* xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+* xref:output/posts/fanuc.adoc[Fanuc Post-Processor]
+* xref:reference/glossary.adoc[Glossary]

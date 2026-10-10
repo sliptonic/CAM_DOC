@@ -1,128 +1,255 @@
-= CAM Post
+= Post Process
 :page-origin: https://wiki.freecad.org/CAM_Post
 :page-origin-revision: 1f3dbb3975 2026-07-08
 :page-command: CAM_Post
 :page-icon: CAM_Post.svg
 :page-menu: CAM → Post Process
+:page-toolbar: Project Setup
 :page-workbench: CAM
-:page-shortcut: P P
+:page-shortcut: P, P
 :page-see-also: CAM PostSelected, CAM Machine, CAM Postprocessor Customization
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 30644,31589,31819,32099,32129,32274,32282,32293,32313,32615,32854,32863,32903,33069
+:page-status: draft
+:description: Export the selected Job to G-code files through the Post-Processor of the Job or of its Machine.
 
 [.fcinfobox]
 --
 [.fcTitle]
-image:CAM_Post.svg[CAM Post,32] *CAM Post*
+image:CAM_Post.svg[Post Process,32] *Post Process*
 
-Menu location:: menu:CAM[Post Process]; also in the Tree View context menu of a Job or Operation
+Menu location:: menu:CAM[Post Process]; also in the Tree view context menu of a Job or Operation
 Workbenches:: xref:index.adoc[CAM]
-Default shortcut:: kbd:[P] kbd:[P]
+Default shortcut:: kbd:[P,P]
 Introduced in version:: -
-See also:: xref:output/post-process-selected.adoc[CAM PostSelected], xref:output/machine.adoc[CAM Machine], xref:output/machine-configuration.adoc[Machine Configuration], xref:output/postprocessor-customization.adoc[CAM Postprocessor Customization]
+See also:: xref:output/post-process-selected.adoc[Post Process Selected], xref:output/machine.adoc[Machine], xref:output/machine-configuration.adoc[Machine Configuration], xref:output/postprocessor-customization.adoc[Postprocessor Customization]
 --
 
 == Description
 
-The image:CAM_Post.svg[width=24] xref:output/post-process.adoc[CAM Post] command (tooltip: _Post Processes the selected Job_) exports the selected image:CAM_Job.svg[width=16] xref:job/job.adoc[CAM Job] to a G-code file. The toolbar button is part of the *Post process Operations* drop-down group in the *Project Setup* toolbar, together with image:CAM_PostSelected.svg[width=16] xref:output/post-process-selected.adoc[Post Process Selected].
-
-*Each CNC controller speaks a specific G-code dialect, requiring a dialect-correct Post-Processor to translate the final output from the agnostic internal FreeCAD G-code dialect* (see xref:reference/scripting.adoc#the-freecad-internal-g-code-format[FreeCAD's internal G-code format]).
-
-=== Typical functions of the Post-Processor include
-
-* Using a correct Job output G-code file extension.
-* Selecting the G-code commands. CNC controllers typically support a subset of available G-code commands. The super-set of G-code commands contains powerful and specialized commands that otherwise must be processed using multiple simpler commands. Post-Processors are written to select the best G-code for an Operation, available on the target.
-* Formatting the G-code syntax by reordering the Feed, X, Y, Z, A, and B inputs, and the precision.
-* Inserting a preamble to set units, units format, work plane, coordinate system, etc.
-* Inserting a postamble to park the machine, stop it, process any arguments.
-* Inserting tool changes, or suppressing them between subsequent Operations using the same Tool Controller.
-* Formatting the feed and speed rate information to revolutions per minute, or per second.
-* Formatting function call naming and calling.
-
-Typical CNC machine controller targets include CNC mills, CNC lathes, 3D printers, drag-knife cutters, laser cutters, engravers and plasma torch cutters.
-
-If you want to write your own Post-Processor, have a look at the xref:output/postprocessor-customization.adoc[CAM Postprocessor Customization] page. Several provided Post-Processors generate suitable code for many CNC controllers, or can be used as templates for modification.
-
-=== Two flows: machine-based and legacy
-
-If the Job's *Machine* property is set ([.since]#introduced in 26.3#), the machine definition decides the Post-Processor (its _postprocessor_ entry) and the output options, and the Job's *PostProcessor* property is ignored. Machine-based Post-Processors cannot be selected in the Job's Processor combo; legacy ones cannot be assigned to a Machine. See xref:output/machine.adoc[CAM Machine].
-
-For legacy argument-based Post-Processors, the settings are module-level flags of the script, usually changed through the Job's *Arguments* field (e.g. `--no-header --line-numbers --precision 4`; hover the Arguments field for the list). For machine-based Post-Processors the same settings are *Output options* of the Machine (`.fcm`) edited in the xref:output/machine.adoc[Machine Editor] or overridden per export on the Options tab of the Post Processing dialog.
+The Post Process command exports the selected xref:job/job.adoc[Job] to one or more G-code files. A xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) translates the internal G-code of FreeCAD into the dialect of the control of one machine. xref:reference/scripting.adoc#the-freecad-internal-g-code-format[FreeCAD's internal G-code format] describes the internal G-code. A Job with a xref:reference/glossary.adoc#machine[Machine] uses machine-based post-processing: the Machine supplies the Post and the output options, and the Post-Processing Dialog opens. A Job without a Machine uses legacy post-processing: the Job's *Post Processor* and *Arguments* properties select and configure the Post. The toolbar button is in the *Post process Operations* drop-down group, together with image:CAM_PostSelected.svg[Post Process Selected,16] xref:output/post-process-selected.adoc[Post Process Selected].
 
 == Usage
 
-. Select the image:CAM_Job.svg[width=16] xref:job/job.adoc[CAM Job] (or any of its Operations) in the https://wiki.freecad.org/Tree_View[Tree View].
-. There are several ways to invoke the command:
-* Press the image:CAM_Post.svg[width=16] xref:output/post-process.adoc[Post Process] button in the *Post process Operations* toolbar drop-down.
-* Select the menu:CAM[Post Process] option from the menu.
-* Select *Post Process* from the context menu of the Job.
-* Use the keyboard shortcut: kbd:[P] then kbd:[P].
-. If the Job has no Machine (legacy flow): the G-code is generated with the Job's legacy Post-Processor (or the default from preferences, or a *Post Processor* selection dialog if none is set). Most legacy posts show the G-code in an editor with line numbers ([.since]#line numbers introduced in 26.3#) where you may edit or cancel; the file is then written according to the File save policy (see below).
-. If the Job has a Machine ([.since]#introduced in 26.3#, machine-based flow): the *Post Processing* dialog opens (see below); press btn:[Generate Output], review the files on the Output tab and press btn:[Save to Disk].
+. Select the Job, or one of its Operations, in the https://wiki.freecad.org/Tree_view[Tree view].
+. Start the command.
+** Press the image:CAM_Post.svg[Post Process,16] *Post Process* button in the *Post process Operations* toolbar drop-down.
+** Select menu:CAM[Post Process].
+** Select *Post Process* in the context menu of the Job.
+** Press kbd:[P,P].
+. [.since]#introduced in 26.3#: When the Job has a Machine, the Post-Processing Dialog opens. Set the tabs that <<_options,Options>> describes.
+. Press btn:[Generate Output].
+. Examine the files on the _Output_ tab.
+. Press btn:[Save to Disk]. The dialog writes each file and closes.
 
-If neither the Job nor the preferences define a Post-Processor, a *Post Processor* dialog lists the enabled ones; double-click to choose.
+When the Job has no Machine, the command does not open the Post-Processing Dialog:
 
-== Post Processing dialog
+. The command uses the Post of the Job. When the Job has none, the command uses the default Post of the preferences.
+. When the Job and the preferences give no Post, a _Post Processor_ dialog lists the enabled Posts. Double-click one Post to select it. When you close this dialog without a selection, the command stops and writes no output.
+. Most legacy Posts show the G-code in an editor, where you can edit the text or cancel. [.since]#introduced in 26.3#: The editor shows line numbers.
+. The command writes the file. The *File save policy* preference controls the file dialog, as <<_notes_and_limitations,Notes and limitations>> describes.
 
-[.since]#introduced in 26.3#
+== Options
 
-When the Job has a Machine, post-processing opens the dialog titled _Post Processing - Job: <name>_. Its tabs are:
+[.since]#introduced in 26.3#: The Post-Processing Dialog has the title _Post Processing - Job: <name>_ and five tabs.
 
-* *Overview*:
-** *Machine*: the `.fcm` machine to use; defaults to the Job's Machine, _(none)_ falls back to the legacy Post-Processor.
-** *Fixtures*: check the work coordinate systems to include.
-** *Job Details*: Author and Comment written into the G-code header.
-** *Options*: *Generate HTML sanity report*.
-** *Post Processor Parameters*: runtime properties declared by the machine's Post-Processor, e.g. LinuxCNC path blending.
-* *Operations*: check the Operations to export (inactive Operations are not listed); btn:[Select All], btn:[Select None], btn:[Workplan] (shows the ordered list of postable items with estimated times).
-* *Options*: the machine's output options (units, header, comments, formatting, precision, duplicates, processing) and the non-runtime Post-Processor properties; changes apply to this export only.
-* *Output*: *Output folder* with btn:[Browse…], *Filename template* (%j job name, %d document, %T tool, %W fixture, %O operation; btn:[Apply] renames the generated files), the list of generated files (rename via the context menu) and an editable G-code view. btn:[Save to Disk] writes every file and closes the dialog.
-* *Warnings*: result of the xref:job/sanity-check.adoc[sanity checks] (Severity, Note); the tab label shows the count.
+=== Overview
 
-== Output file name
+* *Machine*: the Machine for this export. The default is the Machine of the Job. The first entry, "(Legacy post-processor)", selects the legacy Post of the Job.
+* _Fixtures_: select each xref:reference/glossary.adoc#fixture[Fixture] to include. A Fixture is a G54 to G59.9 selection, not the workholding.
+* _Job Details_: *Author* and *Comment*, written into the G-code header.
+* _Options_: *Generate HTML sanity report*.
+* _Post Processor Parameters_: the xref:reference/glossary.adoc#post-processor-property[Post-Processor Properties] of the Post that have Run xref:reference/glossary.adoc#property-scope[scope]. Each value applies to one export and is not stored. Every machine-based Post has *Show Pre-processing Dialogs*. The `generic_sheet_cutting` Post adds *Force Rapid Feeds* and *Mark Entry Points Only*.
 
-In the legacy flow the file name comes from the Job's *PostProcessorOutputFile*, otherwise from the preference *Output File → Default path*, otherwise the document name in the document's folder. Whether a file dialog appears depends on the File save policy preference. Placeholders: %D document directory, %d document name, %M macro directory, %j Job label; in the file name, when output is split: %T tool number, %t Tool Controller label, %W fixture, %O operation label, %S sequence number. Without an extension `.nc` is used; machine-based Post-Processors apply their own extension (e.g. `.ngc` for LinuxCNC).
+=== Operations
 
-menu:Edit[Preferences > CAM > Job preferences > Post processor > File save policy] offers: *Open file dialog* (always ask), *Open file dialog on conflict*, *Overwrite existing file*, *Append Unique ID on conflict* (adds -1 to the name). The policy applies to the legacy flow; the Post Processing dialog always writes the files listed on its Output tab.
+The tab lists the active Operations of the Job. Inactive Operations are not in the list. The list has these columns:
 
-== Preferences
+* *+#+*: the position of the Operation in the list, from 1. The checkbox in this column includes the Operation in the export.
+* *Operation*: the label of the Operation.
+* *Tool*: the number that the xref:reference/glossary.adoc#tool-controller[Tool Controller] of the Operation gives to its Tool Bit.
+* *Tool Controller*: the label of the Tool Controller. An Operation without a Tool Controller shows `???`.
+* *Coolant*: the coolant mode of the Operation. The cell is empty when the mode is `None`.
+* *Time*: the cycle time of the Operation.
 
-menu:Edit[Preferences > CAM > Job preferences > Post processor]: enable or disable installed Post-Processors, choose the default Post-Processor and default arguments, the default output path and the file save policy.
+The tab has three buttons:
 
-== Header
+* btn:[Select All] and btn:[Select None] set all checkboxes.
+* btn:[Workplan] shows the ordered list of the items to post, with their estimated times.
 
-Machine-based output starts with a comment header that can include exporter, machine name, Post-Processor, project file, document name, description, author, date, units, tool list and fixture list; each item can be switched off in the Machine's Header Options.
+=== Options
 
-== Included Post-Processors
+The tab shows the output options of the Machine: units, header, comments, formatting, precision, duplicates and processing. A change on this tab applies to this export only.
 
-Included Post-Processors live in `<FreeCAD>/Mod/CAM/Path/Post/scripts`.
+The _Postprocessor Properties_ group shows the Post-Processor Properties of the Post that have Job scope. Each control starts with the value of the Machine, with the overrides of the Job applied. The table gives examples.
 
-* Machine-based ([.since]#introduced in 26.3#, used through a xref:output/machine.adoc[Machine]): centroid, generic, generic_plasma, http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g17-g19.1[linuxcnc], mach3_mach4, marlin, opensbp, smoothie.
-* Class-based, selectable as legacy posts in the Job: grbl (with support for bCNC header blocks using the argument `--bcnc`), masso_g3, svg, test.
-* Legacy argument-based scripts ([.since]#renamed with the `_legacy` suffix in 26.3#): centroid_legacy, dxf, dynapath_legacy, dynapath_4060_legacy, estlcam_legacy, fablin_legacy, fangling_legacy, fanuc_legacy, grbl_legacy, heidenhain_legacy, jtech_legacy (laser), KineticNCBeamicon2_legacy, linuxcnc_legacy, mach3_mach4_legacy, marlin_legacy, nccad_legacy, opensbp_legacy, philips_legacy, rml_legacy, rrf_legacy, snapmaker_legacy, uccnc_legacy, wedm_legacy.
-* Pre-processors for importing G-code: gcode_pre, opensbp_pre, slic3r_pre.
+[cols="1,3",options="header"]
+|===
+|Post |Job-scope properties
+|Every machine-based Post |*Allow tool-change*
+|`linuxcnc` |*Path Blending Mode*, *Blend Tolerance*
+|`generic_sheet_cutting` |*Pierce Delay*, *Cooling Delay*, *Marking Delay*, *Control Method For Cutter*, *Strip Z Parameters*, *Strip F Parameters*
+|`heidenhain` |*Program Name*, *Output BLK FORM*
+|===
 
-snapmaker, masso_g3 and svg were added in [.since]#1.1#; fanuc, dynapath_4060, generic, generic_plasma and the machine-based versions in [.since]#26.3#.
+The dialog does not show properties that have Machine scope. Edit these properties in the Machine Editor, as xref:output/machine.adoc[Machine] describes.
 
-Additional Post-Processors are found in the macro directory, in the CAM file path preference, and in any installed add-on whose `package.xml` declares a Postprocessor content item (e.g. the FreeCAD/Machines add-on).
+=== Output
 
-To post-process only some Operations of a Job, use xref:output/post-process-selected.adoc[CAM PostSelected] ([.since]#introduced in 26.3#).
+* *Output folder*: the folder for the files. The default is the folder that the output file settings of the Job give. btn:[Browse…] selects a folder. When the folder in the field does not exist, the folder dialog starts in the folder of the document.
+* *Filename template*: the file name, with substitutions. The default is the file name part of the Job's *Output File* property. btn:[Apply] gives the new names to the generated files. <<_notes_and_limitations,Notes and limitations>> lists the substitutions.
+* The list of generated files. The context menu of a file changes its name.
+* The G-code view. You can edit the text.
+* btn:[Save to Disk] writes each file and closes the dialog.
 
-== Job properties
+=== Warnings
 
-See xref:job/job.adoc#_properties[CAM Job]: Output File, Post Processor, Arguments, Machine ([.since]#26.3#), Fixtures, Order Output By, Split Output and Post Processor Property Overrides ([.since]#26.3#). After a successful export the hidden *LastPostProcessDate* and *LastPostProcessOutput* properties are updated and used by xref:job/sanity-check.adoc[CAM Sanity].
+The tab shows the result of the xref:reference/glossary.adoc#sanity-check[Sanity Check] in the columns *Severity* and *Note*. The tab label shows the number of findings. xref:job/sanity-check.adoc[Sanity Check] describes the checks.
+
+== Properties
+
+The xref:job/job.adoc#_properties[Job] page describes the Job properties that control the output.
+
+.Job
+* *Output File*: the folder and file name template of the output.
+* [.since]#introduced in 26.3# *Machine*: the name of the Machine. Empty selects legacy post-processing.
+* *Fixtures*: the Fixtures for which the Job writes its program.
+* *Order Output By*: the order of the output.
+* *Split Output*: writes one file for each section of the output.
+* `LastPostProcessDate` and `LastPostProcessOutput`: hidden. A successful export updates them. The Sanity Check reads them.
+
+The Job's *Post Processor* and *Arguments* properties select and configure the legacy Post. A Job with a Machine ignores these two properties.
+
+[.since]#introduced in 26.3#: The *Post Processor Property Overrides* property holds the Job overrides of Job-scope Post-Processor Properties.
+
+On the _Output_ tab of the Job task panel, the *Processor* and *Arguments* rows are hidden while a Machine is selected. A machine-based Post is not available in the *Processor* list of the Job. A legacy Post cannot be assigned to a Machine.
+
+== Notes and limitations
+
+WARNING: Do not use menu:File[Export] to export G-code. That command writes damaged G-code.
+
+=== Functions of a Post-Processor
+
+A Post does these functions for its control:
+
+* Sets the extension of the output file.
+* Selects the G-code commands that the control accepts. A control usually supports a subset of the G-code commands.
+* Sets the order of the words on a line and the precision of the values.
+* Adds a preamble that sets the units, the plane and the coordinate system.
+* Adds a postamble that parks and stops the machine.
+* Adds tool changes, or suppresses them between Operations that use the same Tool Controller.
+* Sets the format of the feed values and the speed values.
+
+Typical targets are mills, lathes, 3D printers, drag-knife machines, laser machines, engravers and plasma machines.
+
+=== Settings of the two flows
+
+A legacy Post takes its settings from the *Arguments* field of the Job, for example `--no-header --line-numbers --precision 4`. The tooltip of the *Arguments* field lists the arguments. A machine-based Post takes the same settings from the output options of the Machine (`.fcm`). Edit them in the Machine Editor, or override them for one export on the _Options_ tab of the Post-Processing Dialog. xref:output/machine-configuration.adoc[Machine Configuration] gives the priority of the value sources.
+
+Machine-based output starts with a comment header. The header can include the name of the program that made the file, the Machine name, the Post, the project file and the document name. The header can also include the description, the author, the date, the units, the Tool Bit list and the Fixture list. The *Header Options* of the Machine switch each item off.
+
+=== Output file name
+
+In legacy post-processing, the file name comes from the Job's *Output File* property. When that property is empty, the name comes from the preference menu:Edit[Preferences > CAM > Job preferences > Post processor], *Default path*. When the two are empty, the file gets the document name and goes into the folder of the document. A name without an extension gets `.nc`. A machine-based Post applies its own extension, for example `.ngc` for `linuxcnc` and `.h` for `heidenhain`.
+
+The folder and the file name accept these substitutions:
+
+[cols="1,3",options="header"]
+|===
+|Substitution |Value
+|`%D` |The folder of the document
+|`%d` |The document name
+|`%M` |The macro folder
+|`%j` |The Job label
+|`%S` |The sequence number
+|`%T` |The tool number. Split output only.
+|`%t` |The Tool Controller label. Split output only.
+|`%W` |The Fixture. Split output only.
+|`%O` |The Operation label. Split output only.
+|===
+
+The substitutions `%T`, `%t`, `%W` and `%O` name one section of a split output. When the template has none of them, the file name of each section gets the suffix `-<section>`. When the template has one of them, the suffix is not added. When the Job does not split its output, these four substitutions are ignored and the https://wiki.freecad.org/Report_view[Report view] shows a warning.
+
+The *File save policy* preference has four values:
+
+* `Open file dialog`: always asks for the file.
+* `Open file dialog on conflict`: asks when the file exists.
+* `Overwrite existing file`.
+* `Append Unique ID on conflict`: adds `-1` to the name.
+
+The policy applies to legacy post-processing. The Post-Processing Dialog always writes the files in the list on its _Output_ tab.
+
+The preference page menu:Edit[Preferences > CAM > Job preferences > Post processor] also enables or disables the installed Posts. The page sets the default Post, the default arguments and the default output folder.
+
+=== Included Post-Processors
+
+The included Posts are in `<FreeCAD>/Mod/CAM/Path/Post/scripts`. The Post name is the file name without `_post.py`. xref:output/posts/genealogy.adoc[Post-Processor Genealogy] lists the Post classes and the script Posts.
+
+* [.since]#introduced in 26.3# Machine-based, used through a Machine: `centroid`, `fanuc`, `generic`, `generic_sheet_cutting`, `heidenhain`, `linuxcnc`, `mach3_mach4`, `marlin`, `opensbp`, `smoothie`.
+* Class-based, available as legacy Posts in the Job: `grbl`, `masso_g3`, `svg`, `test`. The `grbl` Post writes bCNC header blocks with the argument `--bcnc`.
+* Legacy Posts with arguments: `centroid_legacy`, `dxf`, `dynapath_legacy`, `dynapath_4060_legacy`, `estlcam_legacy`, `fablin_legacy`, `fangling_legacy`, `fanuc_legacy`, `grbl_legacy`, `heidenhain_legacy`, `jtech_legacy` (laser), `KineticNCBeamicon2_legacy`, `linuxcnc_legacy`, `mach3_mach4_legacy`, `marlin_legacy`, `nccad_legacy`, `opensbp_legacy`, `philips_legacy`, `rml_legacy`, `rrf_legacy`, `snapmaker_legacy`, `uccnc_legacy`, `wedm_legacy`.
+* Pre-processors that import G-code: `gcode_pre`, `opensbp_pre`, `slic3r_pre`.
+
+More Posts come from the macro folder and from the CAM file path preference. An installed add-on whose `package.xml` declares a Post-Processor content item also supplies Posts, for example the *FreeCAD/Machines* add-on. xref:output/postprocessor-customization.adoc[Postprocessor Customization] describes how to change a Post or write one. The included Posts are also usable as a start for a new Post.
+
+The table gives notes on individual Posts.
+
+[cols="1,3",options="header"]
+|===
+|Post |Notes
+|`generic_sheet_cutting` |For plasma, laser and waterjet machines. *Control Method For Cutter* has the values `Z_Control`, `Spindle_Control` and `G0_Control`. Default: `Z_Control`.
+|`heidenhain` |Writes a Klartext program with block numbers, not G-code.
+|`fanuc` |Writes the `%` tape marks and an `O` program number.
+|`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation.
+|===
+
+=== Drill cycles and tapping
+
+A machine-based Post writes the F word of a tapping cycle (`G84` or `G74`) as the thread pitch multiplied by the Spindle Speed. The export stops with an error when the tapping cycle has no S word, or when the S value is not more than 0. A Post can replace this behaviour:
+
+* `linuxcnc` writes a tapping cycle that is marked rigid as `G33.1` with the pitch in the K word.
+* `heidenhain` writes the pitch into its tapping cycle.
+
+A legacy Post writes `G98` or `G99` before each group of canned cycles and `G80` after the group. The retract mode thus follows the *Keep Tool Down* property of the Drilling Operation. This applies to `linuxcnc_legacy`, `grbl_legacy`, `marlin_legacy`, `estlcam_legacy`, `rrf_legacy`, `fanuc_legacy`, `uccnc_legacy`, `dynapath_legacy`, `dynapath_4060_legacy`, `mach3_mach4_legacy`, `centroid_legacy` and `KineticNCBeamicon2_legacy`. The `heidenhain_legacy` Post does not write the retract mode.
+
+=== Work Planes
+
+[.since]#introduced in 26.3#: An Operation stores its Toolpath in the frame of its xref:reference/glossary.adoc#work-plane[Work Plane]. The Post puts the Toolpath into the coordinates that the Machine runs.
+
+* A Work Plane parallel to the table posts on each Machine and with each Post, legacy Posts included.
+* An Operation on a tilted Work Plane needs a Machine with rotary axes, a *Rotation Strategy*, and a Post that can emit that strategy. If one is absent, the export stops and the message names the Operation and the Machine. xref:output/machine.adoc[Machine] lists the conditions.
+* A Work Plane that the Machine cannot index to stops the export. The message names the Work Plane and the rotary limits of the Machine.
+* A legacy Post stops the export for each Operation on a tilted Work Plane. Select a Machine with a machine-based Post for such an Operation.
+* Only the Operations in the export are examined. An inactive Operation, or an Operation that is not selected, does not stop the export.
+* A Work Plane can name a Fixture. A machine-based Post selects that Fixture before the Operations on the Work Plane and selects the Fixture of the Job again afterwards. A Fixture value that is not a G54 to G59.9 word, or G54.1 Pn, stops the export.
+
+The Sanity Check of a machine-based Post gives a `WARNING` Squawk in these conditions:
+
+* The rotary axes move between Operations and the *Pre-Rotary Move* property of the Machine is empty.
+* A Work Plane names a Fixture that is not a G54 to G59.9 word or G54.1 Pn.
+* A Work Plane names a Fixture that is also in the *Fixtures* list of the Job, and that list has more than one Fixture.
 
 == Scripting
 
 [source,python]
 ----
 from Path.Post.Processor import PostProcessorFactory
+
+# job is an existing CAM Job object
 post = PostProcessorFactory.get_post_processor(job, 'linuxcnc')
 sections = post.export2()   # machine-based; use post.export() for legacy posts
 for name, gcode in sections:
     print(name, len(gcode))
 ----
 
-== Limitations
+== Related
 
-* Do *not* use the menu:File[Export] menu option for export to G-code, it will produce damaged G-code!
+* image:CAM_PostSelected.svg[Post Process Selected,16] xref:output/post-process-selected.adoc[Post Process Selected]
+* image:CAM_Machine.svg[Machine,16] xref:output/machine.adoc[Machine]
+* xref:output/machine-configuration.adoc[Machine Configuration]
+* xref:output/postprocessor-customization.adoc[Postprocessor Customization]
+* xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+* xref:job/job.adoc[Job]
+* xref:job/sanity-check.adoc[Sanity Check]
+* xref:reference/glossary.adoc[Glossary]

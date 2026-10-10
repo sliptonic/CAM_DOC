@@ -1,189 +1,422 @@
-= CAM Postprocessor Customization
+= Postprocessor Customization
 :page-origin: https://wiki.freecad.org/CAM_Postprocessor_Customization
 :page-origin-revision: 8b09057daf 2026-02-04
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31722,32096,32099,32129,32132,32274,32282,32293,32323,32863,32886,32903,33069
+:page-status: draft
+:description: How a Post-Processor is named, written, configured and installed, for legacy script posts and for machine-based posts.
 
-== Introduction
+== Overview
 
-FreeCAD uses as internal representation for the generated Toolpaths so called G-codes. They can describe such things as: speed and feed rates, stopping the motor etc... But the most important thing is the movements they describe. These movements are rather simple: They can be straight lines or they can be circular arcs. More sophisticated curves such as B-splines are already approximated by FreeCAD's image:Workbench_CAM.svg[width=24] xref:index.adoc[CAM Workbench].
+The CAM workbench stores each Toolpath as a sequence of G-code commands. The commands describe straight moves, circular arcs, feed values, speed values and machine functions. A more complex curve, such as a B-spline, is already approximated by lines and arcs in the Toolpath.
+
+A xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) translates these commands into a complete file for the control of one machine. The file is usually G-code in the dialect of the control. A Post can also write a different language, such as HPGL, DXF or Heidenhain Klartext.
+
+This page explains how to change a Post or write a new one. xref:output/post-process.adoc[Post Process] is the command that runs a Post.
 
 == Two kinds of Post-Processor
 
-FreeCAD has *legacy argument-based* Post-Processors (a script exposing `export(objectslist, filename, argstring)` and an argparse parser; selected in the Job's Processor field and configured with command-line style arguments) and, since [.since]#26.3#, *machine-based* Post-Processors (a class deriving from `Path.Post.Processor.PostProcessor` with the module constant `POST_TYPE = "machine"`; selected by a xref:output/machine.adoc[Machine] and configured through the machine's `.fcm` options and a property schema). The sections below are marked accordingly.
+The workbench has two kinds of Post.
 
-== What the Post-Processor can do for you
+* A legacy script Post is a Python module with the function `export(objectslist, filename, argstring)` and an `argparse` parser. The *Processor* field of the Job selects the Post. The *Arguments* field of the Job configures the Post.
+* [.since]#introduced in 26.3# A machine-based Post is a class that inherits from `Path.Post.Processor.PostProcessor`. The module sets the constant `POST_TYPE = "machine"`. A xref:reference/glossary.adoc#machine[Machine] selects the Post. The `.fcm` file of the Machine and the property schema of the Post configure the Post.
 
-Many machines use G-codes as well to control the machining process. They may look almost like the internal codes, but there may be some differences:
+Only a machine-based Post can post an Operation on a tilted xref:reference/glossary.adoc#work-plane[Work Plane]. A legacy Post stops the export for such an Operation. A Work Plane parallel to the table posts with the two kinds of Post.
 
-* the machine can have a special startup sequence
-* it can have a special stop sequence
-* arcs can be defined with a relative or an absolute center
-* it may require line numbers in a certain format
-* it can use so called canned cycles for predefined subprocesses such as drilling
-* you might prefer your G-code output in either metric or imperial units.
-* it might be useful to perform a set of moves prior to calling for a tool change to make the action easier for the operator
-* you might wish to include comments for readability or suppress them to keep the program small
-* you might wish to include a custom header to identify or document the program for future reference.
-* ...
+== Functions of a Post-Processor
 
-Furthermore there are other languages to control a machine, such as HPGL, DXF, or others.
+The output for a control can be different from the internal commands in these areas:
 
-The Post-Processor is a program which translates the internal codes into a complete file, that can be uploaded to your machine.
+* The start sequence of the program.
+* The stop sequence of the program.
+* The arc centre, which is relative or absolute.
+* The line numbers and their format.
+* The canned cycles for standard sequences, such as a drill cycle.
+* The output units, metric or imperial.
+* The moves before a tool change that help the operator.
+* The comments, which make the program easier to read and also make the file larger.
+* The header that identifies the program.
 
-== Preparation for writing your own Post-Processor
+== Preparation
 
-You may start with a very simple model showing how your machine reads straight lines and arcs. Prepare it with any program suitable for your machine.
+Make a small Model that shows how the control reads straight lines and arcs. Prepare a reference program for the same geometry with software that is known to operate correctly with the machine.
 
-A file for such Toolpaths starting at (0,0,0) and going towards Y would be helpful. Make sure it is the tool itself moving along this Toolpath, i.e. no tool radius compensation must be applied.
+A Toolpath that starts at (0, 0, 0) and moves in the Y direction is a good first test. The centre of the Tool Bit must follow the Toolpath, thus do not apply tool radius compensation. One level in the XY plane is sufficient for the first test.
 
-image:Path_PostProcessorSketch.png[]
+In the 3D view, a small blue arrow at the start point shows the start direction of the Toolpath.
 
-[.caption]
-Sketch of the test geometry (screenshot from the Path era of the CAM Workbench)
-
-The Toolpath in FreeCAD would look like this. Please note the small blue arrow, it indicates the starting direction. For a very first go you may provide only one level in the XY-plane.
-
-image:Path_PostProcessorModel.png[]
-
-[.caption]
-The resulting Toolpath (screenshot from the Path era of the CAM Workbench)
-
-You can then have a look at the file and compare it to the output of existing Post-Processors such as `linuxcnc_legacy_post.py` (legacy) or `grbl_post.py` and try yourself to adapt them, or you upload yours to the https://forum.freecad.org/viewforum.php?f=15[Path/CAM forum] to get some help.
+Compare the reference program with the output of an included Post, such as `linuxcnc_legacy_post.py` or `grbl_post.py`. Then adapt the Post that gives the nearest output.
 
 == Naming convention
 
-The file must be named `<name>_post.py`. Please note that the postfix and extension, `_post.py`, have to be lower case. A script post defines `export()` at module level. A class post defines a class whose name is the title-cased file prefix (e.g. `class Mymachine(PostProcessor)` in `mymachine_post.py`; linuxcnc → Linuxcnc, mach3_mach4 → Mach3_Mach4, masso_g3 → Masso_G3) and sets `POST_TYPE = "machine"` to be offered in the Machine Editor; without that constant the post is treated as legacy and offered in the Job's Processor list.
+The file name of a Post is `<name>_post.py`. The suffix `_post.py` must be lower case. The Post name is the file name without `_post.py`.
 
-(Legacy scripts only) set `prog` of the argparse parser to the post name so the argument help shown in the Job's Arguments tooltip is correct, e.g.:
+* A script Post defines `export()` at module level.
+* A class Post defines a class whose name is the title-cased Post name. Examples: `linuxcnc` gives `Linuxcnc`, `mach3_mach4` gives `Mach3_Mach4`, `masso_g3` gives `Masso_G3`.
+* A class with a different name gets a module-level alias with the title-cased name. The `heidenhain` Post contains the line `Heidenhain = HeidenhainPost`. The `generic_sheet_cutting` Post contains the line `Generic_Sheet_Cutting = GenericSheetCutting`.
+* A class Post with `POST_TYPE = "machine"` is available in the Machine Editor. A class Post without that constant is a legacy Post and is available in the *Processor* list of the Job.
 
-[source,text]
+In a script Post, set `prog` of the `argparse` parser to the Post name. The tooltip of the *Arguments* field of the Job then shows the correct help text.
+
+[source,python]
 ----
+import argparse
+
 parser = argparse.ArgumentParser(prog="grbl", add_help=False)
 ----
 
-If you are testing, place it in your macro directory. If it functions well, please consider providing it for others to benefit (post it to the FreeCAD Path/CAM forum) so that it can be included in the FreeCAD distribution going forward.
+== Included Post-Processors
 
-== Other existing Post-Processors
+The included Posts are in the folder `<FreeCAD>/Mod/CAM/Path/Post/scripts`. xref:output/post-process.adoc[Post Process] lists the included Posts by kind. xref:output/posts/genealogy.adoc[Post-Processor Genealogy] lists the class of each class Post.
 
-For comparison you may look at the Post-Processors which come with your FreeCAD installation. They are located under the directory `<path_to_your_FreeCAD_distro>/Mod/CAM/Path/Post/scripts`. Widely used are the http://linuxcnc.org/[linuxcnc] and the https://github.com/grbl/grbl[grbl] Post-Processors (`linuxcnc_legacy_post.py`, `grbl_post.py`, and the machine-based `linuxcnc_post.py`). Studying their code can give helpful insights.
+These Posts are good examples to read:
 
-== Programming a legacy script Post-Processor
+* `linuxcnc_legacy_post.py`: a script Post for http://linuxcnc.org/[LinuxCNC].
+* `grbl_post.py`: a class Post for https://github.com/grbl/grbl[grbl].
+* `generic_post.py`: the smallest machine-based Post. Use this file as the start of a new machine-based Post.
+* `linuxcnc_post.py`: a machine-based Post with two Job-scope properties.
+* `fanuc_post.py`: a machine-based Post that changes many defaults of the common properties and adds its own properties.
+* `generic_sheet_cutting_post.py`: a machine-based Post for plasma, laser and waterjet machines. The Post changes the Toolpath commands before the conversion.
+* `heidenhain_post.py`: a machine-based Post that does not write G-code. The Post replaces each conversion function and writes Klartext blocks.
 
-This section discusses some internals of the legacy linuxcnc Post-Processor (`linuxcnc_legacy_post.py`); it applies to `*_legacy_post.py` and other script posts. The same structure is used in other script Post-Processors as well.
+== Legacy script Post-Processor
 
-Looking at `linuxcnc_legacy_post.py`, you'll see the export function:
+This section applies to the `*_legacy_post.py` files and to other script Posts. The example shows the structure of a script Post.
 
 [source,python]
 ----
+import Path.Post.Utils as PostUtils
+from PathScripts import PathUtils
+
+
 def export(objectslist, filename, argstring):
-    # pylint: disable=global-statement
-    ...
     gcode = ""
-    ...
-    ...
-----
+    for obj in objectslist:
+        gcode += parse(obj)
+    if filename != "-":
+        with open(filename, "w") as gfile:
+            gfile.write(gcode)
+    return gcode
 
-it collects step by step in the variable "gcode" the processed G-codes and handles the overall exporting of post-processable objects (Operations, Tool Controllers, Jobs, etc.). Export handles the high level stuff like comments and coolant but any objects that have multiple CAM commands (tool changes and Operations) it delegates to the parse function.
 
-[source,python]
-----
 def parse(pathobj):
-    ...
     out = ""
-    lastcommand = None
-    ...
-    ...
+    if not hasattr(pathobj, "Path"):
+        return out
+    path = PostUtils.cannedCycleTerminator(PathUtils.getPathWithPlacement(pathobj))
+    for c in path.Commands:
+        words = [c.Name]
+        for name, value in c.Parameters.items():
+            words.append(f"{name}{value:.3f}")
+        out += " ".join(words) + "\n"
+    return out
 ----
 
-Similarly to the "export" function, parse collects the G-codes in the variable "out". In the variable "command" the commands as seen in the CAM workbench's "inspect G-code" function are stored and can be investigated for further processing.
+The `export()` function collects the output text for all objects: Operations, Tool Controllers and Fixture items. The function writes the header, the comments, the preamble and the postamble. The function gives each object that has Toolpath commands to `parse()`.
 
-[source,python]
-----
-        for c in pathobj.Path.Commands:
+The `parse()` function reads each command of one object and makes one line of text for the command. The `Name` of a command is the G or M word. The `Parameters` of a command are its other words. An included script Post records the last command name and thus suppresses a modal command that occurs again. An included script Post also has a `linenumber()` function. That function returns the line number text when line numbers are on, and an empty string when they are off.
 
-            command = c.Name
-----
+These rules apply to a script Post:
 
-It recognizes the different G, M, F, S, and other G-codes. By remembering the last command in the variable "lastcommand" it can suppress subsequent repetitions of modal commands.
+* The `export()` function returns the output text. When `filename` is `-`, the function does not write a file.
+* The export gives the script each Toolpath in world coordinates. `PathUtils.getPathWithPlacement()` does not apply the Work Plane a second time.
+* Call `PostUtils.cannedCycleTerminator()` on the Toolpath before the command scan. A Drilling Operation records the retract mode only as an annotation on each cycle command. `cannedCycleTerminator()` adds a literal `G98` or `G99` before each group of canned cycles and `G80` after the group. A script that does not call the function does not see `G99`.
+* A cycle with no retract annotation gets the last literal `G98` or `G99` of the Toolpath. When the Toolpath has none, the cycle gets `G98`.
 
-Both parse and export are just formatting strings and concatenating them together into what will be the final output.
-
-You'll see that both functions also call the "linenumber()" function. If the user wants line numbers, the linenumber function returns the string to stick in to the appropriate spot, otherwise it returns an empty string so nothing is added.
-
-Class-based posts that still use arguments do not implement `parse()` themselves; they call the shared helpers `Path.Post.UtilsArguments.init_shared_arguments`, `Path.Post.UtilsExport.export_common` and `Path.Post.UtilsParse.parse_a_path` and override `init_values()` and `init_argument_defaults()` to change defaults.
+A class Post that uses arguments does not contain `parse()`. The class calls the shared functions `Path.Post.UtilsArguments.init_shared_arguments`, `Path.Post.UtilsExport.export_common` and `Path.Post.UtilsParse.parse_a_path`. The class replaces `init_values()` and `init_argument_defaults()` to change the defaults.
 
 === Common arguments
 
-Class-based legacy posts accept these arguments in the Job's Arguments field (pairs are shown as --x/--no-x): `--metric`/`--inches`, `--axis-modal`, `--axis-precision N`, `--bcnc`, `--chipbreaking_amount`, `--command_space`, `--comments`, `--comment_symbol`, `--enable_coolant`/`--disable_coolant`, `--enable_machine_specific_commands`, `--end_of_line_characters`, `--feed-precision N`, `--finish_label`, `--header`, `--line_number_increment`, `--line_number_start`, `--line-numbers`, `--list_tools_in_preamble`, `--modal`, `--output_all_arguments`, `--output_machine_name`, `--output_path_labels`, `--output_visible_arguments`, `--postamble`, `--post_operation`, `--preamble`, `--precision N`, `--return-to=x,y,z`, `--show-editor`, `--split-arcs`, `--tlo`, `--tool_change`, `--translate_drill`, `--wait-for-spindle S`.
+A class Post that uses arguments accepts the arguments below in the *Arguments* field of the Job. Many arguments have a `--no-` form, for example `--header` and `--no-header`.
 
-Pure script posts define their own subset (e.g. linuxcnc_legacy: `--no-header`, `--no-comments`, `--line-numbers`, `--no-show-editor`, `--precision`, `--preamble`, `--postamble`, `--inches`, `--modal`, `--axis-modal`, `--no-tlo`, `--rigid-tap`).
+[cols="1,3",options="header"]
+|===
+|Area |Arguments
+|Units and precision |`--metric`, `--inches`, `--precision N`, `--axis-precision N`, `--feed-precision N`
+|Header and comments |`--header`, `--comments`, `--comment_symbol`, `--output_machine_name`, `--output_path_labels`, `--list_tools_in_preamble`, `--bcnc`
+|Format |`--line-numbers`, `--line_number_start`, `--line_number_increment`, `--command_space`, `--end_of_line_characters`, `--modal`, `--axis-modal`
+|Blocks |`--preamble`, `--postamble`, `--post_operation`, `--finish_label`, `--return-to=x,y,z`
+|Machine functions |`--tlo`, `--tool_change`, `--enable_coolant`, `--disable_coolant`, `--enable_machine_specific_commands`, `--wait-for-spindle S`
+|Conversion |`--translate_drill`, `--chipbreaking_amount`, `--split-arcs`
+|Interface |`--show-editor`, `--output_all_arguments`, `--output_visible_arguments`
+|===
 
-== Writing a machine-based Post-Processor
+A script Post defines its own set of arguments. The `linuxcnc_legacy` Post accepts `--no-header`, `--no-comments`, `--line-numbers`, `--no-show-editor`, `--precision`, `--preamble`, `--postamble`, `--inches`, `--modal`, `--axis-modal`, `--no-tlo` and `--rigid-tap`.
 
-[.since]#introduced in 26.3#
+== Machine-based Post-Processor
 
-The full developer reference for this system — the property schema, UI visibility rules, the export2 pipeline and its hooks, MachineState, testing — is on the xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] page; machine files are documented under xref:output/machine-configuration.adoc[Machine Configuration]. Below is the short version.
+[.since]#introduced in 26.3#: A machine-based Post is a class that a Machine selects. xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] is the full developer reference. xref:output/machine-configuration.adoc[Machine Configuration] describes the Machine file. This section is the short version.
 
-Start from `generic_post.py`. Minimal form:
+Start from `generic_post.py`. The example shows the minimum form.
 
 [source,python]
 ----
-from Path.Post.Processor import PostProcessor
+from Path.Post.Processor import PostProcessor, SCOPE_JOB, SCOPE_MACHINE
+
 POST_TYPE = "machine"
+
 
 class Mymachine(PostProcessor):
     @classmethod
     def get_common_property_schema(cls):
         props = super().get_common_property_schema()
-        for p in props:
-            if p["name"] == "file_extension":
-                p["default"] = "ngc"
-            elif p["name"] == "preamble":
-                p["default"] = "G17 G54 G40 G49 G80 G90"
+        for prop in props:
+            if prop["name"] == "file_extension":
+                prop["default"] = "ngc"
+            elif prop["name"] == "preamble":
+                prop["default"] = "G17 G54 G40 G49 G80 G90"
         return props
 
     @classmethod
     def get_property_schema(cls):
-        return [{"name": "blend_mode", "type": "choice", "runtime": True,
-                 "label": "Path Blending Mode", "default": "BLEND",
-                 "choices": ["EXACT_PATH", "EXACT_STOP", "BLEND"], "help": "..."}]
+        return [
+            {
+                "name": "blend_mode",
+                "scope": SCOPE_JOB,
+                "type": "choice",
+                "label": "Path Blending Mode",
+                "default": "BLEND",
+                "choices": ["EXACT_PATH", "EXACT_STOP", "BLEND"],
+                "help": "The blend mode that the control uses between moves.",
+            },
+            {
+                "name": "automatic_tool_changer",
+                "scope": SCOPE_MACHINE,
+                "type": "bool",
+                "label": "Automatic Tool Changer",
+                "default": False,
+                "help": "The machine has an automatic tool changer.",
+            },
+        ]
 
     def __init__(self, job, tooltip="My machine post processor", tooltipargs=[], units="Metric"):
         super().__init__(job=job, tooltip=tooltip, tooltipargs=tooltipargs, units=units)
 
     def init_values(self, values):
         super().init_values(values)
-        values["PARAMETER_ORDER"] = "XYZABCIJFSTQRLHDP"
+        values["MACHINE_NAME"] = "My machine"
+        values["POSTPROCESSOR_FILE_NAME"] = __name__
 ----
 
-The common property schema covers file_extension, supports_tool_radius_compensation, supported_commands, drill_cycles_to_translate, preamble, postamble, safetyblock, pre_job, post_job, pre_fixture_change, post_fixture_change, pre_operation, post_operation, pre_tool_change, post_tool_change, tool_return, pre_rotary_move, post_rotary_move, show_dialog, parameter_order, output_tool_length_offset, tool_change, output_units, axis_precision, feed_precision, spindle_decimals and f_for_rapid_moves.
+=== Property schema
 
-Schema entries have name, type (string, bool, choice, int, float), label, default, help and optionally choices, min, max, decimals and runtime (runtime properties are shown on the Overview tab of the Post Processing dialog, others on its Options tab and in the Machine Editor). Values are stored in the Machine's `.fcm` under `postprocessor.properties` and merged with Job and dialog overrides by `apply_configuration_bundle()`.
+A machine-based Post declares its settings as xref:reference/glossary.adoc#post-processor-property[Post-Processor Properties] in two class methods.
 
-Hooks: override `_expand_prefix()` and other `_expand_*` stages, `_convert_drill_cycle()`, `get_sanity_checks(job)` (return squawks shown on the Warnings tab and by Quick Validate) and `pre_processing_dialog()`. The pipeline entry point is `export2()`: pre-processing dialog, ordering (PostList by Fixture/Tool/Operation), command expansion (canned cycles, arc splitting, rapids, tool length offset, bCNC blocks), conversion, optimisation (modal suppression, line numbers) and output.
+* `get_common_property_schema()` returns the properties that every machine-based Post has. A Post replaces this method to change a default or a help text, as the example shows. xref:output/machine.adoc[Machine] lists the common properties.
+* `get_property_schema()` returns the properties that only this Post has.
+
+Each schema entry is a dictionary with these keys:
+
+[cols="1,3",options="header"]
+|===
+|Key |Content
+|`name` |The name of the property. The Machine file stores the value by this name. The Post reads the value from `self.values` with the name in upper case.
+|`type` |One of `bool`, `int`, `float`, `str`, `text`, `choice` or `file`. The common schema also uses `string`.
+|`label` |The label that the interface shows.
+|`default` |The default value.
+|`scope` |The xref:reference/glossary.adoc#property-scope[Property Scope]: `machine`, `job`, `run` or `internal`.
+|`help` |The help text.
+|`choices` |The permitted values of a `choice` property.
+|`min`, `max` |The limits of an `int` or `float` property.
+|`decimals` |The number of decimal places of a `float` property.
+|===
+
+`Path.Post.Processor` supplies the scope values as the constants `SCOPE_MACHINE`, `SCOPE_JOB`, `SCOPE_RUN` and `SCOPE_INTERNAL`. The scope sets where the property is edited.
+
+[cols="1,3",options="header"]
+|===
+|Scope |Where the property is edited
+|`machine` |The Machine Editor only. Use this scope for a property that describes the machine or its control.
+|`job` |The Machine Editor sets the default. The _Options_ tab of the Post-Processing Dialog overrides the default for one run.
+|`run` |The _Overview_ tab of the Post-Processing Dialog only. The value is not stored.
+|`internal` |No interface shows the property. The Post derives the value.
+|===
+
+These rules apply to the `scope` key:
+
+* An entry with no `scope` key has Job scope.
+* An entry with `"runtime": True` and no `scope` key has Run scope.
+* An entry with an unknown scope value has Job scope. The export writes a warning to the log.
+
+The function `property_scope(prop)` returns the scope of one entry. The function `properties_in_scope(schema, *scopes)` returns the entries that have one of the given scopes.
+
+The Machine file stores the changed values in `postprocessor.properties`. xref:output/machine-configuration.adoc[Machine Configuration] gives the priority of the value sources.
+
+=== Properties of the included Post-Processors
+
+The table lists the properties that the included machine-based Posts add to the common properties.
+
+[cols="1,2,1,3",options="header"]
+|===
+|Post |Property |Scope |Values and default
+|`linuxcnc` |*Path Blending Mode* |Job |`EXACT_PATH`, `EXACT_STOP`, `BLEND`. Default: `BLEND`.
+|`linuxcnc` |*Blend Tolerance* |Job |Default: 0.0.
+|`opensbp` |*Automatic Tool Changer* |Machine |Default: unchecked.
+|`opensbp` |*Automatic Spindle Control* |Machine |Default: unchecked.
+|`generic_sheet_cutting` |*Pierce Delay* |Job |Default: 1000.
+|`generic_sheet_cutting` |*Cooling Delay* |Job |Default: 500.
+|`generic_sheet_cutting` |*Marking Delay* |Job |Default: 100.
+|`generic_sheet_cutting` |*Control Method For Cutter* |Job |`Z_Control`, `Spindle_Control`, `G0_Control`. Default: `Z_Control`.
+|`generic_sheet_cutting` |*Strip Z Parameters* |Job |Default: unchecked.
+|`generic_sheet_cutting` |*Strip F Parameters* |Job |Default: unchecked.
+|`generic_sheet_cutting` |*Force Rapid Feeds* |Run |Default: unchecked.
+|`generic_sheet_cutting` |*Mark Entry Points Only* |Run |Default: unchecked.
+|`heidenhain` |*Program Name* |Job |Default: empty. An empty value uses the Job label.
+|`heidenhain` |*Output BLK FORM* |Job |Default: checked.
+|`heidenhain` |*Tool Axis* |Machine |`X`, `Y`, `Z`. Default: `Z`.
+|`heidenhain` |*Rapid Feed Rate (0 = FMAX)* |Machine |Default: 0.
+|`heidenhain` |*Drill Cycle Format* |Machine |`q_parameter`, `legacy`. Default: `q_parameter`.
+|`heidenhain` |*Drill Cycle Set-Up Clearance* |Machine |Default: 2.0.
+|`heidenhain` |*Chip Breaking Retract* |Machine |Default: 0.5.
+|`heidenhain` |*Fixture Output* |Machine |`preset`, `datum`, `none`. Default: `preset`.
+|`heidenhain` |*Fixture Number for G54* |Machine |Default: 1.
+|`fanuc` |*Program Number* |Job |Default: 0. The value 0 writes no `O` line.
+|`fanuc` |*Tape Marks (%)* |Machine |Default: checked.
+|===
+
+The *Control Method For Cutter* values of the `generic_sheet_cutting` Post have these effects:
+
+* `Z_Control`: the Post writes `M3` on a downward Z move and `M5` on an upward Z move.
+* `G0_Control`: the Post writes `M3` on a change from `G0` to `G1` and `M5` on a change from `G1` to `G0`.
+* `Spindle_Control`: the Post writes each `M3` and `M5` command of the Toolpath without a change.
+
+The `opensbp` Post sets the default of the common property *Ignore G-code Commands* to its own list of tolerated commands. The `opensbp` Post always expands the drill cycles into moves.
+
+=== Export sequence
+
+The entry point of a machine-based Post is `export2()`. The method does these stages in sequence:
+
+. Shows the dialog of `pre_processing_dialog()`.
+. Builds the ordered list of items to post: Fixture items, Tool Controller items and Operations.
+. Calls `_expand_postprocessor_commands()`. A Post replaces this method to change the commands of the items.
+. Puts each Toolpath into the coordinates that the Machine runs and adds the rotary moves and the plane commands (`_expand_workplane_frames()`).
+. Expands the commands with the `_expand_*` methods. The expansions cover the blocks, the canned cycle end, the drill cycle expansion, the arc split, the rapid move translation, the tool change and the bCNC blocks.
+. Removes modal duplicates (`_optimize_duplicates_doubles()`).
+. Adds line numbers (`_add_line_numbers()`).
+. Converts each command to text with the `_convert_*` methods and applies the line end characters.
+
+All stages before the conversion operate on `Path.Command` objects. No stage changes the text after the conversion.
+
+A Post replaces these methods to change the output:
+
+* `_merge_machine_config()`: sets values that the control makes necessary, after the Machine values are applied. Call the method of the parent class first.
+* `_expand_prefix()`, `_expand_trailing_lines()` and the other `_expand_*` methods: change one expansion stage.
+* `_expand_tool_length_offset_post_command(item, command)`: returns the commands that apply the length offset of the Tool Bit after an `M6` command. The default returns `G43 H<tool>`.
+* `_convert_rapid_move()`, `_convert_linear_move()`, `_convert_arc_move()`, `_convert_drill_cycle()`, `_convert_dwell()`, `_convert_tool_change()`, `_convert_spindle_command()`, `_convert_coolant_command()`, `_convert_program_control()`, `_convert_fixture()`, `_convert_modal_command()` and `_convert_generic_command()`: convert one command to text. A method that returns `None` writes no line.
+* `_convert_job_sections()`: changes the complete text of each section.
+* `get_sanity_checks(job)`: returns the Squawks of the Post for the xref:reference/glossary.adoc#sanity-check[Sanity Check]. The _Warnings_ tab of the Post-Processing Dialog and Quick Validate show them.
+
+The `heidenhain` Post replaces every conversion method, because no Klartext block has the form of a G-code command. The same Post replaces `_add_line_numbers()` and gives each block a number in `_convert_job_sections()`.
+
+=== Tool change
+
+The Post writes the output of a tool change in this sequence:
+
+. The *Pre-Tool Change* block.
+. The tool change comment.
+. The `M6` command.
+. The *Post-Tool Change* block.
+. The `G43` command, when *TLO after tool-change* is checked.
+. The spindle start command.
+. The *Tool Return after tool changes* block.
+
+When *Allow tool-change* is unchecked, the Post does not write `M6` and does not write the *Post-Tool Change* block. The Post writes the *Tool Return after tool changes* block in the two conditions. When *TLO after tool-change* is unchecked, the Post replaces each `G43` command of the Toolpath with a comment.
+
+=== Drill cycles
+
+The *Translate Drill Cycles* option of the Machine expands drill cycles into `G0` and `G1` moves. The common property *Drill Cycles to Translate* lists the cycles that the Post expands. The default list is `G73`, `G81`, `G82`, `G83` and `G85`. The common properties contain no other switch for the expansion.
+
+The Post ends each group of canned cycles before the expansion. The expansion thus knows the retract mode of each cycle. A `G85` cycle becomes a `G1` move to the depth, a `G1` move to the retract height and a `G0` move to the clearance height.
+
+A Post for a control that runs every cycle sets the default of *Drill Cycles to Translate* to an empty list. The `fanuc` Post and the `heidenhain` Post do this.
+
+=== Commands and rapid moves
+
+* *Supported G-code Commands* lists the commands that the Post accepts.
+* *Ignore G-code Commands* lists commands that the Post accepts and removes from the output. A command in this list is not necessary in *Supported G-code Commands*.
+* `translate_no_engagement_feed` changes a marked `G0` move into a `G1` move. An Operation that has a no-engagement feed marks these moves with that feed. Default: unchecked.
+
+=== Modal output and line numbers
+
+When *Duplicate Commands* of the Machine is unchecked, the Post removes a command word that is the same as the command word before it. When *Duplicate Parameters* is unchecked, the Post removes an axis parameter whose value did not change. A tool change and an item of plain text reset this state. A comment does not change this state.
+
+When *Line Numbers* of the Machine is checked, the Post gives each command an `N` parameter. These rules apply:
+
+* The count starts again at *Line Number Start* in each section of the output.
+* A comment gets no number.
+* A line of a text block, such as the preamble, is counted but gets no number.
+* A command that already has an `N` parameter keeps its value.
+* The number is not the physical line number of the file.
+
+The `filter_inefficient_moves` option of the Machine has no effect on the output of a machine-based Post.
+
+=== Work Planes and rotary axes
+
+Two class attributes tell the export what a Post can write for an Operation on a tilted Work Plane.
+
+* `ROTATION_STRATEGIES`: the strategies that the Post can emit. Default: `("dwo", "twp")`. The Machine selects one strategy. The export stops when the Post cannot emit that strategy.
+* `PLANE_COMMAND`: the plane command family for the `twp` strategy, a member of `Path.Post.TiltedWorkPlane.PlaneCommand`. Default: `PlaneCommand.G68_2`.
+
+[cols="1,3,1,1",options="header"]
+|===
+|`PlaneCommand` |Declare line |Align line |Cancel line
+|`G68_2` |`+G68.2 X{x} Y{y} Z{z} I{a1} J{a2} K{a3}+` |`G53.1` |`G69`
+|`G268` |`+G268 X{x} Y{y} Z{z} I{a1} J{a2} K{a3}+` |`G53.1` |`G269`
+|`PLANE_SPATIAL` |`+PLANE SPATIAL SPA{a1} SPB{a2} SPC{a3} TURN FMAX+` |None |`PLANE RESET STAY`
+|===
+
+`G68_2` and `G268` take intrinsic Z-X-Z Euler angles. `PLANE_SPATIAL` takes spatial angles about the fixed machine axes X, Y and Z. The common properties *Tilted work plane: declare*, *Tilted work plane: align* and *Tilted work plane: cancel* replace one line for a control with a different form. xref:output/machine.adoc[Machine] describes these properties and the *Rotation Strategy* of the Machine.
+
+When the rotary axes move, the Post writes the *Pre-Rotary Move* block before the move and the *Post-Rotary Move* block after the move. The Post writes rotary axis angles with the axis precision and does not convert them between millimetres and inches.
 
 === Machine output options
 
-For machine-based posts the legacy module flags are replaced by the Machine's output options: units, output_tool_length_offset, output_header and header items (date, description, document name, machine name, project file, units, tool list, fixture list), comments (enabled, symbol, operation labels, blank lines, bCNC comments), formatting (line numbers, start, prefix, increment, command space, end-of-line characters), precision (axis, feed, spindle), duplicates (commands, parameters) and processing (early tool prep, filter inefficient moves, split arcs, tool change, translate drill cycles, translate rapid moves, XY before Z after tool change, return-to). They are edited in the xref:output/machine.adoc[Machine Editor].
+A machine-based Post gets its output format from the output options of the Machine, not from arguments. The options are in these groups:
 
-== Adding a custom Post-Processor
+* Units, tool length offset output and header output.
+* Header items: date, description, document name, Machine name, project file, units, Tool Bit list, Fixture list. A Fixture is a G54 to G59.9 selection, not the workholding.
+* Comments: enabled, symbol, Operation labels, empty lines, bCNC comments.
+* Format: line numbers, start, prefix, increment, command space, line end characters.
+* Precision: axis, feed, spindle.
+* Duplicates: commands, parameters.
+* Processing: early tool prep, split arcs, tool change, translate drill cycles, translate rapid moves, XY before Z after tool change, return-to position.
 
-Place the file in the macro directory (menu:Edit[Preferences > Python > Macro > Macro path], e.g. `/home/user/snap/freecad/common`), in the CAM file path (menu:Edit[Preferences > CAM > Job preferences]), or distribute it as an add-on whose `package.xml` lists a Postprocessor item. Make sure the post is enabled in menu:Edit[Preferences > CAM > Job preferences > Post processor > Post processors selection].
+Edit the options on the _Options_ tab of the Machine Editor. xref:output/machine-configuration.adoc[Machine Configuration] describes each option.
 
-=== Notes
+== Add a custom Post-Processor
 
-* Ensure the file has the necessary read permissions.
-* Re-open the Job task panel (or restart FreeCAD if the file was already loaded) to see it.
+Put the Post file in one of these locations:
 
-== Testing
+* The macro folder, set in menu:Edit[Preferences > Python > Macro > Macro path].
+* The CAM file path, set in menu:Edit[Preferences > CAM > Job preferences].
+* An add-on whose `package.xml` declares a Post-Processor content item.
 
-Unit tests for posts live in `Mod/CAM/Tests/` (TestPostCore, TestLinuxCNCPost, etc.) and run with `FreeCADCmd -t TestCAMApp`; `test_post.py` is a minimal post used by the tests.
+Then do these steps:
+
+. Make sure that the file has read permission.
+. For a legacy Post, enable the Post in menu:Edit[Preferences > CAM > Job preferences > Post processor > Post processors selection].
+. Open the Job task panel again. If the file was already loaded, start FreeCAD again.
+
+Use the macro folder while you test a new Post.
+
+== Tests
+
+The unit tests for the Posts are in `Mod/CAM/Tests/`, for example `TestPostCore` and `TestLinuxCNCPost`. Run the tests with this command:
+
+[source,shell]
+----
+FreeCADCmd -t TestCAMApp
+----
+
+`test_post.py` is a minimum Post that the tests use.
 
 == Related
 
 * xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
 * xref:output/machine-configuration.adoc[Machine Configuration]
-* image:CAM_Post.svg[width=24] xref:output/post-process.adoc[CAM Post]
-* image:CAM_Machine.svg[width=24] xref:output/machine.adoc[CAM Machine]
-* image:CAM_PostSelected.svg[width=24] xref:output/post-process-selected.adoc[CAM PostSelected]
+* xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+* image:CAM_Post.svg[Post Process,16] xref:output/post-process.adoc[Post Process]
+* image:CAM_Machine.svg[Machine,16] xref:output/machine.adoc[Machine]
+* image:CAM_PostSelected.svg[Post Process Selected,16] xref:output/post-process-selected.adoc[Post Process Selected]
+* xref:reference/glossary.adoc[Glossary]

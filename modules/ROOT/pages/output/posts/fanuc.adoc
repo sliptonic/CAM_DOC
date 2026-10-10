@@ -1,0 +1,227 @@
+= Fanuc Post-Processor
+:page-since: 26.3
+:page-source-pr: 33069
+:page-status: draft
+:description: Reference for the fanuc Post-Processor: its properties, its defaults and the G-code that it writes for Fanuc mill controls.
+
+== Description
+
+[.since]#introduced in 26.3#: The `fanuc` xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) writes G-code for Fanuc 0i, 16i, 18i, 21i and 30i mill controls. The Post also applies to controls that read Fanuc-compatible G-code. The `fanuc` Post is machine-based: a xref:reference/glossary.adoc#machine[Machine] selects the Post and holds its settings. The class is `FanucPost` in `Path/Post/scripts/fanuc_post.py`. xref:output/posts/genealogy.adoc[Post-Processor Genealogy] shows its parent class.
+
+The `fanuc` Post adds these functions to the output that every machine-based Post writes:
+
+* The `%` tape marks and an `O` program number.
+* Rigid tapping with `M29`.
+* Native canned cycles, with the full parameter set on each block.
+* Dwell times in milliseconds.
+* An optional parametric tool length offset that reads the `#4120` system variable.
+* An optional block that parks the spindle with no Tool Bit before the postamble.
+* Upper-case output.
+* Tilted xref:reference/glossary.adoc#work-plane[Work Planes] with `G68.2`, `G53.1` and `G69`, or with the DWO Rotation Strategy.
+
+xref:output/machine.adoc[Machine] describes the properties that are common to every machine-based Post. This page gives only the properties and the defaults that are different for the `fanuc` Post.
+
+== Properties
+
+Each xref:reference/glossary.adoc#post-processor-property[Post-Processor Property] has one xref:reference/glossary.adoc#property-scope[Property Scope]. A Machine-scope property is edited on the _Postprocessor_ tab of the Machine Editor only. A Job-scope property gets its default on that tab. The _Options_ tab of the Post-Processing Dialog overrides a Job-scope property for one export. xref:output/machine-configuration.adoc[Machine Configuration] gives the priority of the value sources.
+
+=== Properties of the fanuc Post
+
+[cols="2,1,1,2,5",options="header"]
+|===
+|Property |Scope |Type |Default |Effect
+
+|*Program Number*
+|Job
+|`int`
+|`0`
+|The number of the `O` line, which follows the first `%` line. The Post writes a minimum of four digits. The value `0` writes no `O` line. Minimum `0`, maximum `99999999`.
+
+|*Tape Marks (%)*
+|Machine
+|`bool`
+|Checked
+|Writes `%` as the first line and as the last line of the output.
+
+|*Upper-Case Output*
+|Machine
+|`bool`
+|Checked
+|Writes the full program in upper case, comments included.
+
+|*Dwell in Milliseconds*
+|Machine
+|`bool`
+|Checked
+|Writes the P word of `G4`, and of the canned cycles that dwell, as an integer number of milliseconds. Unchecked, the Post writes the P word in seconds with decimals.
+
+|*Rigid Tapping (M29)*
+|Machine
+|`bool`
+|Checked
+|Writes `M29 S<rpm>` immediately before each `G84` or `G74` block. Unchecked, the Post writes the tapping cycle for a floating tap holder, without `M29`.
+
+|*Parametric Tool Length Offset*
+|Machine
+|`bool`
+|Unchecked
+|Replaces `G43 H<n>` after a tool change with the two lines `+G91 G0 G43 G54 Z-[#[2000+#4120]] H#4120+` and `G90`.
+
+|*Park Empty Spindle at End*
+|Job
+|`bool`
+|Unchecked
+|Writes `M05`, the *Empty-Spindle Retract* lines and `M6 T0` before the postamble.
+
+|*Empty-Spindle Retract*
+|Machine
+|`text`
+|`G28 G91 Z0`, `G90`, one on each line
+|The retract lines between `M05` and `M6 T0`. The Post uses this property only when *Park Empty Spindle at End* is checked.
+|===
+
+=== Defaults of the common properties
+
+The `fanuc` Post changes the defaults of these common properties. Each other common property has the default that xref:output/machine.adoc[Machine] gives.
+
+[cols="2,5",options="header"]
+|===
+|Property |Default of the `fanuc` Post
+
+|*File Extension*
+|`nc`
+
+|*Preamble*
+|`G17 G54 G40 G49 G80 G90 G94`
+
+|*Postamble*
+|`M05`, `G17 G54 G90 G80 G40`, `M30`, one on each line
+
+|*Safety Block*
+|Empty. The preamble sets the safe condition.
+
+|*Pre-Tool Change*
+|`M05`, `G28 G91 Z0`, `G90`, one on each line
+
+|*Drill Cycles to Translate*
+|Empty. The Post writes each drill cycle as a native canned cycle.
+
+|*Tool Radius Compensation (G41/G42)*
+|Checked
+
+|*Supported G-code Commands*
+|The common list, with `G17`, `G54.1` and the program end commands added
+
+|*Spindle-speed precision in output*
+|`0`. The S word is an integer.
+
+|*Generated Parameter Order for GCode*
+|`XYZABCUVWFSIJTQRPDHL`. This value is the common order without the K word.
+|===
+
+The `fanuc` Post also changes the help text of *Pre-Rotary Move*, *Post-Rotary Move* and *Tilted work plane: align*. <<_work_planes,Work Planes>> describes the values for a Fanuc control.
+
+== Machine output options
+
+The output options on the _Options_ tab of the Machine Editor apply to the `fanuc` Post, with these exceptions:
+
+* The comment symbol is always `(`. The Post ignores the comment symbol of the Machine.
+* *Duplicate Commands* and *Duplicate Parameters* do not apply to a canned cycle block. Each canned cycle block has the cycle word and its full parameter set.
+
+== Output
+
+=== Program start and end
+
+Each section of the output starts with the `%` line when *Tape Marks (%)* is checked. The `O` line follows when *Program Number* is more than 0. These two lines come before the header.
+
+When comments are enabled, the `O` line also has the Job label as a comment. The Post removes each parenthesis from the label. With *Program Number* set to `12` and a Job with the label "Bracket", the output starts with these lines:
+
+[source,gcode]
+----
+%
+O0012 (BRACKET)
+----
+
+When *Park Empty Spindle at End* is checked, the Post writes the park block before the postamble. With the default *Empty-Spindle Retract*, the park block is:
+
+[source,gcode]
+----
+M05
+G28 G91 Z0
+G90
+M6 T0
+----
+
+The last `%` line follows the postamble.
+
+=== Canned cycles
+
+The `fanuc` Post writes each drill cycle and each tapping cycle as a native canned cycle. Each block of a sequence of holes has the cycle word and all its parameters. A control that is set to non-modal cycles thus gets a complete block for each hole.
+
+=== Rigid tapping
+
+When *Rigid Tapping (M29)* is checked, the Post writes `M29 S<rpm>` as a separate block before each `G84` or `G74` block. The S value is the S word of the tapping cycle. When the cycle has no S word, the S value is the last spindle speed that an `M3` or `M4` command gave. The `G84` or `G74` block does not have an S word. The Post writes `G80` after a sequence of tapping blocks.
+
+The F word of a tapping cycle is the thread pitch multiplied by the spindle speed. This applies when *Rigid Tapping (M29)* is checked and when it is unchecked.
+
+The export stops with an error when *Rigid Tapping (M29)* is checked and no spindle speed is available for a tapping cycle. The message names the Operation and the cycle command.
+
+The xref:reference/glossary.adoc#sanity-check[Sanity Check] of the `fanuc` Post gives a `WARNING` Squawk for the same condition. The Squawk applies to an active Operation that taps with no S word, when its xref:reference/glossary.adoc#tool-controller[Tool Controller] also has a *Spindle Speed* of 0. The Sanity Check does not do this check when *Rigid Tapping (M29)* is unchecked.
+
+=== Dwell
+
+When *Dwell in Milliseconds* is checked, a dwell of 1.5 seconds is `G4 P1500`. A dwell of 0.5 seconds in a `G82` cycle is `P500`.
+
+=== Tool length offset
+
+After a tool change, the `fanuc` Post writes `G43 H<n>`, where `<n>` is the number of the Tool Bit. When *Parametric Tool Length Offset* is checked, the Post writes these two lines as an alternative:
+
+[source,gcode]
+----
+G91 G0 G43 G54 Z-[#[2000+#4120]] H#4120
+G90
+----
+
+The system variable `#4120` is the active T code. The control gets the length of Tool Bit number n from the variable `+#[2000+n]+`.
+
+=== Arcs
+
+The default word order of the `fanuc` Post has no K word. A helical arc gives its pitch through the Z word.
+
+=== Work Planes
+
+The `fanuc` Post can emit the `dwo` and `twp` values of the Machine's *Rotation Strategy*. xref:output/machine.adoc[Machine] lists the conditions for an Operation on a tilted Work Plane.
+
+* With `twp`, the Post declares each tilted Work Plane with `G68.2`, aligns the Tool Axis with `G53.1` and cancels the plane with `G69`.
+* With `dwo`, the Post commands the rotary axes and writes the Toolpath rotated into the frame that the Machine reaches.
+
+These common properties have values that are specific to a Fanuc control:
+
+* *Pre-Rotary Move*: the moves that bring the Tool Bit clear of the Model, in machine coordinates. `G53 G0 Z0` lifts the Tool Bit to machine Z zero. `G91 G28 Z0`, then `G90`, references the Z axis.
+* *Post-Rotary Move*: with `dwo`, the line that selects the dynamic fixture offset of the control, for example `G54.2 P1`. With `twp`, this block is usually empty.
+* *Tilted work plane: align*: empty gives `G53.1`. A 30i-class control that has the option accepts `G53.6`, which keeps the tip of the Tool Bit in position while the rotary axes move.
+
+A Work Plane can name a xref:reference/glossary.adoc#fixture[Fixture]. A Fixture is a G54 to G59.9 selection, not the workholding. The `fanuc` Post also accepts `G54.1` and writes its P word as an integer offset number.
+
+== Limitations
+
+WARNING: Examine the output before you run it on a machine. The `fanuc` Post was not tested on a Fanuc control.
+
+* The `fanuc` Post is for mill controls.
+* The `fanuc` Post cannot emit the `post_transform` value of *Rotation Strategy*.
+* Rigid tapping needs a spindle speed. The export stops when a tapping cycle has no spindle speed.
+* *Dwell in Milliseconds* agrees with the Fanuc parameter DWL = 0. Uncheck the property for a control that reads the P word in seconds.
+* *Park Empty Spindle at End* writes `M6 T0`. Some controls do not accept `T0`.
+* *Parametric Tool Length Offset* is for an offset table that keeps the negated length of Tool Bit number n in `+#[2000+n]+`.
+* A Fanuc comment always has parentheses. A different comment symbol in the Machine has no effect.
+
+== Related
+
+* image:CAM_Machine.svg[Machine,16] xref:output/machine.adoc[Machine]
+* image:CAM_Post.svg[Post Process,16] xref:output/post-process.adoc[Post Process]
+* xref:output/machine-configuration.adoc[Machine Configuration]
+* xref:output/postprocessor-customization.adoc[Postprocessor Customization]
+* xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
+* xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+* xref:job/sanity-check.adoc[Sanity Check]
+* xref:reference/glossary.adoc[Glossary]

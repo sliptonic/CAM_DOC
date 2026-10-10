@@ -1,0 +1,85 @@
+= Post-Processor Genealogy
+:page-status: generated
+:page-source: src/Mod/CAM/Path/Post (604afdd074b 2026-10-10)
+:description: Which machine-based Post-Processor class inherits from which, generated from the FreeCAD source tree.
+
+Generated from `src/Mod/CAM/Path/Post` in the FreeCAD source tree. To change this page, change the source.
+
+A machine-based xref:reference/glossary.adoc#post-processor[Post-Processor] is a Python class that inherits from `PostProcessor` in `Path/Post/Processor.py`, directly or through a different Post-Processor. A class gets the behaviour of its parent and replaces the parts that its control needs. xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] describes how to write one.
+
+== Inheritance
+
+[.mermaid]
+....
+flowchart LR
+  PostProcessor
+  PostProcessor --> Centroid
+  PostProcessor --> FanucPost
+  PostProcessor --> Generic
+  PostProcessor --> GenericSheetCutting
+  PostProcessor --> Grbl
+  PostProcessor --> HeidenhainPost
+  PostProcessor --> Linuxcnc
+  PostProcessor --> Mach3_Mach4
+  PostProcessor --> Marlin
+  PostProcessor --> Masso_G3
+  PostProcessor --> OpenSBPPost
+  PostProcessor --> Smoothie
+  PostProcessor --> Snapmaker
+  PostProcessor --> Svg
+  PostProcessor --> Test
+  PostProcessor --> WrapperPost
+....
+
+== Classes
+
+[cols="2,2,2,3",options="header"]
+|===
+| Class | Inherits from | Post-Processor name | Source file
+
+| `Centroid` | `PostProcessor` | `centroid` | `src/Mod/CAM/Path/Post/scripts/centroid_post.py`
+| `FanucPost` | `PostProcessor` | `fanuc` | `src/Mod/CAM/Path/Post/scripts/fanuc_post.py`
+| `Generic` | `PostProcessor` | `generic` | `src/Mod/CAM/Path/Post/scripts/generic_post.py`
+| `GenericSheetCutting` | `PostProcessor` | `generic_sheet_cutting` | `src/Mod/CAM/Path/Post/scripts/generic_sheet_cutting_post.py`
+| `Grbl` | `PostProcessor` | `grbl` | `src/Mod/CAM/Path/Post/scripts/grbl_post.py`
+| `HeidenhainPost` | `PostProcessor` | `heidenhain` | `src/Mod/CAM/Path/Post/scripts/heidenhain_post.py`
+| `Linuxcnc` | `PostProcessor` | `linuxcnc` | `src/Mod/CAM/Path/Post/scripts/linuxcnc_post.py`
+| `Mach3_Mach4` | `PostProcessor` | `mach3_mach4` | `src/Mod/CAM/Path/Post/scripts/mach3_mach4_post.py`
+| `Marlin` | `PostProcessor` | `marlin` | `src/Mod/CAM/Path/Post/scripts/marlin_post.py`
+| `Masso_G3` | `PostProcessor` | `masso_g3` | `src/Mod/CAM/Path/Post/scripts/masso_g3_post.py`
+| `OpenSBPPost` | `PostProcessor` | `opensbp` | `src/Mod/CAM/Path/Post/scripts/opensbp_post.py`
+| `Smoothie` | `PostProcessor` | `smoothie` | `src/Mod/CAM/Path/Post/scripts/smoothie_post.py`
+| `Snapmaker` | `PostProcessor` | `snapmaker_legacy` | `src/Mod/CAM/Path/Post/scripts/snapmaker_legacy_post.py`
+| `Svg` | `PostProcessor` | `svg` | `src/Mod/CAM/Path/Post/scripts/svg_post.py`
+| `Test` | `PostProcessor` | `test` | `src/Mod/CAM/Path/Post/scripts/test_post.py`
+| `WrapperPost` | `PostProcessor` | _none_ | `src/Mod/CAM/Path/Post/Processor.py`
+|===
+
+The Post-Processor name is the file name without `_post.py`. It is the name in the *Post-Processor* list of a Machine.
+
+== Script posts
+
+These 22 files are script posts. They have no class in this tree. `WrapperPost` loads a script post and runs it, thus a script post inherits nothing from a different post.
+
+* `centroid_legacy_post.py`
+* `dxf_post.py`
+* `dynapath_4060_legacy_post.py`
+* `dynapath_legacy_post.py`
+* `estlcam_legacy_post.py`
+* `fablin_legacy_post.py`
+* `fangling_legacy_post.py`
+* `fanuc_legacy_post.py`
+* `grbl_legacy_post.py`
+* `heidenhain_legacy_post.py`
+* `jtech_legacy_post.py`
+* `KineticNCBeamicon2_legacy_post.py`
+* `linuxcnc_legacy_post.py`
+* `mach3_mach4_legacy_post.py`
+* `marlin_legacy_post.py`
+* `nccad_legacy_post.py`
+* `opensbp_legacy_post.py`
+* `philips_legacy_post.py`
+* `rml_legacy_post.py`
+* `rrf_legacy_post.py`
+* `uccnc_legacy_post.py`
+* `wedm_legacy_post.py`

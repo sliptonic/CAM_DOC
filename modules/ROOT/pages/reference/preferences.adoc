@@ -3,6 +3,8 @@
 :page-origin-revision: c0f7759332 2026-08-07
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32081
+:page-status: draft
 
 == Overview
 
@@ -44,6 +46,7 @@ There are five pages: <<gui,GUI>>, <<assets,Assets>> ([.since]#introduced in 1.1
 [.since]#introduced in 26.3#
 
 * List of Machine templates (`.fcm` files in the `Machines` folder plus templates provided by add-ons). btn:[Add] creates a new machine in the Machine Editor, btn:[Edit] (or double-click) opens the selected machine in the Machine Editor, btn:[Delete] removes the file after confirmation. See xref:output/machine.adoc[CAM Machine].
+* btn:[Import...] is between btn:[Add] and btn:[Edit]. btn:[Import...] creates a Machine from the probe document of an MTConnect agent. The import dialog reads the probe document from the URL of the agent or from an XML file. The Machine Editor then opens with the imported Machine. The list shows the imported Machine after the Machine Editor is accepted.
 * The page shows the note _Warning: Machine definition is an experimental feature._
 * *Check for tool updates from the library when opening a document* [.since]#introduced in 26.3#: when enabled (default), opening a document compares the Tool Bits embedded in its Jobs with the library and offers to update them (see xref:tools/toolbit.adoc[CAM ToolBit]).
 

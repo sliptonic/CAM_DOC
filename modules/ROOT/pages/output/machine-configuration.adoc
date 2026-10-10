@@ -1,119 +1,211 @@
 = Machine Configuration
 :page-since: 26.3
 :page-audit: applied
+:page-source-pr: 31819,32081,32132,32250,32274,32323,32367,32485,32854,32903
+:page-status: draft
+:description: How a Machine definition is edited, stored as a .fcm file, validated, and applied to a Job at export.
 
-[.since]#Introduced in 26.3.# A *Machine* describes a real CNC machine to FreeCAD: its axes and their limits, its kinematic layout, its toolheads, which xref:output/post-process.adoc[Post-Processor] it needs, and how its G-code should be formatted. The definition lives in one JSON file with the `.fcm` extension. Assign a Machine to a xref:job/job.adoc[Job] and post-processing runs through the machine-based pipeline; everything the old system scattered across script flags and argument strings sits in this one file.
+== Overview
 
-This page covers configuring machines: the editor, the file format, and how machine settings interact with the Job. To write a new Post-Processor for the machine-based system, see xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]. For the command-page summary, see xref:output/machine.adoc[CAM Machine].
+[.since]#introduced in 26.3#: A xref:reference/glossary.adoc#machine[Machine] describes a physical CNC machine to the CAM workbench. The description holds the axes and their limits, the kinematics, the xref:reference/glossary.adoc#toolhead[Toolheads], the xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) and the format of the G-code output. One JSON file with the `.fcm` extension stores the description. A xref:job/job.adoc[Job] that has a Machine uses machine-based post-processing.
+
+This page explains the Machine Editor, the `.fcm` file format, the validation of a Machine, and the Machine settings in the Job. xref:output/machine.adoc[Machine] is the command page and lists the common Post-Processor Properties. xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] explains how to write a Post for this system.
 
 == How the pieces fit
 
-A Job stores only the machine's display name in its *Machine* property. At post time FreeCAD looks the name up (case-insensitively) among the available `.fcm` files, loads the file, and reads `postprocessor.file_name` from it to pick the Post-Processor. The machine's output options, processing options, and post properties then configure that Post-Processor. A Job with no Machine still uses the legacy flow — its *PostProcessor* and *PostProcessorArgs* properties — so both systems coexist.
+A Job stores only the display name of its Machine, in the *Machine* property. At export, the workbench finds the `.fcm` file whose `machine.name` field matches that name. The comparison ignores case. The `postprocessor.file_name` key of the file selects the Post. The `output` options, the `processing` options and the xref:reference/glossary.adoc#post-processor-property[Post-Processor Properties] of the Machine then configure that Post.
 
-Configuration reaches the Post-Processor in a fixed priority order. Later stages win:
+A Job with no Machine uses its `PostProcessor` and `PostProcessorArgs` properties. The two systems exist together.
 
-. Values stored in the machine's `.fcm` file (`postprocessor.properties`).
-. Schema defaults, for any property the file doesn't mention.
-. Job-level overrides from the Job's *PostProcessorPropertyOverrides* property.
-. Per-export overrides entered in the xref:output/post-process.adoc[Post Processing] dialog.
+A Machine starts in the Machine Editor as a new Machine, as a copy of a xref:reference/glossary.adoc#machine-template[Machine Template], or as an import from an MTConnect agent. The Machine Editor accepts an imported Machine that is not yet saved to a file.
+
+Each Post-Processor Property has one xref:reference/glossary.adoc#property-scope[Property Scope]. The scope sets where the property is edited.
+
+[cols="1,3,2",options="header"]
+|===
+|Scope |Where the property is edited |Where the value is stored
+|Machine |The Machine Editor only. The Post-Processing Dialog does not show the property. |The `.fcm` file
+|Job |The Machine Editor sets the default. The _Options_ tab of the Post-Processing Dialog overrides the default for one run. |The `.fcm` file; overrides in the Job's `PostProcessorPropertyOverrides`
+|Run |The _Overview_ tab of the Post-Processing Dialog only. |Not stored
+|Internal |No interface shows the property. |Not stored; the Post derives the value
+|===
+
+A property that declares no scope has Job scope.
+
+The Post gets each value from these sources. A source later in the list has priority over the sources before it.
+
+. The default in the property schema of the Post.
+. The value in the `.fcm` file (`postprocessor.properties`).
+. The override in the Job's `PostProcessorPropertyOverrides` property.
+. The value entered in the xref:output/post-process.adoc[Post-Processing Dialog] for one export.
 
 == Where machine files live
 
-User machines::
-`.fcm` files in the `Machines` folder of the CAM asset directory (by default `<user application data>/CamAssets/Machines/`). These are the machines offered in the Job task panel and the Post Processing dialog. The file is named after the machine with spaces replaced by underscores (`My Router` → `My_Router.fcm`), but the display name always comes from the `machine.name` field inside the file.
+=== Saved Machines
 
-Add-on machines::
-Any installed add-on whose `package.xml` declares a `machine` content item contributes the `.fcm` files of the declared subdirectory as read-only templates, grouped under the add-on's name (the *FreeCAD/Machines* add-on in the Addon Manager is the community collection). Subdirectories nest to any depth in the template picker. Selecting a template copies its settings into your own machine, so an add-on update never silently changes your configuration. An add-on can be hidden with an `ADDON_DISABLED` file in its folder; `ALL_ADDONS_DISABLED` in the `Mod` folder hides them all.
+Saved Machines are `.fcm` files in the `Machines` folder of the CAM asset directory. The default location is `<user application data>/CamAssets/Machines/`. The Job task panel and the Post-Processing Dialog offer these Machines.
 
-Built-in templates::
-The editor's *Type* presets (below) generate standard 2- to 5-axis configurations without any file. A `Machine/machines` folder inside the CAM module is also scanned for shipped `.fcm` templates.
+The file name is the Machine name with each space replaced by an underscore: `My Router` becomes `My_Router.fcm`. The display name always comes from the `machine.name` field in the file.
+
+=== Add-on Machine Templates
+
+An installed add-on whose `package.xml` declares a `machine` content item supplies the `.fcm` files of the declared folder as read-only Machine Templates. The Template list groups them by the add-on name. Folders nest to any depth in the list. The *FreeCAD/Machines* add-on in the Addon Manager is the community collection.
+
+The selection of a Machine Template copies its settings into your own Machine. An update of the add-on does not change your Machine.
+
+A file named `ADDON_DISABLED` in the add-on folder hides that add-on. A file named `ALL_ADDONS_DISABLED` in the `Mod` folder hides all add-ons.
+
+=== Built-in Machine Templates
+
+The *Type* values of the Machine Editor make standard 2-axis to 5-axis configurations without a file. The Machine Editor also reads `.fcm` Machine Templates from the `Machine/machines` folder of the CAM module.
 
 == The Machine Editor
 
-Open the editor from btn:[New Machine] on the General tab of the xref:job/job.adoc[Job] task panel, or from menu:Edit[Preferences > CAM > Assets > Machines] with btn:[Add] and btn:[Edit]. It has three tabs. The *Postprocessor* and *Options* tabs are hidden if the boolean parameter `Mod/CAM/EnableMachinePostprocessor` is set to false (it defaults to true).
+Open the Machine Editor from one of these locations:
+
+* btn:[New Machine] on the _Output_ tab of the xref:job/job.adoc[Job] task panel.
+* menu:Edit[Preferences > CAM > Assets], in the *Machines* group, with btn:[Add] or btn:[Edit].
+* btn:[Import…] in the same *Machines* group, after an MTConnect import. xref:output/machine.adoc[Machine] gives the import procedure.
+
+The Machine Editor has four tabs: _Machine_, _Toolheads_, _Postprocessor_ and _Options_. The _Postprocessor_ and _Options_ tabs are hidden when the boolean parameter `Mod/CAM/EnableMachinePostprocessor` is false. The default of the parameter is true.
+
+Below the tabs are the buttons btn:[Edit as Text], btn:[Validate], btn:[Save] and btn:[Close]. btn:[Save] writes the `.fcm` file. btn:[Close] discards the changes.
 
 === Machine tab
 
-*Name*, *Manufacturer*, and *Description* identify the machine; the name doubles as the key a Job uses to find it. *Units* (Metric or Imperial) sets the unit system for the values you enter here — it's independent of the G-code output units on the Options tab. *Template* loads settings from an add-on machine. *Type* rebuilds the axis set from a preset:
+*Name*, *Manufacturer* and *Description* identify the Machine. The Job uses the name to find the Machine. *Units* sets Metric or Imperial for the values on this tab. *Units* is independent of the G-code output units on the _Options_ tab.
+
+*Template* loads the settings of a machine type, of a saved Machine, or of a built-in or add-on Machine Template.
+
+*Type* builds the axis set again from one of these values:
 
 [cols="1,2",options="header"]
 |===
 |Type |Axes
-|Custom Machine |none — define axes yourself
-|2-Axis Lathe (X, Z) |X, Z linear
-|3-Axis Mill (XYZ) |X, Y, Z linear
-|4-Axis Mill (XYZ + A) |X, Y, Z linear; A rotary about X
-|4-Axis Mill (XYZ + B) |X, Y, Z linear; B rotary about Y
-|5-Axis Mill (XYZ + A, C) |X, Y, Z linear; C azimuth carrying an A tilt (table/table)
-|5-Axis Mill (XYZ + B, C) |X, Y, Z linear; B tilt carrying a C azimuth (head/head)
+|`Custom Machine` |None. Define each axis manually.
+|`2-Axis Lathe (X, Z)` |X, Z linear
+|`3-Axis Mill (XYZ)` |X, Y, Z linear
+|`4-Axis Mill (XYZ + A)` |X, Y, Z linear; A rotary about X
+|`4-Axis Mill (XYZ + B)` |X, Y, Z linear; B rotary about Y
+|`5-Axis Mill (XYZ + A, C)` |X, Y, Z linear; C rotary that carries an A tilt (table and table)
+|`5-Axis Mill (XYZ + B, C)` |X, Y, Z linear; B tilt that carries a C rotary (head and head)
 |===
 
-*Kinematics* holds two capability flags — *TCP Supported* (the controller does tool-center-point control, e.g. G43.4) and *DWO Supported* (dynamic work offsets, e.g. G54.2) — plus free-form notes.
+The _Kinematics_ group has three controls:
 
-Every axis has:
+* *TCP Supported*: the control does tool-center-point control, for example G43.4. Default: unchecked.
+* *Rotation Strategy*: how the control runs an Operation on a tilted xref:reference/glossary.adoc#work-plane[Work Plane]. Values `Not declared`, `Dynamic work offset (DWO)`, `Tilted work plane (TWP)`, `Post transform (not available yet)`. Default: `Not declared`.
+* *Kinematics Notes*: free text.
+
+With DWO, the Post commands the rotary axes and the control applies its pivot offsets. With TWP, the Post declares the plane and the control positions the rotary axes. The command that declares the plane comes from the Post, not from the Machine. A Machine with rotary axes and no strategy cannot post an Operation on a tilted Work Plane. xref:output/machine.adoc[Machine] lists the conditions that the export checks.
+
+An MTConnect import writes one line with the source of the import into *Description*. The import writes the same line into *Kinematics Notes*, then the text "Import assumptions:" and one line for each assumption. Examine these assumptions before you save the Machine.
+
+Each axis has these fields:
 
 [cols="1,3",options="header"]
 |===
 |Field |Meaning
-|Role |Where the axis sits in the kinematic chain: `table_linear`, `head_linear`, `table_rotary`, or `head_rotary`. Table axes move the workpiece, head axes move the tool.
-|Parent |The axis this one is mounted on, for stacked axes (an A tilt riding on a C rotary has parent C).
-|Sequence |Order of the axis within its chain.
-|Joint origin |The point the axis acts through, in machine coordinates.
-|Direction / Rotation axis |Unit vector of travel (linear) or of the rotation axis (rotary), selectable as ±X, ±Y, ±Z.
-|Min limit / Max limit |Travel limits (mm/inch, or degrees for rotary). Sanity checks compare toolpaths against them.
-|Max velocity |Peak axis speed.
+|Role |The position of the axis in the kinematic chain: `table_linear`, `head_linear`, `table_rotary` or `head_rotary`. A table axis moves the Model. A head axis moves the Toolhead.
+|Parent |The axis that carries this axis. An A tilt on a C rotary has the parent C.
+|Sequence |The order of the axis in its chain.
+|Joint Origin |The point through which the axis acts, in machine coordinates.
+|Direction, Rotation Axis |The unit vector of travel for a linear axis, or of the rotation axis for a rotary axis. Values ±X, ±Y, ±Z.
+|Min Limit, Max Limit |The travel limits, in mm or inch for a linear axis and in degrees for a rotary axis. The Sanity Check compares each Toolpath with the limits.
+|Max Velocity |The maximum speed of the axis.
 |===
 
-Rotary axes add three fields that control how angles come out in G-code:
+A rotary axis has three more fields. These fields control the angles in the G-code.
 
-* *Solution preference* — when two rotary solutions reach the same orientation, prefer `shortest`, `positive`, or `negative` motion.
-* *Allow flip* — permit the 180°-flipped solution when it keeps motion inside the limits.
-* *Wrap strategy* — what to emit as an axis accumulates whole revolutions:
-** `unwound` — monotonic angles, growing without bound (4613.86°). For controllers that treat the rotary like a linear axis.
-** `modulo` — angles kept in [0°, 360°). For indexers, and any controller where direction across the wrap doesn't matter.
-** `rezero` — angles in [0°, 360°) with a `G92 A0` injected at each full revolution and a closing `G92.1` to clear the offset. For shortest-path wrapping controllers (LinuxCNC wrapped rotary) when continuous direction matters.
+* *Solution Preference*: when two rotary solutions give the same orientation, the preferred motion. Values `shortest`, `positive`, `negative`. Default: `shortest`.
+* *Allow Flip*: permits the solution that is turned 180° when that solution keeps the motion in the limits. Default: checked.
+* *Wrap Strategy*: the angle output when an axis turns through full revolutions. Default: `unwound`.
+** `unwound`: the angle increases without a limit, for example 4613.86°. Use this value for a control that moves the rotary axis as a linear axis.
+** `modulo`: the angle stays in the range 0° to 360°. Use this value for an indexer, or when the direction across the wrap is not important.
+** `rezero`: the angle stays in the range 0° to 360°. The Post adds `G92 A0` at each full revolution and `G92.1` at the end. Use this value for a control that wraps on the shortest route, when a continuous direction is necessary.
 
-*Toolheads* is a tabbed list — a machine can carry several. Each has a type (`rotary`, `laser`, `waterjet`, `plasma`), which sets its capability profile, plus min/max RPM, maximum power (kW), tool change mode (`manual` or automatic), flood and mist coolant availability, a coolant delay, and a wait time after start. Type-specific extras: laser wavelength and focus range, waterjet pressure, plasma amperage.
+=== Toolheads tab
+
+The _Toolheads_ tab is the second tab of the Machine Editor. A Machine can have more than one Toolhead.
+
+* btn:[Add Toolhead] adds a Toolhead. Each Toolhead has its own tab. The close button of the tab removes the Toolhead.
+* Toolhead type: `Rotary`, `Laser`, `Waterjet`, `Plasma` or `Wire EDM`. The type sets the capabilities of the Toolhead.
+* Common fields: minimum and maximum rpm, maximum power in kW, tool change mode (`manual` or automatic), coolant flood and mist, coolant delay, and the wait time after start.
+* Fields for one type: laser wavelength and focus range, waterjet pressure, plasma amperage.
+
+A `Wire EDM` Toolhead moves along Z and the table supplies X and Y. This Toolhead has power control and pulse control, uses water, and has no speed control.
+
+The Sanity Check compares each commanded Spindle Speed with the rpm range of a rotary Toolhead. xref:output/machine.adoc[Machine] gives the conditions.
 
 === Postprocessor tab
 
-Pick the Post-Processor here. The combo lists only machine-based posts — the ones declaring `POST_TYPE = "machine"` — never legacy script posts. Below the combo the editor renders one widget per entry of the selected post's property schema: file extension, preamble, postamble, safety block, the pre/post G-code blocks, supported commands, precision settings, and any post-specific properties (LinuxCNC adds its blend mode, the plasma post its pierce and cooling delays). Widgets and defaults come straight from the post's schema, so a new post needs no editor changes to be fully configurable. Properties marked `runtime` in the schema don't appear here — they're per-run choices offered in the Post Processing dialog instead (see xref:output/mbpp-postprocessor.adoc#property-visibility[property visibility]).
+Select the Post in the list at the top of the tab. The list holds the Posts on the post search path that the machine-based system can run, for example `generic`, `grbl`, `linuxcnc` and `fanuc`. xref:output/posts/genealogy.adoc[Post-Processor Genealogy] lists the Post classes.
 
-Only values you actually change are written to the `.fcm` file. Everything else stays at the schema default, so posts can improve their defaults later without stale copies in every machine file.
+Below the list, the tab shows one control for each Post-Processor Property of the selected Post that has Machine scope or Job scope. The controls and the defaults come from the property schema of the Post. A new Post needs no change to the Machine Editor.
+
+* A Machine-scope property is edited on this tab only. Examples are *File Extension*, *Preamble*, *Postamble*, *Safety Block*, the G-code blocks, *Supported G-code Commands* and the precision properties.
+* A Job-scope property gets its default on this tab. Examples are *Allow tool-change* and the blend mode and blend tolerance of the `linuxcnc` Post. The _Options_ tab of the Post-Processing Dialog overrides the default for one run.
+* A Run-scope property, such as *Show Pre-processing Dialogs*, does not appear in the Machine Editor.
+
+The common properties include these entries:
+
+* *Ignore G-code Commands*: one command on each line. The Post accepts a command in this list and removes it from the output. The command is not necessary in *Supported G-code Commands*. Default: empty.
+* *Drill Cycles to Translate*: Default: `G73`, `G81`, `G82`, `G83`, `G85`, one on each line.
+* *Generated Parameter Order for GCode*: Default: `XYZABCUVWFSIJKTQRPDHL`.
+* *Post-Tool Change*: G-code written immediately after the tool change (M6), before the G43 line and before the spindle start.
+* *Tool Return after tool changes*: G-code written immediately after the spindle start that follows a tool change.
+* *Pre-Rotary Move* and *Post-Rotary Move*: G-code written before and after the rotary axes move.
+* *Tilted work plane: control positions the rotaries*, *Tilted work plane: declare*, *Tilted work plane: align* and *Tilted work plane: cancel*: the lines that the Post writes for the TWP strategy.
+
+xref:output/machine.adoc[Machine] describes every common property. xref:output/postprocessor-customization.adoc[Postprocessor Customization] describes the properties of each Post.
+
+The `.fcm` file stores only the values that you change. All other properties use the schema default. A Post can thus change a default and each Machine file gets the new default.
 
 === Options tab
 
-These are the output-formatting and processing options — the machine-based replacement for the legacy posts' argument strings. The groups are generated from the machine model itself, so the editor and the Post Processing dialog always show the same set:
+The _Options_ tab holds the output format options and the `processing` options of the Machine. The groups come from the Machine model. The Machine Editor and the Post-Processing Dialog thus show the same set.
+
+The table gives each option by its section in the `.fcm` file.
 
 [cols="1,2,4",options="header"]
 |===
-|Group |Field |Effect
-.4+|Main
-|Units |G-code output units, metric (G21) or imperial (G20). Independent of the configuration units on the Machine tab.
-|Output Header |Master switch for the generated header block.
-|Output Tool Length Offset (G43) |Emit `G43 H<tool>` after each `M6`.
-|Enable Remote Posting |Send output to a network endpoint after generation.
-|Header |include_date, include_description, include_document_name, include_machine_name, include_project_file, include_units, include_tool_list, include_fixture_list |Which lines the header contains.
-|Comments |enabled, symbol, include_operation_labels, include_blank_lines, output_bcnc_comments |Comment output on/off, the comment character (default `(`), operation-label comments, blank-line preservation, and bCNC block markers.
-|Formatting |line_numbers, line_number_start, line_number_prefix, line_increment, command_space, end_of_line_chars |Line numbering (`N100`, +10 per line by default), the separator between command and parameters (set it to an empty string for packed output like `G0X10`), and line endings.
-|Precision |axis, feed, spindle |Decimal places for coordinates, feed rates, and spindle speed.
-|Duplicates |commands, parameters |Unchecked = modal suppression. `commands` off drops repeated G/M words (`G1 X1` then `X2`); `parameters` off drops parameters whose value didn't change.
-.8+|Processing
-|Early tool prep |Emit the next tool number before the current operation ends, so a tool changer can stage it. Changes postable ordering.
-|Filter inefficient moves |Collapse chains of redundant G0 rapids.
-|Split Arcs |Replace G2/G3 with line segments for controllers without arc support.
-|Tool change |Unchecked suppresses `M6` output entirely.
-|Translate Drill Cycles |Expand canned drill cycles (G73, G81–G83, G85) into explicit G0/G1 moves.
-|Translate Rapid Moves |Output rapids as G1 at a rapid feed rate.
-|XY Before Z After Tool Change |Decompose the first move after a tool change: travel in XY first, plunge Z second.
-|Return to |An optional x,y,z position to end the program at.
+|Section |Field |Effect
+.4+|`output`
+|*Units* |The G-code output units: metric (G21) or imperial (G20). Independent of *Units* on the _Machine_ tab.
+|*Output Header* |Enables the header block.
+|*Output Tool Length Offset (G43)* |Writes `G43 H<tool>` after each `M6`.
+|*Enable Remote Posting* |Sends the output to a network endpoint after the export.
+|`output.header` |`include_date`, `include_description`, `include_document_name`, `include_machine_name`, `include_project_file`, `include_units`, `include_tool_list`, `include_fixture_list` |The lines that the header contains. Default: all `true`.
+|`output.comments` |`enabled`, `symbol`, `include_operation_labels`, `include_blank_lines`, `output_bcnc_comments` |Comment output, the comment character (default `(`), Operation label comments, empty lines, and bCNC block markers.
+|`output.formatting` |`line_numbers`, `line_number_start`, `line_number_prefix`, `line_increment`, `command_space`, `end_of_line_chars` |Line numbers (`N100` and an increment of 10 by default), the separator between the command and its parameters, and the line end. An empty `command_space` gives packed output such as `G0X10`.
+|`output.precision` |`axis`, `feed`, `spindle` |The number of decimal places for coordinates, feed values and the spindle speed. Defaults: 3, 3, 0.
+|`output.duplicates` |`commands`, `parameters` |Unchecked gives modal suppression. `commands` unchecked removes a repeated G or M word. `parameters` unchecked removes a parameter whose value did not change.
+.8+|`processing`
+|*Early tool prep* |Writes the next tool number before the current Operation ends, for a tool changer. This option changes the order of the output items.
+|*Filter inefficient moves* |Combines a sequence of redundant G0 moves.
+|*Split Arcs* |Replaces G2 and G3 with line segments, for a control without arc support.
+|*Tool change* |Unchecked suppresses all `M6` output.
+|*Translate Drill Cycles* |Expands the drill cycles into G0 and G1 moves.
+|*Translate Rapid Moves* |Writes each rapid move as G1 at a rapid feed.
+|*XY Before Z After Tool Change* |Divides the first move after a tool change: the XY travel first, then the Z move.
+|*Return to* |An optional x, y, z position at which the program ends.
 |===
 
-btn:[Edit as Text] switches the whole dialog to a JSON editor of the file. btn:[Save] writes the `.fcm`; btn:[Close] discards.
+=== Text view and validation
+
+btn:[Edit as Text] changes the Machine Editor to a JSON text view of the full file. The same button changes the editor back.
+
+btn:[Validate] examines the Machine for problems that stop the load or that silently drop settings. A _Validation_ dialog shows the result:
+
+* "No problems found." when the Machine has no errors and no warnings.
+* The number of warnings, or the number of errors and warnings. The details of the dialog list each finding with its severity.
+* "Invalid JSON" or "This machine does not load", with the cause, when the text view does not hold a correct Machine.
+
+In the text view, the validation also compares the JSON text with the Machine that the loader makes from it. This comparison finds keys that the loader does not read. In the tab view, the comparison does not run, because no file text exists for the comparison.
 
 == The .fcm file format
 
-A `.fcm` file is plain JSON. A complete, working 3-axis example:
+A `.fcm` file is plain JSON. This example is a complete 3-axis Machine:
 
 [source,json]
 ----
@@ -123,7 +215,7 @@ A `.fcm` file is plain JSON. A complete, working 3-axis example:
     "machine": {
         "name": "Shop Router",
         "manufacturer": "",
-        "description": "3-axis router, LinuxCNC controller",
+        "description": "3-axis router, LinuxCNC control",
         "units": "metric",
         "kinematics": {
             "base_frame": {
@@ -132,6 +224,7 @@ A `.fcm` file is plain JSON. A complete, working 3-axis example:
             },
             "tcp_supported": false,
             "dwo_supported": false,
+            "rotation_strategy": "none",
             "notes": ""
         },
         "axes": {
@@ -231,58 +324,105 @@ A `.fcm` file is plain JSON. A complete, working 3-axis example:
 }
 ----
 
-Key points about the format:
+These rules apply to the format:
 
-* `postprocessor.file_name` is the module stem: `linuxcnc` loads `linuxcnc_post.py` and instantiates its `Linuxcnc` class.
-* `postprocessor.properties` is *sparse*. Only user-changed values belong here; every property the post's schema defines gets its schema default at load time. Post-specific properties (like the LinuxCNC `blend_mode`) go in the same dict.
-* Each `joint` is `[origin, axis_vector]`. The object form `{"origin": [...], "axis": [...]}` is also accepted, as is the older axis type name `angular` for `rotary`. Rotary axes may also carry `solution_preference`, `allow_flip`, and `wrap_strategy`.
-* Toolheads accept type-specific keys: `laser_wavelength`, `laser_focus_range`, `waterjet_pressure`, `plasma_amperage`.
+* `postprocessor.file_name` is the module name without `_post.py`. The value `linuxcnc` loads `linuxcnc_post.py` and its `Linuxcnc` class.
+* `postprocessor.properties` holds only the changed values. Each other property of the schema gets its schema default at load. The properties of one Post, such as `blend_mode` of `linuxcnc`, go in the same object.
+* `kinematics.rotation_strategy` is one of `none`, `dwo`, `twp` or `post_transform`. Default: `none`. When the key is absent, `"dwo_supported": true` selects `dwo`. A saved file contains the two keys.
+* Each `joint` is `[origin, axis_vector]`. The object form `{"origin": [...], "axis": [...]}` is also accepted. The axis type `angular` is accepted for `rotary`.
+* A rotary axis can also have `solution_preference`, `allow_flip` and `wrap_strategy`. The `wrap_strategy` values are `unwound`, `modulo` and `rezero`.
+* `toolhead_type` is one of `rotary`, `laser`, `waterjet`, `plasma` or `wire_edm`. A different value stops the load of the Machine.
+* A Toolhead accepts the keys `laser_wavelength`, `laser_focus_range`, `waterjet_pressure` and `plasma_amperage`.
 * `processing.return_to` is an optional `[x, y, z]` array.
-* Older flat layouts (a boolean `header`, top-level `line_numbers`, `axis_precision`, `output_comments`) still load; saving rewrites them in the nested structure shown above.
+* A file with the flat layout (a boolean `header`, top-level `line_numbers`, `axis_precision`, `output_comments`) loads. btn:[Save] writes the nested structure of the example.
 
-Hand-editing the JSON is fine — the editor's btn:[Edit as Text] view exists for exactly that — but keep it valid; a machine that fails to parse simply won't load.
+You can edit the JSON manually in the text view or in a text editor. A file that is not correct JSON does not load.
+
+== Validation from the command line
+
+The checks of btn:[Validate] also run from the command line, on one file or on a folder of `.fcm` files:
+
+[source,shell]
+----
+FreeCADCmd path/to/Mod/CAM/Machine/models/validate.py --pass MACHINES_DIR
+----
+
+`--pass` is required, because FreeCAD opens each argument after the script as a document when `--pass` is absent.
+
+A finding has one of three severities:
+
+* `ERROR`: the definition does not load, or loads into a Machine that is not usable. The file causes are incorrect JSON, an unknown Toolhead type and a broken kinematic chain. The content causes are an empty Machine name, a Machine with no axes and a Post that cannot be found. An axis whose minimum limit is not less than its maximum limit is an error. A Machine name that a second file also uses is an error.
+* `WARNING`: the file holds keys that the loader does not read, the Machine names Post-Processor Properties that the Post does not declare, or the Machine has no Toolheads.
+* `INFO`: the model has fields that the file does not contain.
+
+These options are available:
+
+* `--strict`: a warning gives exit code 1.
+* `--json`: the output is JSON.
+* `--verbose`: the output includes `INFO` findings and the files with no findings.
+* `--no-postprocessor-check`: the validation does not look for the Post.
+
+The exit code is 0 when no error was found, 1 when an error was found, and 2 when no `.fcm` file was found.
 
 == Machine settings in the Job
 
-Set the machine on the General tab of the Job task panel, or write the *Machine* property directly. With a machine assigned:
+Select the Machine in the *Machine* list on the _Output_ tab of the Job task panel, or write the *Machine* property directly. The first entry of the list, "(Legacy post-processor)", leaves the Job without a Machine and empties the *Machine* property.
 
-* The Job's *PostProcessor* and *PostProcessorArgs* properties are ignored. The machine decides the post and its configuration.
-* The xref:output/post-process.adoc[Post Process] command opens the multi-tab Post Processing dialog and runs the machine-based pipeline (`export2()`).
-* Machine limits, toolhead RPM range, and any post-specific checks feed the sanity system — the dialog's Warnings tab and xref:job/quick-validate.adoc[Quick Validate].
+With a Machine selected:
+
+* The _Output_ tab hides the rows for the Post-Processor and its arguments. The Machine holds the Post and its settings.
+* The Job's `PostProcessor` and `PostProcessorArgs` properties are ignored.
+* The xref:output/post-process.adoc[Post Process] command opens the Post-Processing Dialog and runs the machine-based sequence (`export2()`).
+* The axis limits, the rpm range of the Toolhead and the checks of the Post supply Squawks to the xref:reference/glossary.adoc#sanity-check[Sanity Check]. The _Warnings_ tab of the dialog and xref:job/quick-validate.adoc[Quick Validate] show them.
+* The Sanity Check gives a `WARNING` Squawk when the rotary axes move between Operations and *Pre-Rotary Move* is empty.
 
 === Job-level overrides
 
-The Job property *PostProcessorPropertyOverrides* holds a JSON dictionary of post properties that this Job overrides, so one machine file can serve several Jobs with small variations:
+The Job property `PostProcessorPropertyOverrides` holds a JSON object of Post-Processor Properties that this Job overrides. One Machine file can thus serve many Jobs that have small differences.
 
 [source,json]
 ----
-{"file_extension": "tap", "post_operation": "M9"}
+{"tool_change": false}
 ----
 
-Two rules. Keys must exist in the post's property bundle — unknown keys are warned about and dropped. And the string must be valid JSON — a malformed value stops post-processing with an error rather than silently ignoring your settings. Job templates save and restore both *Machine* and these overrides.
+Two rules apply:
+
+* Each key must exist in the properties of the Post. The export gives a warning for an unknown key and drops it.
+* The text must be correct JSON. Incorrect JSON stops the export with an error.
+
+A Job Template saves and restores the *Machine* property and these overrides.
 
 === Per-export overrides
 
-The Post Processing dialog offers one more layer, applied only to that export and never saved:
+The Post-Processing Dialog gives one more level of overrides for one export:
 
-* The *Overview* tab shows the post's `runtime` properties (per-run choices like a dry-run flag or blend mode).
-* The *Options* tab shows the machine's full output and processing groups, editable in place.
-* The machine combo lets you post against a different machine than the Job's, once.
+* The _Overview_ tab shows the Run-scope properties of the Post, such as *Show Pre-processing Dialogs*. These values are not stored.
+* The _Options_ tab shows the `output` and `processing` groups of the Machine. You can edit them there for the export.
+* The _Options_ tab also shows a _Postprocessor Properties_ group with the Job-scope properties of the Post. The group starts with the Machine values and the Job overrides applied.
+* The Machine list lets you export with a different Machine from that of the Job, one time. The first entry of the list is "(Legacy post-processor)".
+
+The dialog does not show Machine-scope properties.
 
 == Scripting
 
 [source,python]
 ----
-from Machine.models.machine import Machine, MachineFactory
+from Machine.models.machine import Machine, MachineFactory, RotationStrategy
+from Machine.models.validate import validate_file
 
-m = Machine.create_3axis_config()          # or create_4axis_A_config(), create_AC_table_config(), ...
+m = Machine.create_3axis_config()          # or create_4axis_A_config(), create_AC_table_config()
 m.name = "Shop Router"
 m.postprocessor_file_name = "linuxcnc"
 m.postprocessor_properties["file_extension"] = "ngc"
 m.output.comments.enabled = False
 m.linear_axes["X"].max_limit = 840
+m.kinematics.rotation_strategy = RotationStrategy.NONE
 MachineFactory.save_configuration(m)       # writes <CamAssets>/Machines/Shop_Router.fcm
 
+for finding in validate_file(MachineFactory.get_config_directory() / "Shop_Router.fcm"):
+    print(finding)
+
+# job is an existing CAM Job object
 job.Machine = "Shop Router"
 
 from Path.Post.Processor import PostProcessorFactory
@@ -290,9 +430,14 @@ post = PostProcessorFactory.get_post_processor(job, "linuxcnc")
 sections = post.export2()                  # [(section_name, gcode), ...]
 ----
 
+`validate_machine(machine)` examines a Machine object that is not saved. `validate_paths(paths)` examines files and folders, and also finds a Machine name that two files use.
+
 == Related
 
-* image:CAM_Machine.svg[width=24] xref:output/machine.adoc[CAM Machine]
-* image:CAM_Post.svg[width=24] xref:output/post-process.adoc[CAM Post]
+* image:CAM_Machine.svg[Machine,16] xref:output/machine.adoc[Machine]
+* image:CAM_Post.svg[Post Process,16] xref:output/post-process.adoc[Post Process]
+* xref:job/job.adoc[Job]
 * xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
-* xref:output/postprocessor-customization.adoc[CAM Postprocessor Customization]
+* xref:output/postprocessor-customization.adoc[Postprocessor Customization]
+* xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+* xref:reference/glossary.adoc[Glossary]
