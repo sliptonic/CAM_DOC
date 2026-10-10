@@ -150,7 +150,7 @@ def siblings_text(done, budget=SIBLING_BUDGET):
     return "\n\n".join(out)
 
 
-def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main"):
+def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", decisions=()):
     """Draft one page in the working tree. Returns a job entry; with dry, prints the prompt."""
     page_path = os.path.join(PAGES, page)
     smap = triage.load_map()
@@ -185,6 +185,7 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
         "facts": "\n\n".join(facts) or "(none)",
         "pending": pending,
         "siblings": siblings,
+        "decisions": "\n".join(f"- {d}" for d in decisions) or "(none)",
     }
     prompt = tmpl
     for k in sorted(fields, key=len, reverse=True):       # $page_text before $page
@@ -288,7 +289,8 @@ def run_cluster(a):
             sys.exit(f"cluster {slug}: no verdict of its pull requests names {page}")
         others = {k: v for k, v in done.items() if k != page}
         budget = SIBLING_BUDGET if mode != "amend" else 0     # an amended page gets outlines only
-        job = draft_page(page, vs, mode, c.get("facts") or [], siblings_text(others, budget), a.model, a.dry)
+        job = draft_page(page, vs, mode, c.get("facts") or [], siblings_text(others, budget), a.model, a.dry,
+                         decisions=c.get("decisions") or [])
         if a.dry:
             continue
         done[page] = open(os.path.join(PAGES, page), encoding="utf-8").read()
