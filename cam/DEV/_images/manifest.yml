@@ -14,48 +14,48 @@ figures:
   page: job/job.adoc
   model: drilling-1
   recipe: recipes/job/job/task-panel-general.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, General tab
 - file: job/job/task-panel-output.png
   page: job/job.adoc
   model: drilling-1
   recipe: recipes/job/job/task-panel-output.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Output tab, with Machine set to (Legacy post-processor)
 - file: job/job/task-panel-setup.png
   page: job/job.adoc
   model: drilling-1
   recipe: recipes/job/job/task-panel-setup.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Setup tab, with the Layout section open
 - file: job/job/task-panel-tools.png
   page: job/job.adoc
   model: drilling-1
   recipe: recipes/job/job/task-panel-tools.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Tools tab, with one Tool Controller
 - file: job/job/task-panel-workplan.png
   page: job/job.adoc
   model: drilling-1
   recipe: recipes/job/job/task-panel-workplan.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Job task panel, Workplan tab, with a Profile and a Drilling Operation
 - file: operations/profile/result-contour.png
   page: operations/profile.adoc
   model: drilling-1
   recipe: recipes/operations/profile/result-contour.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Toolpath of a Profile operation around the outside of the model
 - file: output/machine/editor-machine-tab.png
   page: output/machine.adoc
   model: null
   recipe: recipes/output/machine/editor-machine-tab.py
-  freecad: 3e3e48ac411
+  freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Machine Editor, Machine tab, for a new Machine
