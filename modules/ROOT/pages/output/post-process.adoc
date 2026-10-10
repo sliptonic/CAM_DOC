@@ -62,6 +62,10 @@ When the Job has no Machine, the command does not open the Post-Processing Dialo
 * _Options_: *Generate HTML sanity report*.
 * _Post Processor Parameters_: the xref:reference/glossary.adoc#post-processor-property[Post-Processor Properties] of the Post that have Run xref:reference/glossary.adoc#property-scope[scope]. Each value applies to one export and is not stored. Every machine-based Post has *Show Pre-processing Dialogs*. The `generic_sheet_cutting` Post adds *Force Rapid Feeds* and *Mark Entry Points Only*.
 
+The figure shows the _Overview_ tab for a Job with the Machine "Shop Router".
+
+image::output/post-process/dialog-overview.png["Post-Processing Dialog, Overview tab, with the Machine Shop Router selected and the Post Processor Parameters group",400]
+
 === Operations
 
 The tab lists the active Operations of the Job. Inactive Operations are not in the list. The list has these columns:
@@ -78,6 +82,10 @@ The tab has three buttons:
 * btn:[Select All] and btn:[Select None] set all checkboxes.
 * btn:[Workplan] shows the ordered list of the items to post, with their estimated times.
 
+The figure shows the _Operations_ tab for a Job with two Operations.
+
+image::output/post-process/dialog-operations.png["Post-Processing Dialog, Operations tab, with a Profile and a Drilling Operation in the list",400]
+
 === Options
 
 The tab shows the output options of the Machine: units, header, comments, formatting, precision, duplicates and processing. A change on this tab applies to this export only.
@@ -93,6 +101,10 @@ The _Postprocessor Properties_ group shows the Post-Processor Properties of the 
 |`heidenhain` |*Program Name*, *Output BLK FORM*
 |===
 
+The figure shows the _Postprocessor Properties_ group for the `linuxcnc` Post, at the bottom of the _Options_ tab.
+
+image::output/post-process/dialog-options.png["Post-Processing Dialog, Options tab, with the Postprocessor Properties group of the linuxcnc Post",400]
+
 The dialog does not show properties that have Machine scope. Edit these properties in the Machine Editor, as xref:output/machine.adoc[Machine] describes.
 
 === Output
@@ -102,6 +114,10 @@ The dialog does not show properties that have Machine scope. Edit these properti
 * The list of generated files. The context menu of a file changes its name.
 * The G-code view. You can edit the text.
 * btn:[Save to Disk] writes each file and closes the dialog.
+
+The figure shows the _Output_ tab after a press of btn:[Generate Output].
+
+image::output/post-process/dialog-output.png["Post-Processing Dialog, Output tab, after Generate Output, with one file in the list and its G-code",400]
 
 === Warnings
 

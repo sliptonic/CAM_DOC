@@ -34,14 +34,26 @@ Creating or editing a Machine:
 ** btn:[Import…] in the *Machines* group, to build a new Machine from an MTConnect agent (see below).
 . Fill in the _Machine_, _Toolheads_, _Postprocessor_ and _Options_ tabs, described under <<_options,Options>>. btn:[Edit as Text] switches the editor to a JSON text view of the whole file and back.
 . Press btn:[Validate] to check the Machine for problems that would stop it loading or would silently drop settings. A _Validation_ dialog reports "No problems found." or the number of errors and warnings, with each finding in its details.
++
+The figure shows the dialog for a Machine that has one warning.
++
+image::output/machine/validation-dialog.png["Validation dialog with one warning, and the details shown",400]
 . Press btn:[Save] to write the `.fcm` file. btn:[Close] discards the changes.
 . On the _Output_ tab of the Job task panel, select the Machine in the *Machine* list. The entry "(Legacy post-processor)" leaves the Job without a Machine. While a Machine is selected, the *Processor* and *Arguments* rows are hidden, because the Machine carries the Post-Processor and its settings.
++
+The figure shows the _Output_ tab with a Machine selected.
++
+image::output/machine/job-output-tab-machine.png["Job task panel, Output tab, with the Machine Shop Router selected and no Processor and Arguments rows",600]
 . Run xref:output/post-process.adoc[Post Process]. The Post-Processing Dialog uses the Machine's Post-Processor and options and runs the Machine's xref:reference/glossary.adoc#sanity-check[Sanity Check] contributions.
 
 Importing a Machine from MTConnect:
 
 . Press btn:[Import…] in the *Machines* group of menu:Edit[Preferences > CAM > Assets]. The _Import Machine from MTConnect_ dialog opens.
 . Enter the URL of the machine's MTConnect agent, for example `http://machine:5000/probe`, or use the folder button to select a saved probe XML file. A URL without a path gets `/probe` appended. Only `http` and `https` URLs are accepted.
++
+The figure shows the dialog with a URL entered.
++
+image::output/machine/mtconnect-import-dialog.png["Import Machine from MTConnect dialog with the URL http://machine:5000/probe entered",400]
 . Press btn:[Import]. When the agent describes several machines, a _Select Device_ dialog asks which one to import.
 . Read the _Machine Imported_ summary. It lists what was imported, what was assumed and needs review, and what was not imported.
 . The Machine Editor opens with the imported Machine, not yet saved. Review the assumptions, then press btn:[Save].
@@ -75,12 +87,20 @@ image::output/machine/editor-machine-tab.png["Machine Editor, Machine tab, for a
 
 === Toolheads tab
 
+The figure shows the tab with one rotary Toolhead.
+
+image::output/machine/editor-toolheads-tab.png["Machine Editor, Toolheads tab, with one rotary Toolhead and its Max RPM and Min RPM",400]
+
 * btn:[Add Toolhead] adds a Toolhead. Each Toolhead has its own tab, removed with the tab's close button.
 * Toolhead type: `Rotary`, `Laser`, `Waterjet`, `Plasma` or `Wire EDM`.
 * Fields: min and max rpm, power, tool change mode, coolant flood and mist, coolant delay, toolhead wait.
 * The min and max rpm of a rotary Toolhead are the limits the Sanity Check compares commanded spindle speeds against. A value of 0 means not specified. The limits apply only when the Machine has exactly one Toolhead and that Toolhead is rotary.
 
 === Postprocessor tab
+
+The figure shows the end of the property list for the `linuxcnc` Post, with Machine-scope and Job-scope properties.
+
+image::output/machine/editor-postprocessor-tab.png["Machine Editor, Postprocessor tab, moved down to the last properties of the linuxcnc Post",400]
 
 * The Post-Processor list: one of the machine-based Post-Processors on the post search path, for example `centroid`, `fanuc`, `generic`, `grbl`, `heidenhain`, `linuxcnc`, `mach3_mach4`, `marlin`, `opensbp`, `smoothie` or an add-on post.
 * The property group below it: the xref:reference/glossary.adoc#post-processor-property[Post-Processor Properties] of the selected post whose xref:reference/glossary.adoc#property-scope[Property Scope] is Machine or Job. Machine-scope properties are edited here only. Job-scope properties, such as *Allow tool-change* and LinuxCNC's blend mode and blend tolerance, get their default here and can be overridden for one run on the _Options_ tab of the Post-Processing Dialog. Run-scope properties, such as *Show Pre-processing Dialogs*, never appear in the editor. The properties common to every machine-based post are listed under <<_properties,Properties>>. See xref:output/postprocessor-customization.adoc[Postprocessor Customization] for post-specific entries.

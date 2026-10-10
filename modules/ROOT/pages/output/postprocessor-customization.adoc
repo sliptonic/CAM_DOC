@@ -44,7 +44,15 @@ Make a small Model that shows how the control reads straight lines and arcs. Pre
 
 A Toolpath that starts at (0, 0, 0) and moves in the Y direction is a good first test. The centre of the Tool Bit must follow the Toolpath, thus do not apply tool radius compensation. One level in the XY plane is sufficient for the first test.
 
+The figure shows a sketch of such a test geometry.
+
+image::output/postprocessor-customization/test-geometry-sketch.png["Sketch of the test geometry: straight lines and arcs that start at the origin and go in the Y direction",600]
+
 In the 3D view, a small blue arrow at the start point shows the start direction of the Toolpath.
+
+The figure shows the arrow on the first move of the Toolpath, where the pointer is.
+
+image::output/postprocessor-customization/test-geometry-toolpath.png["Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow near the start point",600]
 
 Compare the reference program with the output of an included Post, such as `linuxcnc_legacy_post.py` or `grbl_post.py`. Then adapt the Post that gives the nearest output.
 

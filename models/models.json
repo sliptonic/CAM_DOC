@@ -4,5 +4,11 @@
     "description": "Plate with through holes, counterbores, pockets, a boss and side holes. PartDesign Body named Body, no Job.",
     "source": "FreeCAD src/Mod/CAM/CAMTests/Drilling_1.FCStd",
     "units": "metric"
+  },
+  "lines-arcs-1": {
+    "file": "lines-arcs-1.FCStd",
+    "description": "Sketch named Sketch in the XY plane: an open wire of three straight lines and two arcs. It starts at the origin and goes in the Y direction. No Job.",
+    "source": "Made by script for output/postprocessor-customization.adoc",
+    "units": "metric"
   }
 }
