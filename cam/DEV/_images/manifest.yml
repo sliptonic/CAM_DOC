@@ -9,4 +9,18 @@
 #   freecad: 7a1823378eb                                # commit the capture was made at
 #   date: 2026-10-01
 #   alt: Profile task panel, Operation tab, with Side set to Outside
-figures: []
+figures:
+- file: operations/profile/result-contour.png
+  page: operations/profile.adoc
+  model: drilling-1
+  recipe: recipes/operations/profile/result-contour.py
+  freecad: 0f01075e3dc
+  date: '2026-10-10'
+  alt: Toolpath of a Profile operation around the outside of the model
+- file: output/machine/editor-machine-tab.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/editor-machine-tab.py
+  freecad: 0f01075e3dc
+  date: '2026-10-10'
+  alt: Machine Editor, Machine tab, for a new Machine
