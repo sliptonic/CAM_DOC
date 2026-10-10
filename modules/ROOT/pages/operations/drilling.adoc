@@ -131,7 +131,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Locations*: Base locations for this operation (list of X/Y points edited in the Base Location section)
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* `Workplane`: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Sorting
 [.since]#introduced in 26.3#

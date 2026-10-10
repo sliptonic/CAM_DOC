@@ -103,7 +103,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Split Arcs*: Split arcs into discrete segments.
 * *Tool Controller*: The Tool Controller that will be used to calculate the Toolpath
 * *User Label*: User assigned label
-* [.since]#introduced in 26.3# `Workplane`: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An empty link selects the Job's own XY, which is ordinary Z-up milling.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Pocket
 * *Adaptive Pocket Finish*: Use adaptive algorithm to eliminate excessive air milling below planar pocket bottom.

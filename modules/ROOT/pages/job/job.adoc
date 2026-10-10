@@ -23,7 +23,7 @@ Menu location:: menu:CAM[New Job]
 Workbenches:: xref:index.adoc[CAM]
 Default shortcut:: kbd:[P,J]
 Introduced in version:: -
-See also:: xref:job/export-template.adoc[Export Template], xref:job/setup-sheet.adoc[Setup Sheet], xref:output/machine.adoc[Machine], xref:job/sanity-check.adoc[Sanity Check], xref:output/post-process.adoc[Post Process]
+See also:: xref:job/export-template.adoc[Export Template], xref:job/setup-sheet.adoc[Setup Sheet], xref:output/machine.adoc[Machine], xref:job/sanity-check.adoc[Sanity Check], xref:job/work-plane.adoc[Work Plane], xref:output/post-process.adoc[Post Process]
 --
 
 == Description
@@ -38,7 +38,7 @@ A Job holds these objects and values:
 * A xref:reference/glossary.adoc#stock[Stock] object, which shows the material that the Tool Bit cuts. The Stock comes from the bounding box of the Models (default), a box, a cylinder, or an existing solid of the document.
 * A _Tools_ group of xref:reference/glossary.adoc#tool-controller[Tool Controllers] (TC). Each Tool Controller pairs a xref:reference/glossary.adoc#tool-bit[Tool Bit] with a Spindle Speed, a Horizontal Feed, a Vertical Feed and the speeds for rapid moves.
 * The xref:reference/glossary.adoc#operation[Operations] (Op), in the sequence in which the Job outputs them.
-* [.since]#introduced in 26.3# A _Workplanes_ group of xref:reference/glossary.adoc#work-plane[Work Planes]. Several Operations of the Job can share one Work Plane.
+* [.since]#introduced in 26.3# A _Workplanes_ group of xref:reference/glossary.adoc#work-plane[Work Planes]. Several Operations of the Job can share one Work Plane. See xref:job/work-plane.adoc[Work Plane].
 * A xref:reference/glossary.adoc#setup-sheet[Setup Sheet]. The Setup Sheet is the container of the default values and expressions of the Job for new Operations. The Setup Sheet is not a shop document.
 * The output configuration: the output file, the xref:reference/glossary.adoc#post-processor[Post-Processor] (Post), the xref:reference/glossary.adoc#machine[Machine], the xref:reference/glossary.adoc#fixture[Fixtures], the output sequence and the split of the output into files. A Fixture is a G54 to G59.9 selection. A Fixture is not a clamp.
 
@@ -78,7 +78,7 @@ Right-click a Job in the tree view to get these entries:
 
 * *Edit*: opens the Job task panel.
 * [.since]#introduced in 26.3# *Update Tools from Library*: compares the Tool Bits of the Job with the xref:reference/glossary.adoc#tool-library[Tool Library] and offers an update of the presets and the geometry. The command finds the related Tool Bit in the Tool Library by its Tool Bit ID. The command does not change a Tool Bit that the Tool Library does not have.
-* *Toggle operation active*
+* *Toggle Operation*
 * *Export Template*: see xref:job/export-template.adoc[Export Template].
 * *Sanity Check*: see xref:job/sanity-check.adoc[Sanity Check].
 * *Post Process*: see xref:output/post-process.adoc[Post Process].
@@ -196,7 +196,7 @@ The figure shows the message.
 image::job/job/output-file-warning.png["Warning message with the text This will replace filename template, and the Ok and Cancel buttons",400]
 
 The *Systems* list repeats the program for each selected Fixture.
-A Work Plane can name a Fixture of its own, which the Post-Processor selects in each repetition.
+A xref:job/work-plane.adoc[Work Plane] can name a Fixture of its own, which the Post-Processor selects in each repetition.
 
 === Tools
 
@@ -258,7 +258,7 @@ See xref:job/setup-sheet.adoc[Setup Sheet].
 * *Tools* (`Link`): the group of Tool Controllers.
 * *Setup Sheet* (`Link`): the xref:job/setup-sheet.adoc[Setup Sheet] that holds the default values of the Job.
 * *Operations* (`Link`, hidden): the group of all Operations, in the sequence in which the Job outputs them.
-* [.since]#introduced in 26.3# `Workplanes` (`Link`, hidden): the group of named Work Planes that the Operations can share.
+* [.since]#introduced in 26.3# `Workplanes` (`Link`, hidden): the group of named xref:job/work-plane.adoc[Work Planes] that the Operations can share.
 * *Job Type* (`Enumeration`, hidden): values `2D`, `2.5D`, `Lathe`, `Multiaxis`. The workbench does not use the value.
 
 .Geometry
@@ -297,7 +297,7 @@ See xref:job/setup-sheet.adoc[Setup Sheet].
 
 .Work Planes
 * The Job creates the _Workplanes_ group when you create the Job. The Job also creates the group when you open a document in which the Job has none.
-* The *Work Plane* command puts each new Work Plane in the _Workplanes_ group of the Job.
+* The xref:job/work-plane.adoc[Work Plane] command puts each new Work Plane in the _Workplanes_ group of the Job.
 * When you open a document, the Job moves into the _Workplanes_ group each Work Plane that an Operation links to and the group does not hold.
 * When you open a document, the Job adds the *Fixture* property to each Work Plane that does not have it.
 * The Job accepts a Work Plane with any orientation. The Post-Processor refuses a Work Plane that the Machine cannot reach.
@@ -341,6 +341,7 @@ In the GUI, use `Path.Main.Gui.Job.Create(base, template=None, openTaskPanel=Tru
 * xref:job/setup-sheet.adoc[Setup Sheet]
 * xref:job/export-template.adoc[Export Template]
 * xref:job/fixture.adoc[Fixture]
+* xref:job/work-plane.adoc[Work Plane]
 * xref:job/sanity-check.adoc[Sanity Check]
 * xref:tools/tool-controller.adoc[Tool Controller]
 * xref:tools/library-manager.adoc[Tool Library]

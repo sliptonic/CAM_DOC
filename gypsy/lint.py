@@ -42,7 +42,7 @@ EXEMPT = [
     re.compile(r"xref:[^\[]*\[[^\]]*\]"),
     re.compile(r"(?:link:|https?://)\S+(?:\[[^\]]*\])?"),
     re.compile(r"`[^`]*`"),
-    re.compile(r"\*[^*\n]+\*"),      # bold: property / control labels
+    re.compile(r"\*[^*\s][^*\n]*\*"),  # bold: property / control labels (not a list marker)
     re.compile(r"_[^_\n]+_"),        # italic: dialog / tab names
     re.compile(r"\[\.since\]#[^#]*#"),
     re.compile(r"<<[^>]*>>"),

@@ -117,7 +117,8 @@ image::job/work-plane/properties-fixture.png["Property editor of a Work Plane, w
 * When the selected face is not on a Model of the Job, the command attaches the Work Plane to the selected object and writes a warning to the report view.
 
 .3D view
-* The 3D view shows the axes and the origin of a Work Plane. The three datum planes of the Work Plane are hidden.
+* A new Work Plane is hidden. Select the Work Plane in the tree view and press kbd:[Space] to show it.
+* The 3D view shows the axes and the origin of a visible Work Plane. The three datum planes of the Work Plane are hidden.
 * You cannot select a Work Plane in the 3D view. A click on a face below the Work Plane selects the face. Select the Work Plane in the tree view to edit it.
 
 .Machine

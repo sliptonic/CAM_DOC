@@ -98,7 +98,7 @@ Above: the Operation section (screenshot predates the current version; the Join 
 * *Cycle Time*: Estimated cycle time for this operation.
 * *Tool Controller*: The Tool Controller that will be used to calculate the Toolpath.
 * *User Label*: User assigned label.
-* [.since]#introduced in 26.3#: *`Workplane`*: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 == Notes
 

@@ -105,7 +105,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Sorting Mode*: [.since]#introduced in 26.3# `Automatic` sorts shapes with a nearest-neighbour algorithm; `Manual` follows the selection order.
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* [.since]#introduced in 26.3# xref:job/work-plane.adoc[Work Plane]: The link to the Work Plane that the Operation works in; an empty link means the XY of the Job, which is Z-up milling.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Op Values
 These read-only properties hold values calculated by the operation. They are useful as sources for expressions.

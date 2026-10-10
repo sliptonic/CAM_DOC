@@ -167,7 +167,7 @@ These properties are hidden in the Property view.
 * *Cycle Time*: Read-only estimate of the Operation cycle time
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* [.since]#introduced in 26.3# `Workplane`: Link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An empty link means the XY of the Job.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Op Values
 Read-only values computed by the Operation:

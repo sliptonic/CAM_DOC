@@ -202,7 +202,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Cycle Time*: Operations Cycle Time Estimation
 * *Tool Controller*: The Tool Controller that will be used to calculate the Toolpath
 * *User Label*: User assigned label
-* [.since]#introduced in 26.3# `Workplane`: Link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in; an empty link sets the XY of the Job, which is Z-up milling.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Rotation
 These properties are only visible when *Scan Type* is Rotational.

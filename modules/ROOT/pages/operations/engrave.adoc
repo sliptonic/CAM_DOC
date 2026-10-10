@@ -95,7 +95,7 @@ The task panel has the following sections:
 * *Start Vertex*: The vertex index to start the toolpath from. Integer 0–999999; for closed wires the edge list is rotated to start at that index, for open wires it is ignored.
 * *Tool Controller*: The tool controller that will be used to calculate the path
 * *User Label*: User assigned label
-* `Workplane`: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in; an empty link selects the XY of the Job.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Sorting
 * *Sorting Mode*: Order processing of the wires. `Automatic` (default) sorts wires by the nearest-neighbour method, further improved with 2-opt; `Manual` uses the order of selection without sorting.

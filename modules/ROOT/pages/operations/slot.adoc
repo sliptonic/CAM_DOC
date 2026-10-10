@@ -120,7 +120,7 @@ Visual reference for Depth properties (settings)
 * *Cycle Time*: The cycle time estimation for this operation.
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* `Workplane`: [.since]#introduced in 26.3#: The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Slot
 * *Custom Point1*: Enter custom start point for slot toolpath. Default: (0, 0, 0). Used, together with Custom Point2, when Base Geometry is empty. The two points must differ and share the same Z value; otherwise a warning is printed and no Toolpath is generated.
