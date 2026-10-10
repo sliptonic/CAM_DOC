@@ -183,7 +183,7 @@ def main():
     a = ap.parse_args()
     prs = list(a.prs)
     if a.since:
-        q = f'repo:{REPO} is:pr is:merged label:"Mod: CAM" merged:>={a.since}'
+        q = f'repo:{REPO} is:pr is:merged base:main label:"Mod: CAM" merged:>={a.since}'
         items, page = [], 1
         while True:
             res = gh("search/issues", q=q, per_page=100, page=page)

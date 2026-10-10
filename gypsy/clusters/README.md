@@ -11,6 +11,7 @@ and opens one pull request that closes the issue. All pages merge together.
 | `prs` | Upstream pull requests delivered in full: every page they change is in the cluster. |
 | `partial` | Upstream pull requests with a different cause that also change a rewritten page. Only that effect is delivered here. The value says where the rest goes. |
 | `pages.reference` | Pages already current. The drafter reads them and does not change them. |
+| `pages.generated` | Pages that a tool writes from the FreeCAD source: `{page, command}`. The tool runs first, and the drafter reads the result. |
 | `pages.rewrite` | Pages rewritten to STYLE.md for all of `prs` and `partial`. Whole-page lint. |
 | `pages.new` | Pages that do not exist yet. |
 | `pages.amend` | Pages that belong mostly to other work. Only what `prs` make false or missing is changed; lint counts the changed lines only. |

@@ -268,6 +268,14 @@ def run_cluster(a):
         done[p] = open(os.path.join(PAGES, p), encoding="utf-8").read()
     if not a.dry:
         sh("git", "checkout", "-q", "-B", branch, "origin/main")
+    generated = []
+    for g in pages.get("generated", []):                     # pages that a tool writes from the source
+        if not a.dry:
+            print(sh(sys.executable, *g["command"]).strip(), flush=True)
+        path = os.path.join(PAGES, g["page"])
+        if os.path.exists(path):
+            done[g["page"]] = open(path, encoding="utf-8").read()
+        generated.append(g["page"])
     jobs = []
     for page, mode, prs in plan:
         vs = verdicts_for(page, prs)
@@ -307,12 +315,14 @@ def run_cluster(a):
     labels = ["gypsy"] + (["draft"] if any(j["unverified"] for j in jobs) else []) + \
              (["lint-failed"] if failed else []) + (["needs-capture"] if any(j["figures_wanted"] for j in jobs) else [])
     all_prs = sorted(owned | partial)
-    body = [f"**{c['title']}**: one change set, {len(jobs)} pages. All pages merge together.", ""]
+    body = [f"**{c['title']}**: one change set, {len(jobs) + len(generated)} pages. All pages merge together.", ""]
     if c.get("issue"):
         body += [f"Closes #{c['issue']}", ""]
     body += ["| Page | Mode | Upstream PRs | Lint | Not verified | Figures wanted |", "|---|---|---|---|---|---|"]
     body += [f"| `{j['page']}` | {j['mode']} | {len(j['prs'])} | {'clean' if j['lint_rc'] == 0 else 'findings'} | "
              f"{len(j['unverified'])} | {len(j['figures_wanted'])} |" for j in jobs]
+    if generated:
+        body += ["", "Generated from the FreeCAD source by a tool, not drafted: " + ", ".join(f"`{p}`" for p in generated) + "."]
     if pages.get("reference"):
         body += ["", "Used as reference, not changed: " + ", ".join(f"`{p}`" for p in pages["reference"]) + "."]
     body += ["", "Review the rendered changes from the preview comment below.", "",
