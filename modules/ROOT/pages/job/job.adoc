@@ -59,7 +59,7 @@ After creation the Job task panel opens (with the Setup tab active). It can be r
 
 The Job task panel has six tabs, in order: menu:Setup[], menu:General[], menu:Output[], menu:Tools[], menu:Workplan[] and menu:Advanced[] ([.since]#Advanced introduced in 1.1#). Switching back to the Setup tab applies and recomputes pending changes.
 
-The screenshots on this page do not show the current tab order, the Machine selection, the material assignment button, the pick target toggle, the Fixture selection and the columns of the Workplan list.
+The screenshots on this page do not show the current tab order, the Machine selection and the material assignment button. They also do not show the pick target toggle, the Fixture selection and the columns of the Workplan list.
 
 == Setup
 

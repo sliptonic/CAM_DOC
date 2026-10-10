@@ -302,7 +302,7 @@ A Post replaces these methods to change the output:
 
 * `_merge_machine_config()`: sets values that the control makes necessary, after the Machine values are applied. Call the method of the parent class first.
 * `_expand_prefix()`, `_expand_trailing_lines()` and the other `_expand_*` methods: change one expansion stage.
-* `_expand_tool_length_offset_post_command(item, command)`: returns the commands that apply a tool length offset after a tool change. The default returns `G43 H<tool>`.
+* `_expand_tool_length_offset_post_command(item, command)`: returns the commands that apply the length offset of the Tool Bit after an `M6` command. The default returns `G43 H<tool>`.
 * `_convert_rapid_move()`, `_convert_linear_move()`, `_convert_arc_move()`, `_convert_drill_cycle()`, `_convert_dwell()`, `_convert_tool_change()`, `_convert_spindle_command()`, `_convert_coolant_command()`, `_convert_program_control()`, `_convert_fixture()`, `_convert_modal_command()` and `_convert_generic_command()`: convert one command to text. A method that returns `None` writes no line.
 * `_convert_job_sections()`: changes the complete text of each section.
 * `get_sanity_checks(job)`: returns the Squawks of the Post for the xref:reference/glossary.adoc#sanity-check[Sanity Check]. The _Warnings_ tab of the Post-Processing Dialog and Quick Validate show them.
