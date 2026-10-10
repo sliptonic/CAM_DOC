@@ -59,11 +59,9 @@ After creation the Job task panel opens (with the Setup tab active). It can be r
 
 The Job task panel has six tabs, in order: menu:Setup[], menu:General[], menu:Output[], menu:Tools[], menu:Workplan[] and menu:Advanced[] ([.since]#Advanced introduced in 1.1#). Switching back to the Setup tab applies and recomputes pending changes.
 
-The screenshots on this page do not show the current tab order, the Machine selection and the material assignment button. They also do not show the pick target toggle, the Fixture selection and the columns of the Workplan list.
-
 == Setup
 
-image:Job_3.jpg[]
+image::job/job/task-panel-setup.png["Job task panel, Setup tab, with the Layout section open",600]
 
 === Stock
 
@@ -94,7 +92,7 @@ Expressions and offsets stored in the xref:job/setup-sheet.adoc[Setup Sheet] for
 
 == General
 
-image:Job_1.jpg[]
+image::job/job/task-panel-general.png["Job task panel, General tab",600]
 
 * *Label*: The label of the Job as displayed in the Tree View.
 * *Model*: lists the Models of the Job (with a count for duplicates). Press btn:[Edit] to open the *Model Selection* dialog (the same tree as in the New Job dialog) and add, remove or multiply Models.
@@ -102,7 +100,7 @@ image:Job_1.jpg[]
 
 == Output
 
-image:Job_2.jpg[]
+image::job/job/task-panel-output.png["Job task panel, Output tab, with Machine set to (Legacy post-processor)",600]
 
 * [.since]#introduced in 26.3# *Machine*: selects the Machine for this Job from the `.fcm` files in the asset path. The first entry, `(Legacy post-processor)`, selects no Machine. With a Machine selected, post-processing uses the machine-based flow. The Machine definition supplies the Post-Processor and the output options, and the xref:output/post-process.adoc[Post-Processing Dialog] opens. btn:[New Machine] opens the Machine Editor to create a Machine; the new Machine is selected after saving. See xref:output/machine.adoc[Machine] and xref:output/machine-configuration.adoc[Machine Configuration].
 * *Output File*: Set the name, extension, and the file path of the G-code output. You can use the following placeholders:
@@ -121,7 +119,7 @@ In the file-name part only, when Split Output is enabled: *%T* tool number, *%t*
 
 == Tools
 
-image:Job_4.jpg[]
+image::job/job/task-panel-tools.png["Job task panel, Tools tab, with one Tool Controller",600]
 
 The table lists the Job's Tool Controllers (Name, tool number, horizontal feed, vertical feed and spindle speed; a negative spindle value means reverse direction). Cells can be edited in place.
 
@@ -133,7 +131,7 @@ Changing feeds or speeds here does not modify the Tool Library. The *Default Val
 
 == Workplan
 
-image:Job_5.jpg[]
+image::job/job/task-panel-workplan.png["Job task panel, Workplan tab, with a Profile and a Drilling Operation",600]
 
 Lists the Operations in execution order. Select an Operation and use the up/down arrows to reorder it, or btn:[Delete] to remove it from the document.
 
