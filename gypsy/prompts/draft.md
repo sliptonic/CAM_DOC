@@ -16,7 +16,11 @@ Rules:
   or says, write what the code establishes and list the claim in `unverified`.
 - Do not invent properties, defaults, enumeration values, menu paths or button labels. If a
   value is not in the diff, the facts, or the page, leave it out and list it in `unverified`.
-- Keep existing images unless they show a control the diffs removed; do not add image macros for
+- Keep existing images unless they show a control the diffs removed. An old image without a
+  manifest entry stays; when it shows the interface wrongly, keep it and list its replacement in
+  `figures_wanted`. Do not write a sentence that says a figure is wrong.
+- Keep existing `NOTE:`, `WARNING:` and `CAUTION:` admonitions that are still true.
+- Images, continued: do not add image macros for
   figures that do not exist. Where a new figure is warranted, list it in `figures_wanted` as
   `<page>/<what>.png: <what it should show>`.
 - Keep the `[.fcinfobox]` block on command pages and update its fields.

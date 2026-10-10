@@ -10,6 +10,7 @@ The recipe gets a Shot object:
     shot.new_job(models)     create a Job for the model objects, without the task panel
     shot.new_operation(m, j) create the operation of GUI module m in Job j, without the task panel
     shot.view(w, h)          capture the 3D view: isometric, fitted, plain background
+    shot.job_panel(job, tab) open the Job task panel on a tab (by its title) and return the panel
 """
 import contextlib
 import io
@@ -78,7 +79,14 @@ class Shot:
                 focus.deselect()
             focus.clearFocus()
             self.settle(100)
-        if not w.grab().save(self.out, "PNG"):
+        top = w.window()
+        if top is w:
+            image = w.grab()
+        else:
+            # A panel inside the main window has no background of its own. Capture its area of
+            # the window, so that the figure shows what the reader sees.
+            image = top.grab(QtCore.QRect(w.mapTo(top, QtCore.QPoint(0, 0)), w.size()))
+        if not image.save(self.out, "PNG"):
             raise RuntimeError(f"cannot write {self.out}")
         self.saved = True
 
@@ -120,6 +128,19 @@ class Shot:
         op.Document.recompute()
         self.settle()
         return op
+
+    def job_panel(self, job, tab):
+        """Open the task panel of the Job and select the tab with this title. Returns the panel
+        widget, for shot.widget()."""
+        job.ViewObject.Document.setEdit(job.ViewObject, 0)
+        self.settle(800)
+        form = job.ViewObject.Proxy.taskPanel.form
+        titles = [form.tabText(i).replace("&", "") for i in range(form.count())]
+        if tab not in titles:
+            raise KeyError(f"the Job task panel has no tab '{tab}'; it has {titles}")
+        form.setCurrentIndex(titles.index(tab))
+        self.settle(500)
+        return form
 
     def view(self, width=1200, height=900, fit=None):
         """Capture the 3D view, isometric, fitted to `fit` (default: the Stock of the first Job,

@@ -8,7 +8,7 @@ ALT = "Job task panel, Workplan tab, with a Profile and a Drilling Operation"
 
 
 def capture(shot):
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../recipes-lib"))
-    import job_panel
+    sys.path.insert(0, os.path.dirname(__file__))
+    import _panel
 
-    job_panel.capture_panel(shot, "workplan")
+    _panel.capture_panel(shot, "Workplan")

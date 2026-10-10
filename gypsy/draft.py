@@ -129,6 +129,7 @@ MODES = {
               "only when `unverified` is not empty; otherwise leave `:page-status:` as it is."),
 }
 SIBLING_BUDGET = 70_000
+FIX_ATTEMPTS = 2            # lint corrections before the pull request opens with lint-failed
 
 
 def outline(text):
@@ -199,10 +200,14 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
     os.makedirs(os.path.dirname(page_path), exist_ok=True)
     open(page_path, "w", encoding="utf-8").write(res["page_text"].rstrip("\n") + "\n")
     report, rc = lint(page_path, since)
-    if rc != 0:
+    for _ in range(FIX_ATTEMPTS):
+        if rc == 0:
+            break
         fix_prompt = (prompt + "\n\n# Your previous draft\n\n" + res["page_text"] +
                       "\n\n# gypsy lint findings on it\n\nFix every finding and return the full page again, "
-                      "with the same JSON fields.\n\n" + report)
+                      "with the same JSON fields. A line that starts with 'warning:' is not a finding. Do not "
+                      "remove a figure, an admonition or a fact to make a finding go away; if a finding cannot "
+                      "be fixed without a loss of content, keep the content and say so in `notes`.\n\n" + report)
         res2, run2 = ask(fix_prompt, model, schema)
         runs.append(run2)
         res2.setdefault("changes", res["changes"])

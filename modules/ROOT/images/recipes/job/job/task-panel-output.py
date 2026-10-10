@@ -8,7 +8,7 @@ ALT = "Job task panel, Output tab, with Machine set to (Legacy post-processor)"
 
 
 def capture(shot):
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../recipes-lib"))
-    import job_panel
+    sys.path.insert(0, os.path.dirname(__file__))
+    import _panel
 
-    job_panel.capture_panel(shot, "output")
+    _panel.capture_panel(shot, "Output")
