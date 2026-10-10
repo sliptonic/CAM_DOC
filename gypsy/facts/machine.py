@@ -1,7 +1,7 @@
 # Run under FreeCADCmd. Dumps the facts the Machine and post-processor pages are written from:
 # the common post-processor property schema (name, title, scope, default, help), the Machine
 # model's enumerations and dataclass fields. Output: JSON on stdout.
-#   ~/FreeCAD/build/bin/FreeCADCmd -c "exec(open('gypsy/facts/machine.py').read())" > gypsy/facts/machine.json
+#   ~/FreeCAD-gypsy/build/bin/FreeCADCmd -c "exec(open('gypsy/facts/machine.py').read())" > gypsy/facts/machine.json
 import json, enum, dataclasses, inspect, subprocess, os, sys
 out = {}
 try:

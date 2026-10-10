@@ -6,10 +6,12 @@
 
 PAGE is relative to modules/ROOT/pages. Without --pr the draft is written on a branch
 gypsy/<slug> in the working tree and the lint report printed; with --pr it is also committed,
-pushed and opened as a pull request. The working tree must be clean and on main.
+pushed and opened as a pull request. It runs only in gypsy's own worktree (gypsy/config.py),
+which must be clean; it starts from origin/main and leaves the worktree detached there.
 """
 import argparse, datetime, glob, json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config  # noqa: E402
 import triage  # noqa: E402
 
 HERE = triage.HERE
@@ -117,14 +119,17 @@ def main():
     a = ap.parse_args()
     page = a.page
     page_path = os.path.join(PAGES, page)
+    config.require_freecad_tree()
+    if not a.dry:
+        config.require_own_worktree("draft.py")
+        if sh("git", "status", "--porcelain").strip():
+            sys.exit("working tree not clean")
+        # Start from the published main: the newest verdicts, pages and gypsy code.
+        sh("git", "fetch", "-q", "origin", "main")
+        sh("git", "checkout", "-q", "--detach", "origin/main")
     vs = verdicts_for(page)
     if not vs:
         sys.exit(f"no verdicts name {page}")
-    if not a.dry:
-        if sh("git", "status", "--porcelain").strip():
-            sys.exit("working tree not clean")
-        if sh("git", "rev-parse", "--abbrev-ref", "HEAD").strip() != "main":
-            sys.exit("not on main")
     smap = triage.load_map()
     prs = sorted({pr for _, pr, _, _, _ in vs})
     cited = [p["reason"] for *_, p in vs]
@@ -148,7 +153,7 @@ def main():
     fields = {
         "page": page,
         "style": open(os.path.join(ROOT, "STYLE.md"), encoding="utf-8").read(),
-        "glossary": open(os.path.expanduser("~/FreeCAD/src/Mod/CAM/Roadmap/ADR/ADR-000.md"), encoding="utf-8").read(),
+        "glossary": open(config.ADR_000, encoding="utf-8").read(),
         "verdicts": verdict_text,
         "prs": "\n\n".join(pr_texts),
         "facts_commit": facts_commit or "(none)",
@@ -166,7 +171,7 @@ def main():
     schema = json.load(open(os.path.join(HERE, "schema", "draft.schema.json")))
     slug = re.sub(r"[^a-z0-9]+", "-", page[:-5].lower()).strip("-")
     branch = f"gypsy/{slug}"
-    sh("git", "checkout", "-q", "-B", branch, "main")
+    sh("git", "checkout", "-q", "-B", branch, "origin/main")
     res, run = ask(prompt, a.model, schema)
     runs = [run]
     os.makedirs(os.path.dirname(page_path), exist_ok=True)
@@ -219,7 +224,7 @@ def main():
     sh("git", "push", "-q", "-u", "origin", branch)
     url = sh("gh", "pr", "create", "--base", "main", "--head", branch, "--title", title, "--body", "\n".join(body),
              *sum((["--label", l] for l in labels), [])).strip()
-    sh("git", "checkout", "-q", "main")
+    sh("git", "checkout", "-q", "--detach", "origin/main")
     print(f"pull request: {url}")
 
 
