@@ -1,0 +1,44 @@
+# One cause, all its pages, one pull request. See README.md in this folder.
+title: Shared Work Planes
+issue: 9
+prs: [32722, 32903]
+# job/job.adoc is rewritten for all its pending verdicts. These pull requests have a different
+# cause; only their effect on job/job.adoc is delivered here.
+partial:
+  30421: Job task panel; job/job.adoc and one more page
+  30644: default folder of file dialogs
+  31208: Stock cylinder
+  31300: tool presets; 6 more pages, Tool Bit cluster
+  32211: Tool Bits from any library; 4 more pages, Tool Bit cluster
+pages:
+  new:
+    - job/work-plane.adoc
+  rewrite:
+    - job/job.adoc
+  amend:
+    - index.adoc
+    - job/sanity-check.adoc
+    - operations/surface.adoc
+    - inspect/inspect.adoc
+    - inspect/simulator-legacy.adoc
+    - operations/drilling.adoc
+    - operations/waterline.adoc
+    - operations/profile.adoc
+    - operations/pocket.adoc
+    - operations/thread-milling.adoc
+    - reference/fourth-axis.adoc
+    - dressups/zcorrect.adoc
+    - job/fixture.adoc
+    - operations/engrave.adoc
+    - operations/mill-face.adoc
+    - operations/mill-facing.adoc
+    - operations/probe.adoc
+    - operations/slot.adoc
+    - operations/tapping.adoc
+    - operations/vcarve.adoc
+    - operations/adaptive.adoc
+    - operations/deburr.adoc
+    - operations/helix.adoc
+    - operations/pocket-3d.adoc
+nav:
+  - {after: 'xref:job/fixture.adoc', line: '** xref:job/work-plane.adoc[Work Plane]'}

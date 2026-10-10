@@ -97,6 +97,10 @@ The _Kinematics_ group has three controls:
 * *Rotation Strategy*: how the control runs an Operation on a tilted xref:reference/glossary.adoc#work-plane[Work Plane]. Values `Not declared`, `Dynamic work offset (DWO)`, `Tilted work plane (TWP)`, `Post transform (not available yet)`. Default: `Not declared`.
 * *Kinematics Notes*: free text.
 
+The figure shows the *Rotation Strategy* list with its four values.
+
+image::output/machine-configuration/editor-kinematics-rotation-strategy.png["Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open",400]
+
 With DWO, the Post commands the rotary axes and the control applies its pivot offsets. With TWP, the Post declares the plane and the control positions the rotary axes. The command that declares the plane comes from the Post, not from the Machine. A Machine with rotary axes and no strategy cannot post an Operation on a tilted Work Plane. xref:output/machine.adoc[Machine] lists the conditions that the export checks.
 
 An MTConnect import writes one line with the source of the import into *Description*. The import writes the same line into *Kinematics Notes*, then the text "Import assumptions:" and one line for each assumption. Examine these assumptions before you save the Machine.
@@ -127,6 +131,10 @@ A rotary axis has three more fields. These fields control the angles in the G-co
 === Toolheads tab
 
 The _Toolheads_ tab is the second tab of the Machine Editor. A Machine can have more than one Toolhead.
+
+The figure shows the tab with one rotary Toolhead.
+
+image::output/machine-configuration/editor-toolheads-tab.png["Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button",400]
 
 * btn:[Add Toolhead] adds a Toolhead. Each Toolhead has its own tab. The close button of the tab removes the Toolhead.
 * Toolhead type: `Rotary`, `Laser`, `Waterjet`, `Plasma` or `Wire EDM`. The type sets the capabilities of the Toolhead.
@@ -200,6 +208,10 @@ btn:[Validate] examines the Machine for problems that stop the load or that sile
 * "No problems found." when the Machine has no errors and no warnings.
 * The number of warnings, or the number of errors and warnings. The details of the dialog list each finding with its severity.
 * "Invalid JSON" or "This machine does not load", with the cause, when the text view does not hold a correct Machine.
+
+The figure shows the dialog for a Machine that has one error and one warning.
+
+image::output/machine-configuration/editor-validation-dialog.png["Validation dialog with one error and one warning, and the details shown",400]
 
 In the text view, the validation also compares the JSON text with the Machine that the loader makes from it. This comparison finds keys that the loader does not read. In the tab view, the comparison does not run, because no file text exists for the comparison.
 
@@ -376,6 +388,10 @@ With a Machine selected:
 * The axis limits, the rpm range of the Toolhead and the checks of the Post supply Squawks to the xref:reference/glossary.adoc#sanity-check[Sanity Check]. The _Warnings_ tab of the dialog and xref:job/quick-validate.adoc[Quick Validate] show them.
 * The Sanity Check gives a `WARNING` Squawk when the rotary axes move between Operations and *Pre-Rotary Move* is empty.
 
+The figure shows the _Output_ tab with a Machine selected.
+
+image::output/machine-configuration/job-output-tab-machine.png["Job task panel, Output tab, with the Machine Shop Router selected and no Post-Processor rows",600]
+
 === Job-level overrides
 
 The Job property `PostProcessorPropertyOverrides` holds a JSON object of Post-Processor Properties that this Job overrides. One Machine file can thus serve many Jobs that have small differences.
@@ -400,6 +416,10 @@ The Post-Processing Dialog gives one more level of overrides for one export:
 * The _Options_ tab shows the `output` and `processing` groups of the Machine. You can edit them there for the export.
 * The _Options_ tab also shows a _Postprocessor Properties_ group with the Job-scope properties of the Post. The group starts with the Machine values and the Job overrides applied.
 * The Machine list lets you export with a different Machine from that of the Job, one time. The first entry of the list is "(Legacy post-processor)".
+
+The figure shows the _Postprocessor Properties_ group for the `linuxcnc` Post.
+
+image::output/machine-configuration/post-dialog-options-postprocessor-properties.png["Post-Processing Dialog, Options tab, Postprocessor Properties group of the linuxcnc Post",400]
 
 The dialog does not show Machine-scope properties.
 

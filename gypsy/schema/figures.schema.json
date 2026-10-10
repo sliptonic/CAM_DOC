@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": ["figures", "notes"],
+  "properties": {
+    "figures": {"type": "array", "items": {"type": "object",
+      "required": ["wanted", "status", "file", "recipe", "shows", "problem"],
+      "properties": {
+        "wanted": {"type": "string"},
+        "status": {"type": "string", "enum": ["done", "covered", "failed"]},
+        "file": {"type": "string"},
+        "recipe": {"type": "string"},
+        "shows": {"type": "string"},
+        "problem": {"type": "string"}
+      }}},
+    "notes": {"type": "string"}
+  }
+}

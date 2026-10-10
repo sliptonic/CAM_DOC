@@ -52,6 +52,41 @@ figures:
   freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Toolpath of a Profile operation around the outside of the model
+- file: output/machine-configuration/editor-kinematics-rotation-strategy.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-kinematics-rotation-strategy.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open
+- file: output/machine-configuration/editor-toolheads-tab.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-toolheads-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button
+- file: output/machine-configuration/editor-validation-dialog.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-validation-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Validation dialog with one error and one warning, and the details shown
+- file: output/machine-configuration/job-output-tab-machine.png
+  page: output/machine-configuration.adoc
+  model: drilling-1
+  recipe: recipes/output/machine-configuration/job-output-tab-machine.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Output tab, with the Machine Shop Router selected and no Post-Processor rows
+- file: output/machine-configuration/post-dialog-options-postprocessor-properties.png
+  page: output/machine-configuration.adoc
+  model: drilling-1
+  recipe: recipes/output/machine-configuration/post-dialog-options-postprocessor-properties.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Options tab, Postprocessor Properties group of the linuxcnc Post
 - file: output/machine/editor-machine-tab.png
   page: output/machine.adoc
   model: null

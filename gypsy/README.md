@@ -14,8 +14,11 @@ merged without a person. Design record: the user's research notes, `gypsy_design
 3. **Draft.** For `revise` / `new page` / `capture only`: rewrite the page to `STYLE.md`. Jobs
    with `needs_gui` run FreeCAD at the merge commit off screen and exercise the change first;
    jobs without it draft text-only and set `:page-status: draft`.
-4. **Capture.** Figures come from replayable recipes under `modules/ROOT/images/recipes/`, with a
-   `modules/ROOT/images/manifest.yml` entry each.
+4. **Figures** (`figures.py`). A draft lists the figures it wants. For each page an agent reads
+   the FreeCAD source, writes a recipe under `modules/ROOT/images/recipes/`, runs it with
+   `capture.py`, looks at the image, corrects the recipe, and puts the figure into the page. Each
+   figure has a `modules/ROOT/images/manifest.yml` entry. A cluster draft runs this stage before
+   the pull request opens.
 5. **Lint** (`lint.py`). Mechanical STYLE.md checks; one fix attempt, then the PR opens anyway
    with `lint-failed`.
 6. **Pull request.** One per cluster (`clusters/README.md`): one cause with all its pages, proposed
@@ -50,6 +53,8 @@ python3 gypsy/status.py                                      # state of every pa
 python3 gypsy/status.py --page job/job.adoc                  # one page in detail
 python3 gypsy/lint.py --since origin/main PAGE.adoc           # only the lines changed since main
 python3 gypsy/draft.py --cluster gypsy/clusters/machine-post.yml --pr   # in ~/CAM_DOC-gypsy
+python3 gypsy/figures.py --list                              # figures that the drafts want
+python3 gypsy/figures.py --pr                                # make them; in ~/CAM_DOC-gypsy
 python3 gypsy/capture.py output/machine/editor-machine-tab   # replay one figure recipe
 python3 gypsy/capture.py --all                               # replay every recipe
 python3 tools/render_diff.py --build --against main          # rendered diff of the working tree
@@ -79,6 +84,7 @@ uses `gh` read-only and gives the model no tools.
 | `lint.py` | the mechanical checks |
 | `status.py` | step 1 of an iteration: one record for each page (pending verdicts, lint, status, figures, links in, cluster), ranked by need x how central the page is |
 | `importance.yml` | optional: `page: weight` to replace the weight that `status.py` takes from the links |
+| `figures.py`, `prompts/figures.md` | the figure stage: an agent writes and runs a recipe for each wanted figure |
 | `capture.py`, `capture_host.py` | the figure runner, and the part of it that runs inside FreeCAD |
 
 Not yet written: the bot runner and systemd units. The recipes do not use GuiDriver yet; they

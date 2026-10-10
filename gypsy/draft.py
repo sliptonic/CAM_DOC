@@ -306,11 +306,19 @@ def run_cluster(a):
         if entry["line"] not in lines:
             lines.insert(at + 1, entry["line"])
         open(nav, "w", encoding="utf-8").write("\n".join(lines))
-    cost = sum(j["cost_usd"] for j in jobs)
+    figure_pages = []
+    if not a.no_figures:                                     # the figures that the drafts want
+        import figures
+        figure_pages = figures.make({j["page"]: j["figures_wanted"] for j in jobs if j["figures_wanted"]}, a.model)
+        made = {f["wanted"] for p in figure_pages for f in p["figures"] if f["status"] != "failed" and not f["check"]}
+        for j in jobs:                                       # what is still wanted after this stage
+            j["figures_wanted"] = [w for w in j["figures_wanted"] if w not in made]
+            j["lint"], j["lint_rc"] = lint(os.path.join(PAGES, j["page"]), "origin/main" if j["mode"] == "amend" else None)
+    cost = sum(j["cost_usd"] for j in jobs) + sum(p["run"].get("cost_usd") or 0 for p in figure_pages)
     jobdir = os.path.join(HERE, "jobs")
     os.makedirs(jobdir, exist_ok=True)
     jobfile = os.path.join(jobdir, f"{slug}.json")
-    json.dump({"cluster": slug, "issue": c.get("issue"), "branch": branch, "pages": jobs, "cost_usd": cost,
+    json.dump({"cluster": slug, "figures": figure_pages, "issue": c.get("issue"), "branch": branch, "pages": jobs, "cost_usd": cost,
                "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")},
               open(jobfile, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     print(f"cluster {slug}: {len(jobs)} pages on {branch}; cost ${cost:.2f}; job {jobfile}")
@@ -330,6 +338,9 @@ def run_cluster(a):
         body += ["", "Generated from the FreeCAD source by a tool, not drafted: " + ", ".join(f"`{p}`" for p in generated) + "."]
     if pages.get("reference"):
         body += ["", "Used as reference, not changed: " + ", ".join(f"`{p}`" for p in pages["reference"]) + "."]
+    if figure_pages:
+        import figures
+        body += ["", "**Figures**", ""] + figures.report_lines(figure_pages)[0]
     body += ["", "Review the rendered changes from the preview comment below.", "",
              "<details><summary>Changes, unverified claims and lint for each page</summary>", ""]
     for j in jobs:
@@ -350,6 +361,7 @@ def main():
     ap.add_argument("--cluster", help="a cluster file; drafts all its pages as one pull request")
     ap.add_argument("--facts", action="append", default=[])
     ap.add_argument("--pr", action="store_true")
+    ap.add_argument("--no-figures", action="store_true", help="cluster: do not make the wanted figures")
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--model", default=os.environ.get("GYPSY_DRAFT_MODEL", ""))
     a = ap.parse_args()
