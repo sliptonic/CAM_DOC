@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 """gypsy lint: mechanical checks from STYLE.md on AsciiDoc pages.
 
-    python3 gypsy/lint.py [--json] [--manifest images/manifest.yml] PAGE.adoc [PAGE.adoc ...]
+    python3 gypsy/lint.py [--json] [--since REF] [--manifest images/manifest.yml] PAGE.adoc [PAGE.adoc ...]
 
-Exit 1 when any error is found. Checks:
+Exit 1 when any error is found. With --since REF only the findings on lines that changed since
+the git revision REF count, so a small change to a page that was not yet rewritten to STYLE.md
+does not fail on the old lines. Checks:
   vocab      ADR-000 avoid-list word in prose (gypsy/vocabulary.yml)
   style      word banned by STYLE.md §2
   since      [.since] marker not in the form `[.since]#introduced in 26.3#`
@@ -15,7 +17,7 @@ Exit 1 when any error is found. Checks:
   xref       bare <<...>> cross-page reference, a link to the published site, or an xref whose target page does not exist
   attribute  {name} outside a code block that is not a known attribute (Asciidoctor drops it)
 """
-import argparse, json, os, re, sys
+import argparse, json, os, re, subprocess, sys
 import yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -160,9 +162,26 @@ def lint_file(path, terms, style, ok, manifest):
     return out
 
 
+def changed_lines(path, ref):
+    """Line numbers of `path` that differ from the revision `ref`; None when the file is new."""
+    top = os.path.dirname(os.path.abspath(path))
+    known = subprocess.run(["git", "cat-file", "-e", f"{ref}:./{os.path.basename(path)}"], cwd=top,
+                           capture_output=True).returncode == 0
+    if not known:
+        return None
+    diff = subprocess.run(["git", "diff", "-U0", ref, "--", os.path.basename(path)], cwd=top,
+                          capture_output=True, text=True).stdout
+    lines = set()
+    for m in re.finditer(r"^@@ -\S+ \+(\d+)(?:,(\d+))? @@", diff, re.M):
+        start, count = int(m.group(1)), int(m.group(2) or 1)
+        lines.update(range(start, start + count))
+    return lines
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("pages", nargs="+")
+    ap.add_argument("--since", help="count only findings on lines changed since this git revision")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--manifest", default=os.path.join(ROOT, "modules/ROOT/images/manifest.yml"))
     a = ap.parse_args()
@@ -173,7 +192,12 @@ def main():
             manifest = {e["file"] for e in (yaml.safe_load(fh) or {}).get("figures", [])}
     findings = []
     for p in a.pages:
-        findings += lint_file(p, terms, style, ok, manifest)
+        found = lint_file(p, terms, style, ok, manifest)
+        if a.since:
+            changed = changed_lines(p, a.since)
+            if changed is not None:
+                found = [f for f in found if f["line"] in changed]
+        findings += found
     if a.json:
         print(json.dumps(findings, indent=1))
     else:
