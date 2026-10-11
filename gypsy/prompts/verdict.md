@@ -18,6 +18,22 @@ page only, unless a procedure of a different page needs it. When a PR has parts 
 types, give `revise` only to the pages of the part that a reader acts on, and name that part in
 `reason`.
 
+The pages are not the whole answer. First decide what the documentation must achieve as a whole
+in response to this PR, and write it in `intent`: what a reader can know or do after the revision
+that the reader cannot today, in two to five sentences. Name the one page that tells it, and say
+what the other pages need so that they agree with it. Write for the person who approves the work
+and for the writer who does it: say what is new or different in substance, not which lines
+change. Do not repeat the PR description. When nothing is to be documented, `intent` is an empty
+string.
+
+Then give each page a `role`:
+- `primary`: the page that tells what `intent` describes. Most PRs have one; a PR with two
+  separate subjects can have two.
+- `supporting`: a page that must agree with the primary page: a changed name, value or step, or a
+  link to the primary page. It does not tell the subject again.
+- `capture`: only a figure of the page changes.
+- `none`: the verdict is `no change`.
+
 Candidate pages come from a source-path map and may be wrong or incomplete. You may drop a
 candidate and you may add a page that exists in the page list below. Every page you name must be
 in that list unless the verdict is `new page`.
@@ -30,10 +46,12 @@ Respond with one JSON object and nothing else, matching this shape exactly:
 {
   "pr": $pr,
   "summary": "<one sentence: what the PR changes, in the vocabulary of ADR-000>",
+  "intent": "<what the documentation must achieve as a whole, or an empty string>",
   "pages": [
     {
       "page": "<path under modules/ROOT/pages, e.g. operations/drilling.adoc, or a proposed path for new page>",
       "verdict": "no change | revise | new page | capture only",
+      "role": "primary | supporting | capture | none",
       "needs_gui": true,
       "reason": "<one line citing the file and hunk, e.g. Path/Op/Drilling.py: Strategy enumeration gains 'Boring'>",
       "sections": ["<skeleton heading the change lands in, e.g. Properties, Options, Usage>"]

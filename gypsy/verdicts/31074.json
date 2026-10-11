@@ -35,6 +35,11 @@
   "cost_usd": 0.42169449999999997,
   "duration_ms": 34634,
   "session": "511a6148-7097-4854-a473-94a4f687de67",
-  "generated": "2026-10-01T20:17:45+00:00"
+  "generated": "2026-10-01T20:17:45+00:00",
+  "release": "26.3"
+ },
+ "source": {
+  "type": "upstream-pr",
+  "ref": 31074
  }
 }

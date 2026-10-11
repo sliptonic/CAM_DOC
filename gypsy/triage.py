@@ -4,13 +4,17 @@
 
     python3 gypsy/triage.py PR [PR ...] [--dry] [--model MODEL] [--force]
     python3 gypsy/triage.py --since 2026-08-15          # every merged Mod: CAM PR since a date
+    python3 gypsy/triage.py --releases                  # record the FreeCAD release of each verdict
 
 Writes gypsy/verdicts/<pr>.json. --dry prints the prompt and writes nothing. Existing verdicts
 are kept unless --force. Needs `gh` (logged in, read-only use) and `claude` (logged in).
 """
-import argparse, datetime, fnmatch, functools, json, os, re, subprocess, sys
+import argparse, datetime, fnmatch, functools, glob, json, os, re, subprocess, sys
 print = functools.partial(print, flush=True)
 import yaml
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -157,6 +161,45 @@ def build_prompt(pr, smap, tmpl):
     return prompt, info
 
 
+def fc_git(*args):
+    return subprocess.run(["git", "-C", config.FREECAD_TREE, *args], capture_output=True, text=True).stdout.strip()
+
+
+@functools.lru_cache(maxsize=None)
+def release_lines():
+    """The release branches of FreeCAD, oldest first, each with the subjects of the commits that
+    it has and main does not (the backports), and the version that main will become."""
+    remote = os.environ.get("GYPSY_FREECAD_REMOTE", "upstream")
+    subprocess.run(["git", "-C", config.FREECAD_TREE, "fetch", "-q", remote, "main",
+                    f"+refs/heads/releases/*:refs/remotes/{remote}/releases/*"], capture_output=True)
+    lines = []
+    for ref in fc_git("for-each-ref", "--format=%(refname:short)", f"refs/remotes/{remote}/releases/").split():
+        m = re.search(r"FreeCAD-(\d+)-(\d+)$", ref)
+        if m:
+            own = fc_git("log", "--format=%s", f"{remote}/main..{ref}").split("\n")
+            lines.append(((int(m[1]), int(m[2])), ref, own))
+    lines.sort()
+    try:
+        v = json.loads(fc_git("show", f"{remote}/main:version.json"))
+        dev = f"{v['version_major']}.{v['version_minor']}"
+    except ValueError:
+        dev = ""
+    return lines, dev
+
+
+def release_of(pr, title, merge_commit):
+    """The first FreeCAD release that contains the pull request: the oldest release branch that has
+    its merge commit or a backport of it, or else the version that main will become."""
+    lines, dev = release_lines()
+    for (major, minor), ref, own in lines:
+        in_branch = merge_commit and subprocess.run(
+            ["git", "-C", config.FREECAD_TREE, "merge-base", "--is-ancestor", merge_commit, ref],
+            capture_output=True).returncode == 0
+        if in_branch or any(s == title or f"(#{pr})" in s for s in own):
+            return f"{major}.{minor}"
+    return dev
+
+
 def ask(prompt, model, schema):
     cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema),
            "--disallowedTools", "Bash,Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Agent,Task"]
@@ -177,6 +220,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("prs", nargs="*", type=int)
     ap.add_argument("--since", help="merged on or after this date (YYYY-MM-DD)")
+    ap.add_argument("--releases", action="store_true",
+                    help="record the FreeCAD release of each existing verdict; no model call")
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--model", default=os.environ.get("GYPSY_TRIAGE_MODEL", ""))
@@ -192,8 +237,19 @@ def main():
                 break
             page += 1
         prs += sorted(it["number"] for it in items)
-    if not prs:
+    if not prs and not a.releases:
         sys.exit("no PRs given")
+    if a.releases:                                           # no model: record the release of each verdict
+        for f in sorted(glob.glob(os.path.join(HERE, "verdicts", "*.json"))):
+            v = json.load(open(f, encoding="utf-8"))
+            if "pr" not in v or not v.get("meta"):
+                continue
+            v["meta"]["release"] = release_of(v["pr"], v["meta"]["title"], v["meta"]["merge_commit"])
+            v.setdefault("source", {"type": "upstream-pr", "ref": v["pr"]})
+            with open(f, "w", encoding="utf-8") as fh:
+                json.dump(v, fh, indent=1, ensure_ascii=False)
+                fh.write("\n")
+        return
     smap = load_map()
     tmpl = open(os.path.join(HERE, "prompts/verdict.md"), encoding="utf-8").read()
     schema = json.load(open(os.path.join(HERE, "schema/verdict.schema.json")))
@@ -211,6 +267,8 @@ def main():
             print(f"\n[prompt {len(prompt)} chars; candidates {info['candidates']}; unmapped {info['unmapped_by_map']}]", file=sys.stderr)
             continue
         verdict, run = ask(prompt, a.model, schema)
+        verdict["source"] = {"type": "upstream-pr", "ref": pr}
+        info["release"] = release_of(pr, info["title"], info["merge_commit"])
         verdict["meta"] = dict(info, **run, generated=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"))
         with open(out, "w", encoding="utf-8") as fh:
             json.dump(verdict, fh, indent=1, ensure_ascii=False)
