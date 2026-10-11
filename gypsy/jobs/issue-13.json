@@ -394,6 +394,32 @@
     "turns": 14,
     "model": "claude-opus-5-5"
    }
+  },
+  {
+   "page": "reference/preferences.adoc",
+   "wanted": [
+    "reference/preferences/assets-machines.png: replacement that shows the complete Assets page, with the checkbox 'Check for tool updates from the library when opening a document' below the Machines group"
+   ],
+   "figures": [
+    {
+     "wanted": "reference/preferences/assets-machines.png: replacement that shows the complete Assets page, with the checkbox 'Check for tool updates from the library when opening a document' below the Machines group",
+     "status": "covered",
+     "file": "reference/preferences/assets-machines.png",
+     "recipe": "recipes/reference/preferences/assets-machines.py",
+     "shows": "The complete Assets page of the CAM preferences. The Asset Location group shows the Default path field, the folder button, the Reset button and the note. The Machines group shows the experimental-feature warning, the Machines list with the entry 'Shop Router', and the buttons Add, Import..., Edit and Delete. Below the Machines group, the checkbox 'Check for tool updates from the library when opening a document' is shown, and it is set.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The figure that the page has is already correct. It has a manifest entry and a recipe, and it shows the checkbox below the Machines group. I ran the existing recipe again with the current FreeCAD build and looked at the result: the content is the same. I did not change the recipe or the page. The page check gives 0 findings.\n\nTwo files are modified in the work tree because of the second capture: `modules/ROOT/images/reference/preferences/assets-machines.png` (only the temporary profile path in the Default path field is different) and `modules/ROOT/images/manifest.yml` (the date of the entry changed from 2026-10-10 to 2026-10-11). I tried to restore the two files with `git checkout --`, but the command was not approved. Restore the two files or commit them; the two results are equivalent for the reader.\n\nOne possible improvement that I did not make: the alt text of the figure does not name the checkbox. The rule 'Change nothing else on the page' applies to a covered figure, thus the alt text stays as it was.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.3186214,
+    "duration_ms": 36211,
+    "turns": 10,
+    "model": "claude-opus-5-5"
+   }
   }
  ],
  "issue": 13,
@@ -962,9 +988,7 @@
     "The three color defaults show as #111111, #23818d and #ff8c00 on the color buttons, and the brightness field shows '85 %'.",
     "The dimension highlight color applies to the dimension that the mouse pointer is on in the Tool Bit editor. This comes from the tooltip text only."
    ],
-   "figures_wanted": [
-    "reference/preferences/assets-machines.png: replacement that shows the complete Assets page, with the checkbox 'Check for tool updates from the library when opening a document' below the Machines group"
-   ],
+   "figures_wanted": [],
    "notes": "The page text builds on the text of `main`. No pending gypsy text was given.\n\nScope of the change:\n- Only two places changed: the new section `=== Tool Bit Shape Drawing` and the checkbox bullet in `=== Machines`. All other lines are the same as before.\n- The verdict for PR 32278 names the section 'Default Path Colors'. The `.ui` file puts the four controls in a separate group box with the title 'Tool Bit Shape Drawing'. Thus the page has a new level-three heading with that title, and 'Default Path Colors' did not change.\n- The checkbox bullet stays in the Machines list, because the mode keeps the heading structure. The code adds the checkbox to the main layout after the Machines group. A later rewrite of the page can move the bullet.\n- The `ToolUpdateOnLoad` line in the parameter list was already there and is correct. The four new `ToolBit…` parameters are not in the section 'Parameters without a preferences page', because they have a preferences page.\n\nGuidance of the person:\n- Point 1 was followed. The page gives only the labels, the values and the defaults of the preferences. The shape drawings link to tools/tool-shape.adoc, and the update of the Presets links to tools/toolbit.adoc.\n- The links go to the pages, not to the sections 'Theme colors' and 'Update from the Tool Library'. The section IDs of those pages were not available. A reviewer can add the anchors.\n- The old link text 'CAM ToolBit' changed to 'Tool Bit', which is the title of the page in this change set.\n\nOther points:\n- No glossary link was added for Tool Bit, Preset or Tool Library. It is not known if reference/glossary.adoc exists.\n- `:page-status:` stays `draft`, because `unverified` is not empty.\n- No contradiction was found between the outlines of the other pages and the diffs.\n- Conflict between the rules: STYLE.md permits sentences of 30 words and STE permits 25. The new lines obey the two limits. The words 'color' and 'artwork' follow the interface strings.",
    "lint_rc": 0,
    "lint": "",
@@ -1032,6 +1056,6 @@
    ]
   }
  ],
- "cost_usd": 20.426127,
+ "cost_usd": 20.744748400000002,
  "generated": "2026-10-11T15:54:15+00:00"
 }
