@@ -3,6 +3,7 @@
 :page-origin-revision: 45eab38f4c 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300
 
 == Description
 
@@ -65,9 +66,7 @@ The legacy (pre-0.19) tool table is not supported; templates that reference lega
 
 === Add a Tool Controller to a Job
 
-. Select menu:CAM[Add Toolbit…] (or press kbd:[P] then kbd:[T]).
-. Select a library in the drop-down, select one or more Tool Bits and press btn:[Add to Job], or double-click a Tool Bit.
-. If the document contains several Jobs you are asked which Job to use.
+menu:CAM[Add Toolbit…] (kbd:[P,T]) opens the _Toolbit Selector_ dialog. The _Toolbit Selector_ dialog adds a Tool Bit from a Tool Library, or from the _All Tools_ entry, to a Job as a Tool Controller. Each Tool Controller has one *Tool Number*, and two different Tool Bits in a Job cannot have the same number. See xref:tools/add-toolbit.adoc[Add Toolbit…] for the procedure and xref:tools/tool-controller.adoc[Tool Controller] for the number rule.
 
 == Feeds and speeds
 
@@ -75,11 +74,15 @@ The legacy (pre-0.19) tool table is not supported; templates that reference lega
 
 == Tool update from library
 
-[.since]#introduced in 26.3#: Tool Bits embedded in a Job keep the ID of the library Tool Bit they were created from. When a document is opened, CAM compares the embedded Tool Bits with the library and offers to replace changed ones (_Tool Updates Available_ dialog). The check can be run manually from the Job's context menu (menu:Update Tools from Library[]) and disabled in menu:Edit[Preferences > CAM > Assets].
+[.since]#introduced in 26.3#: an embedded Tool Bit, the copy of a library Tool Bit in a Job, keeps the *ToolBitID* of the library Tool Bit. An update from the library replaces the full embedded Tool Bit with the library Tool Bit that has the same *ToolBitID*. Local edits of the embedded Tool Bit are lost in the update.
+
+The _Tool Updates Available_ dialog lists the changed Tool Bits, and you select which Tool Bits to update. FreeCAD shows the dialog when a document opens and a Job has a changed Tool Bit. menu:Update Tools from Library[] in the Job context menu does the same check for one Job. See xref:tools/toolbit.adoc[Tool Bits] for the comparison, the dialog and the result of an update.
+
+A preference on the _Assets_ page of the CAM preferences turns off the check at document load. The Job context menu entry stays available. See xref:reference/preferences.adoc[CAM Preferences].
 
 == Tool Bit units
 
-[.since]#introduced in 26.3#: every Tool Bit has a Units attribute (Metric or Imperial). The Toolbit Parameter Editor shows the parameters in that unit system; internally all values remain millimetres.
+[.since]#introduced in 26.3#: each Tool Bit has the property *Units* with the values `Metric` and `Imperial`. The ToolBit editor and the saved Tool Bit file use the *Units* of the Tool Bit, with a fixed number of decimals. See xref:tools/toolbit.adoc[Tool Bits] for the Tool Bit precision and for when the unit schema and the Units Decimals preference apply.
 
 == Import and export
 

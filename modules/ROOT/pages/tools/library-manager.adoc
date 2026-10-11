@@ -9,6 +9,7 @@
 :page-see-also: CAM ToolBitDock, CAM ToolBit Library, CAM ToolBit, CAM Tools
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32211,32220
 
 [.fcinfobox]
 --
@@ -73,6 +74,8 @@ The _All Toolbit Types_ drop-down filters the list by shape type; [.since]#26.3 
 == Import
 
 btn:[Imports a toolbit] requires a library to be selected (message: _Select a library first_). Importing a library (`.fctl` or Camotics `.json`) also imports the Tool Bits it references if a `Bit` folder exists next to the file.
+
+The import of a Camotics `.json` library reads the `units` key of each Tool Bit entry in the file. The xref:tools/toolbit-library.adoc[Tool Library] page gives the Camotics units.
 
 == Related
 

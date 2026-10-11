@@ -3,6 +3,8 @@
 :page-origin-revision: bc37ebf88a 2026-06-08
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300, 32278, 32371, 32818, 33079
+:page-status: draft
 
 == Description
 
@@ -31,9 +33,17 @@ The editor (window title _Toolbit Parameter Editor_) has two tabs:
 * _Toolbit_: Label, Toolbit Type, optional Tool Number, a Properties list (Shape and Attributes groups) with the abbreviations used in the shape drawing shown next to each parameter, and the shape drawing.
 * _Feeds && Speeds_ [.since]#introduced in 26.3#: a table of the presets stored on the Tool Bit with btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete] buttons; see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
 
+The figure shows the _Toolbit_ tab for the shipped Tool Bit `5mm Endmill`.
+
+image::tools/toolbit/editor-toolbit-tab.png["Toolbit Parameter Editor, Toolbit tab, for the 5mm Endmill, with the Properties list and the shape drawing",400]
+
+The Properties list has no field for a calculated parameter, for example the *Diameter* of the Chamfer shape; see xref:tools/tool-shape.adoc[Tool Shape].
+
 A _Notes_ tab exists in the dialog definition but is hidden.
 
 While the Toolbit Parameter Editor is open, the FreeCAD unit schema is temporarily switched to the Tool Bit's Units setting so that parameters are entered in the tool's native units; the previous schema is restored when the editor closes.
+
+The length fields of the _Toolbit Parameter Editor_ show the Tool Bit precision: 4 decimals when the unit schema is Imperial and 3 decimals for all other unit schemas. The Units Decimals preference does not change the number of decimals in the length fields.
 
 == Properties
 
@@ -47,7 +57,7 @@ While the Toolbit Parameter Editor is open, the FreeCAD unit schema is temporari
 One property per parameter of the Tool Shape, for example *Diameter*, *Length*, *CuttingEdgeHeight*, *ShankDiameter*, *Flutes*. See xref:tools/tool-shape.adoc[CAM ToolShape] for the list per shape.
 
 .Attributes
-* *Units* (`Enumeration`: Metric, Imperial) [.since]#introduced in 26.3#: unit system used to display the Tool Bit's parameters.
+* *Units* (`Enumeration`: `Metric`, `Imperial`) [.since]#introduced in 26.3#: measurement units of the Tool Bit. The _Toolbit Parameter Editor_ shows the values in these units and FreeCAD saves the values in these units. Default: `Metric`.
 * *SpindleDirection* (`Enumeration`: Forward, Reverse, None): default spindle direction; copied to the Tool Controller when the Tool Bit is added to a Job. Probes never rotate.
 * *Material* (`Enumeration`: HSS, Carbide): tool material; used by the Feeds and Speeds helper to pick the matching surface speed of the Stock material.
 * *Chipload* (`Length`, cutting tools only): default chipload per tooth, used as a low-confidence fallback by the Feeds and Speeds helper.
@@ -57,7 +67,16 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
 
 == JSON Structure
 
-[.since]#introduced in 26.3#: a ToolBit can define a `Units` parameter: `Metric` or `Imperial`. The ToolBit editor uses it for native-unit display; CAM calculations still use metric units internally. Changing the unit schema may cause small rounding differences.
+[.since]#introduced in 26.3#: a Tool Bit can have a `Units` parameter with the value `Metric` or `Imperial`. The _Toolbit Parameter Editor_ shows the values in the `Units` of the Tool Bit. CAM calculations use metric units internally.
+
+When FreeCAD saves a Tool Bit, each quantity is text in the `Units` of the Tool Bit with a fixed number of decimals. This fixed number of decimals is the Tool Bit precision:
+
+* `Metric`: 3 decimals. A value that is small enough for FreeCAD to show in µm has 4 decimals.
+* `Imperial`: 4 decimals.
+
+The unit schema and the Units Decimals preference do not change the saved values. The unit schema applies only when the Tool Bit has no `Units` value. The Camotics export does not use the Tool Bit precision; see xref:tools/toolbit-library.adoc[Tool Library].
+
+Each shipped Tool Bit file has a `Units` entry in `parameter`: `375-16_Tap.fctb` has `Imperial` and the other shipped files have `Metric`. The Tool Bit precision applies to the values that FreeCAD saves. Some shipped Tool Bit files have a different number of decimals.
 
 [source,json]
 ----
@@ -110,11 +129,54 @@ Unknown top-level keys are preserved when the file is re-saved.
 
 In a Job the Tool Bit object is shown as a child of its xref:tools/tool-controller.adoc[Tool Controller] and is hidden by default. Several Tool Controllers may reference the same Tool Bit object.
 
+A double-click on a Tool Bit in the https://wiki.freecad.org/Tree_view[tree view] of a document opens the _Toolbit Parameter Editor_ as a task panel. btn:[OK] saves the changes to the Tool Bit in the document. btn:[Cancel] discards all edits made in the task panel.
+
+The figure shows the task panel for the Tool Bit of a new Job.
+
+image::tools/toolbit/editor-task-panel.png["Toolbit Parameter Editor as a task panel for a Tool Bit in a document, with the Properties list and the shape drawing",600]
+
+The menu:Transform[] entry of the tree-view context menu of a Tool Bit starts the standard transform manipulator of FreeCAD. The menu:Transform[] entry does not open the _Toolbit Parameter Editor_.
+
 A Tool Bit placed in a document can be written back to a file from its tree-view context menu: menu:Save Tool[] (only if the object came from a file) and menu:Save Tool As…[] open a save dialog offering the FreeCAD Tool (`.fctb`) and YAML formats. The commands `CAM_ToolBitCreate` (New Toolbit) and `CAM_ToolBitLoad` (Load Tool) exist but are not placed in any menu.
 
 == Update from library
 
-[.since]#introduced in 26.3#: when a document is opened, embedded Tool Bits are compared with the library Tool Bit that has the same *ToolBitID*. If presets or Shape-group values differ, the _Tool Updates Available_ dialog lists the differences (expand a row to see old and new values) and replaces checked Tool Bits with the library version. The same check is available from the Job's context menu entry menu:Update Tools from Library[]. The automatic check can be turned off in menu:Edit[Preferences > CAM > Assets] (*Check for tool updates from the library when opening a document*).
+[.since]#introduced in 26.3#: an embedded Tool Bit is a copy of a library Tool Bit and keeps the *ToolBitID* of the library Tool Bit. A change of the library Tool Bit does not change the embedded Tool Bit. An update from the library replaces the embedded Tool Bit with the current library Tool Bit.
+
+FreeCAD examines the embedded Tool Bits in two cases:
+
+* A document opens. FreeCAD examines all Jobs of the document one time for each load, after the restore and the recompute are complete. The _Tool Updates Available_ dialog shows only when a minimum of one Job has a changed Tool Bit. The checkbox *Check for tool updates from the library when opening a document* in the xref:reference/preferences.adoc[Preferences] sets this check on or off.
+* You select menu:Update Tools from Library[] in the context menu of a Job. FreeCAD examines only that Job, also when the preference is off. When the Job has no changed Tool Bit, a message box shows the text "This job has no tool updates available."
+
+FreeCAD compares an embedded Tool Bit only with the library Tool Bit that has the same *ToolBitID*. The comparison does not use the label or other values to find the library Tool Bit. An embedded Tool Bit that has no *ToolBitID*, or a *ToolBitID* that is not in the library, is not in the dialog.
+
+An embedded Tool Bit is in the dialog when its Presets are different, or when a property of the Shape group is different, or both. The comparison ignores a Shape property that only one of the two Tool Bits has. When the *ShapeType* of the two Tool Bits is different, FreeCAD does not compare the Shape properties.
+
+The _Tool Updates Available_ dialog has one row for each changed Tool Bit. The rows are in the sequence of Job label, then Tool Number. The columns of the table are:
+
+* A checkbox without a column title. Each row is checked by default. The checkbox in the table header checks or clears all rows.
+* *Job*: the label of the Job.
+* *Tool #*: *Tool Number* of the Tool Controller.
+* *Tool*: the label of the embedded Tool Bit.
+* *Changes*: `Presets`, `Geometry` or `Presets, Geometry`.
+
+A row with `Geometry` in the *Changes* column expands. The expanded row shows one line for each changed property, with the property label, the old value and the new value. The expanded row also shows a line `Presets` when the Presets are different. A row with only `Presets` does not expand. The old values and the new values are shown in the *Units* of the library Tool Bit, not of the embedded Tool Bit.
+
+The figure shows a row with `Presets` and an expanded row with `Presets, Geometry`.
+
+image::tools/toolbit/tool-updates-available.png["Tool Updates Available dialog with a Presets row and an expanded Presets, Geometry row that shows the Diameter change",400]
+
+btn:[Update] replaces each checked Tool Bit and is disabled when no row is checked. btn:[Cancel] is the default button and changes nothing.
+
+An update always replaces the full Tool Bit. FreeCAD adds a new copy of the library Tool Bit to the document. FreeCAD sets the *Tool* property of the Tool Controller to the new object. FreeCAD removes the old Tool Bit object from the document.
+
+An update of only the Presets or of only the Shape values is not possible, and FreeCAD does not merge the values of the two Tool Bits. The update changes no other property of the Tool Controller; see xref:tools/tool-controller.adoc[Tool Controller].
+
+The new Tool Bit objects are hidden. FreeCAD recomputes the document one time when a minimum of one Tool Bit was replaced. FreeCAD does not replace a checked Tool Bit whose library Tool Bit no longer exists.
+
+CAUTION: Clear the checkbox of a Tool Bit whose local edits you must keep. An update replaces the Presets, the Shape values, the *Units* and all other values of the embedded Tool Bit with the values of the library Tool Bit.
+
+Edits of an embedded Tool Bit are stored in the document only and are not written to the library; see xref:tools/feeds-speeds.adoc[Feeds and Speeds].
 
 == Scripting
 

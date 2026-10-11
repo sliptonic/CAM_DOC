@@ -3,6 +3,8 @@
 :page-origin-revision: db6e1c2df9 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32211, 32220
+:page-status: draft
 
 == Description
 
@@ -16,7 +18,9 @@ FreeCAD ships one library, _Default_, with 13 Tool Bits (3.175 mm and 5 mm endmi
 
 == Tool numbers
 
-A Tool Bit has a permanent ID (its file name, shown as *ToolBitID*). The tool number, however, belongs to the library: the same Tool Bit can have different numbers in different libraries. Numbers are unique within a library; giving a Tool Bit a number that is already in use moves the other Tool Bit to the next free number. When a Tool Controller is created from a library entry, the library number becomes the Tool Controller's *Tool Number*, which can be changed afterwards.
+A Tool Bit has a permanent ID (its file name, shown as *ToolBitID*). A library tool number, however, belongs to one library: the same Tool Bit can have different numbers in different libraries. Numbers are unique within a library; giving a Tool Bit a number that is already in use moves the other Tool Bit to the next free number.
+
+The library tool number is only a suggestion for the Job. A Tool Controller that is created from a library entry gets the library tool number as its *Tool Number* when no different Tool Bit in the Job uses that number. When a different Tool Bit in the Job uses the library tool number, the _Toolbit Selector_ asks for a different number, as xref:tools/add-toolbit.adoc[Add Toolbit] describes. The *Tool Number* of a Tool Controller can be changed afterwards. xref:tools/tool-controller.adoc[Tool Controller] gives the rule for *Tool Number* values in a Job.
 
 == Usage
 
@@ -39,6 +43,16 @@ A library can be exported with btn:[Exports the library] in the Library Manager 
 * FreeCAD Tool Library (`.fctl`),
 * Camotics tool table (`.json`),
 * http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ToolTable[LinuxCNC Tool Table] (`.tbl`): one line per tool, `T<number> P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D<diameter> I0 J0 Q0 ;<label>`, with the diameter in the user's preferred length unit and the number of decimals from the unit preferences. [.since]#introduced in 1.1#
+
+.Units in a Camotics tool table
+* Each tool entry of a Camotics export has the keys `"units"`, `"shape"`, `"length"`, `"diameter"` and `"description"`.
+* The `"units"` value is `"imperial"` when the unit schema shows the diameter of the Tool Bit in an imperial unit. In all other cases, the `"units"` value is `"metric"`.
+* The export sets `"units"` for each Tool Bit from its diameter. The *Units* property of the Tool Bit has no effect on the export.
+* The `"diameter"` and `"length"` values are numbers without a unit: inches when `"units"` is `"imperial"`, millimetres when `"units"` is `"metric"`. The `"length"` value always has the same unit as the `"diameter"` value of that Tool Bit.
+* The export rounds `"diameter"` and `"length"` to the number of decimals of the Units Decimals preference (parameter `Decimals` in `BaseApp/Preferences/Units`). The export uses 2 decimals when the parameter is not set.
+* The Tool Bit precision that xref:tools/toolbit.adoc[Tool Bit] describes does not apply to a Camotics export.
+* A Camotics import reads the `"units"` key of each tool entry: `"imperial"` gives *Diameter* and *Length* in inches, `"metric"` gives millimetres. The import uses millimetres when the key is absent or has a different value.
+* The unit schema and the Units Decimals preference have no effect on a Camotics import.
 
 == JSON Structure
 

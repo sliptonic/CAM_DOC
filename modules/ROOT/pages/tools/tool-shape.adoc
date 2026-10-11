@@ -3,6 +3,8 @@
 :page-origin-revision: 68c5376d73 2025-11-05
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32278, 33079, 33371
+:page-status: draft
 
 == Description
 
@@ -56,6 +58,15 @@ The shape type determines the parameters a xref:tools/toolbit.adoc[Tool Bit] of 
 * Tapered Ball Nose [.since]#introduced in 26.3#: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TaperAngle, TaperDiameter.
 * Radius Mill: CuttingEdgeHeight, Diameter, CuttingRadius, Flutes, Length, ShankDiameter, TipDiameter.
 * Custom (any other Body label): CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter plus every property found in the `Attributes` PropertyBag.
+
+The Chamfer `Diameter` is a calculated parameter. FreeCAD calculates the Chamfer `Diameter` from `TipDiameter`, `CuttingEdgeHeight` and `CuttingEdgeAngle`:
+
+`Diameter = TipDiameter + 2 × CuttingEdgeHeight × tan(CuttingEdgeAngle / 2)`
+
+* The editor of the Tool Bit does not show a field for the Chamfer `Diameter`.
+* The property view shows the Chamfer *Diameter* as a read-only property of type `App::PropertyLength` in the `Shape` group.
+* FreeCAD calculates the Chamfer `Diameter` again each time a `Shape` property of the Tool Bit changes.
+* Chamfer is the only shape type that has a calculated parameter. The `Diameter` of the `VBit` shape type is an input.
 
 == Aliases and subtypes
 

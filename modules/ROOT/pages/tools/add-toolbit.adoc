@@ -10,6 +10,8 @@
 :page-see-also: CAM ToolBitLibraryOpen, CAM Tools, CAM ToolBit
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32211,32371
+:page-status: draft
 
 [.fcinfobox]
 --
@@ -30,11 +32,17 @@ The *Add Toolbit…* command opens the _Toolbit Selector_, a dialog that shows t
 
 Double-clicking a Tool Bit creates one Tool Controller for it. Selecting several Tool Bits and pressing btn:[Add to Job] creates one Tool Controller per selected Tool Bit. The btn:[Add to Job] button is only enabled when a Tool Bit is selected and the document contains a Job.
 
-The first row of the dialog holds the library drop-down (the last used library is preselected), the _All Toolbit Types_ filter and the sort drop-down; below it is a search box. Each list entry shows the tool number in the selected library, the label, a one-line summary and the shape icon. The buttons at the bottom are btn:[Open Library Editor] (opens the xref:tools/library-manager.adoc[Library Manager]), btn:[Add to Job] and btn:[Close].
+The first row of the dialog holds the library drop-down (the last used library is preselected), the _All Toolbit Types_ filter and the sort drop-down; below it is a search box. Each list entry shows the tool number in the selected library, the label, a one-line summary and the shape icon. The buttons at the bottom are btn:[Open Library Editor] (opens the xref:tools/library-manager.adoc[Library Manager]), btn:[Add to Job] and btn:[Close]. The figure shows the _Toolbit Selector_ with the _Default_ library selected.
 
-If the document contains no Job, the message _Create a Job first_ is shown. If it contains several Jobs, a dialog asks which Job to add the Tool Controllers to. The new Tool Controller is named _TC: <Tool Bit label>_, gets the Tool Bit's number in the selected library as *Tool Number* and the Tool Bit's *Spindle Direction*.
+image::tools/add-toolbit/toolbit-selector-library.png["Toolbit Selector with the Default library selected in the library drop-down; each entry of the tool list shows its tool number, label, summary and shape icon",400]
 
-The same Tool Bit browser is used by the Job editor (Tools tab → btn:[Add], dialog _Select Toolbit_, which additionally offers _All Tools_; Tool Bits taken from _All Tools_ get the next free tool number of the Job) and by the _Tool controller_ drop-down of an operation's task panel, whose last entry opens the Toolbit Selector to create a new Tool Controller.
+The library drop-down always has _All Tools_ as its first entry. _All Tools_ shows all Tool Bits, also those that are in no library. A Tool Bit shown in _All Tools_ has no library tool number. The figure shows the _Toolbit Selector_ with _All Tools_ selected.
+
+image::tools/add-toolbit/toolbit-selector-all-tools.png["Toolbit Selector with All Tools selected in the library drop-down; the tool list shows no tool numbers",400]
+
+If the document contains no Job, the message _Create a Job first_ is shown. If it contains several Jobs, a dialog asks which Job to add the Tool Controllers to. The new Tool Controller is named _TC: <Tool Bit label>_ and gets the Tool Bit's *Spindle Direction*. The *Tool Number* of the new Tool Controller is the library tool number of the Tool Bit, with two exceptions. The exceptions are a Tool Bit with no library tool number and a library tool number that a different Tool Bit of the Job uses.
+
+The _Toolbit Selector_ also opens from the btn:[Add] button of the _Tools_ tab of the Job editor, from the last entry of the _Tool controller_ drop-down of an Operation task panel, and from the `CAM_ToolController` command. From the Operation task panel, the _Toolbit Selector_ permits the selection of one Tool Bit only and closes after it adds the Tool Bit.
 
 == Usage
 
@@ -44,5 +52,21 @@ The same Tool Bit browser is used by the Job editor (Tools tab → btn:[Add], di
 * Press the image:CAM_ToolTable.svg[width=16] btn:[Add Toolbit…] button in the Tool Commands toolbar.
 * Select the menu:CAM[Add Toolbit…] option from the menu.
 * Use the keyboard shortcut: kbd:[P] then kbd:[T].
-. Select a library in the drop-down.
+. Select a library in the drop-down. Select _All Tools_, the first entry, to show all Tool Bits, also those that are in no library.
 . Double-click a Tool Bit, or select one or more Tool Bits and press btn:[Add to Job].
+. If the _Tool Number_ dialog shows, enter a Tool Number for the Tool Bit and press btn:[OK].
+
+The _Tool Number_ dialog shows in these conditions:
+
+* The Tool Bit is from _All Tools_ and thus has no library tool number. When the btn:[Add] button of the Job editor opened the _Toolbit Selector_, the dialog does not show for this condition. The Tool Bit then gets the next tool number of the Job.
+* A different Tool Bit of the Job uses the library tool number of the Tool Bit. The dialog then shows the text _Tool number <N> is already used by <Tool Controller label>._ The figure shows this text.
++
+image::tools/add-toolbit/tool-number-dialog-conflict.png["Tool Number dialog with the text Tool number 1 is already used by TC: 5mm Endmill, above the label Tool number for 3.175mm Endmill",400]
+
+The default value of the _Tool Number_ dialog is the next tool number of the Job, and the minimum is 1. The next tool number of a Job is the highest *Tool Number* of its Tool Controllers plus 1. The next tool number is 1 when the Job has no Tool Controller. The figure shows the dialog for a Job whose next tool number is 2.
+
+image::tools/add-toolbit/tool-number-dialog.png["Tool Number dialog with the label Tool number for 5mm Drill and the default value 2",400]
+
+Two different Tool Bits of a Job cannot have the same Tool Number; the xref:tools/tool-controller.adoc[Tool Controller] page gives the rule. When a different Tool Bit of the Job uses the number that you entered, the _Tool Number_ dialog shows again.
+
+If you cancel the _Tool Number_ dialog, FreeCAD does not add that Tool Bit and the _Toolbit Selector_ stays open.

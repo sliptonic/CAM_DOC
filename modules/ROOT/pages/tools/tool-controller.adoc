@@ -3,7 +3,7 @@
 :page-origin-revision: 50f2b935e9 2025-01-23
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32129
+:page-source-pr: 32129, 31300, 32211
 :page-status: draft
 
 == Description
@@ -27,6 +27,8 @@ They are edited by double-clicking the Tool Controller in the tree (Tool Control
 * _Spindle_: direction (Forward, Reverse, None) and speed in rpm.
 * [.since]#introduced in 26.3# btn:[Feeds and Speeds Wizard] button: opens the _Suggest Feeds & Speeds_ dialog, see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
 
+The editor does not apply a *Tool Number* that a different Tool Bit of the Job uses. The *Tool Number* field then shows the previous number. The _Tool Number In Use_ warning gives the label of the Tool Controller that uses the number.
+
 When the editor is embedded in an operation's task panel, a warning states how many other operations use the same Tool Controller.
 
 == Properties
@@ -38,6 +40,8 @@ When the editor is embedded in an operation's task panel, a warning states how m
 * *ToolNumber* (`IntegerConstraint`, 0 to 10000): the tool number emitted with the tool change.
 * *SpindleSpeed* (`Float`): speed of the cutting spindle in rpm.
 * *SpindleDir* (`Enumeration`): Forward, Reverse or None; initialized from the Tool Bit's *Spindle Direction*.
+
+Two Tool Controllers of one Job cannot have the same *Tool Number* when their Tool Bits have different *ToolBitID* values. Two different Tool Bits with the same *Tool Number* would give the same tool change in the output. Tool Controllers whose Tool Bits have the same *ToolBitID* can have the same *Tool Number*. Thus one Tool Bit can have more than one set of feeds and speeds. The xref:tools/add-toolbit.adoc[_Toolbit Selector_] asks for a different number when the number of a new Tool Controller is already in use.
 
 .Feed
 * *HorizFeed* (`Speed`): feed rate for horizontal moves.
@@ -67,7 +71,7 @@ Feed properties may hold expressions (for example `VertFeed = HorizFeed * 0.5`);
 
 == Tool Bit replacement
 
-[.since]#introduced in 26.3#: when the library Tool Bit a controller's Tool Bit came from has changed, the menu:Update Tools from Library[] command (Job context menu, or automatically on document open) replaces the controller's Tool Bit with the current library version.
+[.since]#introduced in 26.3#: An update from the library replaces the embedded Tool Bit of a Tool Controller with a new copy of the library Tool Bit that has the same *ToolBitID*. The update sets the *Tool* property of the Tool Controller to the new Tool Bit object and removes the old Tool Bit object from the document. The update does not change the *Tool Number*, the label, the feed properties or the Spindle Speed of the Tool Controller. For the _Tool Updates Available_ dialog, the menu:Update Tools from Library[] entry of the Job context menu and the effect on local edits, see xref:tools/toolbit.adoc[Tool Bit].
 
 == Scripting
 

@@ -3,7 +3,7 @@
 :page-origin-revision: c0f7759332 2026-08-07
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32081
+:page-source-pr: 32081, 31300, 32278
 :page-status: draft
 
 == Overview
@@ -33,6 +33,17 @@ There are five pages: <<gui,GUI>>, <<assets,Assets>> ([.since]#introduced in 1.1
 * *Show editor before writing G-code* [.since]#introduced in 26.3#: open the G-code editor for review before the post-processor output file is written.
 * *Maximum lines of G-code to use highlighter* [.since]#introduced in 26.3# (default 1000): larger files are shown without syntax highlighting; set to zero to disable the highlighter.
 
+=== Tool Bit Shape Drawing
+
+[.since]#introduced in 26.3#
+
+The controls of the _Tool Bit Shape Drawing_ group set the colors of the Tool Bit shape drawing. See xref:tools/tool-shape.adoc[Tool Shape] for the shape drawings.
+
+* *Dimension color (light theme)*: color of the dimension lines and labels on a light theme. Default: `#111111`. Parameter: `ToolBitDimensionColorLight`.
+* *Dimension color (dark theme)*: color of the dimension lines and labels on a dark theme. Default: `#23818d`. Parameter: `ToolBitDimensionColorDark`.
+* *Dimension highlight color*: color of the dimension that the pointer is on. Default: `#ff8c00`. Parameter: `ToolBitDimensionHighlightColor`.
+* *Tool artwork brightness (dark theme)*: brightness of the Tool Bit in the shape drawing on a dark theme. A lower value makes the Tool Bit darker. Values: 10 % to 100 %. Default: 85 %. Parameter: `ToolBitArtworkBrightness`.
+
 == Assets
 
 [.since]#introduced in 1.1#
@@ -52,7 +63,7 @@ image::reference/preferences/assets-machines.png["Assets page of the CAM prefere
 * List of Machine templates (`.fcm` files in the `Machines` folder plus templates provided by add-ons). btn:[Add] creates a new machine in the Machine Editor, btn:[Edit] (or double-click) opens the selected machine in the Machine Editor, btn:[Delete] removes the file after confirmation. See xref:output/machine.adoc[CAM Machine].
 * btn:[Import...] is between btn:[Add] and btn:[Edit]. btn:[Import...] creates a Machine from the probe document of an MTConnect agent. The import dialog reads the probe document from the URL of the agent or from an XML file. The Machine Editor then opens with the imported Machine. The list shows the imported Machine after the Machine Editor is accepted.
 * The page shows the note _Warning: Machine definition is an experimental feature._
-* *Check for tool updates from the library when opening a document* [.since]#introduced in 26.3#: when enabled (default), opening a document compares the Tool Bits embedded in its Jobs with the library and offers to update them (see xref:tools/toolbit.adoc[CAM ToolBit]).
+* *Check for tool updates from the library when opening a document* [.since]#introduced in 26.3#: the checkbox is below the _Machines_ group and is not in a group box. Default: on. When the checkbox is on, FreeCAD compares the embedded Tool Bits of all Jobs with the Tool Library at each document load and offers the update from the library. The checkbox does not prevent the manual check from the Job context menu. See xref:tools/toolbit.adoc[Tool Bit] for the update from the library.
 
 Machine templates created here are selected per Job in the Job task panel (General tab → Machine) and used by machine-based post-processors; see xref:output/machine.adoc[CAM Machine] and xref:job/job.adoc[CAM Job].
 
