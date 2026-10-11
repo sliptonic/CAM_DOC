@@ -275,6 +275,14 @@ def print_report(pages, info, last, top, prs_shown):
         for i in info["work"]:
             left = sum(len(pages[p]["pending"]) for p in i["pages"] if p in pages)
             print(f"  #{i['number']:<4} {i['title'][:64]}\n        waits for {i['waits']}   {left} pending verdicts on its pages")
+
+    sections = collections.defaultdict(lambda: [0, 0, 0.0, 0])
+    for r in recs:
+        s = sections[r["page"].split("/")[0] if "/" in r["page"] else "(top)"]
+        s[0] += 1
+        s[1] += len(r["pending"])
+        s[2] += r["score"]
+        s[3] += r["lint"]
     if prs_shown is not None:
         byscore = {u["pr"]: sum(pages[p]["weight"] for p in u["open_pages"]) for u in info["upstream"]}
         rows = sorted((u for u in info["upstream"] if u["open_pages"]), key=lambda u: -byscore[u["pr"]])
