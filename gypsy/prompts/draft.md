@@ -18,8 +18,10 @@ Rules:
   for: how the interface looks (colors, theme, icons, layout, a highlight under the pointer),
   behaviour that the interface shows by itself when the reader uses it, a correction of a defect
   after which the software does what the page already says, or how the code does its work. For
-  such a change, write `no text change` and the reason in `changes`. Ask for a figure only when
-  a figure of the page is now wrong. A preference has its text on the preferences page; a file
+  such a change, write `no text change` and the reason in `changes`.
+- A figure is a different question from text. Ask for a new capture of a figure of the page when
+  the layout or the content of what it shows changed, also when the change gets no text. Do not
+  ask for a figure whose only purpose is to show a change that gets no text. A preference has its text on the preferences page; a file
   format rule has its text on the page of that format. Other pages do not repeat them.
 - Where a verdict says `needs_gui` and you cannot confirm from the diff what a control looks like
   or says, write what the code establishes and list the claim in `unverified`.
