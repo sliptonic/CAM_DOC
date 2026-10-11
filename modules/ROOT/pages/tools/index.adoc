@@ -1,101 +1,141 @@
-= CAM Tools
+= Tools
 :page-origin: https://wiki.freecad.org/CAM_Tools
 :page-origin-revision: 45eab38f4c 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300
+:page-status: draft
+:description: The Tools section describes how Tool Shape, Tool Bit, Tool Library and Tool Controller relate, and where the CAM workbench stores them.
 
-== Description
+== Overview
 
-This page describes the tool management system of the xref:index.adoc[CAM Workbench]. Tool Shapes, Tool Bits and Tool Libraries are stored as files (assets) in a user-configurable asset directory and are managed through the Library Manager. [.since]#introduced in 1.1#: the tool management system was rewritten around a CAM asset store; the Toolbit Parameter Editor, Toolbit Selector and Library Manager described below replaced the earlier dialogs.
+The xref:index.adoc[CAM] workbench describes the item that cuts with four objects.
+A xref:reference/glossary.adoc#tool-shape[Tool Shape] is a template.
+A xref:reference/glossary.adoc#tool-bit[Tool Bit] is one item with its dimensions.
+A xref:reference/glossary.adoc#tool-library[Tool Library] is a numbered list of Tool Bits.
+A xref:reference/glossary.adoc#tool-controller[Tool Controller] (TC) connects one Tool Bit to the feeds and the Spindle Speed of a xref:reference/glossary.adoc#job[Job].
 
-There are several concepts that the user needs to understand:
+The CAM workbench stores each Tool Shape, each Tool Bit and each Tool Library as a file in the asset directory.
+A TC is an object in the document of the Job.
+This page gives the relation between these objects and links to each page of the section.
 
-* xref:tools/tool-shape.adoc[Tool Shapes]: are templates for creating Tool Bits. Tool Shapes are FreeCAD documents (`.fcstd`) containing a PartDesign Body driven by a PropertyBag named `Attributes`. The label of the Body selects the shape type (for example Endmill or Drill), which defines the list of parameters a Tool Bit of that shape carries. An unknown label is treated as the Custom shape. The Tool Shape is an _abstract_ template from which tool instances (called Tool Bits) are created; for example, all endmills share the same Tool Shape file.
+== Relation between the objects
 
-* xref:tools/toolbit.adoc[Tool Bits]: are instances of a Tool Shape. A Tool Bit is a `.fctb` file (JSON) holding a reference to a Tool Shape, the values of the shape parameters and additional attributes (Units, Spindle Direction, Material, Chipload, Feeds & Speeds presets). A Tool Bit is identified by its file name (ID) and may be listed in any number of Tool Libraries. A Tool Bit is used in a Job through a Tool Controller.
+* Tool Shape: a FreeCAD document (`.fcstd`) that gives the physical shape and the parameter names of a Tool Bit. Many Tool Bits can use one Tool Shape. For example, all Tool Bits of the `Endmill` type use the same Tool Shape file. See xref:tools/tool-shape.adoc[Tool Shape].
+* Tool Bit: a JSON file (`.fctb`) that names one Tool Shape and holds the parameter values and the attributes. The file name is the ID of the Tool Bit. See xref:tools/toolbit.adoc[Tool Bit].
+* Tool Library: a JSON file (`.fctl`) that gives a number to each Tool Bit ID. A Tool Library is independent of a Job. One Tool Bit can be a member of more than one Tool Library. See xref:tools/toolbit-library.adoc[Tool Library].
+* Tool Controller: an object in the Tools group of a Job. A TC connects one Tool Bit to a *Tool Number*, a Spindle Speed, a spindle direction, the feeds and the rates of the rapid moves. See xref:tools/tool-controller.adoc[Tool Controller].
 
-* xref:tools/toolbit-library.adoc[Tool Libraries]: contain an arbitrary collection of Tool Bits. The specific Tool Bits in a library are entirely up to the user. Possible use cases for libraries:
-** A hobbyist user may have only one library for all of the tools they own.
-** A library may contain all the Tool Bits used for a specific material like aluminum or wood.
-** A library may hold Tool Bits from a specific supplier.
-** A library may correspond to an automatic tool changer layout.
+An xref:reference/glossary.adoc#operation[Operation] refers to a TC.
+An Operation does not refer to a Tool Bit directly.
+The Operation reads the Tool Bit of its TC to calculate the xref:reference/glossary.adoc#toolpath[Toolpath].
 
-A xref:tools/tool-controller.adoc[Tool Controller] pairs a Tool Bit with a tool number, spindle speed and direction, horizontal and vertical feed rates, rapid rates and (by default derived from the horizontal feed) ramp, lead-in and lead-out feed rates.
+When you add a Tool Bit to a Job, the CAM workbench puts a copy of the Tool Bit into the document.
+The TC owns this Tool Bit object.
+The Tool Bit object keeps the ID of the library Tool Bit.
+A change of the library Tool Bit does not change the Tool Bit object in the Job.
+See <<update,Update from the Tool Library>>.
 
-== Dialogs
+The figure shows the tree view of a Job with one TC in the Tools group and the Tool Bit object below the TC.
 
-The user interacts with the tool management system through two dialogs reached from the CAM menu:
+image::tools/index/relation.png["Tree view of a Job, with one Tool Controller in the Tools group and the Tool Bit object below the Tool Controller",400]
 
-* image:CAM_ToolTable.svg[width=24] xref:tools/add-toolbit.adoc[Add Toolbit…] (menu:CAM[Add Toolbit…], window title _Toolbit Selector_): pick Tool Bits from a library and add them to a Job as Tool Controllers.
-* image:CAM_ToolTable.svg[width=24] xref:tools/library-manager.adoc[Toolbit Library Manager] (menu:CAM[Toolbit Library Manager], window title _Library Manager_): create, edit, import and export Tool Bits and Tool Libraries.
+More than one TC of a Job can use the same Tool Bit with different feeds and speeds.
+The number of a Tool Bit in a Tool Library is only the proposal for the *Tool Number* of a new TC.
+See xref:tools/toolbit-library.adoc#tool-numbers[Tool numbers].
 
-== Organization
+== Commands
 
-When FreeCAD is installed an example hierarchy of Tool Libraries and Tool Bits is created in the installation directory at:
+Two commands of the menu:CAM[] menu give access to each Tool Bit and each Tool Library:
 
-* On Linux it is usually `/usr/lib64/FreeCAD/Mod/CAM/Tools`
-* On Windows it is usually `C:\Program Files\FreeCAD\Mod\CAM\Tools`
-* On macOS it is usually `/Applications/FreeCAD.app/Contents/Resources/Mod/CAM/Tools`
+* image:CAM_ToolTable.svg[Add Toolbit…,16] xref:tools/add-toolbit.adoc[Add Toolbit…], menu:CAM[Add Toolbit…]: opens the _Toolbit Selector_ dialog. The dialog adds the selected Tool Bits to a Job as TCs.
+* image:CAM_ToolTable.svg[Toolbit Library Manager,16] xref:tools/library-manager.adoc[Toolbit Library Manager], menu:CAM[Toolbit Library Manager]: opens the _Library Manager_ dialog. The dialog creates, changes, imports and exports Tool Bits and Tool Libraries.
 
-....
-Tools
-  + Bit
-  + Library
-  + Shape
-....
+== Work sequence
 
-[.since]#introduced in 1.1#: user Tool Bits, Tool Libraries and Tool Shapes are stored in the CAM asset directory, by default `CamAssets` inside the FreeCAD user application data directory. The location is set in menu:Edit[Preferences > CAM > Assets] (see xref:reference/preferences.adoc[CAM Preferences]). The directory contains `Tools/Bit`, `Tools/Library` and `Tools/Shape` as well as `Machines` (machine templates) and `Templates` (Job Templates). On first use the shipped Tool Bits and the `Default` library are copied into this directory; the shipped Tool Shapes are resolved from the installation as a fallback.
-
-Changes made in the Library Manager (new libraries, renamed libraries, new or edited Tool Bits, tool numbers) are written to the asset directory immediately; there is no separate save step.
-
-=== Migration from earlier versions
-
-[.since]#introduced in 1.1#: when the CAM Workbench is activated and a custom tool directory from an earlier version is found, a _CAM Asset Migration_ dialog offers to copy the Tool Bits, Tool Libraries and Tool Shapes into the asset directory. Tool Bits embedded in older documents are upgraded when the document is opened (legacy property names such as `ShapeName` and `BitShape` are converted).
-
-The legacy (pre-0.19) tool table is not supported; templates that reference legacy tools are rejected with the message that legacy tools are no longer supported. [.obsolete]#obsolete since 1.1#
-
-== Getting started
-
-=== Create a Tool Bit
+The usual sequence from a new Tool Bit to an Operation is:
 
 . Select menu:CAM[Toolbit Library Manager].
-. Select the library that should receive the new Tool Bit, or _All Toolbits_ to create a Tool Bit that is not yet in any library.
-. Press the btn:[Adds a toolbit] button. The _Toolbit Shape Selection_ dialog lists the shipped and user Tool Shapes.
-. Select a shape. The _Toolbit Parameter Editor_ opens; enter a Label, the Tool Number and the shape parameters and attributes, then press btn:[OK]. The Tool Bit is saved to the asset directory and added to the selected library immediately.
+. Select the Tool Library for the new Tool Bit, or select _All Toolbits_.
+. Press btn:[Adds a toolbit]. The _Toolbit Shape Selection_ dialog lists the supplied Tool Shapes and your own Tool Shapes.
+. Select a Tool Shape. The _Toolbit Parameter Editor_ dialog opens.
+. Enter the values of the Tool Bit and press btn:[OK]. See xref:tools/toolbit.adoc[Tool Bit].
+. Close the _Library Manager_ dialog.
+. Select menu:CAM[Add Toolbit…].
+. Select the Tool Bit and press btn:[Add to Job]. The CAM workbench creates a TC in the Job.
+. Select the TC in the task panel of an Operation.
 
-=== Add a Tool Controller to a Job
+xref:tools/library-manager.adoc[Toolbit Library Manager] and xref:tools/add-toolbit.adoc[Add Toolbit…] describe the controls of the two dialogs.
 
-. Select menu:CAM[Add Toolbit…] (or press kbd:[P] then kbd:[T]).
-. Select a library in the drop-down, select one or more Tool Bits and press btn:[Add to Job], or double-click a Tool Bit.
-. If the document contains several Jobs you are asked which Job to use.
+== Asset directory
 
-== Feeds and speeds
+[.since]#introduced in 1.1#: The CAM workbench stores your Tool Bits, Tool Libraries and Tool Shapes in the CAM asset directory.
+The default asset directory is `CamAssets` in the application data directory of FreeCAD.
+menu:Edit[Preferences > CAM > Assets] sets the location of the asset directory.
+See xref:reference/preferences.adoc[CAM Preferences].
 
-[.since]#introduced in 26.3#: a Tool Bit can store Feeds & Speeds presets (surface speed and chipload per material and operation type). The Feeds and Speeds helper of the Tool Controller editor uses these presets, the Stock material and the Machine spindle limits to suggest spindle speed and feed rates. See xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
+The asset directory contains these folders:
 
-== Tool update from library
+* `Tools/Bit`: the Tool Bit files.
+* `Tools/Library`: the Tool Library files.
+* `Tools/Shape`: your own Tool Shapes.
+* `Machines`: the Machine Templates (`.fcm`). menu:Edit[Preferences > CAM > Assets] adds and changes the Machine Templates. See xref:output/machine.adoc[Machine].
+* `Templates`: the xref:reference/glossary.adoc#job-template[Job Templates].
 
-[.since]#introduced in 26.3#: Tool Bits embedded in a Job keep the ID of the library Tool Bit they were created from. When a document is opened, CAM compares the embedded Tool Bits with the library and offers to replace changed ones (_Tool Updates Available_ dialog). The check can be run manually from the Job's context menu (menu:Update Tools from Library[]) and disabled in menu:Edit[Preferences > CAM > Assets].
+FreeCAD supplies a set of Tool Bits, Tool Libraries and Tool Shapes in the folders `Bit`, `Library` and `Shape` of the installation directory.
+The location of these folders is usually:
 
-== Tool Bit units
+* Linux: `/usr/lib64/FreeCAD/Mod/CAM/Tools`
+* Windows: `C:\Program Files\FreeCAD\Mod\CAM\Tools`
+* macOS: `/Applications/FreeCAD.app/Contents/Resources/Mod/CAM/Tools`
 
-[.since]#introduced in 26.3#: every Tool Bit has a Units attribute (Metric or Imperial). The Toolbit Parameter Editor shows the parameters in that unit system; internally all values remain millimetres.
+The CAM workbench copies the supplied Tool Bits and the `Default` Tool Library into the asset directory.
+See xref:tools/toolbit-library.adoc[Tool Library].
+When the asset directory does not contain a Tool Shape, the CAM workbench uses the supplied Tool Shape in the installation directory.
 
-== Import and export
+The _Library Manager_ dialog writes each change to the asset directory immediately.
+The _Library Manager_ dialog has no separate save step.
 
-Tool Bits can be imported from and exported to `.fctb` (FreeCAD Tool) and YAML (`.yaml`, `.yml`) files; Tool Libraries can be imported from and exported to `.fctl` (FreeCAD Tool Library) and Camotics (`.json`) files and exported as a LinuxCNC tool table (`.tbl`).
+[.since]#introduced in 1.1#: When you activate the CAM workbench, the CAM workbench looks for a custom tool directory of an earlier version.
+If the CAM workbench finds this directory, the _CAM Asset Migration_ dialog opens.
+The _CAM Asset Migration_ dialog offers to copy each Tool Bit, each Tool Library and each Tool Shape into the asset directory.
 
-== Machines
+When you open a document, the CAM workbench converts the Tool Bit property names `ShapeName` and `BitShape` to the current names.
+The CAM workbench does not load a Job Template that uses the tool table of the versions before 0.19.
 
-Machine templates (`.fcm`) are also stored in the asset directory (`Machines` folder) and are managed from menu:Edit[Preferences > CAM > Assets]. See xref:output/machine.adoc[CAM Machine].
+[#update]
+== Update from the Tool Library
+
+[.since]#introduced in 26.3#: The CAM workbench compares the Tool Bits of a Job with the Tool Bits in the library.
+The CAM workbench finds the library Tool Bit by the ID that the Tool Bit object of the Job keeps.
+The comparison starts in two conditions:
+
+* You open a document. The checkbox *Check for tool updates from the library when opening a document* in menu:Edit[Preferences > CAM > Assets] sets or stops this comparison.
+* You select menu:Update Tools from Library[] in the context menu of the Job.
+
+When a Tool Bit of a Job is different from the library Tool Bit, the _Tool Updates Available_ dialog opens.
+btn:[Update] replaces each selected Tool Bit of the Job with the current library Tool Bit and recomputes the document.
+btn:[Cancel] changes nothing.
+
+xref:tools/toolbit.adoc[Tool Bit] describes the comparison and the _Tool Updates Available_ dialog.
+xref:tools/tool-controller.adoc[Tool Controller] describes the effect of the update on the TC.
+
+== Feeds and Speeds
+
+[.since]#introduced in 26.3#: A Tool Bit can store xref:reference/glossary.adoc#preset[Presets].
+A Preset holds a surface speed and a chipload for one material and one type of cut.
+The Feeds and Speeds helper of the Tool Controller editor suggests the Spindle Speed and the feeds of a TC.
+The helper uses the Presets, the material of the xref:reference/glossary.adoc#stock[Stock] and the spindle limits of the Machine.
+See xref:tools/feeds-speeds.adoc[Feeds and Speeds].
 
 == Related
 
-* xref:tools/tool-shape.adoc[CAM ToolShape]
-* xref:tools/toolbit.adoc[CAM ToolBit]
-* xref:tools/toolbit-library.adoc[CAM ToolBit Library]
-* xref:tools/tool-controller.adoc[CAM ToolController]
-* xref:tools/library-manager.adoc[CAM ToolBitLibraryOpen]
-* xref:tools/add-toolbit.adoc[CAM ToolBitDock]
-* xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds]
+* xref:tools/tool-shape.adoc[Tool Shape]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/toolbit-library.adoc[Tool Library]
+* xref:tools/tool-controller.adoc[Tool Controller]
+* xref:tools/library-manager.adoc[Toolbit Library Manager]
+* xref:tools/add-toolbit.adoc[Add Toolbit…]
+* xref:tools/feeds-speeds.adoc[Feeds and Speeds]
 * xref:reference/preferences.adoc[CAM Preferences]
+* xref:output/machine.adoc[Machine]

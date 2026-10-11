@@ -1,81 +1,152 @@
-= CAM ToolBitLibraryOpen
+= Toolbit Library Manager
 :page-origin: https://wiki.freecad.org/CAM_ToolBitLibraryOpen
 :page-origin-revision: 6f152b79d6 2026-05-21
 :page-command: CAM_ToolBitLibraryOpen
 :page-icon: CAM_ToolTable.svg
 :page-menu: CAM → Toolbit Library Manager
+:page-toolbar: None
 :page-workbench: CAM
 :page-since: 0.19
 :page-see-also: CAM ToolBitDock, CAM ToolBit Library, CAM ToolBit, CAM Tools
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32211,32220
+:page-status: draft
+:description: The Toolbit Library Manager command opens the dialog that creates, changes and arranges Tool Bits and Tool Libraries.
 
 [.fcinfobox]
 --
 [.fcTitle]
-image:CAM_ToolTable.svg[CAM ToolBitLibraryOpen,32] *CAM ToolBitLibraryOpen*
+image:CAM_ToolTable.svg[Toolbit Library Manager,32] *Toolbit Library Manager*
 
 Menu location:: menu:CAM[Toolbit Library Manager]
 Workbenches:: xref:index.adoc[CAM]
 Default shortcut:: _None_
-Introduced in version:: 0.19 (dialog rewritten in 1.1)
-See also:: xref:tools/add-toolbit.adoc[CAM ToolBitDock], xref:tools/toolbit-library.adoc[CAM ToolBit Library], xref:tools/toolbit.adoc[CAM ToolBit], xref:tools/index.adoc[CAM Tools]
+Introduced in version:: 0.19
+See also:: xref:tools/add-toolbit.adoc[Toolbit Dock], xref:tools/toolbit-library.adoc[Tool Library], xref:tools/toolbit.adoc[Tool Bit], xref:tools/index.adoc[Tools]
 --
 
 == Description
 
-The *Toolbit Library Manager* command opens the _Library Manager_, a modal dialog for creating, editing and organizing Tool Bits and Tool Libraries. [.since]#introduced in 1.1#: the dialog was rewritten. The command has no toolbar button; only xref:tools/add-toolbit.adoc[Add Toolbit…] is in the Tool Commands toolbar.
+The *Toolbit Library Manager* command opens the _Library Manager_ dialog.
+The _Library Manager_ is a modal dialog that creates, changes and arranges xref:reference/glossary.adoc#tool-bit[Tool Bits] and xref:reference/glossary.adoc#tool-library[Tool Libraries].
+The left pane of the dialog lists each Tool Library, and the right pane lists the Tool Bits of the selected Tool Library.
+The title of the dialog shows the selected Tool Library as _Library Manager - <library name>_.
+The figure shows the dialog with the `Default` Tool Library selected.
 
-From here the user can perform all tasks related to Tool Bit management:
+image::tools/library-manager/dialog.png["Library Manager dialog with the Default Tool Library selected in the left pane and its Tool Bits in the right pane",400]
 
-* Create, rename, remove, import and export libraries.
-* Create, edit, duplicate, import and export Tool Bits.
-* Add Tool Bits to libraries by copy/paste, cut/paste or drag and drop, remove them from a library, or delete them from disk.
-* Filter the list by Tool Bit type, search by label, and sort by tool number or label.
-* The library selected when the dialog is closed becomes the library shown by default in the Toolbit Selector.
+The command has no toolbar button.
+The _Tool Commands_ toolbar contains only the btn:[Add Toolbit…] button of the xref:tools/add-toolbit.adoc[Toolbit Dock] command.
 
-Only the creation of new Tool Shapes cannot be done from the Library Manager. This is an advanced topic (see xref:tools/tool-shape.adoc[CAM ToolShape] creation).
+The _Library Manager_ does these tasks:
 
-The left pane lists _All Toolbits_ followed by every library in the asset directory; the toolbar above it has btn:[Adds a new library], btn:[Removes the library], btn:[Renames the library], btn:[Imports a library] and btn:[Exports the library].
-
-The right pane lists the Tool Bits of the selected library, each with its tool number, label, summary (for example _5 mm 2-flute endmill, 30 mm cutting edge_) and shape icon; above it are a type filter (_All Toolbit Types_), a search box and a sort drop-down (_Sort by Toolbit Number_ / _Sort by Label_), and the buttons btn:[Adds a toolbit], btn:[Imports a toolbit] and btn:[Exports the toolbit].
-
-The window title shows the selected library (_Library Manager - <library name>_); the asset directory is set in menu:Edit[Preferences > CAM > Assets], not in the dialog. All changes are written to disk immediately; closing the dialog (also with kbd:[Esc]) does not undo anything.
+* Create, rename, remove, import and export a Tool Library.
+* Create, edit, duplicate, import and export a Tool Bit.
+* Add a Tool Bit to a Tool Library, remove a Tool Bit from a Tool Library, or delete a Tool Bit from the disk.
+* Filter the Tool Bit list by type, search the list by label, and sort the list by number or by label.
 
 == Usage
 
-. There are several ways to open the Toolbit Library Manager:
-* Select the menu:CAM[Toolbit Library Manager] option from the menu.
-* Open the xref:tools/add-toolbit.adoc[Toolbit Selector] as described and press the btn:[Open Library Editor] button.
-. Select a library in the left pane (or _All Toolbits_).
-. Use btn:[Adds a toolbit] to create a Tool Bit, btn:[Imports a toolbit] to add one from a file, or paste/drop Tool Bits copied from another library.
-. Double-click a Tool Bit (or select it and press kbd:[F2]) to edit it in the _Toolbit Parameter Editor_; the Tool Number field sets its number in the current library.
-. Right-click a Tool Bit for menu:Edit[], menu:Copy[] (kbd:[Ctrl+C]), menu:Cut[] (kbd:[Ctrl+X]), menu:Paste[] (kbd:[Ctrl+V]), menu:Duplicate[] (kbd:[Ctrl+D]), menu:Remove from Library[] (kbd:[Del]; only when a library is selected) and menu:Delete from disk[] (kbd:[Shift+Del]; only in _All Toolbits_).
-. Close the dialog. The selected library will become the default library for the Toolbit Selector.
+. Open the _Library Manager_ dialog with one of these controls:
+* Select menu:CAM[Toolbit Library Manager].
+* Press btn:[Open Library Editor] in the _Toolbit Selector_ dialog. See xref:tools/toolbit-library.adoc[Tool Library].
+. Select a Tool Library in the left pane, or select _All Toolbits_.
+. Add a Tool Bit with one of these controls:
+* Press btn:[Adds a toolbit] to create a Tool Bit.
+* Press btn:[Imports a toolbit] to add a Tool Bit from a file.
+* Paste or drop a Tool Bit that you copied or moved from a different Tool Library.
+. Double-click a Tool Bit to edit it in the _Toolbit Parameter Editor_ dialog. As an alternative, select the Tool Bit and press kbd:[F2].
+. Right-click a Tool Bit to open the <<context-menu,context menu>>.
+. Close the dialog.
 
-== Editing Toolbits
+The Tool Library that is selected when you close the dialog becomes the default Tool Library of the _Toolbit Selector_ dialog.
 
-There are several ways to edit the Tool Bits and library:
+== Options
 
-[upperalpha]
-. Sorting: use the _Sort by Toolbit Number_ / _Sort by Label_ drop-down; the choice is remembered between sessions.
-. Tool number: double-click the Tool Bit and change *Tool Number* in the editor. Numbers are unique within a library; using a number already taken moves the other Tool Bit to the next free number.
-. Double-clicking a Tool Bit opens the _Toolbit Parameter Editor_, where the other properties of the Tool Bit can be edited.
+=== Library list
 
-== Drag and drop
+The left pane lists the _All Toolbits_ entry and then each Tool Library in the asset directory.
+The toolbar above the left pane has these buttons:
 
-[.since]#introduced in 1.1#: Tool Bits can be dragged from the list onto a library in the left pane. The Tool Bit is added to the target library and, when the source is a library (not _All Toolbits_), removed from it. Dropping onto _All Toolbits_ is not possible.
+* btn:[Adds a new library]: creates a Tool Library.
+* btn:[Removes the library]: removes the selected Tool Library.
+* btn:[Renames the library]: changes the name of the selected Tool Library.
+* btn:[Imports a library]: adds a Tool Library from a `.fctl` file or from a Camotics `.json` file.
+* btn:[Exports the library]: writes the selected Tool Library to a file.
 
-== Filtering
+=== Tool Bit list
 
-The _All Toolbit Types_ drop-down filters the list by shape type; [.since]#26.3 and later# subtypes (for example Drill → jobber, stub, spot) are listed indented under their type. The search box matches the label, the summary and the type name.
+The right pane lists the Tool Bits of the selected Tool Library.
+Each row shows the number, the label, the summary and the shape icon of one Tool Bit.
+An example of a summary is _5 mm 2-flute endmill, 30 mm cutting edge_.
 
-== Import
+The controls above the right pane are:
 
-btn:[Imports a toolbit] requires a library to be selected (message: _Select a library first_). Importing a library (`.fctl` or Camotics `.json`) also imports the Tool Bits it references if a `Bit` folder exists next to the file.
+* Type filter: shows only the Tool Bits of one shape type. Default: `All Toolbit Types`.
+* Search box: shows only the Tool Bits that have the text in the label, the summary or the type name.
+* Sort drop-down: sets the sequence of the list. Values: `Sort by Toolbit Number`, `Sort by Label`. The CAM workbench keeps the selected value between sessions.
+* btn:[Adds a toolbit]: creates a Tool Bit and opens the _Toolbit Parameter Editor_ dialog.
+* btn:[Imports a toolbit]: adds a Tool Bit from a file to the selected Tool Library.
+* btn:[Exports the toolbit]: writes the selected Tool Bit to a file.
+
+[.since]#introduced in 26.3#: The type filter lists each subtype below its shape type, with an indent.
+For example, the `Drill` type has the subtypes `jobber`, `stub` and `spot`.
+See xref:tools/tool-shape.adoc[Tool Shape] for the shape types and the subtypes.
+The figure shows the open type filter of a Tool Library that has Tool Bits of these three subtypes.
+
+image::tools/library-manager/type-filter.png["Open type filter of the Library Manager, with the subtypes Jobber, Spot and Stub below the Drill type, with an indent",400]
+
+The _Toolbit Parameter Editor_ dialog changes the properties of one Tool Bit.
+The *Tool Number* field of the editor sets the number of the Tool Bit in the selected Tool Library.
+See xref:tools/toolbit.adoc[Tool Bit] for the other fields of the editor.
+
+[#context-menu]
+=== Context menu
+
+A right-click on a Tool Bit opens a menu with these entries:
+
+* menu:Edit[]: opens the _Toolbit Parameter Editor_ dialog for the Tool Bit.
+* menu:Copy[] (kbd:[Ctrl+C]): copies the Tool Bit.
+* menu:Cut[] (kbd:[Ctrl+X]): copies the Tool Bit and removes it from the Tool Library.
+* menu:Paste[] (kbd:[Ctrl+V]): adds the copied Tool Bit to the selected Tool Library.
+* menu:Duplicate[] (kbd:[Ctrl+D]): makes a copy of the Tool Bit.
+* menu:Remove from Library[] (kbd:[Del]): removes the Tool Bit from the Tool Library. The entry is available only when a Tool Library is selected.
+* menu:Delete from disk[] (kbd:[Shift+Del]): deletes the file of the Tool Bit. The entry is available only when _All Toolbits_ is selected.
+
+The figure shows the context menu of a Tool Bit when a Tool Library is selected.
+
+image::tools/library-manager/context-menu.png["Context menu of a Tool Bit in a Tool Library, with the entries Edit, Copy, Cut, Paste, Duplicate and Remove from Library",400]
+
+== Notes and limitations
+
+* The _Library Manager_ writes each change to the disk immediately. When you close the dialog, also with kbd:[Esc], the changes stay.
+* menu:Edit[Preferences > CAM > Assets] sets the asset directory. The _Library Manager_ does not set the asset directory.
+* The _Library Manager_ does not create a xref:reference/glossary.adoc#tool-shape[Tool Shape]. See xref:tools/tool-shape.adoc[Tool Shape] for the procedure.
+* The number of a Tool Bit is unique in one Tool Library. When you enter a number that a different Tool Bit has, that Tool Bit moves to the next free number.
+* btn:[Imports a toolbit] is applicable only when a Tool Library is selected. If no Tool Library is selected, the message _Select a library first_ appears.
+* The import of a Tool Library also imports the Tool Bits of that library when a `Bit` folder is adjacent to the file.
+
+[.since]#introduced in 1.1#: You can drag a Tool Bit from the list to a Tool Library in the left pane.
+The CAM workbench adds the Tool Bit to the target Tool Library.
+When the source is a Tool Library, the CAM workbench also removes the Tool Bit from the source.
+When the source is _All Toolbits_, the Tool Bit stays in all its Tool Libraries.
+You cannot drop a Tool Bit on _All Toolbits_.
+
+[.since]#introduced in 26.3#: The import of a Camotics `.json` file reads the `units` key of each entry.
+The value `imperial` gives the diameter and the length of the Tool Bit in inch.
+The value `metric` gives the diameter and the length in mm.
+When the `units` key is absent or has a different value, the import uses mm.
+
+[.since]#introduced in 26.3#: The export to the Camotics format writes each Tool Bit in the unit system of the active unit schema of FreeCAD.
+When the unit schema shows the diameter of the Tool Bit in an imperial unit, the export writes inch and the `units` value `imperial`.
+In all other conditions, the export writes mm and the `units` value `metric`.
+The decimals preference of FreeCAD sets the number of decimals of the diameter and the length in the file.
 
 == Related
 
-* xref:tools/index.adoc[CAM Tools]
-* xref:tools/toolbit.adoc[CAM ToolBit]
-* xref:tools/toolbit-library.adoc[CAM ToolBit Library]
+* xref:tools/index.adoc[Tools]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/toolbit-library.adoc[Tool Library]
+* xref:tools/add-toolbit.adoc[Toolbit Dock]
+* xref:tools/tool-shape.adoc[Tool Shape]

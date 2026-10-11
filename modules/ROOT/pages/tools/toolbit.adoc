@@ -1,63 +1,117 @@
-= CAM ToolBit
+= Tool Bit
 :page-origin: https://wiki.freecad.org/CAM_ToolBit
 :page-origin-revision: bc37ebf88a 2026-06-08
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300,32278,32371,32818,33079
+:page-status: draft
+:description: A Tool Bit stores the Tool Shape, the dimensions, the attributes and the Presets that the Operations of a Job use.
 
-== Description
+== Overview
 
-Toolbits are the foundation of the xref:tools/index.adoc[CAM Tools] system. They represent a specific tool that can be used in a CAM Job to generate a Toolpath. Each Tool Bit is stored as a JSON file. JSON is structured data that can be easily parsed by macros or python scripts but remains human readable. Describing Tool Bits with JSON allows for the possibility of automatically creating large collections of accurate Tool Bits with a script.
+A xref:reference/glossary.adoc#tool-bit[Tool Bit] holds the geometry, the dimensions and the attributes of the item that cuts the xref:reference/glossary.adoc#stock[Stock].
+A xref:reference/glossary.adoc#job[Job] uses a Tool Bit through a xref:reference/glossary.adoc#tool-controller[Tool Controller].
+An xref:reference/glossary.adoc#operation[Operation] reads the Tool Bit of its Tool Controller to calculate a xref:reference/glossary.adoc#toolpath[Toolpath].
 
-Storing a tool as a JSON file sounds great but eliminates the option of an accurate thumbnail or solid body representation. On the other hand, if each Tool Bit were created as a FreeCAD object, obtaining the solid body would be simple but would require enormous storage for large tool collections. Also automatically creating Tool Bits as FreeCAD objects would be difficult or impossible.
+The CAM workbench stores each Tool Bit as a JSON file with the extension `.fctb`.
+A macro or a Python script can read and write this file.
+One Tool Bit can be a member of more than one xref:reference/glossary.adoc#tool-library[Tool Library].
+xref:tools/index.adoc[Tools] gives the relation between Tool Bit, Tool Library and Tool Controller.
 
-Instead, the Tool Bit is a hybrid. The JSON file names the xref:tools/tool-shape.adoc[Tool Shape] by its ID (for example `endmill.fcstd`, looked up in the `Tools/Shape` folder of the asset directory or the shipped shapes) and stores the values of the shape parameters and attributes.
+The Tool Bit file names its xref:reference/glossary.adoc#tool-shape[Tool Shape] by the ID of the Tool Shape, for example `endmill.fcstd`.
+The Tool Bit file also stores the values of the shape parameters and the attributes.
+The CAM workbench finds the Tool Shape in the `Tools/Shape` folder of the asset directory or in the shapes that FreeCAD supplies.
+xref:tools/tool-shape.adoc[Tool Shape] lists the shapes and their parameters.
 
-When a Tool Bit is added to a Job, the Tool Shape body is copied into the document (hidden, property *BitBody*) and its solid is assigned to the Tool Bit object. Changing a parameter in the Shape group of the Tool Bit updates the solid after the next recompute. This provides the correct shape and dimensions which can be used to generate a point cloud or mesh for advanced algorithms (and potentially simulation).
+When you add a Tool Bit to a Job, the CAM workbench copies the body of the Tool Shape into the document.
+The copied body is hidden, and the *Bit Body* property of the Tool Bit links to it.
+The Tool Bit object receives the solid of this body.
+When you change a property in the _Shape_ group, the next recompute updates the solid.
 
-== Usage
+The solid has the correct shape and dimensions of the Tool Bit.
+An algorithm can use the solid to make a point cloud or a mesh.
 
-Within the FreeCAD GUI the Library Manager provides a mechanism to create a new Tool Bit. A single Tool Bit can exist in multiple Tool Libraries.
+== Tool Bit editor
 
-. Select menu:CAM[Toolbit Library Manager].
-. Select a library (or _All Toolbits_).
-. Press the btn:[Adds a toolbit] button and pick a Tool Shape in the _Toolbit Shape Selection_ dialog.
-. In the _Toolbit Parameter Editor_ set the Label, Tool Number (only when a library is selected; the next free number is proposed), the Toolbit Type (editable only for shapes with subtypes, for example Drill: jobber, stub, spot, center, brad point), the shape parameters and the attributes, then press btn:[OK].
-. To edit an existing Tool Bit, double-click it in the Library Manager or in the Toolbit Selector, or select it and press kbd:[F2].
+The _Toolbit Parameter Editor_ dialog shows and changes the values of one Tool Bit.
+The dialog opens from these locations:
 
-=== Toolbit Parameter Editor
+* The _Toolbit Library Manager_ opens the dialog when you add a Tool Bit. See xref:tools/library-manager.adoc[Toolbit Library Manager].
+* A double-click on a Tool Bit in the _Toolbit Library Manager_ or in the _Toolbit Selector_ opens the dialog.
+* kbd:[F2] opens the dialog for the Tool Bit that is selected in one of these two lists.
 
-The editor (window title _Toolbit Parameter Editor_) has two tabs:
+The dialog has two tabs, _Toolbit_ and _Feeds & Speeds_.
+The dialog definition also contains a _Notes_ tab, and the editor hides this tab.
 
-* _Toolbit_: Label, Toolbit Type, optional Tool Number, a Properties list (Shape and Attributes groups) with the abbreviations used in the shape drawing shown next to each parameter, and the shape drawing.
-* _Feeds && Speeds_ [.since]#introduced in 26.3#: a table of the presets stored on the Tool Bit with btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete] buttons; see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
+=== Toolbit
 
-A _Notes_ tab exists in the dialog definition but is hidden.
+* *Label*: the name of the Tool Bit in the interface.
+* *Toolbit Type*: the subtype of the Tool Shape. You can change the value only for a Tool Shape that has subtypes. For example, the `Drill` shape has the subtypes jobber, stub, spot, center and brad point.
+* *Tool Number*: the number of the Tool Bit in the Tool Library. The field is shown only when a Tool Library is selected. For a new Tool Bit, the editor gives the next free number.
+* _Properties_: one field for each property of the _Shape_ group and the _Attributes_ group. The label of a shape parameter shows the abbreviation that the shape drawing uses for this parameter.
+* Shape drawing: the drawing of the Tool Shape with its dimensions. See xref:tools/tool-shape.adoc[Tool Shape].
 
-While the Toolbit Parameter Editor is open, the FreeCAD unit schema is temporarily switched to the Tool Bit's Units setting so that parameters are entered in the tool's native units; the previous schema is restored when the editor closes.
+The figure shows the _Toolbit_ tab for a Tool Bit with the `Endmill` shape.
 
+image::tools/toolbit/editor-toolbit-tab.png["Toolbit Parameter Editor, Toolbit tab, for a 5 mm Endmill, with the properties and the shape drawing",400]
+
+[.since]#introduced in 26.3#: The _Properties_ list does not show a derived property.
+The CAM workbench calculates a derived property from the other shape parameters.
+See <<properties,Properties>> for the derived property of the `Chamfer` shape.
+
+[.since]#introduced in 26.3#: The shape drawing and the _Properties_ list are connected:
+
+* Move the pointer on a dimension in the shape drawing. The editor highlights the dimension and the field of its property.
+* Move the pointer on the row of a property. The editor highlights the dimension of this property in the shape drawing.
+* Click a dimension in the shape drawing. The field of its property gets the keyboard focus, and the editor selects the content of the field.
+
+The figure shows the _Toolbit_ tab with the pointer on the `D` dimension.
+
+image::tools/toolbit/editor-dimension-highlight.png["Toolbit tab with the D dimension of the shape drawing and the Diameter field highlighted",400]
+
+While the editor is open, the unit schema of FreeCAD is the schema of the *Units* value of the Tool Bit.
+Thus you enter each parameter in the unit system of the Tool Bit.
+When the editor closes, the editor sets the unit schema that was active before.
+
+[.since]#introduced in 26.3#: The fields show a `Metric` value with 3 decimals and an `Imperial` value with 4 decimals.
+The decimals preference of FreeCAD does not change the precision of these fields.
+
+=== Feeds & Speeds
+
+[.since]#introduced in 26.3#: The _Feeds & Speeds_ tab shows a table of the xref:reference/glossary.adoc#preset[Presets] that the Tool Bit stores.
+The tab has the buttons btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete].
+A Preset has a name, and a Preset can have a note.
+The figure shows the tab with one Preset.
+
+image::tools/toolbit/editor-feeds-speeds-tab.png["Toolbit Parameter Editor, Feeds & Speeds tab, with one Preset that has a note",400]
+
+See xref:tools/feeds-speeds.adoc[Feeds and Speeds] for the Presets and their use.
+
+[#properties]
 == Properties
 
 .Base
-* *ShapeID* (`String`, read-only): ID of the Tool Shape (`.fcstd`).
-* *ShapeType* (`Enumeration`, read-only): the shape class (Endmill, Ballend, Bullnose, Chamfer, Drill, VBit, Dovetail, Reamer, SlittingSaw, Tap, ThreadMill, Probe, TaperedBallNose, Radius, Custom).
-* *ToolBitID* (`String`, read-only): the unique ID of the Tool Bit (its file name in the library).
-* *BitBody* (`Link`, hidden): the parametrized body.
+* *Shape ID* (`String`, read-only): the ID of the Tool Shape, a `.fcstd` file name.
+* *Shape Type* (`Enumeration`, read-only): the shape class. Values: `Endmill`, `Ballend`, `Bullnose`, `Chamfer`, `Drill`, `VBit`, `Dovetail`, `Reamer`, `SlittingSaw`, `Tap`, `ThreadMill`, `Probe`, `TaperedBallNose`, `Radius`, `Custom`.
+* *Tool Bit ID* (`String`, read-only): the unique ID of the Tool Bit. The ID is the file name of the Tool Bit in the library.
+* *Bit Body* (`Link`, hidden): the body that the shape parameters control.
 
 .Shape
-One property per parameter of the Tool Shape, for example *Diameter*, *Length*, *CuttingEdgeHeight*, *ShankDiameter*, *Flutes*. See xref:tools/tool-shape.adoc[CAM ToolShape] for the list per shape.
+* One property for each parameter of the Tool Shape, for example *Diameter*, *Length*, *Cutting Edge Height*, *Shank Diameter* and *Flutes*. See xref:tools/tool-shape.adoc[Tool Shape] for the parameters of each shape.
+* [.since]#introduced in 26.3# *Diameter* of the `Chamfer` shape (read-only): a derived property. The value is `TipDiameter + 2 * CuttingEdgeHeight * tan(CuttingEdgeAngle / 2)`.
 
 .Attributes
-* *Units* (`Enumeration`: Metric, Imperial) [.since]#introduced in 26.3#: unit system used to display the Tool Bit's parameters.
-* *SpindleDirection* (`Enumeration`: Forward, Reverse, None): default spindle direction; copied to the Tool Controller when the Tool Bit is added to a Job. Probes never rotate.
-* *Material* (`Enumeration`: HSS, Carbide): tool material; used by the Feeds and Speeds helper to pick the matching surface speed of the Stock material.
-* *Chipload* (`Length`, cutting tools only): default chipload per tooth, used as a low-confidence fallback by the Feeds and Speeds helper.
+* [.since]#introduced in 26.3# *Units* (`Enumeration`): the unit system of the Tool Bit. The Tool Bit editor and the Tool Bit file use this unit system. Values: `Metric`, `Imperial`.
+* *Spindle Direction* (`Enumeration`): the default direction of the spindle. The Tool Controller receives this value when you add the Tool Bit to a Job. A Tool Bit with the `Probe` shape does not turn. Values: `Forward`, `Reverse`, `None`.
+* *Material* (`Enumeration`): the material of the Tool Bit. The Feeds and Speeds helper uses the value to select the applicable surface speed of the Stock material. Values: `HSS`, `Carbide`.
+* *Chipload* (`Length`): the default chipload for each tooth. Only a Tool Bit that cuts has this property. The Feeds and Speeds helper uses the value as a fallback of low confidence.
 
 .Feeds & Speeds
-* *Presets* (`String`, only present once a preset was saved) [.since]#introduced in 26.3#: JSON list of Feeds & Speeds presets.
+* [.since]#introduced in 26.3# *Presets* (`String`): a JSON list of the Presets. The Tool Bit has this property only after you save a Preset.
 
-== JSON Structure
+== File format
 
-[.since]#introduced in 26.3#: a ToolBit can define a `Units` parameter: `Metric` or `Imperial`. The ToolBit editor uses it for native-unit display; CAM calculations still use metric units internally. Changing the unit schema may cause small rounding differences.
+A Tool Bit file is a JSON file with the extension `.fctb`.
 
 [source,json]
 ----
@@ -68,13 +122,13 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
   "shape": "endmill.fcstd",
   "shape-type": "Endmill",
   "parameter": {
-    "Chipload": "0.0000 mm",
-    "CuttingEdgeHeight": "30.0000 mm",
-    "Diameter": "5.0000 mm",
+    "Chipload": "0.0500 mm",
+    "CuttingEdgeHeight": "30.000 mm",
+    "Diameter": "5.000 mm",
     "Flutes": 2,
-    "Length": "50.0000 mm",
+    "Length": "50.000 mm",
     "Material": "HSS",
-    "ShankDiameter": "3.0000 mm",
+    "ShankDiameter": "3.000 mm",
     "SpindleDirection": "Forward",
     "Units": "Metric"
   },
@@ -82,7 +136,7 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
   "presets": [
     {
       "name": "Aluminium profile",
-      "material_hint": {"uuid": "…", "name": "Aluminium 6061"},
+      "material_hint": {"uuid": null, "name": "Aluminium 6061"},
       "op_type_hint": "profile",
       "surface_speed": 300.0,
       "chipload": 0.05,
@@ -96,25 +150,87 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
 The keys are:
 
 * `version`: always 2.
-* `id`: the Tool Bit ID (optional; defaults to the file name).
-* `name`: the label shown in the UI.
-* `shape`: Tool Shape ID plus `.fcstd`.
-* `shape-type`: the shape class or subtype (for example `Drill` or `jobber`).
-* `parameter`: shape parameters and attributes as quantity strings.
-* `attribute`: reserved, empty.
-* `presets` [.since]#introduced in 26.3#: optional list of Feeds & Speeds presets (`surface_speed` in m/min, `chipload` in mm per tooth).
+* `id`: the Tool Bit ID. The key is optional. The default is the file name.
+* `name`: the label that the interface shows.
+* `shape`: the ID of the Tool Shape with the extension `.fcstd`.
+* `shape-type`: the shape class or the subtype, for example `Drill` or `jobber`.
+* `parameter`: the shape parameters and the attributes. A quantity is a string with a value and a unit.
+* `attribute`: reserved and empty.
+* [.since]#introduced in 26.3# `presets`: an optional list of Presets. `surface_speed` is in m/min. `chipload` is in mm for each tooth. `notes` is optional free text.
 
-Unknown top-level keys are preserved when the file is re-saved.
+When the CAM workbench saves the file again, it keeps the top-level keys that it does not know.
+
+[.since]#introduced in 26.3#: The `Units` parameter has the value `Metric` or `Imperial`.
+The Tool Bit files that FreeCAD supplies contain this parameter.
+The CAM workbench calculates in metric units internally.
+A change of the *Units* value can cause small differences because of the round-off.
+
+[.since]#introduced in 26.3#: The CAM workbench writes each quantity in the unit system of the *Units* value of the Tool Bit.
+A `Metric` quantity has 3 decimals, and an `Imperial` quantity has 4 decimals.
+A `Metric` length less than 0.1 mm has 4 decimals.
+The active unit schema and the decimals preference of FreeCAD do not change the values in the file.
 
 == Tool Bits in a document
 
-In a Job the Tool Bit object is shown as a child of its xref:tools/tool-controller.adoc[Tool Controller] and is hidden by default. Several Tool Controllers may reference the same Tool Bit object.
+In a Job, the https://wiki.freecad.org/Tree_view[tree view] shows the Tool Bit object as a child of its xref:tools/tool-controller.adoc[Tool Controller].
+The Tool Bit object is hidden by default.
+A Tool Bit object in a document belongs to one Tool Controller.
 
-A Tool Bit placed in a document can be written back to a file from its tree-view context menu: menu:Save Tool[] (only if the object came from a file) and menu:Save Tool As…[] open a save dialog offering the FreeCAD Tool (`.fctb`) and YAML formats. The commands `CAM_ToolBitCreate` (New Toolbit) and `CAM_ToolBitLoad` (Load Tool) exist but are not placed in any menu.
+[.since]#introduced in 26.3#: A double-click on the Tool Bit object in the tree view opens the https://wiki.freecad.org/Task_panel[task panel] of the Tool Bit.
+The task panel shows the properties form and the shape drawing of the Tool Bit editor.
 
-== Update from library
+image::tools/toolbit/task-panel.png["Task panel of a Tool Bit object, with the properties form and the shape drawing",600]
 
-[.since]#introduced in 26.3#: when a document is opened, embedded Tool Bits are compared with the library Tool Bit that has the same *ToolBitID*. If presets or Shape-group values differ, the _Tool Updates Available_ dialog lists the differences (expand a row to see old and new values) and replaces checked Tool Bits with the library version. The same check is available from the Job's context menu entry menu:Update Tools from Library[]. The automatic check can be turned off in menu:Edit[Preferences > CAM > Assets] (*Check for tool updates from the library when opening a document*).
+btn:[OK] applies the changes to the Tool Bit.
+btn:[Cancel] discards all changes that you made in the task panel.
+
+[.since]#introduced in 26.3#: The menu:Transform[] entry of the context menu starts the https://wiki.freecad.org/Std_TransformManip[Std TransformManip] command for the Tool Bit object.
+This command moves and turns the solid of the Tool Bit in the 3D view.
+
+The context menu of the Tool Bit object in the tree view writes the Tool Bit to a file:
+
+* menu:Save Tool[]: saves the Tool Bit to its file. The entry is available only if the Tool Bit object came from a file.
+* menu:Save Tool As…[]: opens a save dialog. The dialog gives the formats FreeCAD Tool (`.fctb`) and YAML.
+
+The command `CAM_ToolBitCreate` has the label _New Toolbit_, and the command `CAM_ToolBitLoad` has the label _Load Tool_.
+No menu contains these two commands.
+
+== Update from the Tool Library
+
+[.since]#introduced in 26.3#: The CAM workbench compares each Tool Bit of a Job with the Tool Bit in the library that has the same *Tool Bit ID*.
+The comparison includes the Presets and the properties of the _Shape_ group.
+The CAM workbench does not compare or change a Tool Bit that has no match in the library.
+When the *Shape Type* of the two Tool Bits is different, the CAM workbench does not compare the _Shape_ group.
+
+The comparison starts in two conditions:
+
+* You open a document. The comparison occurs one time for each load of the document. The checkbox *Check for tool updates from the library when opening a document* in menu:Edit[Preferences > CAM > Assets] sets or stops this comparison.
+* You select menu:Update Tools from Library[] in the context menu of the Job. When no Tool Bit is different, a message tells you that no updates are available.
+
+When a Tool Bit is different, the _Tool Updates Available_ dialog opens.
+The table of the dialog has one row for each Tool Bit that is different, with these columns:
+
+* Checkbox: selects the Tool Bit for the update. Default: set. The checkbox in the table header sets or clears all rows.
+* *Job*: the label of the Job.
+* *Tool #*: the number of the Tool Controller.
+* *Tool*: the label of the Tool Bit.
+* *Changes*: the type of the difference, `Presets`, `Geometry` or the two. Expand a row with `Geometry` to see each changed property with its old value and its new value.
+
+The *Changes* column shows the two values in the unit system of the library Tool Bit.
+The figure shows the dialog with one `Presets` row and one expanded `Geometry` row.
+
+image::tools/toolbit/tool-updates-available.png["Tool Updates Available dialog with a Presets row and an expanded Geometry row with old and new values",400]
+
+The dialog has two buttons:
+
+* btn:[Update]: replaces each selected Tool Bit with a new copy of the library Tool Bit, then recomputes the document. The button is not available when no row is selected.
+* btn:[Cancel]: closes the dialog and changes nothing. btn:[Cancel] is the default button.
+
+The update replaces the whole Tool Bit: the Presets, the shape parameters, the attributes and the *Units* value.
+The CAM workbench links the Tool Controller to the new Tool Bit object and removes the old Tool Bit object from the document.
+The new Tool Bit object is hidden.
+
+CAUTION: Examine the *Changes* column before you press btn:[Update]. The update replaces the whole Tool Bit, and values that you changed only in the document are lost.
 
 == Scripting
 
@@ -134,13 +250,14 @@ from Path.Tool.camassets import cam_assets
 tb3 = cam_assets.get("toolbit://5mm_Endmill")
 ----
 
-The legacy module `PathScripts.PathToolBit` is no longer available.
+The module `PathScripts.PathToolBit` does not exist.
 
 == Related
 
-* xref:tools/index.adoc[CAM Tools]
-* xref:tools/tool-shape.adoc[CAM ToolShape]
-* xref:tools/toolbit-library.adoc[CAM ToolBit Library]
-* xref:tools/library-manager.adoc[CAM ToolBitLibraryOpen]
-* xref:tools/add-toolbit.adoc[CAM ToolBitDock]
-* xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds]
+* xref:tools/index.adoc[Tools]
+* xref:tools/tool-shape.adoc[Tool Shape]
+* xref:tools/tool-controller.adoc[Tool Controller]
+* xref:tools/library-manager.adoc[Toolbit Library Manager]
+* xref:tools/toolbit-library.adoc[Tool Library]
+* xref:tools/add-toolbit.adoc[Toolbit Dock]
+* xref:tools/feeds-speeds.adoc[Feeds and Speeds]

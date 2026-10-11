@@ -1,46 +1,132 @@
-= CAM ToolBit Library
+= Tool Library
 :page-origin: https://wiki.freecad.org/CAM_ToolBit_Library
 :page-origin-revision: db6e1c2df9 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32211,32220
+:page-status: draft
+:description: A Tool Library is a numbered list of Tool Bits on the disk, and the Toolbit Selector dialog adds its Tool Bits to a Job.
 
-== Description
+== Overview
 
-Within the xref:tools/index.adoc[CAM Tools] system, Tool Bits are organized into libraries. A library is simply a list of Tool Bits and can be used by the user for whichever purpose is needed. A Tool Library is nevertheless a great representation for a physical grouping of tools, such as in an automatic tool changer. Or tools might be grouped by intended use, for example all tools for cutting plastic.
+A xref:reference/glossary.adoc#tool-library[Tool Library] is a list of xref:reference/glossary.adoc#tool-bit[Tool Bits] that the CAM workbench stores on the disk.
+A Tool Library is independent of a xref:reference/glossary.adoc#job[Job], and each document can use it.
+A Tool Library can represent a physical group of Tool Bits, for example the Tool Bits in an automatic tool changer.
+A Tool Library can also contain the Tool Bits for one purpose, for example all Tool Bits that cut plastic.
 
-A Tool Library is a JSON file (`.fctl`) in the `Tools/Library` folder of the asset directory. It maps tool numbers to Tool Bit IDs; the Tool Bits themselves live in `Tools/Bit`. As a consequence each Tool Bit can be in multiple libraries.
+A Tool Library is a JSON file with the extension `.fctl` in the `Tools/Library` folder of the asset directory.
+The file gives a number to each Tool Bit ID.
+The Tool Bit files are in the `Tools/Bit` folder of the asset directory.
+Thus one Tool Bit can be a member of more than one Tool Library.
+xref:tools/index.adoc[Tools] gives the relation between Tool Bit, Tool Library and xref:reference/glossary.adoc#tool-controller[Tool Controller].
 
-[.since]#introduced in 1.1#: libraries are stored in the asset directory and edited with the rewritten Library Manager; drag and drop and copy/paste between libraries were added.
+FreeCAD supplies one Tool Library with the label `Default`.
+The `Default` Tool Library contains 13 Tool Bits with these xref:tools/tool-shape.adoc[Tool Shapes]:
 
-FreeCAD ships one library, _Default_, with 13 Tool Bits (3.175 mm and 5 mm endmills, 5 mm drill, 6 mm ball end, 6 mm bullnose, 30/45/60/90 degree V-bits, 45 degree chamfer, slitting saw, probe, 5 mm thread cutter). It is copied into the asset directory the first time the Library Manager or Toolbit Selector is opened.
+* `Endmill`: one Tool Bit of 3.175 mm and one Tool Bit of 5 mm
+* `Drill`: one Tool Bit of 5 mm
+* `Ballend`: one Tool Bit of 6 mm
+* `Bullnose`: one Tool Bit of 6 mm
+* `VBit`: four Tool Bits, of 30, 45, 60 and 90 degrees
+* `Chamfer`: one Tool Bit of 45 degrees
+* `SlittingSaw`: one Tool Bit
+* `Probe`: one Tool Bit
+* `ThreadMill`: one Tool Bit of 5 mm
 
+The CAM workbench copies the `Default` Tool Library into the asset directory when you open the _Library Manager_ dialog or the _Toolbit Selector_ dialog for the first time.
+
+[#tool-numbers]
 == Tool numbers
 
-A Tool Bit has a permanent ID (its file name, shown as *ToolBitID*). The tool number, however, belongs to the library: the same Tool Bit can have different numbers in different libraries. Numbers are unique within a library; giving a Tool Bit a number that is already in use moves the other Tool Bit to the next free number. When a Tool Controller is created from a library entry, the library number becomes the Tool Controller's *Tool Number*, which can be changed afterwards.
+A Tool Bit has a permanent ID, which is the file name of the Tool Bit.
+The *Tool Bit ID* property shows this ID.
+The number of a Tool Bit is a property of the Tool Library.
+Thus the same Tool Bit can have different numbers in different Tool Libraries.
 
-== Usage
+The number of a Tool Bit is unique in one Tool Library.
+When you give a Tool Bit a number that a different Tool Bit has, that Tool Bit moves to the next free number.
 
-Libraries are managed in the xref:tools/library-manager.adoc[Library Manager] (menu:CAM[Toolbit Library Manager]):
+A Job has its own numbers.
+The *Tool Number* property of each Tool Controller (TC) holds the number that the Job uses.
+When you add a Tool Bit to a Job, the number in the Tool Library is only the proposal for *Tool Number*.
 
-* btn:[Adds a new library]: opens the _Library Properties_ dialog asking for a Name.
-* btn:[Renames the library] (also kbd:[F2] in the library list).
-* btn:[Removes the library] (also kbd:[Del]); the Tool Bits it lists are kept on disk.
-* btn:[Imports a library] from a `.fctl` or Camotics `.json` file; Tool Bits referenced by an imported file are imported from the `Bit` folder next to it if they are not yet in the asset directory.
-* btn:[Exports the library] as `.fctl`, Camotics `.json` or LinuxCNC tool table `.tbl`.
+[.since]#introduced in 26.3#: The CAM workbench sets *Tool Number* of the new TC as follows:
 
-Tool Bits are added to a library with btn:[Adds a toolbit] (new Tool Bit), btn:[Imports a toolbit] (`.fctb` or YAML file), copy/cut/paste between libraries, or by dragging Tool Bits from the list onto a library in the left pane. The pseudo-library _All Toolbits_ lists every Tool Bit in the asset directory regardless of library membership.
+* No TC of the Job has the library number: the new TC gets the library number.
+* A TC of the same Tool Bit has the library number: the new TC gets the library number.
+* A TC of a different Tool Bit has the library number: the _Tool Number_ dialog asks you for a different number.
+* The Tool Bit has no library number: the new TC gets a number that is free in the Job.
 
-The library last selected in the Library Manager or Toolbit Selector and the last sort order are remembered between sessions (parameters `LastToolLibrary` and `LastToolLibrarySortKey` under `Preferences/Mod/CAM/Tools`). Changing the asset path resets the remembered library.
+You can change *Tool Number* after the CAM workbench creates the TC.
+Two TCs of a Job can have the same number only when they use the same Tool Bit.
+See xref:tools/tool-controller.adoc[Tool Controller].
 
-== Export
+== Add Tool Bits to a Job
 
-A library can be exported with btn:[Exports the library] in the Library Manager as:
+The _Toolbit Selector_ dialog shows the Tool Bits of a Tool Library and adds the selected Tool Bits to a Job.
+The xref:tools/add-toolbit.adoc[Toolbit Dock] command opens the dialog.
+[.since]#introduced in 26.3#: The Job editor and the Tool Controller selection of an Operation open the same dialog.
 
-* FreeCAD Tool Library (`.fctl`),
-* Camotics tool table (`.json`),
-* http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ToolTable[LinuxCNC Tool Table] (`.tbl`): one line per tool, `T<number> P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D<diameter> I0 J0 Q0 ;<label>`, with the diameter in the user's preferred length unit and the number of decimals from the unit preferences. [.since]#introduced in 1.1#
+The library list of the dialog contains each Tool Library in the asset directory.
+[.since]#introduced in 26.3#: The first entry of the library list is _All Tools_.
+The _All Tools_ entry shows each Tool Bit in the asset directory, also a Tool Bit that is in no Tool Library.
 
-== JSON Structure
+A Tool Bit in the _All Tools_ view has no number, because a Tool Library gives the number.
+The dialog hides the sort control in the _All Tools_ view and sorts the list by label.
+The _All Tools_ view does not change the sort sequence that the CAM workbench stores for a Tool Library.
+The figure shows the dialog with the _All Tools_ entry selected.
+
+image::tools/toolbit-library/toolbit-selector-all-tools.png["Toolbit Selector dialog with the All Tools entry selected in the library list, without a sort control and without tool numbers",400]
+
+For each selected Tool Bit, the dialog does these steps:
+
+. The dialog finds the number for the TC. See <<tool-numbers,Tool numbers>>.
+. The dialog adds the Tool Bit object to the document. The Tool Bit object is hidden.
+. The dialog creates a TC with the label `TC:` and the label of the Tool Bit.
+. The dialog adds the TC to the Job.
+
+[.since]#introduced in 26.3#: The _Tool Number_ dialog opens in these two conditions:
+
+* A TC of a different Tool Bit has the library number. The dialog shows the text `Tool number <number> is already used by <label>.` with the number and the label of that TC.
+* The Tool Bit has no library number, and the xref:tools/add-toolbit.adoc[Toolbit Dock] command opened the _Toolbit Selector_ dialog. The dialog shows the text `Tool number for <label>:` with the label of the Tool Bit.
+
+The figure shows the _Tool Number_ dialog for the first condition.
+
+image::tools/toolbit-library/tool-number-dialog-conflict.png["Tool Number dialog with the text Tool number 1 is already used by TC: 5mm Endmill, and the next free number 2 as the value",400]
+
+The default value of the _Tool Number_ dialog is the next free number of the Job.
+The minimum value is 1.
+If you enter a number that a TC of a different Tool Bit has, the _Tool Number_ dialog opens again.
+If you cancel the _Tool Number_ dialog, the CAM workbench does not add this Tool Bit to the Job.
+If no Tool Bit was added, the _Toolbit Selector_ dialog stays open.
+
+btn:[Open Library Editor] opens the _Library Manager_ dialog.
+See xref:tools/library-manager.adoc[Toolbit Library Manager].
+See xref:tools/toolbit.adoc[Tool Bit] for the _Toolbit Parameter Editor_ dialog that changes one Tool Bit.
+
+== Tool Library management
+
+The _Library Manager_ dialog creates, changes and arranges each Tool Library.
+menu:CAM[Toolbit Library Manager] opens the dialog.
+xref:tools/library-manager.adoc[Toolbit Library Manager] describes the controls of the dialog.
+
+These facts apply to the Tool Library commands of the _Library Manager_:
+
+* btn:[Adds a new library] opens the _Library Properties_ dialog, which asks for the name of the Tool Library.
+* kbd:[F2] in the library list has the same function as btn:[Renames the library].
+* kbd:[Del] in the library list has the same function as btn:[Removes the library]. The Tool Bit files of the removed Tool Library stay on the disk.
+* btn:[Imports a library] reads a `.fctl` file or a Camotics `.json` file. The import also reads the Tool Bits from the `Bit` folder adjacent to the file when the asset directory does not contain them.
+* btn:[Imports a toolbit] reads a `.fctb` file or a YAML file.
+
+The _All Toolbits_ entry of the _Library Manager_ lists each Tool Bit in the asset directory.
+
+The CAM workbench keeps the last selected Tool Library and the last sort sequence between sessions.
+The parameters `LastToolLibrary` and `LastToolLibrarySortKey` in `Preferences/Mod/CAM/Tools` hold these two values.
+A change of the asset directory clears the stored Tool Library.
+
+== File format
+
+A Tool Library file is a JSON file with the extension `.fctl`.
 
 [source,json]
 ----
@@ -60,7 +146,51 @@ A library can be exported with btn:[Exports the library] in the Library Manager 
 }
 ----
 
-The `label` is the name shown in the UI; if missing, the file name is used. Each `path` is the ID of a Tool Bit in `Tools/Bit`.
+The keys are:
+
+* `label`: the name that the interface shows. If the key is absent, the CAM workbench uses the file name.
+* `tools`: the list of the Tool Bits.
+* `nr`: the number of the Tool Bit in this Tool Library.
+* `path`: the ID of a Tool Bit in the `Tools/Bit` folder.
+* `version`: the version of the file format.
+
+== Export formats
+
+btn:[Exports the library] in the _Library Manager_ writes the selected Tool Library in one of these formats:
+
+* FreeCAD Tool Library (`.fctl`)
+* Camotics tool table (`.json`)
+* [.since]#introduced in 1.1# http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ToolTable[LinuxCNC Tool Table] (`.tbl`)
+
+=== Camotics tool table
+
+The Camotics file has one entry for each Tool Bit.
+The key of the entry is the number of the Tool Bit.
+The export writes these keys in each entry:
+
+* `units`: the unit system of the entry. Values: `metric`, `imperial`.
+* `diameter`: the diameter of the Tool Bit, in mm for `metric` and in inch for `imperial`.
+* `length`: the length of the Tool Bit, in the same unit as `diameter`.
+* `description`: the label of the Tool Bit.
+* `shape`: the Camotics name of the shape. The value is `Cylindrical` for a Tool Shape that has no Camotics equivalent.
+
+[.since]#introduced in 26.3#: The active unit schema of FreeCAD selects the unit system of each entry.
+When the unit schema shows the diameter of the Tool Bit in an imperial unit, the export writes inch and the `units` value `imperial`.
+In all other conditions, the export writes mm and the `units` value `metric`.
+
+[.since]#introduced in 26.3#: The export rounds `diameter` and `length` to the number of decimals that menu:Edit[Preferences > General > Units] sets.
+
+[.since]#introduced in 26.3#: The import reads `diameter` and `length` in the unit that the `units` key of the entry names.
+See xref:tools/library-manager.adoc[Toolbit Library Manager].
+
+=== LinuxCNC Tool Table
+
+The LinuxCNC file has one line for each Tool Bit:
+
+`T<number> P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D<diameter> I0 J0 Q0 ;<label>`
+
+The diameter is in the length unit of the active unit schema.
+The unit preferences set the number of decimals of the diameter.
 
 == Scripting
 
@@ -74,3 +204,12 @@ for bit in lib:
 lib.add_bit(bit, bit_no=20)
 cam_assets.add(lib)  # save
 ----
+
+== Related
+
+* xref:tools/index.adoc[Tools]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/library-manager.adoc[Toolbit Library Manager]
+* xref:tools/add-toolbit.adoc[Toolbit Dock]
+* xref:tools/tool-controller.adoc[Tool Controller]
+* xref:tools/tool-shape.adoc[Tool Shape]

@@ -1,48 +1,119 @@
-= CAM ToolBitDock
+= Add Toolbit…
 :page-origin: https://wiki.freecad.org/CAM_ToolBitDock
 :page-origin-revision: 5ac993245b 2026-07-08
 :page-command: CAM_ToolBitDock
 :page-icon: CAM_ToolTable.svg
 :page-menu: CAM → Add Toolbit…
+:page-toolbar: Tool Commands
 :page-workbench: CAM
-:page-shortcut: P T
+:page-shortcut: P, T
 :page-since: 0.19
 :page-see-also: CAM ToolBitLibraryOpen, CAM Tools, CAM ToolBit
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32211,32278,32371
+:page-status: draft
+:description: The Add Toolbit… command opens the Toolbit Selector dialog, which creates Tool Controllers in a Job from the Tool Bits that you select.
 
 [.fcinfobox]
 --
 [.fcTitle]
-image:CAM_ToolTable.svg[CAM ToolBitDock,32] *CAM ToolBitDock*
+image:CAM_ToolTable.svg[Add Toolbit…,32] *Add Toolbit…*
 
 Menu location:: menu:CAM[Add Toolbit…]
-Toolbar:: Tool Commands → Add Toolbit…
+Toolbar:: _Tool Commands_ → btn:[Add Toolbit…]
 Workbenches:: xref:index.adoc[CAM]
-Default shortcut:: kbd:[P] kbd:[T]
-Introduced in version:: 0.19 (dialog rewritten in 1.1)
-See also:: xref:tools/library-manager.adoc[CAM ToolBitLibraryOpen], xref:tools/index.adoc[CAM Tools], xref:tools/toolbit.adoc[CAM ToolBit]
+Default shortcut:: kbd:[P,T]
+Introduced in version:: 0.19
+See also:: xref:tools/library-manager.adoc[Toolbit Library Manager], xref:tools/toolbit-library.adoc[Tool Library], xref:tools/toolbit.adoc[Tool Bit], xref:tools/index.adoc[Tools]
 --
 
 == Description
 
-The *Add Toolbit…* command opens the _Toolbit Selector_, a dialog that shows the Tool Bits of a library and creates Tool Controllers in the active Job from the selected Tool Bits. Despite the command name it is a dialog, not a dock panel. [.since]#introduced in 1.1#: the Toolbit Selector replaced the earlier Tool Bit dock panel.
+The *Add Toolbit…* command opens the _Toolbit Selector_ dialog.
+The dialog shows the xref:reference/glossary.adoc#tool-bit[Tool Bits] of a xref:reference/glossary.adoc#tool-library[Tool Library].
+The dialog creates one xref:reference/glossary.adoc#tool-controller[Tool Controller] (TC) in a xref:reference/glossary.adoc#job[Job] for each Tool Bit that you select.
+The command requires a document that contains a Job.
 
-Double-clicking a Tool Bit creates one Tool Controller for it. Selecting several Tool Bits and pressing btn:[Add to Job] creates one Tool Controller per selected Tool Bit. The btn:[Add to Job] button is only enabled when a Tool Bit is selected and the document contains a Job.
-
-The first row of the dialog holds the library drop-down (the last used library is preselected), the _All Toolbit Types_ filter and the sort drop-down; below it is a search box. Each list entry shows the tool number in the selected library, the label, a one-line summary and the shape icon. The buttons at the bottom are btn:[Open Library Editor] (opens the xref:tools/library-manager.adoc[Library Manager]), btn:[Add to Job] and btn:[Close].
-
-If the document contains no Job, the message _Create a Job first_ is shown. If it contains several Jobs, a dialog asks which Job to add the Tool Controllers to. The new Tool Controller is named _TC: <Tool Bit label>_, gets the Tool Bit's number in the selected library as *Tool Number* and the Tool Bit's *Spindle Direction*.
-
-The same Tool Bit browser is used by the Job editor (Tools tab → btn:[Add], dialog _Select Toolbit_, which additionally offers _All Tools_; Tool Bits taken from _All Tools_ get the next free tool number of the Job) and by the _Tool controller_ drop-down of an operation's task panel, whose last entry opens the Toolbit Selector to create a new Tool Controller.
+xref:tools/toolbit-library.adoc[Tool Library] describes how the dialog adds a Tool Bit to a Job.
+xref:tools/toolbit-library.adoc#tool-numbers[Tool numbers] describes how the CAM workbench sets the number of the new TC.
 
 == Usage
 
-=== Create Tool Controllers
+. Open the _Toolbit Selector_ dialog with one of these controls:
+* Press the image:CAM_ToolTable.svg[Add Toolbit…,16] btn:[Add Toolbit…] button in the _Tool Commands_ toolbar.
+* Select menu:CAM[Add Toolbit…].
+* Press kbd:[P] and then kbd:[T].
+. Select a Tool Library in the library list, or select _All Tools_.
+. Select one or more Tool Bits in the list.
+. Press btn:[Add to Job]. As an alternative, double-click one Tool Bit.
+. If the document contains more than one Job, select the Job in the dialog that opens.
+. If the _Tool Number_ dialog opens, enter the number for the TC and press btn:[OK].
+. Press btn:[Close].
 
-. There are several ways to open the Toolbit Selector:
-* Press the image:CAM_ToolTable.svg[width=16] btn:[Add Toolbit…] button in the Tool Commands toolbar.
-* Select the menu:CAM[Add Toolbit…] option from the menu.
-* Use the keyboard shortcut: kbd:[P] then kbd:[T].
-. Select a library in the drop-down.
-. Double-click a Tool Bit, or select one or more Tool Bits and press btn:[Add to Job].
+== Options
+
+The _Toolbit Selector_ dialog has these controls above the Tool Bit list:
+
+* Library list: selects the Tool Library that the dialog shows. The dialog opens with the Tool Library that you used last.
+* [.since]#introduced in 26.3# _All Tools_: the first entry of the library list. The entry shows each Tool Bit in the asset directory.
+* Type filter: shows only the Tool Bits of one shape type. Default: `All Toolbit Types`.
+* Sort list: sets the sequence of the Tool Bit list. The dialog hides this control when _All Tools_ is selected.
+* Search box: shows only the Tool Bits that match the text.
+
+The figure shows the dialog with _All Tools_ selected.
+
+image::tools/add-toolbit/toolbit-selector-all-tools.png["Toolbit Selector dialog with All Tools selected, without the sort list and without numbers in the rows",400]
+
+Each row of the Tool Bit list shows these items:
+
+* The number of the Tool Bit in the selected Tool Library. A Tool Bit in the _All Tools_ view has no number.
+* The label of the Tool Bit.
+* The summary of the Tool Bit, on one line.
+* The shape icon of the Tool Bit. The icon shows the Tool Bit artwork without the dimensions. See xref:tools/tool-shape.adoc[Tool Shape].
+
+The figure shows the dialog with the `Default` Tool Library selected.
+
+image::tools/add-toolbit/toolbit-selector.png["Toolbit Selector dialog with the Default Tool Library selected, where each row shows the number, the label, the summary and the shape icon of a Tool Bit",400]
+
+[.since]#introduced in 26.3#: The summary shows each length in the unit system of the Tool Bit.
+A `Metric` length has 3 decimals, and an `Imperial` length has 4 decimals.
+An example of a summary is _5.000 mm 4-flute endmill, 30.000 mm cutting edge_.
+
+The dialog has these buttons below the Tool Bit list:
+
+* btn:[Open Library Editor]: opens the _Library Manager_ dialog. See xref:tools/library-manager.adoc[Toolbit Library Manager].
+* btn:[Add to Job]: creates one TC for each selected Tool Bit. The button is available only when a Tool Bit is selected and the document contains a Job.
+* btn:[Close]: closes the dialog.
+
+== Notes and limitations
+
+* The _Toolbit Selector_ is a dialog. The _Toolbit Selector_ is not a dock panel.
+* If the document contains no Job, the message _Create a Job first_ appears.
+* The new TC has the label `TC:` and the label of the Tool Bit.
+* The new TC gets the *Spindle Direction* value of the Tool Bit.
+* The number of the Tool Bit in the Tool Library is only the proposal for the *Tool Number* property of the new TC.
+* Two TCs of a Job can have the same *Tool Number* only when they use the same Tool Bit.
+
+[.since]#introduced in 26.3#: The _Tool Number_ dialog asks for a number when the Tool Bit has no library number.
+The _Tool Number_ dialog also asks for a number when a TC of a different Tool Bit has the library number.
+If you cancel the _Tool Number_ dialog, the CAM workbench does not add this Tool Bit to the Job.
+See xref:tools/toolbit-library.adoc#tool-numbers[Tool numbers] for the full rules.
+The figure shows the _Tool Number_ dialog when a TC of a different Tool Bit has the library number.
+
+image::tools/add-toolbit/tool-number-dialog.png["Tool Number dialog with the text Tool number 1 is already used by TC: 5mm Endmill, and the next free number 2 as the value",400]
+
+[.since]#introduced in 26.3#: These controls open the same _Toolbit Selector_ dialog:
+
+* btn:[Add] on the _Tools_ tab of the Job editor.
+* The last entry of the *Tool controller* list in the task panel of an xref:reference/glossary.adoc#operation[Operation].
+* The command `CAM_ToolController`. No menu and no toolbar contains this command.
+
+== Related
+
+* xref:tools/index.adoc[Tools]
+* xref:tools/toolbit-library.adoc[Tool Library]
+* xref:tools/library-manager.adoc[Toolbit Library Manager]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/tool-controller.adoc[Tool Controller]
+* xref:tools/tool-shape.adoc[Tool Shape]

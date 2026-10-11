@@ -1,80 +1,176 @@
-= CAM ToolController
+= Tool Controller
 :page-origin: https://wiki.freecad.org/CAM_ToolController
 :page-origin-revision: 50f2b935e9 2025-01-23
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32129
+:page-source-pr: 31300,31691,32129,32211
 :page-status: draft
+:description: A Tool Controller connects one Tool Bit to the Spindle Speed, the feeds and the rates of the rapid moves that the Operations of a Job use.
 
-== Description
+== Overview
 
-A Tool Controller is the object that an Operation references to know which xref:tools/toolbit.adoc[Tool Bit] to use and with which spindle speed, feed rates and rapid rates. It lives in the Tools group of a xref:job/job.adoc[Job] and owns one Tool Bit object (shown as its child in the tree). The same Tool Bit can be used by several Tool Controllers with different settings, for example roughing and finishing. When the Job is post-processed, the Tool Controller emits the tool change (`T` and `M6`), spindle speed (`S`) and spindle direction (`M3`, `M4` or `M5`) commands.
+A xref:reference/glossary.adoc#tool-controller[Tool Controller] (TC) connects one xref:reference/glossary.adoc#tool-bit[Tool Bit] to a Spindle Speed, a set of feeds and the rates of the rapid moves.
+An xref:reference/glossary.adoc#operation[Operation] refers to a TC, and does not refer to a Tool Bit directly.
+The TC is in the Tools group of a xref:reference/glossary.adoc#job[Job]. See xref:job/job.adoc[Job].
 
-== Usage
+The TC owns one Tool Bit object.
+The https://wiki.freecad.org/Tree_view[tree view] shows the Tool Bit object as a child of the TC.
+The figure shows a TC and its Tool Bit object in the Tools group of a Job.
 
-Tool Controllers are created by:
+image::tools/tool-controller/tree-view.png["Tree view of a Job, with a Tool Controller in the Tools group and the Tool Bit object below the Tool Controller",400]
 
-* xref:tools/add-toolbit.adoc[CAM ToolBitDock] (menu:CAM[Add Toolbit…]),
-* the btn:[Add] button of the Tools tab in the Job task panel,
-* the last two entries of the _Tool controller_ drop-down in an operation's task panel (create a new Tool Controller from the Toolbit Selector, or copy the current one).
+See xref:tools/toolbit.adoc[Tool Bit] for the Tool Bit and its properties.
 
-They are edited by double-clicking the Tool Controller in the tree (Tool Controller Editor task panel), with the btn:[Edit] button of the Job's Tools tab, or [.since]#introduced in 1.1# directly in the Tool Controller page of an operation's task panel ([.since]#26.3 and later#: shown on its own tab). A Tool Controller that is used by an operation cannot be deleted from the Job editor.
+More than one TC can use the same Tool Bit with different values.
+For example, one TC has the values for the rough cut, and a second TC has the values for the finish cut.
+xref:tools/index.adoc[Tools] gives the relation between Tool Bit, xref:reference/glossary.adoc#tool-library[Tool Library] and TC.
 
-== Task panel
+When you post-process the Job, the TC supplies these commands:
 
-* _Controller Name_ / _Tool Number_: the label and the number used for the `T` command.
-* _Horizontal feed_, _Vertical feed_, _Lead-in feed_, _Lead-out feed_, _Ramp feed_, _Horizontal rapid_, _Vertical rapid_.
-* _Spindle_: direction (Forward, Reverse, None) and speed in rpm.
-* [.since]#introduced in 26.3# btn:[Feeds and Speeds Wizard] button: opens the _Suggest Feeds & Speeds_ dialog, see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
+* The Tool Bit change: `T` and `M6`.
+* The Spindle Speed: `S`.
+* The spindle direction: `M3`, `M4` or `M5`.
 
-When the editor is embedded in an operation's task panel, a warning states how many other operations use the same Tool Controller.
+== Create a Tool Controller
+
+The _Toolbit Selector_ dialog creates one TC for each Tool Bit that you add to a Job.
+These controls open the dialog:
+
+* The xref:tools/add-toolbit.adoc[Add Toolbit…] command, menu:CAM[Add Toolbit…].
+* btn:[Add] on the _Tools_ tab of the Job editor.
+* The entry for a new TC in the *Tool controller* list in the task panel of an Operation.
+
+The *Tool controller* list in the task panel of an Operation also has an entry that copies the current TC.
+
+[.since]#introduced in 26.3#: The command `CAM_ToolController` opens the same _Toolbit Selector_ dialog.
+No menu and no toolbar contains this command.
+The command does nothing when the document contains no Job.
+
+xref:tools/toolbit-library.adoc[Tool Library] describes how the dialog adds a Tool Bit to a Job.
+
+== Tool Controller editor
+
+The _Tool Controller Editor_ shows and changes the values of one TC.
+These controls open the editor:
+
+* A double-click on the TC in the tree view opens the _Tool Controller Editor_ task panel.
+* btn:[Edit] on the _Tools_ tab of the Job editor opens the editor.
+* [.since]#introduced in 1.1# The task panel of an Operation contains the editor for the TC of the Operation.
+
+[.since]#introduced in 26.3#: The task panel of an Operation shows the editor on a separate tab.
+
+The figure shows the _Tool Controller Editor_ task panel.
+
+image::tools/tool-controller/editor.png["Tool Controller Editor task panel, with the Controller Name, the feeds that include No-Engagement feed, the rapid rates and the Spindle group",600]
+
+The editor has these controls:
+
+* *Controller Name*: the label of the TC.
+* *Tool Number*: the number for the `T` command. See <<tool-numbers,Tool numbers>>.
+* *Horizontal feed*: the feed for horizontal moves.
+* *Vertical feed*: the feed for vertical moves.
+* *Lead-in feed*: the feed for lead-in moves.
+* *Lead-out feed*: the feed for lead-out moves.
+* *Ramp feed*: the feed for ramp moves.
+* [.since]#introduced in 26.3# *No-Engagement feed*: the feed for moves in which the Tool Bit does not engage material and is not retracted. Minimum: 0.
+* *Horizontal rapid*: the rate of the horizontal rapid moves.
+* *Vertical rapid*: the rate of the vertical rapid moves.
+* _Spindle_: the direction and the speed of the spindle. Direction values: `Forward`, `Reverse`, `None`. The speed is in rpm.
+* [.since]#introduced in 26.3# btn:[Feeds and Speeds Wizard]: opens the _Suggest Feeds & Speeds_ dialog. See xref:tools/feeds-speeds.adoc[Feeds and Speeds].
+
+When the editor is in the task panel of an Operation, a warning gives the number of other Operations that use the same TC.
+
+You cannot delete a TC in the Job editor while an Operation uses the TC.
+
+[#tool-numbers]
+== Tool numbers
+
+The *Tool Number* property of a TC holds the number that the Job uses for the Tool Bit.
+Two TCs of a Job can have the same *Tool Number* only when they use the same Tool Bit.
+The CAM workbench compares the *Tool Bit ID* values of the two Tool Bits to find if the Tool Bits are the same.
+Two TCs with the same Tool Bit and the same number give one Tool Bit two sets of feeds and speeds.
+
+[.since]#introduced in 26.3#: The *Tool Number* field of the editor does not accept a number that a TC of a different Tool Bit has.
+The _Tool Number In Use_ message shows the text `Tool number <number> is already used by <label>.` with the label of that TC.
+The field then shows the number that the TC had before, and the TC keeps this number.
+The figure shows the message.
+
+image::tools/tool-controller/tool-number-in-use.png["Tool Number In Use message with the text Tool number 1 is already used by TC: 5mm Endmill",400]
+
+xref:tools/toolbit-library.adoc#tool-numbers[Tool numbers] describes how the CAM workbench sets the number of a new TC.
 
 == Properties
 
 .Base
-* *Tool* (`Link`): the Tool Bit used by this controller.
+* *Tool* (`Link`): the Tool Bit that the TC uses.
 
 .Tool
-* *ToolNumber* (`IntegerConstraint`, 0 to 10000): the tool number emitted with the tool change.
-* *SpindleSpeed* (`Float`): speed of the cutting spindle in rpm.
-* *SpindleDir* (`Enumeration`): Forward, Reverse or None; initialized from the Tool Bit's *Spindle Direction*.
+* *Tool Number* (`IntegerConstraint`): the number that the Tool Bit change command contains. Values: 0 to 10000.
+* *Spindle Speed* (`Float`): the speed of the spindle in rpm.
+* *Spindle Dir* (`Enumeration`): the direction of the spindle. The TC receives the initial value from the *Spindle Direction* property of the Tool Bit. Values: `Forward`, `Reverse`, `None`.
 
 .Feed
-* *HorizFeed* (`Speed`): feed rate for horizontal moves.
-* *VertFeed* (`Speed`): feed rate for vertical moves in Z.
-* *RampFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for ramp moves; bound to *HorizFeed* by an expression until changed.
-* *LeadInFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for lead-in moves; bound to *HorizFeed* by default.
-* *LeadOutFeed* (`Speed`) [.since]#introduced in 26.3#: feed rate for lead-out moves; bound to *HorizFeed* by default.
-* [.since]#introduced in 26.3# *NoEngagementFeed*: feed for moves in which the Tool Bit does not engage material. An Operation reads the value when it recomputes.
+* *Horiz Feed* (`Speed`): the feed for horizontal moves.
+* *Vert Feed* (`Speed`): the feed for vertical moves in Z.
+* [.since]#introduced in 26.3# *Ramp Feed* (`Speed`): the feed for ramp moves. Default: the expression `HorizFeed`.
+* [.since]#introduced in 26.3# *Lead In Feed* (`Speed`): the feed for lead-in moves. Default: the expression `HorizFeed`.
+* [.since]#introduced in 26.3# *Lead Out Feed* (`Speed`): the feed for lead-out moves. Default: the expression `HorizFeed`.
+* [.since]#introduced in 26.3# *No Engagement Feed* (`Speed`): the feed for moves in which the Tool Bit does not engage material and is not retracted. An Operation reads the value when it recomputes. The property has no default expression.
 
-A machine-based Post-Processor uses *NoEngagementFeed* only when the Post-Processor Property *Output non-engaging moves at the no-engagement feed rate* is enabled. The Post-Processor then writes each `G0` move that carries a no-engagement feed annotation as a `G1` move with that feed as the `F` value. The Post-Processor Property is off by default and is set in the Machine Editor; see xref:output/machine.adoc[Machine].
+[.since]#introduced in 26.3#: A machine-based xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) uses *No Engagement Feed* only when one Post-Processor Property is set.
+The name of this Post-Processor Property is *Output non-engaging moves at the no-engagement feed rate*.
+The Post then writes each `G0` move that has a no-engagement feed annotation as a `G1` move.
+The `F` value of this `G1` move is the no-engagement feed.
+The Post-Processor Property is off by default, and the Machine Editor sets it. See xref:output/machine.adoc[Machine].
+
+[.since]#introduced in 26.3#: When a TC in a document has no *No Engagement Feed* property, the CAM workbench adds the property when it opens the document.
 
 .Rapid
-* *HorizRapid* (`Speed`): rapid rate for horizontal moves.
-* *VertRapid* (`Speed`): rapid rate for vertical moves in Z.
+* *Horiz Rapid* (`Speed`): the rate of the horizontal rapid moves.
+* *Vert Rapid* (`Speed`): the rate of the vertical rapid moves in Z.
 
-Rapid rates are only used for cycle-time estimation and by post-processors that output rapids as feed moves.
+Only the estimate of the cycle time and a Post that writes rapid moves as feed moves use the *Horiz Rapid* and *Vert Rapid* values.
 
 .Feeds & Speeds
-These properties are added the first time the Feeds and Speeds dialog is opened for the controller. [.since]#introduced in 26.3#
+* [.since]#introduced in 26.3# *Op Type Hint* (`Enumeration`): the type of cut for which you use the TC. The Feeds and Speeds dialog uses the value to find a xref:reference/glossary.adoc#preset[Preset]. Values: empty, `profile`, `pocket`, `slot`, `drill`, `adaptive`, `surface_finish`.
+* [.since]#introduced in 26.3# *Feed Speed Provenance* (`Map`): the source that wrote each of *Horiz Feed*, *Vert Feed* and *Spindle Speed* last. An example of a source is `preset:tool/<material>/<op>`.
 
-* *OpTypeHint* (`Enumeration`: empty, profile, pocket, slot, drill, adaptive, surface_finish): which kind of cutting the controller is intended for; used when matching presets.
-* *FeedSpeedProvenance* (`Map`): for each of *HorizFeed*, *VertFeed* and *SpindleSpeed*, the source that last wrote the value (for example `preset:tool/<material>/<op>`).
+The CAM workbench adds the two _Feeds & Speeds_ properties when you open the Feeds and Speeds dialog for the TC for the first time.
+See xref:tools/feeds-speeds.adoc[Feeds and Speeds].
 
-== Expressions and templates
+== Expressions and Job Templates
 
-Feed properties may hold expressions (for example `VertFeed = HorizFeed * 0.5`); expressions are preserved in Job Templates. Tool Controllers, including their Tool Bit, are saved in Job Templates and restored when a Job is created from the template.
+A feed property can hold an https://wiki.freecad.org/Expressions[expression], for example `VertFeed = HorizFeed * 0.5`.
 
-== Tool Bit replacement
+A xref:reference/glossary.adoc#job-template[Job Template] stores each TC of the Job and the Tool Bit of each TC.
+The Job Template keeps the expressions of the feed properties.
+When you create a Job from the Job Template, the CAM workbench creates the TCs again.
 
-[.since]#introduced in 26.3#: when the library Tool Bit a controller's Tool Bit came from has changed, the menu:Update Tools from Library[] command (Job context menu, or automatically on document open) replaces the controller's Tool Bit with the current library version.
+[.since]#introduced in 26.3#: The Job Template stores *No Engagement Feed* with the key `noengagementfeed`.
+
+== Update from the Tool Library
+
+[.since]#introduced in 26.3#: The menu:Update Tools from Library[] command replaces the Tool Bit of a TC with a new copy of the library Tool Bit.
+The context menu of the Job contains the command.
+The CAM workbench can also make the comparison when you open a document.
+
+The CAM workbench finds the library Tool Bit by the *Tool Bit ID* of the Tool Bit that the TC has.
+The update sets the *Tool* property of the TC to the new Tool Bit object.
+The update then removes the old Tool Bit object from the document.
+The TC keeps its *Tool Number*, its feeds and its *Spindle Speed*.
+A TC with a Tool Bit that has no match in the library does not change.
+
+See xref:tools/toolbit.adoc[Tool Bit] for the comparison, the _Tool Updates Available_ dialog and the preference.
 
 == Scripting
 
 [source,python]
 ----
+import FreeCAD as App
 import Path.Tool.Controller as PathToolController
 from Path.Tool.toolbit import ToolBit
+
+job = App.ActiveDocument.getObject("Job")
 
 tb = ToolBit.from_shape_id("endmill.fcstd").attach_to_doc(App.ActiveDocument)
 tc = PathToolController.Create("TC: 6mm Endmill", tool=tb, toolNumber=3)
@@ -83,11 +179,13 @@ tc.SpindleSpeed = 12000
 job.Proxy.addToolController(tc)
 ----
 
-The legacy module `PathScripts.PathToolController` is not available.
+The module `PathScripts.PathToolController` does not exist.
 
 == Related
 
-* xref:tools/index.adoc[CAM Tools]
-* xref:tools/toolbit.adoc[CAM ToolBit]
-* xref:tools/add-toolbit.adoc[CAM ToolBitDock]
-* xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds]
+* xref:tools/index.adoc[Tools]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/toolbit-library.adoc[Tool Library]
+* xref:tools/add-toolbit.adoc[Toolbit Dock]
+* xref:tools/feeds-speeds.adoc[Feeds and Speeds]
+* xref:output/machine.adoc[Machine]

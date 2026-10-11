@@ -1,112 +1,217 @@
-= CAM ToolShape
+= Tool Shape
 :page-origin: https://wiki.freecad.org/CAM_ToolShape
 :page-origin-revision: 68c5376d73 2025-11-05
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32278,33079,33371
+:page-status: draft
+:description: A Tool Shape is the parametric template of a Tool Bit, with the parameters and the shape drawing that the Tool Bit editor shows.
 
-== Description
+== Overview
 
-ToolShapes are a core part of the xref:tools/index.adoc[CAM Tools] system. ToolShapes are the templates from which ToolBits are created. They represent the specific physical shape of a tool. A ToolShape does not completely describe the bit - for that some additional parameters are needed which will be added when an actual bit is parameterized from the template.
+A xref:reference/glossary.adoc#tool-shape[Tool Shape] is the template from which the CAM workbench makes a xref:reference/glossary.adoc#tool-bit[Tool Bit].
+The Tool Shape gives the physical shape of the Tool Bit and the names of its parameters.
+The Tool Shape does not give the dimensions of one Tool Bit.
+The Tool Bit supplies the values of the parameters.
+See xref:tools/toolbit.adoc[Tool Bit] for the Tool Bit and its properties, and xref:tools/index.adoc[Tools] for the other pages of this section.
 
-A Tool Shape is a FreeCAD document with a single PartDesign Body and a PropertyBag labeled `Attributes`, created with the image:Workbench_PartDesign.svg[width=24] https://wiki.freecad.org/PartDesign_Workbench[Part Design] workbench. The label of the Body selects the shape type: it must equal the name (or an alias) of one of the shape types listed below, otherwise the shape is loaded as a Custom shape with a generic parameter set.
+A Tool Shape is a FreeCAD document with one https://wiki.freecad.org/PartDesign_Workbench[Part Design] Body and one PropertyBag that has the label `Attributes`.
+The label of the Body selects the shape type.
+The label must be the name or an alias of one of the shape types in <<parameters,Parameters>>.
+If the label is a different text, the CAM workbench loads the shape as a `Custom` shape with a generic set of parameters.
 
-Creating new ToolShapes is an advanced topic. The most commonly needed ToolShapes already exist and are provided with the FreeCAD installation at:
+An `.svg` drawing with the same name can be adjacent to each `.fcstd` file.
+See <<shape-drawings,Shape drawings>>.
 
-* On Linux it is usually `/usr/lib64/FreeCAD/Mod/CAM/Tools/Shape`
-* On Windows it is usually `C:\Program Files\FreeCAD\Mod\CAM\Tools\Shape`
-* On macOS it is usually `/Applications/FreeCAD.app/Contents/Resources/Mod/CAM/Tools/Shape`
+== Supplied Tool Shapes
 
-They are:
+FreeCAD supplies the Tool Shapes that are necessary for most work.
+The location of the supplied Tool Shapes is usually:
+
+* Linux: `/usr/lib64/FreeCAD/Mod/CAM/Tools/Shape`
+* Windows: `C:\Program Files\FreeCAD\Mod\CAM\Tools\Shape`
+* macOS: `/Applications/FreeCAD.app/Contents/Resources/Mod/CAM/Tools/Shape`
+
+The supplied Tool Shapes are:
 
 * `ballend.fcstd`
 * `bullnose.fcstd`
 * `chamfer.fcstd`
-* `dovetail.fcstd` [.since]#introduced in 1.1#
+* [.since]#introduced in 1.1# `dovetail.fcstd`
 * `drill.fcstd`
 * `endmill.fcstd`
 * `probe.fcstd`
-* `radius.fcstd` [.since]#introduced in 1.1# (corner-rounding mill; added as _fillet_ and renamed _radius_)
-* `reamer.fcstd` [.since]#introduced in 1.1#
+* [.since]#introduced in 1.1# `radius.fcstd`, a mill that rounds a corner
+* [.since]#introduced in 1.1# `reamer.fcstd`
 * `slittingsaw.fcstd`
-* `tap.fcstd` [.since]#introduced in 1.1#
-* `taperedballnose.fcstd` [.since]#introduced in 26.3#
+* [.since]#introduced in 1.1# `tap.fcstd`
+* [.since]#introduced in 26.3# `taperedballnose.fcstd`
 * `thread-mill.fcstd`
 * `v-bit.fcstd`
 
-User-defined Tool Shapes are stored in the `Tools/Shape` folder of the CAM asset directory (see xref:reference/preferences.adoc[CAM Preferences] → Assets). A user shape with the same file name as a shipped shape replaces it in the _Toolbit Shape Selection_ dialog.
+The CAM workbench stores your own Tool Shapes in the `Tools/Shape` folder of the CAM asset directory.
+menu:Edit[Preferences > CAM > Assets] sets the asset directory. See xref:reference/preferences.adoc[CAM Preferences].
+A Tool Shape in this folder replaces a supplied Tool Shape with the same file name in the _Toolbit Shape Selection_ dialog.
 
-Next to each `.fcstd` file there is an `.svg` drawing of the same name. It is shown in the Toolbit Parameter Editor and the Tool Bit lists; the text elements of the drawing provide the abbreviations (for example D, L, H) displayed next to the parameters.
-
+[#parameters]
 == Parameters
 
-The shape type determines the parameters a xref:tools/toolbit.adoc[Tool Bit] of that shape carries:
+The shape type sets the parameters that a Tool Bit of this shape has.
+Each parameter is a property in the _Shape_ group of the Tool Bit.
 
-* Endmill: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter.
-* Ballend: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter.
-* Bullnose: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, CornerRadius (older files using FlatRadius are converted).
-* Chamfer: CuttingEdgeAngle, CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TipDiameter.
-* V-Bit: CuttingEdgeAngle, CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TipDiameter.
-* Drill: Diameter, Flutes, Length, TipAngle.
-* Dovetail: TipDiameter (crest height), CuttingEdgeAngle, CuttingEdgeHeight (dovetail height), Diameter (major diameter), Flutes, Length, NeckDiameter, NeckHeight, ShankDiameter.
-* Reamer: CuttingEdgeHeight, Diameter, Length, ShankDiameter.
-* Slitting Saw: BladeThickness, CapDiameter, CapHeight, Diameter, Flutes, Length, ShankDiameter.
-* Tap: CuttingEdgeLength, Diameter, Flutes, Length, ShankDiameter, TipAngle, Pitch.
-* Thread Mill: Crest, Diameter, Flutes, Length, NeckDiameter, NeckLength, ShankDiameter, cuttingAngle.
-* Probe: Diameter (ball diameter), Length, ShaftDiameter.
-* Tapered Ball Nose [.since]#introduced in 26.3#: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TaperAngle, TaperDiameter.
-* Radius Mill: CuttingEdgeHeight, Diameter, CuttingRadius, Flutes, Length, ShankDiameter, TipDiameter.
-* Custom (any other Body label): CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter plus every property found in the `Attributes` PropertyBag.
+* `Endmill`: `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`.
+* `Ballend`: `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`.
+* `Bullnose`: `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`, `CornerRadius`. The CAM workbench converts a file that uses `FlatRadius`.
+* `Chamfer`: `CuttingEdgeAngle`, `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`, `TipDiameter`.
+* `VBit`: `CuttingEdgeAngle`, `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`, `TipDiameter`.
+* `Drill`: `Diameter`, `Flutes`, `Length`, `TipAngle`.
+* `Dovetail`: `TipDiameter` (crest height), `CuttingEdgeAngle`, `CuttingEdgeHeight` (dovetail height), `Diameter` (major diameter), `Flutes`, `Length`, `NeckDiameter`, `NeckHeight`, `ShankDiameter`.
+* `Reamer`: `CuttingEdgeHeight`, `Diameter`, `Length`, `ShankDiameter`.
+* `SlittingSaw`: `BladeThickness`, `CapDiameter`, `CapHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`.
+* `Tap`: `CuttingEdgeLength`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`, `TipAngle`, `Pitch`.
+* `ThreadMill`: `Crest`, `Diameter`, `Flutes`, `Length`, `NeckDiameter`, `NeckLength`, `ShankDiameter`, `cuttingAngle`.
+* `Probe`: `Diameter` (ball diameter), `Length`, `ShaftDiameter`.
+* [.since]#introduced in 26.3# `TaperedBallNose`: `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter`, `TaperAngle`, `TaperDiameter`.
+* `Radius`: `CuttingEdgeHeight`, `Diameter`, `CuttingRadius`, `Flutes`, `Length`, `ShankDiameter`, `TipDiameter`.
+* `Custom` (each other Body label): `CuttingEdgeHeight`, `Diameter`, `Flutes`, `Length`, `ShankDiameter` and each property of the `Attributes` PropertyBag.
+
+[.since]#introduced in 26.3#: A shape type can have derived parameters.
+The CAM workbench calculates a derived parameter from the other parameters of the shape.
+A derived parameter is a property of the Tool Bit, and the property is read-only in the https://wiki.freecad.org/Property_editor[property editor].
+The CAM workbench calculates the value again when a parameter of the shape changes.
+
+[.since]#introduced in 26.3#: The `Diameter` parameter of the `Chamfer` shape is a derived parameter.
+The value is `TipDiameter + 2 * CuttingEdgeHeight * tan(CuttingEdgeAngle / 2)`.
+The sketch of the `Chamfer` shape uses `TipDiameter`, `CuttingEdgeHeight` and `CuttingEdgeAngle`, and does not use `Diameter`.
+The figure shows the read-only `Diameter` property of a `Chamfer` Tool Bit in the property editor.
+
+image::tools/tool-shape/chamfer-derived-diameter.png["Property editor of a Chamfer Tool Bit, Shape group, with the read-only Diameter property",400]
 
 == Aliases and subtypes
 
-Shape names are matched case-insensitively and through aliases (for example _torus_ → Bullnose, _fillet_ → Radius, _v_bit_ → VBit, _conicalballnose_ → TaperedBallNose). [.since]#introduced in 26.3#: a shape may define subtypes (Drill: jobber, stub, spot, center, brad_point). A subtype does not change the parameters; it is stored in the Tool Bit's `shape-type` key, can be chosen as Toolbit Type in the Toolbit Parameter Editor and is used for filtering in the Library Manager.
+The CAM workbench compares shape names without case and accepts aliases.
+Examples of aliases are:
 
-== Usage
+* `torus` for `Bullnose`
+* `fillet` for `Radius`
+* `v_bit` for `VBit`
+* `conicalballnose` for `TaperedBallNose`
+
+[.since]#introduced in 26.3#: A shape type can have subtypes.
+The `Drill` shape has the subtypes `jobber`, `stub`, `spot`, `center` and `brad_point`.
+A subtype does not change the parameters.
+The Tool Bit file stores the subtype in its `shape-type` key.
+You select the subtype as *Toolbit Type* in the _Toolbit Parameter Editor_ dialog.
+The xref:tools/library-manager.adoc[Toolbit Library Manager] uses the subtype as a filter.
+
+[#shape-drawings]
+== Shape drawings
+
+The shape drawing is the `.svg` file that has the same name as the `.fcstd` file of the Tool Shape.
+The shape drawing shows the Tool Bit artwork and the dimensions of the parameters.
+Each dimension has a label, a dimension line with arrows, and extension lines.
+The _Toolbit Parameter Editor_ dialog shows the shape drawing with its dimensions.
+See xref:tools/toolbit.adoc[Tool Bit] for the connection between the dimensions and the fields of the editor.
+The figure shows the shape drawing of the `Endmill` shape on a light theme.
+
+image::tools/tool-shape/drawing-light-theme.png["Toolbit Parameter Editor on a light theme, with the endmill shape drawing and the dimensions L, S, H and D",400]
+
+The labels of the shape drawing supply the abbreviations that the editor shows adjacent to the parameters, for example D, L and H.
+
+[.since]#introduced in 26.3#: The small icons do not show the dimensions.
+The buttons of the _Toolbit Shape Selection_ dialog and the Tool Bit lists show only the Tool Bit artwork.
+
+image::tools/tool-shape/shape-selection-icons.png["Toolbit Shape Selection dialog, with one button for each Tool Shape that shows the artwork without dimensions",400]
+
+=== Theme colors
+
+[.since]#introduced in 26.3#: The CAM workbench changes the colors of the shape drawing for the active theme before it shows the drawing.
+
+* The dimensions get the dimension color of a light theme or the dimension color of a dark theme.
+* On a dark theme, the CAM workbench makes each color of the Tool Bit artwork darker.
+* The dimension that you point at in the editor gets the highlight color.
+
+The figure shows the same shape drawing on a dark theme.
+
+image::tools/tool-shape/drawing-dark-theme.png["Toolbit Parameter Editor on a dark theme, with the darker endmill artwork and light dimensions",400]
+
+The CAM preferences set the dimension colors, the highlight color and the brightness of the Tool Bit artwork.
+A change of these preferences is in effect immediately.
+See xref:reference/preferences.adoc[CAM Preferences].
+
+=== Rules for a shape drawing
+
+The CAM workbench reads these items from the `.svg` file:
+
+* Label: a `<text>` element, or a `<g>` element that has an `aria-label` attribute. The abbreviation is the text of the `<text>` element or the value of the `aria-label` attribute.
+* Label ID: the `id` of the label is the parameter name in lower case, with an underscore between the words. For example, `diameter` is the label of `Diameter`, and `shank_diameter` is the label of `ShankDiameter`.
+* [.since]#introduced in 26.3# Dimension colors: a dimension on the empty background has the color `#ff0000`. A dimension on the body of the Tool Bit has the color `#00ff00`. The CAM workbench replaces these two colors with the dimension color of the theme.
+* [.since]#introduced in 26.3# Artwork colors: the CAM workbench uses each other color as Tool Bit artwork. Do not use `#ff0000` or `#00ff00` in the Tool Bit artwork.
+* [.since]#introduced in 26.3# Dimension group: a `<g>` element with the `id` `dim-` and the label ID, for example `dim-shank_diameter`. The group contains the dimension line and the extension lines of this dimension.
+* [.since]#introduced in 26.3# Shared element: an element that is not in a dimension group can name its dimensions in its `class` attribute, for example `class="dim-length dim-diameter"`.
+
+[.since]#introduced in 26.3#: The editor highlights all elements of a dimension together.
+If a label has no dimension group and no `class` entry, the dimension has only the label.
+The editor does not highlight an arrow marker that two dimensions use.
+
+=== Thumbnail
+
+If no `.svg` drawing is adjacent to the shape file, the CAM workbench uses the thumbnail in the `.fcstd` file as the icon.
+The CAM workbench shows a thumbnail without changes for the theme.
+The thumbnail shows the 3D view as it is when you save the document.
+
+Before you save the Tool Shape document, do these steps:
+
+. Open menu:Edit[Preferences > General > Document].
+. Set *Save Thumbnail*.
+. Clear *Add program logo*.
+. Set the 3D view to the front view.
+. Fit the content to the screen.
+
+== Create a Tool Shape
+
+The supplied Tool Shapes are sufficient for most work.
+This procedure makes a new Tool Shape.
 
 . Create a new FreeCAD document.
-. Open the image:Workbench_PartDesign.svg[width=16] https://wiki.freecad.org/PartDesign_Workbench[PartDesign Workbench].
-. Create a https://wiki.freecad.org/PartDesign_Body[Body] and give the Body a label you want to show up in the bit selection. For the shape to be recognized as one of the types above, the label must equal that type's name or an alias.
-. Create a image:PartDesign_NewSketch.svg[width=16] https://wiki.freecad.org/PartDesign_NewSketch[Sketch] on the XZ-plane and draw half the profile of the bit.
-. Constrain the bottom most center of the bit on the origin `(0,0)`. This will be the center of the axis on which the G-code will rotate the bit.
-* Note: Do not add dimensional constraints at this time.
+. Open the image:Workbench_PartDesign.svg[Part Design,16] https://wiki.freecad.org/PartDesign_Workbench[Part Design] workbench.
+. Create a https://wiki.freecad.org/PartDesign_Body[Body]. Give the Body the label that the Tool Bit selection must show. For a known shape type, the label must be the name or an alias of this type.
+. Create a image:PartDesign_NewSketch.svg[Sketch,16] https://wiki.freecad.org/PartDesign_NewSketch[Sketch] on the XZ plane. Draw one half of the profile of the Tool Bit.
+. Constrain the lowest center point of the Tool Bit to the origin `(0,0)`. This point is on the axis about which the Tool Bit turns. Do not add dimensional constraints in this step.
 . Close the Sketch.
-. image:PartDesign_Revolution.svg[width=16] https://wiki.freecad.org/PartDesign_Revolution[Revolve] the Sketch around the vertical Sketch axis.
-. Open the image:Workbench_CAM.svg[width=16] xref:index.adoc[CAM Workbench].
-. Select the Body in the https://wiki.freecad.org/Tree_View[Tree View] so that the PropertyBag created in the next step is nested in the Body.
-. Select the menu:CAM[Utils > PropertyBag] option from the menu.
-. A PropertyBag named `Attributes` is created. This PropertyBag will be used to control the dimensions in the Sketch. The PropertyBag must keep the label `Attributes`; put every dimension that drives the Sketch into the `Shape` property group. If the Body label matches a shipped shape type, use the parameter names of that type; other properties are copied to the Tool Bit as custom properties.
-. Double-click the PropertyBag in the https://wiki.freecad.org/Tree_View[Tree View].
-. The menu:Property Bag[] task panel opens.
-. Click the btn:[Add...] button.
-. The menu:Create Property[] dialog opens.
-. Create the properties `Diameter` and `Length` (both mandatory: operations and the LinuxCNC export read them) and the other dimensions of the shape. Property names are case-sensitive and may not contain spaces.
-. Select `Shape` from the menu:Group[] dropdown list.
-. Select the appropriate menu:Type[].
-. Optionally specify a menu:ToolTip[].
-. Click the btn:[OK] button.
-. In the menu:Property Bag[] task panel enter a value for the *Diameter* property.
-. Similarly add all other required properties.
-. Click the btn:[OK] button in the menu:Property Bag[] task panel when done.
-. Double-click the Sketch in the https://wiki.freecad.org/Tree_View[Tree View].
-. Add dimensional constraints and apply the properties from the created PropertyBag. For example to apply the *Diameter* property:
+. image:PartDesign_Revolution.svg[Revolution,16] https://wiki.freecad.org/PartDesign_Revolution[Revolve] the Sketch about the vertical axis of the Sketch.
+. Open the image:Workbench_CAM.svg[CAM,16] xref:index.adoc[CAM] workbench.
+. Select the Body in the https://wiki.freecad.org/Tree_view[tree view]. The CAM workbench then puts the new PropertyBag in the Body.
+. Select menu:CAM[Utils > PropertyBag]. The CAM workbench creates a PropertyBag with the name `Attributes`. Do not change this label.
+. Double-click the PropertyBag in the tree view. The _Property Bag_ task panel opens.
+. Press btn:[Add...]. The _Create Property_ dialog opens.
+. Enter the name of the property. A name is case-sensitive and cannot contain spaces.
+. Select `Shape` in the *Group* list.
+. Select the applicable *Type*.
+. If necessary, enter a *ToolTip*.
+. Press btn:[OK].
+. Enter a value for the property in the _Property Bag_ task panel.
+. Do the steps from btn:[Add...] again for each other dimension of the shape.
+. Press btn:[OK] in the _Property Bag_ task panel.
+. Double-click the Sketch in the tree view.
+. Add the dimensional constraints, and bind each constraint to a property of the PropertyBag. For example, for the `Diameter` property:
 .. Double-click a dimension.
-.. Click the image:Bound-expression.svg[width=16] icon.
-.. Enter `<<Attributes>>.Diameter` in the menu:Formula editor[].
-.. Click the btn:[OK] button twice.
-. Repeat this until the Sketch is fully constrained.
-. Save the file as `<name>.fcstd` in the `Tools/Shape` folder of the CAM asset directory. Optionally add a `<name>.svg` drawing in the same folder; give each text element an id equal to the parameter name (for example `id="Diameter"`) to have its text shown as abbreviation in the editor.
+.. Click the image:Bound-expression.svg[Expression,16] icon.
+.. Enter `<<Attributes>>.Diameter` in the _Formula editor_.
+.. Press btn:[OK] two times.
+. Continue until the Sketch is fully constrained.
+. Save the file as `<name>.fcstd` in the `Tools/Shape` folder of the CAM asset directory.
+. If necessary, add a `<name>.svg` drawing in the same folder. See <<shape-drawings,Shape drawings>>.
 
-* Note: create only one Body, and create it before any other object; the loader reads the label of the object whose internal name is `Body`.
+The PropertyBag controls the dimensions of the Sketch.
+Obey these rules for the properties:
 
-== Tool Thumbnail Images
+* Create the properties `Diameter` and `Length`. The Operations and the LinuxCNC export read these two properties.
+* Put each dimension that controls the Sketch into the `Shape` property group.
+* If the Body label is the name of a known shape type, use the parameter names of this type.
+* The CAM workbench copies each other property to the Tool Bit as a custom property.
 
-If no `.svg` drawing exists next to the shape file, the thumbnail embedded in the `.fcstd` file is used as icon.
-
-Important notes:
-
-* Before saving the document make sure you have Save Thumbnail selected, and Add program logo deselected in FreeCAD's preferences (menu:Edit[Preferences > General > Document]).
-* Also make sure to switch to Front View and Fit content to screen.
-* Whatever you see when saving the document will end up being the visual representation of the template.
+NOTE: Create only one Body, and create the Body before all other objects. The CAM workbench reads the label of the object that has the internal name `Body`.
 
 == Scripting
 
@@ -118,3 +223,10 @@ shape = ToolBitShape.from_file("/path/to/endmill.fcstd")
 print(shape.name, shape.schema())
 body = shape.make_body(App.ActiveDocument)
 ----
+
+== Related
+
+* xref:tools/index.adoc[Tools]
+* xref:tools/toolbit.adoc[Tool Bit]
+* xref:tools/library-manager.adoc[Toolbit Library Manager]
+* xref:reference/preferences.adoc[CAM Preferences]
