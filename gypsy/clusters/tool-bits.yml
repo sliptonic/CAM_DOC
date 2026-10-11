@@ -1,7 +1,7 @@
 # One cause, all its pages, one pull request. See README.md in this folder.
 title: Tool Bits and the Tool Library
 issue: 13
-prs: [31300, 32211, 32220, 32278, 32371, 32818, 33079]
+prs: [31300, 32211, 32220, 32278, 32371, 32818, 33079, 33371]
 # tools/tool-controller.adoc is rewritten for all its pending verdicts. This pull request has a
 # different cause; only its effect on that page is delivered here.
 partial:
