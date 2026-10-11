@@ -56,6 +56,9 @@ LABELS = {"gypsy": ("5319e7", "Work that gypsy does"),
           "approved": ("0e8a16", "A person approved this work; gypsy drafts it"),
           "blocked": ("d93f0b", "gypsy cannot continue; its last comment says why"),
           "check-findings": ("d93f0b", "The last check of the runner has findings that a reader must not get")}
+DIATAXIS = {"tutorial": "learning: a lesson", "how-to": "a goal: steps", "explanation": "understanding: concepts",
+            "reference": "information: exact facts"}
+LABELS.update({k: ("1d76db", f"Diátaxis: {v}") for k, v in DIATAXIS.items()})
 KINDS = ("rewrite", "new", "amend")
 DOES = {"rewrite": "Full rewrite to STYLE.md.", "new": "New page.", "amend": "Small change only.",
         "generated": "Written by a tool from the FreeCAD source.", "reference": "Read, not changed."}

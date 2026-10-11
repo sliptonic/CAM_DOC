@@ -96,11 +96,11 @@ def body_of(unit, verdicts):
            "- **To change the goals or the pages:** edit the work definition at the end.",
            "- **To reject:** close the issue as not planned.", "",
            "## Summary", "", unit["summary"], "", "## Goals", ""]
-    out += [f"{n}. {g}" for n, g in enumerate(unit["goals"], 1)]
+    out += [f"{n}. **{g['diataxis']}**: {g['goal']}" for n, g in enumerate(unit["goals"], 1)]
     if unit["questions"]:
         out += ["", "## Questions for a person", ""] + [f"- {q}" for q in unit["questions"]]
-    out += ["", f"## Pages ({len(unit['pages'])})", "", "| Page | Part | Change | What the page does |", "|---|---|---|---|"]
-    out += [f"| `{p['page']}` | {ROLE[p['role']]} | {MODE[p['mode']]} | {p['does']} |" for p in unit["pages"]]
+    out += ["", f"## Pages ({len(unit['pages'])})", "", "| Page | Part | Form | Change | What the page does |", "|---|---|---|---|---|"]
+    out += [f"| `{p['page']}` | {ROLE[p['role']]} | {p['diataxis']} | {MODE[p['mode']]} | {p['does']} |" for p in unit["pages"]]
     if unit["excluded"]:
         out += ["", "## Not documented", ""] + [f"- {x['what']}: {x['why']}" for x in unit["excluded"]]
     out += ["", f"## Verdicts ({len(verdicts)})", ""]
@@ -110,9 +110,10 @@ def body_of(unit, verdicts):
     pages = {k: [p["page"] for p in unit["pages"] if p["mode"] == k] for k in ("new", "rewrite", "amend", "capture")}
     definition = {"title": unit["title"], "verdicts": list(verdicts),
                   "prs": [v["pr"] for v in verdicts.values() if isinstance(v.get("pr"), int)],
-                  "goals": unit["goals"], "excluded": [x["what"] for x in unit["excluded"]],
+                  "goals": [g["goal"] for g in unit["goals"]],
+                  "diataxis": sorted({g["diataxis"] for g in unit["goals"]} | {p["diataxis"] for p in unit["pages"]}), "excluded": [x["what"] for x in unit["excluded"]],
                   "pages": {k: v for k, v in pages.items() if v},
-                  "plan": {p["page"]: {"role": p["role"], "does": p["does"]} for p in unit["pages"]}}
+                  "plan": {p["page"]: {"role": p["role"], "diataxis": p["diataxis"], "does": p["does"]} for p in unit["pages"]}}
     out += ["", "<details><summary>Work definition (gypsy reads this block)</summary>", "", "```yaml",
             yaml.safe_dump(definition, sort_keys=False, allow_unicode=True, width=100).strip(), "```", "", "</details>"]
     return "\n".join(out)
@@ -135,13 +136,17 @@ def make(a):
     if a.dry:
         return print(f"{title}\n\n{body}\n\n[cost ${run.get('cost_usd') or 0:.2f}]")
     work.ensure_labels()
+    forms = sorted({g["diataxis"] for g in unit["goals"]} | {p["diataxis"] for p in unit["pages"]})
     if a.update:
         # the goals changed, so an approval of the old text does not count
         work.gh("issue", "edit", str(a.update), "--title", title, "--body", body, "--add-label", "gypsy",
-                "--add-label", "proposed", "--remove-label", "approved")
+                "--add-label", "proposed", "--remove-label", "approved",
+                "--remove-label", ",".join(f for f in work.DIATAXIS if f not in forms),
+                *sum((["--add-label", f] for f in forms), []))
         number = a.update
     else:
-        url = work.gh("issue", "create", "--title", title, "--body", body, "--label", "gypsy", "--label", "proposed").strip()
+        url = work.gh("issue", "create", "--title", title, "--body", body, "--label", "gypsy", "--label", "proposed",
+                      *sum((["--label", f] for f in forms), [])).strip()
         number = int(url.rsplit("/", 1)[1])
     print(f"issue #{number}: {title}  [cost ${run.get('cost_usd') or 0:.2f}]")
 

@@ -59,9 +59,12 @@ def unit_text(c, page=None):
     if c.get("excluded"):
         out += ["", "Not documented in this unit:"] + [f"- {x}" for x in c["excluded"]]
     out += ["", "Plan (the part of each page):"]
-    out += [f"- {p} ({v['role']}): {v['does']}" for p, v in c["plan"].items()]
+    out += [f"- {p} ({v['role']}, {v.get('diataxis', 'form not given')}): {v['does']}" for p, v in c["plan"].items()]
     if page:
         out += ["", f"Your page is {page}. Its part: {c['plan'][page]['does']}"]
+        form = c["plan"][page].get("diataxis")
+        if form:
+            out.append(f"The Diátaxis form of what you add is {form} ({work.DIATAXIS[form]}). Write it in that form.")
     return "\n".join(out)
 
 

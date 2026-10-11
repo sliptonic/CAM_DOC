@@ -19,7 +19,24 @@
     "goals": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "required": [
+          "goal",
+          "diataxis"
+        ],
+        "properties": {
+          "goal": {
+            "type": "string"
+          },
+          "diataxis": {
+            "enum": [
+              "tutorial",
+              "how-to",
+              "explanation",
+              "reference"
+            ]
+          }
+        }
       }
     },
     "excluded": {
@@ -48,7 +65,8 @@
           "page",
           "role",
           "mode",
-          "does"
+          "does",
+          "diataxis"
         ],
         "properties": {
           "page": {
@@ -71,6 +89,14 @@
           },
           "does": {
             "type": "string"
+          },
+          "diataxis": {
+            "enum": [
+              "tutorial",
+              "how-to",
+              "explanation",
+              "reference"
+            ]
           }
         }
       }

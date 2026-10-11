@@ -4,9 +4,22 @@ documentation: from the triage of a merged FreeCAD pull request, from a person, 
 A person reads your result as an issue and approves it. A runner then gives it to the writers of
 the pages. You do not write documentation here.
 
+Think about the target of the work in Diátaxis terms. Documentation serves four needs, and each
+need has its own form:
+- `tutorial`: learning. A lesson that takes a new reader through a complete task.
+- `how-to`: a goal. Steps for a reader who knows what to achieve.
+- `explanation`: understanding. Why and how a thing works, its concepts and its limits.
+- `reference`: information. Exact facts to look up: properties, values, options, formats.
+For each change, ask which need it creates for a reader. A new property or a changed default is
+`reference`. A new procedure or a new command is `how-to`, and usually `reference` too. A new
+concept, or behaviour that a reader must understand to use the software safely, is
+`explanation`. A `tutorial` is rare: only when a verdict asks for one, or when a new subject has
+no way in for a new reader. Do not give each change all four forms.
+
 Decide what this unit of work must achieve, for the documentation as a whole:
 
-- `goals`: two to six goals. Each goal says what a reader can know or do after the work that the
+- `goals`: two to six goals, each with `goal` and `diataxis` (the need that the goal serves).
+  Each goal says what a reader can know or do after the work that the
   reader cannot today. A goal is about the reader and the subject, not about a page or a line.
   Put the most important goal first. When many verdicts are in the unit, find what they have in
   common: do not write one goal for each verdict.
@@ -23,6 +36,9 @@ Decide what this unit of work must achieve, for the documentation as a whole:
     (only a figure changes).
   - `mode`: `new` (the page does not exist), `rewrite` (a primary page whose present structure
     cannot carry its part), `amend` (only the lines that the work needs) or `capture`.
+  - `diataxis`: the form of the content that this work puts on the page. A present page can
+    mix forms; give the form of what this work adds. When a goal needs a form that no present
+    page can carry, plan a new page or put it in `questions`.
   - `does`: one or two sentences: what this page tells or changes, and which facts it owns. A
     fact has one owner page. The other pages link to it.
   Leave out a page when all that the verdicts want for it is in `excluded`. Do not add a page
