@@ -12,6 +12,15 @@ Rules:
 - Facts come from the diffs and the extracted facts below, in that order of authority, then from
   the current page. Keep every statement of the current page that nothing contradicts. Remove a
   statement the diffs make false. Do not describe history; describe the current behaviour.
+- Document what the reader of this page needs to act, not each thing that changed. A change gets
+  text on this page only when the reader decides or does something differently because of it: a
+  new or changed control, value, default, limit, step, output or file format. Do not write text
+  for: how the interface looks (colors, theme, icons, layout, a highlight under the pointer),
+  behaviour that the interface shows by itself when the reader uses it, a correction of a defect
+  after which the software does what the page already says, or how the code does its work. For
+  such a change, write `no text change` and the reason in `changes`. Ask for a figure only when
+  a figure of the page is now wrong. A preference has its text on the preferences page; a file
+  format rule has its text on the page of that format. Other pages do not repeat them.
 - Where a verdict says `needs_gui` and you cannot confirm from the diff what a control looks like
   or says, write what the code establishes and list the claim in `unverified`.
 - Do not invent properties, defaults, enumeration values, menu paths or button labels. If a

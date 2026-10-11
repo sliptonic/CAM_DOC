@@ -10,6 +10,14 @@ field, a preference, a file format, or to what an operation produces is `revise`
 operation, dressup, post-processor or preference page that has no page is `new page`. A change
 that only alters how something looks on screen, with the text still correct, is `capture only`.
 
+`revise` needs a fact that a reader of that page acts on. A change of appearance (theme colors,
+icons, layout, a highlight under the pointer), behaviour that the interface shows by itself, or a
+defect correction is not such a fact: it is `capture only` for a page with a figure that is now
+wrong, and `no change` for the other pages. A new preference is `revise` for the preferences
+page only, unless a procedure of a different page needs it. When a PR has parts of the two
+types, give `revise` only to the pages of the part that a reader acts on, and name that part in
+`reason`.
+
 Candidate pages come from a source-path map and may be wrong or incomplete. You may drop a
 candidate and you may add a page that exists in the page list below. Every page you name must be
 in that list unless the verdict is `new page`.
