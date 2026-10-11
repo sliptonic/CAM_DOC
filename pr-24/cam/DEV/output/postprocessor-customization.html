@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Postprocessor Customization :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/pr-24/cam/wiki-2026-08/output/postprocessor-customization.html">
+    <link rel="prev" href="../job/work-plane.html">
+    <link rel="next" href="mbpp-postprocessor.html">
+    <meta name="description" content="How a Post-Processor is named, written, configured and installed, for legacy script posts and for machine-based posts.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-24">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="postprocessor-customization.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/output/postprocessor-customization.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
+    <li><a href="postprocessor-customization.html">CAM Postprocessor Customization</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="postprocessor-customization.html">DEV (pre-release)</a>
+    <a class="version" href="../../wiki-2026-08/output/postprocessor-customization.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/output/postprocessor-customization.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Postprocessor Customization</h1>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CAM workbench stores each Toolpath as a sequence of G-code commands. The commands describe straight moves, circular arcs, feed values, speed values and machine functions. A more complex curve, such as a B-spline, is already approximated by lines and arcs in the Toolpath.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post) translates these commands into a complete file for the control of one machine. The file is usually G-code in the dialect of the control. A Post can also write a different language, such as HPGL, DXF or Heidenhain Klartext.</p>
+</div>
+<div class="paragraph">
+<p>This page explains how to change a Post or write a new one. <a href="post-process.html" class="xref page">Post Process</a> is the command that runs a Post.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="two-kinds-of-post-processor"><a class="anchor" href="#two-kinds-of-post-processor"></a>Two kinds of Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The workbench has two kinds of Post.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A legacy script Post is a Python module with the function <code>export(objectslist, filename, argstring)</code> and an <code>argparse</code> parser. The <strong>Processor</strong> field of the Job selects the Post. The <strong>Arguments</strong> field of the Job configures the Post.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> A machine-based Post is a class that inherits from <code>Path.Post.Processor.PostProcessor</code>. The module sets the constant <code>POST_TYPE = "machine"</code>. A <a href="../reference/glossary.html#machine" class="xref page">Machine</a> selects the Post. The <code>.fcm</code> file of the Machine and the property schema of the Post configure the Post.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Only a machine-based Post can post an Operation on a tilted <a href="../reference/glossary.html#work-plane" class="xref page">Work Plane</a>. A legacy Post stops the export for such an Operation. A Work Plane parallel to the table posts with the two kinds of Post.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="functions-of-a-post-processor"><a class="anchor" href="#functions-of-a-post-processor"></a>Functions of a Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The output for a control can be different from the internal commands in these areas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The start sequence of the program.</p>
+</li>
+<li>
+<p>The stop sequence of the program.</p>
+</li>
+<li>
+<p>The arc centre, which is relative or absolute.</p>
+</li>
+<li>
+<p>The line numbers and their format.</p>
+</li>
+<li>
+<p>The canned cycles for standard sequences, such as a drill cycle.</p>
+</li>
+<li>
+<p>The output units, metric or imperial.</p>
+</li>
+<li>
+<p>The moves before a tool change that help the operator.</p>
+</li>
+<li>
+<p>The comments, which make the program easier to read and also make the file larger.</p>
+</li>
+<li>
+<p>The header that identifies the program.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="preparation"><a class="anchor" href="#preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Make a small Model that shows how the control reads straight lines and arcs. Prepare a reference program for the same geometry with software that is known to operate correctly with the machine.</p>
+</div>
+<div class="paragraph">
+<p>A Toolpath that starts at (0, 0, 0) and moves in the Y direction is a good first test. The centre of the Tool Bit must follow the Toolpath, thus do not apply tool radius compensation. One level in the XY plane is sufficient for the first test.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows a sketch of such a test geometry.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/postprocessor-customization/test-geometry-sketch.png" alt="Sketch of the test geometry: straight lines and arcs that start at the origin and go in the Y direction" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>In the 3D view, a small blue arrow at the start point shows the start direction of the Toolpath.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows the arrow on the first move of the Toolpath, where the pointer is.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/output/postprocessor-customization/test-geometry-toolpath.png" alt="Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow near the start point" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Compare the reference program with the output of an included Post, such as <code>linuxcnc_legacy_post.py</code> or <code>grbl_post.py</code>. Then adapt the Post that gives the nearest output.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="naming-convention"><a class="anchor" href="#naming-convention"></a>Naming convention</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The file name of a Post is <code>&lt;name&gt;_post.py</code>. The suffix <code>_post.py</code> must be lower case. The Post name is the file name without <code>_post.py</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A script Post defines <code>export()</code> at module level.</p>
+</li>
+<li>
+<p>A class Post defines a class whose name is the title-cased Post name. Examples: <code>linuxcnc</code> gives <code>Linuxcnc</code>, <code>mach3_mach4</code> gives <code>Mach3_Mach4</code>, <code>masso_g3</code> gives <code>Masso_G3</code>.</p>
+</li>
+<li>
+<p>A class with a different name gets a module-level alias with the title-cased name. The <code>heidenhain</code> Post contains the line <code>Heidenhain = HeidenhainPost</code>. The <code>generic_sheet_cutting</code> Post contains the line <code>Generic_Sheet_Cutting = GenericSheetCutting</code>.</p>
+</li>
+<li>
+<p>A class Post with <code>POST_TYPE = "machine"</code> is available in the Machine Editor. A class Post without that constant is a legacy Post and is available in the <strong>Processor</strong> list of the Job.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In a script Post, set <code>prog</code> of the <code>argparse</code> parser to the Post name. The tooltip of the <strong>Arguments</strong> field of the Job then shows the correct help text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import argparse
+
+parser = argparse.ArgumentParser(prog="grbl", add_help=False)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="included-post-processors"><a class="anchor" href="#included-post-processors"></a>Included Post-Processors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The included Posts are in the folder <code>&lt;FreeCAD&gt;/Mod/CAM/Path/Post/scripts</code>. <a href="post-process.html" class="xref page">Post Process</a> lists the included Posts by kind. <a href="posts/genealogy.html" class="xref page">Post-Processor Genealogy</a> lists the class of each class Post.</p>
+</div>
+<div class="paragraph">
+<p>These Posts are good examples to read:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>linuxcnc_legacy_post.py</code>: a script Post for <a href="http://linuxcnc.org/">LinuxCNC</a>.</p>
+</li>
+<li>
+<p><code>grbl_post.py</code>: a class Post for <a href="https://github.com/grbl/grbl">grbl</a>.</p>
+</li>
+<li>
+<p><code>generic_post.py</code>: the smallest machine-based Post. Use this file as the start of a new machine-based Post.</p>
+</li>
+<li>
+<p><code>linuxcnc_post.py</code>: a machine-based Post with two Job-scope properties.</p>
+</li>
+<li>
+<p><code>fanuc_post.py</code>: a machine-based Post that changes many defaults of the common properties and adds its own properties.</p>
+</li>
+<li>
+<p><code>generic_sheet_cutting_post.py</code>: a machine-based Post for plasma, laser and waterjet machines. The Post changes the Toolpath commands before the conversion.</p>
+</li>
+<li>
+<p><code>heidenhain_post.py</code>: a machine-based Post that does not write G-code. The Post replaces each conversion function and writes Klartext blocks.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="legacy-script-post-processor"><a class="anchor" href="#legacy-script-post-processor"></a>Legacy script Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section applies to the <code>*_legacy_post.py</code> files and to other script Posts. The example shows the structure of a script Post.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import Path.Post.Utils as PostUtils
+from PathScripts import PathUtils
+
+
+def export(objectslist, filename, argstring):
+    gcode = ""
+    for obj in objectslist:
+        gcode += parse(obj)
+    if filename != "-":
+        with open(filename, "w") as gfile:
+            gfile.write(gcode)
+    return gcode
+
+
+def parse(pathobj):
+    out = ""
+    if not hasattr(pathobj, "Path"):
+        return out
+    path = PostUtils.cannedCycleTerminator(PathUtils.getPathWithPlacement(pathobj))
+    for c in path.Commands:
+        words = [c.Name]
+        for name, value in c.Parameters.items():
+            words.append(f"{name}{value:.3f}")
+        out += " ".join(words) + "\n"
+    return out</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>export()</code> function collects the output text for all objects: Operations, Tool Controllers and Fixture items. The function writes the header, the comments, the preamble and the postamble. The function gives each object that has Toolpath commands to <code>parse()</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>parse()</code> function reads each command of one object and makes one line of text for the command. The <code>Name</code> of a command is the G or M word. The <code>Parameters</code> of a command are its other words. An included script Post records the last command name and thus suppresses a modal command that occurs again. An included script Post also has a <code>linenumber()</code> function. That function returns the line number text when line numbers are on, and an empty string when they are off.</p>
+</div>
+<div class="paragraph">
+<p>These rules apply to a script Post:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>export()</code> function returns the output text. When <code>filename</code> is <code>-</code>, the function does not write a file.</p>
+</li>
+<li>
+<p>The export gives the script each Toolpath in world coordinates. <code>PathUtils.getPathWithPlacement()</code> does not apply the Work Plane a second time.</p>
+</li>
+<li>
+<p>Call <code>PostUtils.cannedCycleTerminator()</code> on the Toolpath before the command scan. A Drilling Operation records the retract mode only as an annotation on each cycle command. <code>cannedCycleTerminator()</code> adds a literal <code>G98</code> or <code>G99</code> before each group of canned cycles and <code>G80</code> after the group. A script that does not call the function does not see <code>G99</code>.</p>
+</li>
+<li>
+<p>A cycle with no retract annotation gets the last literal <code>G98</code> or <code>G99</code> of the Toolpath. When the Toolpath has none, the cycle gets <code>G98</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A class Post that uses arguments does not contain <code>parse()</code>. The class calls the shared functions <code>Path.Post.UtilsArguments.init_shared_arguments</code>, <code>Path.Post.UtilsExport.export_common</code> and <code>Path.Post.UtilsParse.parse_a_path</code>. The class replaces <code>init_values()</code> and <code>init_argument_defaults()</code> to change the defaults.</p>
+</div>
+<div class="sect2">
+<h3 id="common-arguments"><a class="anchor" href="#common-arguments"></a>Common arguments</h3>
+<div class="paragraph">
+<p>A class Post that uses arguments accepts the arguments below in the <strong>Arguments</strong> field of the Job. Many arguments have a <code>--no-</code> form, for example <code>--header</code> and <code>--no-header</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Area</th>
+<th class="tableblock halign-left valign-top">Arguments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Units and precision</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--metric</code>, <code>--inches</code>, <code>--precision N</code>, <code>--axis-precision N</code>, <code>--feed-precision N</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Header and comments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--header</code>, <code>--comments</code>, <code>--comment_symbol</code>, <code>--output_machine_name</code>, <code>--output_path_labels</code>, <code>--list_tools_in_preamble</code>, <code>--bcnc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--line-numbers</code>, <code>--line_number_start</code>, <code>--line_number_increment</code>, <code>--command_space</code>, <code>--end_of_line_characters</code>, <code>--modal</code>, <code>--axis-modal</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blocks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--preamble</code>, <code>--postamble</code>, <code>--post_operation</code>, <code>--finish_label</code>, <code>--return-to=x,y,z</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine functions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--tlo</code>, <code>--tool_change</code>, <code>--enable_coolant</code>, <code>--disable_coolant</code>, <code>--enable_machine_specific_commands</code>, <code>--wait-for-spindle S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conversion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--translate_drill</code>, <code>--chipbreaking_amount</code>, <code>--split-arcs</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--show-editor</code>, <code>--output_all_arguments</code>, <code>--output_visible_arguments</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A script Post defines its own set of arguments. The <code>linuxcnc_legacy</code> Post accepts <code>--no-header</code>, <code>--no-comments</code>, <code>--line-numbers</code>, <code>--no-show-editor</code>, <code>--precision</code>, <code>--preamble</code>, <code>--postamble</code>, <code>--inches</code>, <code>--modal</code>, <code>--axis-modal</code>, <code>--no-tlo</code> and <code>--rigid-tap</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="machine-based-post-processor"><a class="anchor" href="#machine-based-post-processor"></a>Machine-based Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A machine-based Post is a class that a Machine selects. <a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a> is the full developer reference. <a href="machine-configuration.html" class="xref page">Machine Configuration</a> describes the Machine file. This section is the short version.</p>
+</div>
+<div class="paragraph">
+<p>Start from <code>generic_post.py</code>. The example shows the minimum form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Path.Post.Processor import PostProcessor, SCOPE_JOB, SCOPE_MACHINE
+
+POST_TYPE = "machine"
+
+
+class Mymachine(PostProcessor):
+    @classmethod
+    def get_common_property_schema(cls):
+        props = super().get_common_property_schema()
+        for prop in props:
+            if prop["name"] == "file_extension":
+                prop["default"] = "ngc"
+            elif prop["name"] == "preamble":
+                prop["default"] = "G17 G54 G40 G49 G80 G90"
+        return props
+
+    @classmethod
+    def get_property_schema(cls):
+        return [
+            {
+                "name": "blend_mode",
+                "scope": SCOPE_JOB,
+                "type": "choice",
+                "label": "Path Blending Mode",
+                "default": "BLEND",
+                "choices": ["EXACT_PATH", "EXACT_STOP", "BLEND"],
+                "help": "The blend mode that the control uses between moves.",
+            },
+            {
+                "name": "automatic_tool_changer",
+                "scope": SCOPE_MACHINE,
+                "type": "bool",
+                "label": "Automatic Tool Changer",
+                "default": False,
+                "help": "The machine has an automatic tool changer.",
+            },
+        ]
+
+    def __init__(self, job, tooltip="My machine post processor", tooltipargs=[], units="Metric"):
+        super().__init__(job=job, tooltip=tooltip, tooltipargs=tooltipargs, units=units)
+
+    def init_values(self, values):
+        super().init_values(values)
+        values["MACHINE_NAME"] = "My machine"
+        values["POSTPROCESSOR_FILE_NAME"] = __name__</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="property-schema"><a class="anchor" href="#property-schema"></a>Property schema</h3>
+<div class="paragraph">
+<p>A machine-based Post declares its settings as <a href="../reference/glossary.html#post-processor-property" class="xref page">Post-Processor Properties</a> in two class methods.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>get_common_property_schema()</code> returns the properties that every machine-based Post has. A Post replaces this method to change a default or a help text, as the example shows. <a href="machine.html" class="xref page">Machine</a> lists the common properties.</p>
+</li>
+<li>
+<p><code>get_property_schema()</code> returns the properties that only this Post has.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each schema entry is a dictionary with these keys:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the property. The Machine file stores the value by this name. The Post reads the value from <code>self.values</code> with the name in upper case.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of <code>bool</code>, <code>int</code>, <code>float</code>, <code>str</code>, <code>text</code>, <code>choice</code> or <code>file</code>. The common schema also uses <code>string</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The label that the interface shows.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scope</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="../reference/glossary.html#property-scope" class="xref page">Property Scope</a>: <code>machine</code>, <code>job</code>, <code>run</code> or <code>internal</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>help</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The help text.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>choices</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The permitted values of a <code>choice</code> property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>min</code>, <code>max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The limits of an <code>int</code> or <code>float</code> property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decimals</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of decimal places of a <code>float</code> property.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>Path.Post.Processor</code> supplies the scope values as the constants <code>SCOPE_MACHINE</code>, <code>SCOPE_JOB</code>, <code>SCOPE_RUN</code> and <code>SCOPE_INTERNAL</code>. The scope sets where the property is edited.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Where the property is edited</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>machine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Machine Editor only. Use this scope for a property that describes the machine or its control.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>job</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Machine Editor sets the default. The <em>Options</em> tab of the Post-Processing Dialog overrides the default for one run.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>run</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <em>Overview</em> tab of the Post-Processing Dialog only. The value is not stored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>internal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No interface shows the property. The Post derives the value.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>These rules apply to the <code>scope</code> key:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An entry with no <code>scope</code> key has Job scope.</p>
+</li>
+<li>
+<p>An entry with <code>"runtime": True</code> and no <code>scope</code> key has Run scope.</p>
+</li>
+<li>
+<p>An entry with an unknown scope value has Job scope. The export writes a warning to the log.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The function <code>property_scope(prop)</code> returns the scope of one entry. The function <code>properties_in_scope(schema, *scopes)</code> returns the entries that have one of the given scopes.</p>
+</div>
+<div class="paragraph">
+<p>The Machine file stores the changed values in <code>postprocessor.properties</code>. <a href="machine-configuration.html" class="xref page">Machine Configuration</a> gives the priority of the value sources.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="properties-of-the-included-post-processors"><a class="anchor" href="#properties-of-the-included-post-processors"></a>Properties of the included Post-Processors</h3>
+<div class="paragraph">
+<p>The table lists the properties that the included machine-based Posts add to the common properties.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 28.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Post</th>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Values and default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>linuxcnc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Path Blending Mode</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXACT_PATH</code>, <code>EXACT_STOP</code>, <code>BLEND</code>. Default: <code>BLEND</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>linuxcnc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Blend Tolerance</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 0.0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>opensbp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Automatic Tool Changer</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>opensbp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Automatic Spindle Control</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Pierce Delay</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 1000.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Cooling Delay</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 500.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Marking Delay</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 100.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Control Method For Cutter</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Z_Control</code>, <code>Spindle_Control</code>, <code>G0_Control</code>. Default: <code>Z_Control</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strip Z Parameters</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strip F Parameters</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Force Rapid Feeds</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Mark Entry Points Only</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: unchecked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Program Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: empty. An empty value uses the Job label.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Output BLK FORM</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: checked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tool Axis</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>X</code>, <code>Y</code>, <code>Z</code>. Default: <code>Z</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Rapid Feed Rate (0 = FMAX)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Drill Cycle Format</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q_parameter</code>, <code>legacy</code>. Default: <code>q_parameter</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Drill Cycle Set-Up Clearance</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 2.0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Chip Breaking Retract</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 0.5.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fixture Output</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preset</code>, <code>datum</code>, <code>none</code>. Default: <code>preset</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>heidenhain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fixture Number for G54</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fanuc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Program Number</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: 0. The value 0 writes no <code>O</code> line.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fanuc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tape Marks (%)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: checked.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <strong>Control Method For Cutter</strong> values of the <code>generic_sheet_cutting</code> Post have these effects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Z_Control</code>: the Post writes <code>M3</code> on a downward Z move and <code>M5</code> on an upward Z move.</p>
+</li>
+<li>
+<p><code>G0_Control</code>: the Post writes <code>M3</code> on a change from <code>G0</code> to <code>G1</code> and <code>M5</code> on a change from <code>G1</code> to <code>G0</code>.</p>
+</li>
+<li>
+<p><code>Spindle_Control</code>: the Post writes each <code>M3</code> and <code>M5</code> command of the Toolpath without a change.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>opensbp</code> Post sets the default of the common property <strong>Ignore G-code Commands</strong> to its own list of tolerated commands. The <code>opensbp</code> Post always expands the drill cycles into moves.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="export-sequence"><a class="anchor" href="#export-sequence"></a>Export sequence</h3>
+<div class="paragraph">
+<p>The entry point of a machine-based Post is <code>export2()</code>. The method does these stages in sequence:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Shows the dialog of <code>pre_processing_dialog()</code>.</p>
+</li>
+<li>
+<p>Builds the ordered list of items to post: Fixture items, Tool Controller items and Operations.</p>
+</li>
+<li>
+<p>Calls <code>_expand_postprocessor_commands()</code>. A Post replaces this method to change the commands of the items.</p>
+</li>
+<li>
+<p>Puts each Toolpath into the coordinates that the Machine runs and adds the rotary moves and the plane commands (<code>_expand_workplane_frames()</code>).</p>
+</li>
+<li>
+<p>Expands the commands with the <code><em>expand</em>*</code> methods. The expansions cover the blocks, the canned cycle end, the drill cycle expansion, the arc split, the rapid move translation, the tool change and the bCNC blocks.</p>
+</li>
+<li>
+<p>Removes modal duplicates (<code>_optimize_duplicates_doubles()</code>).</p>
+</li>
+<li>
+<p>Adds line numbers (<code>_add_line_numbers()</code>).</p>
+</li>
+<li>
+<p>Converts each command to text with the <code><em>convert</em>*</code> methods and applies the line end characters.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>All stages before the conversion operate on <code>Path.Command</code> objects. No stage changes the text after the conversion.</p>
+</div>
+<div class="paragraph">
+<p>A Post replaces these methods to change the output:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>_merge_machine_config()</code>: sets values that the control makes necessary, after the Machine values are applied. Call the method of the parent class first.</p>
+</li>
+<li>
+<p><code><em>expand_prefix()</code>, <code>_expand_trailing_lines()</code> and the other <code>_expand</em>*</code> methods: change one expansion stage.</p>
+</li>
+<li>
+<p><code>_expand_tool_length_offset_post_command(item, command)</code>: returns the commands that apply the length offset of the Tool Bit after an <code>M6</code> command. The default returns <code>G43 H&lt;tool&gt;</code>.</p>
+</li>
+<li>
+<p><code>_convert_rapid_move()</code>, <code>_convert_linear_move()</code>, <code>_convert_arc_move()</code>, <code>_convert_drill_cycle()</code>, <code>_convert_dwell()</code>, <code>_convert_tool_change()</code>, <code>_convert_spindle_command()</code>, <code>_convert_coolant_command()</code>, <code>_convert_program_control()</code>, <code>_convert_fixture()</code>, <code>_convert_modal_command()</code> and <code>_convert_generic_command()</code>: convert one command to text. A method that returns <code>None</code> writes no line.</p>
+</li>
+<li>
+<p><code>_convert_job_sections()</code>: changes the complete text of each section.</p>
+</li>
+<li>
+<p><code>get_sanity_checks(job)</code>: returns the Squawks of the Post for the <a href="../reference/glossary.html#sanity-check" class="xref page">Sanity Check</a>. The <em>Warnings</em> tab of the Post-Processing Dialog and Quick Validate show them.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>heidenhain</code> Post replaces every conversion method, because no Klartext block has the form of a G-code command. The same Post replaces <code>_add_line_numbers()</code> and gives each block a number in <code>_convert_job_sections()</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tool-change"><a class="anchor" href="#tool-change"></a>Tool change</h3>
+<div class="paragraph">
+<p>The Post writes the output of a tool change in this sequence:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The <strong>Pre-Tool Change</strong> block.</p>
+</li>
+<li>
+<p>The tool change comment.</p>
+</li>
+<li>
+<p>The <code>M6</code> command.</p>
+</li>
+<li>
+<p>The <strong>Post-Tool Change</strong> block.</p>
+</li>
+<li>
+<p>The <code>G43</code> command, when <strong>TLO after tool-change</strong> is checked.</p>
+</li>
+<li>
+<p>The spindle start command.</p>
+</li>
+<li>
+<p>The <strong>Tool Return after tool changes</strong> block.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When <strong>Allow tool-change</strong> is unchecked, the Post does not write <code>M6</code> and does not write the <strong>Post-Tool Change</strong> block. The Post writes the <strong>Tool Return after tool changes</strong> block in the two conditions. When <strong>TLO after tool-change</strong> is unchecked, the Post replaces each <code>G43</code> command of the Toolpath with a comment.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="drill-cycles"><a class="anchor" href="#drill-cycles"></a>Drill cycles</h3>
+<div class="paragraph">
+<p>The <strong>Translate Drill Cycles</strong> option of the Machine expands drill cycles into <code>G0</code> and <code>G1</code> moves. The common property <strong>Drill Cycles to Translate</strong> lists the cycles that the Post expands. The default list is <code>G73</code>, <code>G81</code>, <code>G82</code>, <code>G83</code> and <code>G85</code>. The common properties contain no other switch for the expansion.</p>
+</div>
+<div class="paragraph">
+<p>The Post ends each group of canned cycles before the expansion. The expansion thus knows the retract mode of each cycle. A <code>G85</code> cycle becomes a <code>G1</code> move to the depth, a <code>G1</code> move to the retract height and a <code>G0</code> move to the clearance height.</p>
+</div>
+<div class="paragraph">
+<p>A Post for a control that runs every cycle sets the default of <strong>Drill Cycles to Translate</strong> to an empty list. The <code>fanuc</code> Post and the <code>heidenhain</code> Post do this.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="commands-and-rapid-moves"><a class="anchor" href="#commands-and-rapid-moves"></a>Commands and rapid moves</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Supported G-code Commands</strong> lists the commands that the Post accepts.</p>
+</li>
+<li>
+<p><strong>Ignore G-code Commands</strong> lists commands that the Post accepts and removes from the output. A command in this list is not necessary in <strong>Supported G-code Commands</strong>.</p>
+</li>
+<li>
+<p><code>translate_no_engagement_feed</code> changes a marked <code>G0</code> move into a <code>G1</code> move. An Operation that has a no-engagement feed marks these moves with that feed. Default: unchecked.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="modal-output-and-line-numbers"><a class="anchor" href="#modal-output-and-line-numbers"></a>Modal output and line numbers</h3>
+<div class="paragraph">
+<p>When <strong>Duplicate Commands</strong> of the Machine is unchecked, the Post removes a command word that is the same as the command word before it. When <strong>Duplicate Parameters</strong> is unchecked, the Post removes an axis parameter whose value did not change. A tool change and an item of plain text reset this state. A comment does not change this state.</p>
+</div>
+<div class="paragraph">
+<p>When <strong>Line Numbers</strong> of the Machine is checked, the Post gives each command an <code>N</code> parameter. These rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The count starts again at <strong>Line Number Start</strong> in each section of the output.</p>
+</li>
+<li>
+<p>A comment gets no number.</p>
+</li>
+<li>
+<p>A line of a text block, such as the preamble, is counted but gets no number.</p>
+</li>
+<li>
+<p>A command that already has an <code>N</code> parameter keeps its value.</p>
+</li>
+<li>
+<p>The number is not the physical line number of the file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>filter_inefficient_moves</code> option of the Machine has no effect on the output of a machine-based Post.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="work-planes-and-rotary-axes"><a class="anchor" href="#work-planes-and-rotary-axes"></a>Work Planes and rotary axes</h3>
+<div class="paragraph">
+<p>Two class attributes tell the export what a Post can write for an Operation on a tilted Work Plane.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ROTATION_STRATEGIES</code>: the strategies that the Post can emit. Default: <code>("dwo", "twp")</code>. The Machine selects one strategy. The export stops when the Post cannot emit that strategy.</p>
+</li>
+<li>
+<p><code>PLANE_COMMAND</code>: the plane command family for the <code>twp</code> strategy, a member of <code>Path.Post.TiltedWorkPlane.PlaneCommand</code>. Default: <code>PlaneCommand.G68_2</code>.</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><code>PlaneCommand</code></th>
+<th class="tableblock halign-left valign-top">Declare line</th>
+<th class="tableblock halign-left valign-top">Align line</th>
+<th class="tableblock halign-left valign-top">Cancel line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G68_2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G68.2 X{x} Y{y} Z{z} I{a1} J{a2} K{a3}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G53.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G69</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G268</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G268 X{x} Y{y} Z{z} I{a1} J{a2} K{a3}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G53.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G269</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PLANE_SPATIAL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PLANE SPATIAL SPA{a1} SPB{a2} SPC{a3} TURN FMAX</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PLANE RESET STAY</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>G68_2</code> and <code>G268</code> take intrinsic Z-X-Z Euler angles. <code>PLANE_SPATIAL</code> takes spatial angles about the fixed machine axes X, Y and Z. The common properties <strong>Tilted work plane: declare</strong>, <strong>Tilted work plane: align</strong> and <strong>Tilted work plane: cancel</strong> replace one line for a control with a different form. <a href="machine.html" class="xref page">Machine</a> describes these properties and the <strong>Rotation Strategy</strong> of the Machine.</p>
+</div>
+<div class="paragraph">
+<p>When the rotary axes move, the Post writes the <strong>Pre-Rotary Move</strong> block before the move and the <strong>Post-Rotary Move</strong> block after the move. The Post writes rotary axis angles with the axis precision and does not convert them between millimetres and inches.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="machine-output-options"><a class="anchor" href="#machine-output-options"></a>Machine output options</h3>
+<div class="paragraph">
+<p>A machine-based Post gets its output format from the output options of the Machine, not from arguments. The options are in these groups:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Units, tool length offset output and header output.</p>
+</li>
+<li>
+<p>Header items: date, description, document name, Machine name, project file, units, Tool Bit list, Fixture list. A Fixture is a G54 to G59.9 selection, not the workholding.</p>
+</li>
+<li>
+<p>Comments: enabled, symbol, Operation labels, empty lines, bCNC comments.</p>
+</li>
+<li>
+<p>Format: line numbers, start, prefix, increment, command space, line end characters.</p>
+</li>
+<li>
+<p>Precision: axis, feed, spindle.</p>
+</li>
+<li>
+<p>Duplicates: commands, parameters.</p>
+</li>
+<li>
+<p>Processing: early tool prep, split arcs, tool change, translate drill cycles, translate rapid moves, XY before Z after tool change, return-to position.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Edit the options on the <em>Options</em> tab of the Machine Editor. <a href="machine-configuration.html" class="xref page">Machine Configuration</a> describes each option.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="add-a-custom-post-processor"><a class="anchor" href="#add-a-custom-post-processor"></a>Add a custom Post-Processor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Put the Post file in one of these locations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The macro folder, set in <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Python</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Macro</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Macro path</b></span>.</p>
+</li>
+<li>
+<p>The CAM file path, set in <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Job preferences</b></span>.</p>
+</li>
+<li>
+<p>An add-on whose <code>package.xml</code> declares a Post-Processor content item.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then do these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Make sure that the file has read permission.</p>
+</li>
+<li>
+<p>For a legacy Post, enable the Post in <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Job preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Post processor</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Post processors selection</b></span>.</p>
+</li>
+<li>
+<p>Open the Job task panel again. If the file was already loaded, start FreeCAD again.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Use the macro folder while you test a new Post.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tests"><a class="anchor" href="#tests"></a>Tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The unit tests for the Posts are in <code>Mod/CAM/Tests/</code>, for example <code>TestPostCore</code> and <code>TestLinuxCNCPost</code>. Run the tests with this command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">FreeCADCmd -t TestCAMApp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>test_post.py</code> is a minimum Post that the tests use.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a></p>
+</li>
+<li>
+<p><a href="machine-configuration.html" class="xref page">Machine Configuration</a></p>
+</li>
+<li>
+<p><a href="posts/genealogy.html" class="xref page">Post-Processor Genealogy</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_Post.svg" alt="Post Process" width="16"></span> <a href="post-process.html" class="xref page">Post Process</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_Machine.svg" alt="Machine" width="16"></span> <a href="machine.html" class="xref page">Machine</a></p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_PostSelected.svg" alt="Post Process Selected" width="16"></span> <a href="post-process-selected.html" class="xref page">Post Process Selected</a></p>
+</li>
+<li>
+<p><a href="../reference/glossary.html" class="xref page">Glossary</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../job/work-plane.html">Work Plane</a></span>
+  <span class="next"><a href="mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
