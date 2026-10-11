@@ -6,24 +6,34 @@ merged without a person. Design record: the user's research notes, `gypsy_design
 
 ## Pipeline
 
-1. **Watch.** A merged FreeCAD pull request with the `Mod: CAM` label or touching `src/Mod/CAM/`.
-2. **Triage** (`triage.py`). Stage 1 maps changed files to candidate pages (`source-map.yml`).
-   Stage 2 asks a model for a verdict per page (`prompts/verdict.md`, `schema/verdict.schema.json`):
-   `no change`, `revise`, `new page`, `capture only`, with `needs_gui`. The verdict is committed to
-   `verdicts/<pr>.json` by direct push so "nothing to do" is on record.
-3. **Draft.** For `revise` / `new page` / `capture only`: rewrite the page to `STYLE.md`. Jobs
-   with `needs_gui` run FreeCAD at the merge commit off screen and exercise the change first;
-   jobs without it draft text-only and set `:page-status: draft`.
-4. **Figures** (`figures.py`). A draft lists the figures it wants. For each page an agent reads
-   the FreeCAD source, writes a recipe under `modules/ROOT/images/recipes/`, runs it with
-   `capture.py`, looks at the image, corrects the recipe, and puts the figure into the page. Each
-   figure has a `modules/ROOT/images/manifest.yml` entry. A cluster draft runs this stage before
-   the pull request opens.
-5. **Lint** (`lint.py`). Mechanical STYLE.md checks; one fix attempt, then the PR opens anyway
-   with `lint-failed`.
-6. **Pull request.** One for each work issue: own branch `gypsy/issue-N` off `main`, labels
-   `gypsy` / `needs-capture` / `conflict` / `lint-failed`. A person merges, and the merge closes
-   the issue and deploys the site.
+A **verdict** is a request to change the documentation (`verdicts/<id>.json`). A **unit of work**
+is one or more verdicts that a person approves as one issue and that one pull request delivers.
+
+1. **Triage** (`triage.py`). Reads one merged FreeCAD pull request and writes a verdict: a
+   summary, the `intent` (what the documentation must achieve as a whole), and for each page a
+   verdict (`no change`, `revise`, `new page`, `capture only`) and a `role` (`primary`,
+   `supporting`, `capture`). It records the first FreeCAD release that contains the change.
+   A change gets text only when a reader acts on it. Other sources can write a verdict too.
+2. **Propose** (`propose.py`). `survey` groups all open verdicts into ranked units. `make` writes
+   the issue for a set of verdicts: summary, goals, questions for a person, the part of each
+   page, what is not documented, and the work definition.
+3. **A person** guides with comments and sets the label `approved`.
+4. **Run** (`run.py`, started by `work.py run`). The runner takes the unit to a pull request:
+   - **brief**: one agent reads the FreeCAD source and writes the facts and terms that all
+     pages share;
+   - **draft**: one writer for each page, in parallel, with the goals, the plan and the brief;
+   - **check**: one agent compares the pages with the goals, the plan, the brief, the source and
+     each other;
+   - **revise**: the writers correct the findings; check and revise repeat for a fixed number of
+     rounds;
+   - **lint** (`lint.py`) after each draft and revision;
+   - **figures** (`figures.py`): an agent writes a recipe for each wanted figure, runs it with
+     `capture.py`, looks at the image and puts it into the page;
+   - **pull request**: reports each goal of the issue as achieved or not, the open findings of
+     the last check, and the pages. Branch `gypsy/issue-N`. A person merges, and the merge
+     closes the issue and deploys the site.
+
+An issue without goals (made by `work.py propose`) still runs through `draft.py --issue N`.
 
 ## Work issues and labels
 
