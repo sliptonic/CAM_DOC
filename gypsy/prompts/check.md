@@ -7,6 +7,22 @@ Read each page of the unit in full under `modules/ROOT/pages/`. For a page with 
 The FreeCAD source after the changes is at `$freecad_tree`. Look at an image under
 `modules/ROOT/images/` when a page uses a new one.
 
+Work in these passes, and do each one for each page. A page that reads well alone can still fail
+a pass.
+1. Source: compare each changed statement with the brief, and with the source when the brief
+   does not have it. Look at the condition of each statement ("always", "the first time").
+2. Owner: for each changed passage, find the owner of its subject in the plan. When the page is
+   not the owner, more than one clause on the subject is a `repeat`. A summary page gets two
+   sentences for a subject, not a paragraph for each part of it.
+3. Not documented: compare each changed passage with the list of what the unit does not
+   document. How the code does its work (objects that it makes, removes or links) is in that
+   list when the unit lists internals.
+4. The same page: read the unchanged lines of each page too. An unchanged line that a changed
+   line now contradicts is a `contradiction` with severity `must`; the fix removes or corrects
+   the old line.
+5. Between pages: compare the statements on one subject across all pages, and the names used for
+   one thing (also property names and link texts).
+
 Report `goals`: for each goal, `met` (`yes`, `partly`, `no`), `where` (page and heading) and a
 `note` when it is not `yes`.
 
