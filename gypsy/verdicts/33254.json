@@ -1,0 +1,108 @@
+{
+ "pr": 33254,
+ "summary": "The linuxcnc Post-Processor writes a tilted Work Plane as G68.2 / G53.1 / G69 with a new twp_kinematics_select Machine property and refuses DWO, and all machine-based Post-Processors now track the arc plane (G17/G18/G19) and drop only the arc center word along the normal of the plane.",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Post/scripts/linuxcnc_post.py: ROTATION_STRATEGIES = (\"twp\",) and PLANE_COMMAND = G68_2 add tilted Work Plane output to linuxcnc; Path/Post/Processor.py _convert_move: a G17 arc no longer carries K in the output of each machine-based Post-Processor",
+   "sections": [
+    "Included Post-Processors",
+    "Work Planes",
+    "Notes and limitations"
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "linuxcnc_post.py get_property_schema: new twp_kinematics_select property, new help for pre_rotary_move and twp_align, PARAMETER_ORDER override removed; Processor.py _command_names: ignored and supported command lists match name by name, G17/G18/G19 are supported modal commands",
+   "sections": [
+    "Properties of the included Post-Processors",
+    "Commands and rapid moves",
+    "Work Planes and rotary axes",
+    "Included Post-Processors"
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Base/MachineState.py: new Plane attribute and addGcodeText(); Processor.py: _command_names name-by-name filter, empty command name allowed, _convert_move drops the center word along the plane normal; linuxcnc_post.py is now a reference for ROTATION_STRATEGIES and PLANE_COMMAND",
+   "sections": [
+    "MachineState",
+    "Command filter and annotations",
+    "Work Planes and rotary axes",
+    "Common properties",
+    "Reference implementations"
+   ]
+  },
+  {
+   "page": "output/posts/fanuc.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "Path/Post/scripts/fanuc_post.py: parameter_order default override removed (K is in the default again) and G17 removed from EXTRA_SUPPORTED; Processor.py _convert_move: a G18 arc keeps K and drops J, a G19 arc drops I",
+   "sections": [
+    "Arcs",
+    "Defaults of the common properties"
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "Path/Base/MachineState.py: Plane attribute (default G17, not in Tracked, kept by setState(None) and copy()) and addGcodeText(); Constants.py: GCODE_PLANE added to GCODE_SUPPORTED",
+   "sections": [
+    "MachineState",
+    "List of currently supported G-code commands"
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "verdict": "revise",
+   "needs_gui": true,
+   "reason": "linuxcnc_post.py get_property_schema: twp_kinematics_select has SCOPE_MACHINE, thus it shows in the Post-Processor properties of the Machine; ROTATION_STRATEGIES = (\"twp\",) makes a Machine set to DWO raise an error with linuxcnc",
+   "sections": [
+    "Properties",
+    "Notes and limitations"
+   ]
+  },
+  {
+   "page": "job/work-plane.adoc",
+   "verdict": "revise",
+   "needs_gui": false,
+   "reason": "linuxcnc_post.py: linuxcnc now declares a tilted Work Plane (G68.2, G53.1 or G53.6, G69), cancels the plane before each fixture and tool change, and supports only the twp rotation strategy",
+   "sections": [
+    "Notes and limitations"
+   ]
+  },
+  {
+   "page": "output/posts/heidenhain.adoc",
+   "verdict": "no change",
+   "needs_gui": false,
+   "reason": "CAMTests/TestHeidenhainPost.py only: G18 and G19 stay refused as before; no hunk changes the heidenhain Post-Processor source or its output",
+   "sections": []
+  }
+ ],
+ "unmapped": [],
+ "meta": {
+  "merge_commit": "c2bd9bab55441a108c632026e09c8faa71e2138a",
+  "merged_at": "2026-10-11T06:14:15Z",
+  "title": "CAM: LinuxCNC post supports tilted work planes (TWP)",
+  "candidates": [
+   "output/mbpp-postprocessor.adoc",
+   "output/post-process.adoc",
+   "output/postprocessor-customization.adoc",
+   "output/posts/fanuc.adoc",
+   "reference/scripting.adoc"
+  ],
+  "unmapped_by_map": [],
+  "files": 13,
+  "model": "claude-opus-5-5",
+  "cost_usd": 0.3053132,
+  "duration_ms": 27718,
+  "session": "8ed19d0d-6ec2-487f-bcb0-8f08a89dc508",
+  "generated": "2026-10-11T14:30:34+00:00"
+ }
+}

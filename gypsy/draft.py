@@ -3,10 +3,11 @@
 """gypsy draft: revise pages for the verdicts that name them, lint, and open a pull request.
 
     python3 gypsy/draft.py PAGE [--facts gypsy/facts/machine.json] [--pr] [--model M] [--dry]
-    python3 gypsy/draft.py --cluster gypsy/clusters/NAME.yml [--pr] [--model M] [--dry]
+    python3 gypsy/draft.py --issue N [--pr] [--model M] [--dry]
 
-A cluster is one cause with all its pages (gypsy/clusters/README.md). Its pages are drafted
-together, on one branch, and delivered as one pull request that closes the cluster's issue.
+A work issue is one cause with all its pages (gypsy/work.py). Its pages are drafted together,
+on the branch gypsy/issue-N, and delivered as one pull request that closes the issue. The
+issue must have the label `approved`. The comments of people on the issue go to each draft.
 
 PAGE is relative to modules/ROOT/pages. Without --pr the draft is written on a branch
 gypsy/<slug> in the working tree and the lint report printed; with --pr it is also committed,
@@ -18,6 +19,7 @@ import yaml
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config  # noqa: E402
 import triage  # noqa: E402
+import work  # noqa: E402
 
 HERE = triage.HERE
 ROOT = triage.ROOT
@@ -150,7 +152,7 @@ def siblings_text(done, budget=SIBLING_BUDGET):
     return "\n\n".join(out)
 
 
-def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", decisions=()):
+def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", guidance=()):
     """Draft one page in the working tree. Returns a job entry; with dry, prints the prompt."""
     page_path = os.path.join(PAGES, page)
     smap = triage.load_map()
@@ -185,7 +187,7 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
         "facts": "\n\n".join(facts) or "(none)",
         "pending": pending,
         "siblings": siblings,
-        "decisions": "\n".join(f"- {d}" for d in decisions) or "(none)",
+        "guidance": "\n\n".join(f"Comment {n}:\n{g}" for n, g in enumerate(guidance, 1)) or "(none)",
     }
     prompt = tmpl
     for k in sorted(fields, key=len, reverse=True):       # $page_text before $page
@@ -258,9 +260,10 @@ def page_report(job):
 
 
 def run_cluster(a):
-    with open(a.cluster, encoding="utf-8") as fh:
-        c = yaml.safe_load(fh)
-    slug = os.path.splitext(os.path.basename(a.cluster))[0]
+    c = work.load(a.issue)
+    slug = f"issue-{a.issue}"
+    if not a.dry and "approved" not in c["labels"]:
+        sys.exit(f"issue #{a.issue} does not have the label approved; a person sets it")
     owned, partial = set(c["prs"]), set(c.get("partial") or {})
     pages = c["pages"]
     # New pages first: a rewritten page links to them, and lint refuses a link without a target.
@@ -269,7 +272,7 @@ def run_cluster(a):
            [(p, "amend", owned) for p in pages.get("amend", [])]
     if not a.dry:
         start_clean()
-    branch = f"gypsy/{slug}"
+    branch = work.branch(a.issue)
     done = {}
     for p in pages.get("reference", []):
         done[p] = open(os.path.join(PAGES, p), encoding="utf-8").read()
@@ -287,11 +290,11 @@ def run_cluster(a):
     for page, mode, prs in plan:
         vs = verdicts_for(page, prs)
         if not vs:
-            sys.exit(f"cluster {slug}: no verdict of its pull requests names {page}")
+            sys.exit(f"{slug}: no verdict of its pull requests names {page}")
         others = {k: v for k, v in done.items() if k != page}
         budget = SIBLING_BUDGET if mode != "amend" else 0     # an amended page gets outlines only
         job = draft_page(page, vs, mode, c.get("facts") or [], siblings_text(others, budget), a.model, a.dry,
-                         decisions=c.get("decisions") or [])
+                         guidance=c["guidance"])
         if a.dry:
             continue
         done[page] = open(os.path.join(PAGES, page), encoding="utf-8").read()
@@ -305,7 +308,7 @@ def run_cluster(a):
         lines = open(nav, encoding="utf-8").read().split("\n")
         at = next((i for i, l in enumerate(lines) if entry["after"] in l), None)
         if at is None:
-            sys.exit(f"cluster {slug}: nav anchor not found: {entry['after']}")
+            sys.exit(f"{slug}: nav anchor not found: {entry['after']}")
         if entry["line"] not in lines:
             lines.insert(at + 1, entry["line"])
         open(nav, "w", encoding="utf-8").write("\n".join(lines))
@@ -361,7 +364,8 @@ def run_cluster(a):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("page", nargs="?")
-    ap.add_argument("--cluster", help="a cluster file; drafts all its pages as one pull request")
+    ap.add_argument("--issue", type=int, metavar="N",
+                    help="an approved work issue; drafts all its pages as one pull request (gypsy/work.py)")
     ap.add_argument("--facts", action="append", default=[])
     ap.add_argument("--pr", action="store_true")
     ap.add_argument("--no-figures", action="store_true", help="cluster: do not make the wanted figures")
@@ -369,10 +373,10 @@ def main():
     ap.add_argument("--model", default=os.environ.get("GYPSY_DRAFT_MODEL", ""))
     a = ap.parse_args()
     config.require_freecad_tree()
-    if a.cluster:
+    if a.issue:
         return run_cluster(a)
     if not a.page:
-        ap.error("give a PAGE or --cluster FILE")
+        ap.error("give a PAGE or --issue N")
     page = a.page
     if not a.dry:
         start_clean()

@@ -21,10 +21,25 @@ merged without a person. Design record: the user's research notes, `gypsy_design
    the pull request opens.
 5. **Lint** (`lint.py`). Mechanical STYLE.md checks; one fix attempt, then the PR opens anyway
    with `lint-failed`.
-6. **Pull request.** One per cluster (`clusters/README.md`): one cause with all its pages, proposed
-   as an issue and confirmed by a person. For work after the backlog a cluster is one upstream
-   PR. Own branch off `main`, labels `gypsy` /
-   `needs-capture` / `conflict` / `lint-failed`. A person merges. Merging deploys the site.
+6. **Pull request.** One for each work issue: own branch `gypsy/issue-N` off `main`, labels
+   `gypsy` / `needs-capture` / `conflict` / `lint-failed`. A person merges, and the merge closes
+   the issue and deploys the site.
+
+## Work issues and labels
+
+Issues control the work (`work.py`). A pull request is for page changes, or for a change to
+gypsy and the tools. Process state does not go through a pull request.
+
+- A work issue is one cause with all its pages. Its body has the work definition in a YAML
+  block that gypsy reads and that a person can edit. For work after the backlog, the cause is
+  one upstream pull request.
+- Labels are the decisions. gypsy sets `proposed`. Only a person sets `approved`. gypsy sets
+  `blocked` when it cannot continue, with a comment that says why.
+- The other states need no label: approved without a pull request is in draft; an open pull
+  request is in review; closed is delivered, or rejected when closed as not planned.
+- Comments are guidance, not decisions. Each comment of a person goes to the drafter.
+- The backlog is not a set of issues. `status.py` reports it. gypsy proposes an issue to
+  decrease it, and a person approves.
 
 ## Worktrees
 
@@ -52,7 +67,10 @@ python3 gypsy/lint.py modules/ROOT/pages/operations/drilling.adoc
 python3 gypsy/status.py                                      # state of every page, ranked
 python3 gypsy/status.py --page job/job.adoc                  # one page in detail
 python3 gypsy/lint.py --since origin/main PAGE.adoc           # only the lines changed since main
-python3 gypsy/draft.py --cluster gypsy/clusters/machine-post.yml --pr   # in ~/CAM_DOC-gypsy
+python3 gypsy/work.py                                        # open work issues and what each waits for
+python3 gypsy/work.py propose --upstream 33254               # propose one upstream PR as work
+python3 gypsy/work.py propose FILE.yml                       # propose a set of upstream PRs as work
+python3 gypsy/work.py run                                    # draft the next approved issue; in ~/CAM_DOC-gypsy
 python3 gypsy/figures.py --list                              # figures that the drafts want
 python3 gypsy/figures.py --pr                                # make them; in ~/CAM_DOC-gypsy
 python3 gypsy/capture.py output/machine/editor-machine-tab   # replay one figure recipe
