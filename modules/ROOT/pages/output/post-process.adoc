@@ -10,7 +10,7 @@
 :page-see-also: CAM PostSelected, CAM Machine, CAM Postprocessor Customization
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 30644,31589,31819,32099,32129,32274,32282,32293,32313,32615,32854,32863,32903,33069
+:page-source-pr: 30644,31589,31819,32099,32129,32274,32282,32293,32313,32615,32854,32863,32903,33069,33254
 :page-status: draft
 :description: Export the selected Job to G-code files through the Post-Processor of the Job or of its Machine.
 
@@ -217,7 +217,8 @@ The table gives notes on individual Posts.
 |`generic_sheet_cutting` |For plasma, laser and waterjet machines. *Control Method For Cutter* has the values `Z_Control`, `Spindle_Control` and `G0_Control`. Default: `Z_Control`.
 |`heidenhain` |Writes a Klartext program with block numbers, not G-code.
 |`fanuc` |Writes the `%` tape marks and an `O` program number.
-|`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation.
+|`linuxcnc` |Writes tilted Work Planes with the TWP Rotation Strategy only. xref:output/posts/linuxcnc.adoc[linuxcnc Post-Processor] describes the output.
+|`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation. The `opensbp` Post accepts a G17 command and writes no line for it. A G18 or G19 command stops the export with the message `Unsupported command: G18` or `Unsupported command: G19`. xref:output/postprocessor-customization.adoc[Postprocessor Customization] describes the arc plane rule.
 |===
 
 === Drill cycles and tapping
@@ -235,6 +236,7 @@ A legacy Post writes `G98` or `G99` before each group of canned cycles and `G80`
 
 * A Work Plane parallel to the table posts on each Machine and with each Post, legacy Posts included.
 * An Operation on a tilted Work Plane needs a Machine with rotary axes, a *Rotation Strategy*, and a Post that can emit that strategy. If one is absent, the export stops and the message names the Operation and the Machine. xref:output/machine.adoc[Machine] lists the conditions.
+* The `linuxcnc` Post emits only the TWP Rotation Strategy. When the *Rotation Strategy* of the Machine is DWO, the export of an Operation on a tilted Work Plane stops with an error. xref:output/posts/linuxcnc.adoc[linuxcnc Post-Processor] describes the tilted Work Plane output of the `linuxcnc` Post.
 * A Work Plane that the Machine cannot index to stops the export. The message names the Work Plane and the rotary limits of the Machine.
 * A legacy Post stops the export for each Operation on a tilted Work Plane. Select a Machine with a machine-based Post for such an Operation.
 * Only the Operations in the export are examined. An inactive Operation, or an Operation that is not selected, does not stop the export.

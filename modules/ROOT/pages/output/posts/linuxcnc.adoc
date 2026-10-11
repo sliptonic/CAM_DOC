@@ -1,0 +1,200 @@
+= linuxcnc Post-Processor
+:description: Features that are specific to the linuxcnc Post-Processor: its property defaults, the tilted Work Plane output and the kinematics select line.
+:page-source-pr: 33254
+:page-status: draft
+
+== Overview
+
+The `linuxcnc` xref:reference/glossary.adoc#post-processor[Post-Processor] writes G-code for the LinuxCNC control.
+The `linuxcnc` Post is a machine-based Post.
+This page gives only the features that are specific to the `linuxcnc` Post.
+xref:output/postprocessor-customization.adoc[Postprocessor Customization] gives the properties and the output rules that all machine-based Posts have.
+
+The `linuxcnc` Post writes a tilted xref:reference/glossary.adoc#work-plane[Work Plane] with the lines `G68.2`, `G53.1` and `G69`.
+
+CAUTION: Make sure that the LinuxCNC control accepts the tilted Work Plane lines before you run the program. The syntax of these lines follows draft LinuxCNC work and can change.
+
+== Defaults of the common properties
+
+The `linuxcnc` Post changes the defaults of these common properties.
+
+|===
+|Property |Default
+
+|`file_extension`
+|`ngc`
+
+|`supports_tool_radius_compensation`
+|true
+
+|`preamble`
+|`G17 G54 G40 G49 G80 G90`
+
+|`postamble`
+|Three lines: `M05`, `G17 G54 G90 G80 G40`, `M2`
+
+|`safetyblock`
+|`G40 G49 G80`
+|===
+
+The `linuxcnc` Post adds the blend command to the end of the preamble.
+With the default values, the last preamble line is `G17 G54 G40 G49 G80 G90 G64`.
+The *Path Blending Mode* and *Blend Tolerance* properties select the blend command.
+xref:output/postprocessor-customization.adoc[Postprocessor Customization] gives the values of these two properties.
+
+== Rotation Strategy
+
+The `linuxcnc` Post writes a tilted Work Plane only with the TWP xref:reference/glossary.adoc#rotation-strategy[Rotation Strategy] (value `twp`).
+The `linuxcnc` Post sets the class attribute `ROTATION_STRATEGIES` to `+("twp",)+`.
+The LinuxCNC control does not have the function that the DWO Rotation Strategy uses.
+Thus the `linuxcnc` Post does not write output for the DWO Rotation Strategy (value `dwo`).
+
+The *Rotation Strategy* field of the _Machine Editor_ gives the strategy of the xref:reference/glossary.adoc#machine[Machine].
+The entry for the TWP Rotation Strategy is `Tilted work plane (TWP)`.
+The entry for the DWO Rotation Strategy is `Dynamic work offset (DWO)`.
+
+The xref:reference/glossary.adoc#tool-axis[Tool Axis] of an xref:reference/glossary.adoc#operation[Operation] is tilted when the local Z axis of its Placement is different from the world Z axis.
+The tolerance of this comparison is `1e-6`.
+
+The export stops with an error when these two conditions are true:
+
+* An Operation in the export has a tilted Tool Axis.
+* The *Rotation Strategy* of the Machine is `Dynamic work offset (DWO)`.
+
+The error message has this text:
+
+....
+<Operation> is on a tilted work plane, and this post-processor cannot emit the DWO strategy machine '<Machine>' declares.
+....
+
+`<Operation>` is the label of the Operation.
+`<Machine>` is the name of the Machine.
+
+The export of a Machine set to DWO does not stop with this error when no Operation in the export has a tilted Tool Axis.
+
+== Tilted Work Plane output
+
+The `linuxcnc` Post uses the `G68.2` xref:reference/glossary.adoc#plane-command[Plane Command].
+The Post sets the class attribute `PLANE_COMMAND` to `PlaneCommand.G68_2`.
+The Plane Command has three lines.
+
+|===
+|Line |Default text |Function
+
+|Declare line
+|`G68.2 X Y Z I J K`
+|Gives the origin and the orientation of the tilted Work Plane.
+
+|Align line
+|`G53.1`
+|Points the Tool Bit along the normal of the declared plane.
+
+|Cancel line
+|`G69`
+|Cancels the declared plane.
+|===
+
+=== Declare line
+
+The Post writes a declare line only for an Operation that has a tilted Tool Axis.
+The X, Y and Z words give the origin of the Work Plane.
+The I, J and K words give intrinsic Z-X'-Z'' Euler angles.
+
+After the declare line, the Post writes the moves of the Operation in the coordinates of the Work Plane.
+
+A Work Plane parallel to the table gets no declare line.
+The Post writes the xref:reference/glossary.adoc#toolpath[Toolpath] of such an Operation in world coordinates.
+
+=== Align line
+
+The Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* (`twp_control_positions_rotaries`) is checked.
+The default of `twp_control_positions_rotaries` is checked.
+When `twp_control_positions_rotaries` is unchecked, the Post writes a `G0` rotary move before the declare line and writes no align line.
+The common *Tilted work plane* properties control the align line; xref:output/machine.adoc[Machine] gives these properties.
+
+The *Tilted work plane: align* property (`twp_align`) gives the text of the align line.
+
+* An empty value gives the line `G53.1`.
+* A value that is not empty replaces the complete align line. The Post writes the text as it is given.
+
+The value `G53.1 P1 Q1` gives the line `G53.1 P1 Q1`, and the output has no line with only `G53.1`.
+The Post writes `G53.6` only when `twp_align` contains `G53.6`.
+
+The help text of *Tilted work plane: align* gives these values:
+
+* `G53.1`: moves only the rotary axes. The tip of the Tool Bit changes its position.
+* `G53.1 P1` or `G53.1 P2`: selects one of the two poses.
+* `Q1`: lets the table take part in the move.
+* `G53.6`: keeps the center point of the Tool Bit in its position.
+
+The Post does not examine these words.
+
+=== Cancel line
+
+When a plane is declared, the Post writes the cancel line in these conditions:
+
+* Before each tool change.
+* Before each xref:reference/glossary.adoc#fixture[Fixture] (a G54 to G59.9 selection).
+* Before the declare line of a different pose.
+* At the end of each output section.
+
+LinuxCNC does not accept a change of coordinate system while a plane is active.
+
+A xref:reference/glossary.adoc#job[Job] with the Fixtures `G54` and `G55` and one tilted Operation gives two declare lines and two `G69` lines.
+One `G69` line is before the `G55` line.
+One declare line is after the `G55` line.
+
+=== Sequence of the output
+
+This sequence applies when *Tilted work plane: control positions the rotaries* (`twp_control_positions_rotaries`) is checked.
+For one tilted Operation with *Pre-Rotary Move* (`pre_rotary_move`) set, the output has this sequence:
+
+. The preamble, with the blend command at the end of its last line.
+. The *Pre-Rotary Move* block.
+. The declare line.
+. The align line.
+. The moves of the Operation, in the coordinates of the Work Plane.
+. The cancel line.
+
+This output has no `G0` line with a rotary axis word.
+The control positions the rotary axes at the align line.
+
+== Kinematics select line
+
+The `linuxcnc` Post adds the *Tilted work plane: kinematics select* property to the common properties.
+
+|===
+|Property |Label |Scope |Type |Default
+
+|`twp_kinematics_select`
+|*Tilted work plane: kinematics select*
+|Machine
+|string
+|empty
+|===
+
+The Post writes the text of `twp_kinematics_select` as one new line after the preamble when these two conditions are true:
+
+* The value has characters other than space characters.
+* One Operation of the Job has a tilted Tool Axis.
+
+The Post examines all Operations of the Job, not only the Operations in the export.
+For a xref:reference/glossary.adoc#dressup[Dressup], the Post examines the Placement of the Operation that the Dressup changes.
+
+The kinematics select line comes directly after the preamble line that has the blend command.
+The kinematics select line is before the first declare line.
+
+With the value `G12.1 P1` and a tilted Operation, the line after `G17 G54 G40 G49 G80 G90 G64` is `G12.1 P1`.
+A Job with no tilted Operation has no `G12.1 P1` line.
+
+The help text of *Tilted work plane: kinematics select* says that `G53.1` needs a kinematics type whose frames describe the machine.
+The help text says that `G12.1 P1` goes in this property for a switchable module that starts in identity kinematics.
+The Post does not examine the text of `twp_kinematics_select`.
+
+== Related
+
+* xref:output/postprocessor-customization.adoc[Postprocessor Customization]
+* xref:output/post-process.adoc[Post Process]
+* xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor]
+* xref:output/posts/fanuc.adoc[fanuc Post-Processor]
+* xref:reference/scripting.adoc[Scripting]
