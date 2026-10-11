@@ -1,0 +1,474 @@
+# Figure manifest (STYLE.md §10.3). One entry per captured figure. A block image on a page whose
+# file has no entry here fails gypsy lint. Icons (CAM_*.svg) and wiki-era figures are not listed;
+# a wiki-era figure is replaced, and listed, when its page is rewritten.
+#
+# - file: operations/profile/task-panel-operation.png   # path under modules/ROOT/images
+#   page: operations/profile.adoc
+#   model: twp-block                                    # entry in models/models.json
+#   recipe: recipes/operations/profile/task_panel_operation.py
+#   freecad: 7a1823378eb                                # commit the capture was made at
+#   date: 2026-10-01
+#   alt: Profile task panel, Operation tab, with Side set to Outside
+figures:
+- file: inspect/inspect/dialog-raw-work-plane.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/dialog-raw-work-plane.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: CAM Inspect dialog with Raw set for an Operation on a Work Plane; the note has one more line with the origin of the frame
+- file: inspect/inspect/dialog.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: CAM Inspect dialog with the G-code of a Profile operation, line numbers, the note about the units, and the Raw checkbox
+- file: inspect/inspect/result-tool-axis.png
+  page: inspect/inspect.adoc
+  model: drilling-1
+  recipe: recipes/inspect/inspect/result-tool-axis.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 3D view of a Profile operation on a tilted Work Plane, with highlighted moves and the Tool Bit shape along the Tool Axis
+- file: job/job/context-menu.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/context-menu.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Context menu of a Job in the tree view, with the Update Tools from Library entry
+- file: job/job/output-file-warning.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/output-file-warning.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Warning message with the text This will replace filename template, and the Ok and Cancel buttons
+- file: job/job/task-panel-general.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-general.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, General tab
+- file: job/job/task-panel-output.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-output.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Output tab, with Machine set to (Legacy post-processor)
+- file: job/job/task-panel-setup-stock-cylinder.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-setup-stock-cylinder.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Setup tab, with the Stock set to Create cylinder and the Axis, Radius and Height controls
+- file: job/job/task-panel-setup.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-setup.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Setup tab, with the Layout section open
+- file: job/job/task-panel-tools-library.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-tools-library.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tool Library dialog with the All Tools view selected
+- file: job/job/task-panel-tools.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-tools.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Tools tab, with one Tool Controller
+- file: job/job/task-panel-workplan.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/task-panel-workplan.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Workplan tab, with a Profile and a Drilling Operation
+- file: job/job/tool-number-in-use.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/tool-number-in-use.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tool Number In Use message, which names the Tool Controller that has the number
+- file: job/job/tree-workplanes.png
+  page: job/job.adoc
+  model: drilling-1
+  recipe: recipes/job/job/tree-workplanes.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tree view of a Job, with one Work Plane below the Workplanes group
+- file: job/sanity-check/report.png
+  page: job/sanity-check.adoc
+  model: drilling-1
+  recipe: recipes/job/sanity-check/report.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 'Setup Report for CAM Job: Job, with the Run Summary table and the Squawks section'
+- file: job/work-plane/properties-fixture.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/properties-fixture.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Property editor of a Work Plane, with the Fixture property set to G55
+- file: job/work-plane/result-face.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/result-face.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 3D view of a Model with the axes of a Work Plane at the centroid of a tilted planar face
+- file: job/work-plane/task-panel-heights.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/task-panel-heights.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Profile task panel, Heights page, with a Work Plane selected in the Work Plane selector and the Reset to defaults button
+- file: job/work-plane/tree-workplanes.png
+  page: job/work-plane.adoc
+  model: drilling-1
+  recipe: recipes/job/work-plane/tree-workplanes.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Tree view of a Job, with two Work Planes below the Workplanes group
+- file: operations/profile/result-contour.png
+  page: operations/profile.adoc
+  model: drilling-1
+  recipe: recipes/operations/profile/result-contour.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Toolpath of a Profile operation around the outside of the model
+- file: output/machine-configuration/editor-kinematics-rotation-strategy.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-kinematics-rotation-strategy.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Machine tab, Kinematics group with the Rotation Strategy list open
+- file: output/machine-configuration/editor-toolheads-tab.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-toolheads-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Toolheads tab, with one rotary Toolhead and the Add Toolhead button
+- file: output/machine-configuration/editor-validation-dialog.png
+  page: output/machine-configuration.adoc
+  model: null
+  recipe: recipes/output/machine-configuration/editor-validation-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Validation dialog with one error and one warning, and the details shown
+- file: output/machine-configuration/job-output-tab-machine.png
+  page: output/machine-configuration.adoc
+  model: drilling-1
+  recipe: recipes/output/machine-configuration/job-output-tab-machine.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Output tab, with the Machine Shop Router selected and no Post-Processor rows
+- file: output/machine-configuration/post-dialog-options-postprocessor-properties.png
+  page: output/machine-configuration.adoc
+  model: drilling-1
+  recipe: recipes/output/machine-configuration/post-dialog-options-postprocessor-properties.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Options tab, Postprocessor Properties group of the linuxcnc Post
+- file: output/machine/editor-machine-tab.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/editor-machine-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Machine tab, for a new Machine
+- file: output/machine/editor-postprocessor-tab.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/editor-postprocessor-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Postprocessor tab, moved down to the last properties of the linuxcnc Post
+- file: output/machine/editor-toolheads-tab.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/editor-toolheads-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Toolheads tab, with one rotary Toolhead and its Max RPM and Min RPM
+- file: output/machine/job-output-tab-machine.png
+  page: output/machine.adoc
+  model: drilling-1
+  recipe: recipes/output/machine/job-output-tab-machine.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Job task panel, Output tab, with the Machine Shop Router selected and no Processor and Arguments rows
+- file: output/machine/mtconnect-import-dialog.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/mtconnect-import-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Import Machine from MTConnect dialog with the URL http://machine:5000/probe entered
+- file: output/machine/validation-dialog.png
+  page: output/machine.adoc
+  model: null
+  recipe: recipes/output/machine/validation-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Validation dialog with one warning, and the details shown
+- file: output/post-process-selected/dialog-operations-tab.png
+  page: output/post-process-selected.adoc
+  model: drilling-1
+  recipe: recipes/output/post-process-selected/dialog-operations-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Operations tab, opened from Post Process Selected, with the two selected Operations checked and the third Operation not checked
+- file: output/post-process/dialog-operations.png
+  page: output/post-process.adoc
+  model: drilling-1
+  recipe: recipes/output/post-process/dialog-operations.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Operations tab, with a Profile and a Drilling Operation in the list
+- file: output/post-process/dialog-options.png
+  page: output/post-process.adoc
+  model: drilling-1
+  recipe: recipes/output/post-process/dialog-options.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Options tab, with the Postprocessor Properties group of the linuxcnc Post
+- file: output/post-process/dialog-output.png
+  page: output/post-process.adoc
+  model: drilling-1
+  recipe: recipes/output/post-process/dialog-output.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Output tab, after Generate Output, with one file in the list and its G-code
+- file: output/post-process/dialog-overview.png
+  page: output/post-process.adoc
+  model: drilling-1
+  recipe: recipes/output/post-process/dialog-overview.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Overview tab, with the Machine Shop Router selected and the Post Processor Parameters group
+- file: output/postprocessor-customization/test-geometry-sketch.png
+  page: output/postprocessor-customization.adoc
+  model: lines-arcs-1
+  recipe: recipes/output/postprocessor-customization/test-geometry-sketch.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: 'Sketch of the test geometry: straight lines and arcs that start at the origin and go in the Y direction'
+- file: output/postprocessor-customization/test-geometry-toolpath.png
+  page: output/postprocessor-customization.adoc
+  model: lines-arcs-1
+  recipe: recipes/output/postprocessor-customization/test-geometry-toolpath.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Toolpath of the test geometry in the 3D view, one level in the XY plane, with the blue arrow near the start point
+- file: output/posts/fanuc/dialog-options-postprocessor-properties.png
+  page: output/posts/fanuc.adoc
+  model: drilling-1
+  recipe: recipes/output/posts/fanuc/dialog-options-postprocessor-properties.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Post-Processing Dialog, Options tab, Postprocessor Properties group of the fanuc Post, with Program Number and Park Empty Spindle at End
+- file: output/posts/fanuc/editor-postprocessor-tab.png
+  page: output/posts/fanuc.adoc
+  model: null
+  recipe: recipes/output/posts/fanuc/editor-postprocessor-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Machine Editor, Postprocessor tab, moved down to the eight properties of the fanuc Post at their defaults
+- file: reference/preferences/assets-machines.png
+  page: reference/preferences.adoc
+  model: null
+  recipe: recipes/reference/preferences/assets-machines.py
+  freecad: 62544c4c6e8
+  date: '2026-10-10'
+  alt: Assets page of the CAM preferences, with the Machines list and the buttons Add, Import..., Edit and Delete
+- file: reference/preferences/gui-tool-bit-shape-drawing.png
+  page: reference/preferences.adoc
+  model: null
+  recipe: recipes/reference/preferences/gui-tool-bit-shape-drawing.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: 'GUI page of the CAM preferences, with the Tool Bit Shape Drawing group: three dimension colors and the tool artwork brightness of 85 %'
+- file: tools/add-toolbit/tool-number-dialog.png
+  page: tools/add-toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/add-toolbit/tool-number-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: 'Tool Number dialog with the text Tool number 1 is already used by TC: 5mm Endmill, and the next free number 2 as the value'
+- file: tools/add-toolbit/toolbit-selector-all-tools.png
+  page: tools/add-toolbit.adoc
+  model: null
+  recipe: recipes/tools/add-toolbit/toolbit-selector-all-tools.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Selector dialog with All Tools selected, without the sort list and without numbers in the rows
+- file: tools/add-toolbit/toolbit-selector.png
+  page: tools/add-toolbit.adoc
+  model: null
+  recipe: recipes/tools/add-toolbit/toolbit-selector.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Selector dialog with the Default Tool Library selected, where each row shows the number, the label, the summary and the shape icon of a Tool Bit
+- file: tools/feeds-speeds/duplicate-preset-message.png
+  page: tools/feeds-speeds.adoc
+  model: null
+  recipe: recipes/tools/feeds-speeds/duplicate-preset-message.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Duplicate preset message above the Edit preset dialog, with the text This tool already has a preset named 'Finish' for this material and op type
+- file: tools/feeds-speeds/edit-preset-dialog.png
+  page: tools/feeds-speeds.adoc
+  model: null
+  recipe: recipes/tools/feeds-speeds/edit-preset-dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Edit preset dialog with the name Finish, the material 6061, the op type profile and the text Use coolant in the Notes group box
+- file: tools/feeds-speeds/presets-tab.png
+  page: tools/feeds-speeds.adoc
+  model: null
+  recipe: recipes/tools/feeds-speeds/presets-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor, Feeds & Speeds tab, with three Presets sorted by Surface speed and the Add preset, Edit, Copy and Delete buttons
+- file: tools/index/relation.png
+  page: tools/index.adoc
+  model: drilling-1
+  recipe: recipes/tools/index/relation.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Tree view of a Job, with one Tool Controller in the Tools group and the Tool Bit object below the Tool Controller
+- file: tools/library-manager/context-menu.png
+  page: tools/library-manager.adoc
+  model: null
+  recipe: recipes/tools/library-manager/context-menu.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Context menu of a Tool Bit in a Tool Library, with the entries Edit, Copy, Cut, Paste, Duplicate and Remove from Library
+- file: tools/library-manager/dialog.png
+  page: tools/library-manager.adoc
+  model: null
+  recipe: recipes/tools/library-manager/dialog.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Library Manager dialog with the Default Tool Library selected in the left pane and its Tool Bits in the right pane
+- file: tools/library-manager/type-filter.png
+  page: tools/library-manager.adoc
+  model: null
+  recipe: recipes/tools/library-manager/type-filter.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Open type filter of the Library Manager, with the subtypes Jobber, Spot and Stub below the Drill type, with an indent
+- file: tools/tool-controller/editor.png
+  page: tools/tool-controller.adoc
+  model: drilling-1
+  recipe: recipes/tools/tool-controller/editor.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Tool Controller Editor task panel, with the Controller Name, the feeds that include No-Engagement feed, the rapid rates and the Spindle group
+- file: tools/tool-controller/tool-number-in-use.png
+  page: tools/tool-controller.adoc
+  model: drilling-1
+  recipe: recipes/tools/tool-controller/tool-number-in-use.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: 'Tool Number In Use message with the text Tool number 1 is already used by TC: 5mm Endmill'
+- file: tools/tool-controller/tree-view.png
+  page: tools/tool-controller.adoc
+  model: drilling-1
+  recipe: recipes/tools/tool-controller/tree-view.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Tree view of a Job, with a Tool Controller in the Tools group and the Tool Bit object below the Tool Controller
+- file: tools/tool-shape/chamfer-derived-diameter.png
+  page: tools/tool-shape.adoc
+  model: drilling-1
+  recipe: recipes/tools/tool-shape/chamfer-derived-diameter.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Property editor of a Chamfer Tool Bit, Shape group, with the read-only Diameter property
+- file: tools/tool-shape/drawing-dark-theme.png
+  page: tools/tool-shape.adoc
+  model: null
+  recipe: recipes/tools/tool-shape/drawing-dark-theme.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor on a dark theme, with the darker endmill artwork and light dimensions
+- file: tools/tool-shape/drawing-light-theme.png
+  page: tools/tool-shape.adoc
+  model: null
+  recipe: recipes/tools/tool-shape/drawing-light-theme.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor on a light theme, with the endmill shape drawing and the dimensions L, S, H and D
+- file: tools/tool-shape/shape-selection-icons.png
+  page: tools/tool-shape.adoc
+  model: null
+  recipe: recipes/tools/tool-shape/shape-selection-icons.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Shape Selection dialog, with one button for each Tool Shape that shows the artwork without dimensions
+- file: tools/toolbit-library/tool-number-dialog-conflict.png
+  page: tools/toolbit-library.adoc
+  model: drilling-1
+  recipe: recipes/tools/toolbit-library/tool-number-dialog-conflict.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: 'Tool Number dialog with the text Tool number 1 is already used by TC: 5mm Endmill, and the next free number 2 as the value'
+- file: tools/toolbit-library/toolbit-selector-all-tools.png
+  page: tools/toolbit-library.adoc
+  model: null
+  recipe: recipes/tools/toolbit-library/toolbit-selector-all-tools.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Selector dialog with the All Tools entry selected in the library list, without a sort control and without tool numbers
+- file: tools/toolbit/editor-dimension-highlight.png
+  page: tools/toolbit.adoc
+  model: null
+  recipe: recipes/tools/toolbit/editor-dimension-highlight.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit tab with the D dimension of the shape drawing and the Diameter field highlighted
+- file: tools/toolbit/editor-feeds-speeds-tab.png
+  page: tools/toolbit.adoc
+  model: null
+  recipe: recipes/tools/toolbit/editor-feeds-speeds-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor, Feeds & Speeds tab, with one Preset that has a note
+- file: tools/toolbit/editor-toolbit-tab.png
+  page: tools/toolbit.adoc
+  model: null
+  recipe: recipes/tools/toolbit/editor-toolbit-tab.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor, Toolbit tab, for a 5 mm Endmill, with the properties and the shape drawing
+- file: tools/toolbit/task-panel.png
+  page: tools/toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/toolbit/task-panel.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Task panel of a Tool Bit object, with the properties form and the shape drawing
+- file: tools/toolbit/tool-updates-available.png
+  page: tools/toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/toolbit/tool-updates-available.py
+  freecad: 62544c4c6e8
+  date: '2026-10-11'
+  alt: Tool Updates Available dialog with a Presets row and an expanded Geometry row with old and new values

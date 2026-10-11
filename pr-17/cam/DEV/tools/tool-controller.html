@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tool Controller :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/pr-17/cam/wiki-2026-08/tools/tool-controller.html">
+    <link rel="prev" href="toolbit-library.html">
+    <link rel="next" href="feeds-speeds.html">
+    <meta name="description" content="A Tool Controller connects one Tool Bit to the Spindle Speed, the feeds and the rates of the rapid moves that the Operations of a Job use.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  <style>
+.diff-banner{position:sticky;top:var(--navbar-height,3.5rem);z-index:5;display:flex;flex-wrap:wrap;
+  gap:.4rem 1rem;align-items:center;margin:0 0 1rem;padding:.5rem .75rem;border:1px solid #c9c9c9;
+  border-radius:4px;background:#fffbe6;color:#222;font-size:.85rem;line-height:1.4}
+.diff-banner a{font-weight:600}
+.diff-banner button{font:inherit;padding:.1rem .5rem;cursor:pointer}
+.diff-banner .diff-key ins,.diff-banner .diff-key del{padding:0 .3rem}
+.doc ins{background:#d1f5d3;color:#0b3d12;text-decoration:none}
+.doc del{background:#ffd8d6;color:#6b1210;text-decoration:line-through}
+.doc ins img,.doc img.diff-img-new{outline:3px solid #2da44e;outline-offset:2px}
+.doc del img,.doc img.diff-img-old{outline:3px solid #cf222e;outline-offset:2px;opacity:.75}
+.doc .diff-img-pair{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start}
+.doc .diff-img-pair>span{display:flex;flex-direction:column;font-size:.8rem;color:#555}
+.doc .diff-block-add{background:#e6f9e7;outline:1px solid #2da44e}
+.doc .diff-block-del{background:#ffecea;outline:1px solid #cf222e;opacity:.8;text-decoration:line-through}
+.doc .diff-block-del img{opacity:.6}
+.doc .diff-changed{box-shadow:-.6rem 0 0 -.35rem #d4a72c}
+.doc .diff-current{box-shadow:-.6rem 0 0 -.35rem #0969da}
+.doc.diff-new-page{box-shadow:-.9rem 0 0 -.6rem #2da44e}
+</style></head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-17">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="tool-controller.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/tools/tool-controller.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>ToolBit architecture</li>
+    <li><a href="tool-controller.html">Tool Controller</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="tool-controller.html">DEV (pre-release)</a>
+    <a class="version" href="../../wiki-2026-08/tools/tool-controller.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/tools/tool-controller.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="diff-banner"><span>This page changes in pull request #17.</span><a href="tool-controller.diff.html">Show the changes</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">Tool Controller</h1>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <a href="../reference/glossary.html#tool-controller" class="xref page">Tool Controller</a> (TC) connects one <a href="../reference/glossary.html#tool-bit" class="xref page">Tool Bit</a> to a Spindle Speed, a set of feeds and the rates of the rapid moves.
+An <a href="../reference/glossary.html#operation" class="xref page">Operation</a> refers to a TC, and does not refer to a Tool Bit directly.
+The TC is in the Tools group of a <a href="../reference/glossary.html#job" class="xref page">Job</a>. See <a href="../job/job.html" class="xref page">Job</a>.</p>
+</div>
+<div class="paragraph">
+<p>The TC owns one Tool Bit object.
+The <a href="https://wiki.freecad.org/Tree_view">tree view</a> shows the Tool Bit object as a child of the TC.
+The figure shows a TC and its Tool Bit object in the Tools group of a Job.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/tool-controller/tree-view.png" alt="Tree view of a Job, with a Tool Controller in the Tools group and the Tool Bit object below the Tool Controller" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="toolbit.html" class="xref page">Tool Bit</a> for the Tool Bit and its properties.</p>
+</div>
+<div class="paragraph">
+<p>More than one TC can use the same Tool Bit with different values.
+For example, one TC has the values for the rough cut, and a second TC has the values for the finish cut.
+<a href="index.html" class="xref page">Tools</a> gives the relation between Tool Bit, <a href="../reference/glossary.html#tool-library" class="xref page">Tool Library</a> and TC.</p>
+</div>
+<div class="paragraph">
+<p>When you post-process the Job, the TC supplies these commands:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Tool Bit change: <code>T</code> and <code>M6</code>.</p>
+</li>
+<li>
+<p>The Spindle Speed: <code>S</code>.</p>
+</li>
+<li>
+<p>The spindle direction: <code>M3</code>, <code>M4</code> or <code>M5</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-a-tool-controller"><a class="anchor" href="#create-a-tool-controller"></a>Create a Tool Controller</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>Toolbit Selector</em> dialog creates one TC for each Tool Bit that you add to a Job.
+These controls open the dialog:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="add-toolbit.html" class="xref page">Add Toolbit…</a> command, <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span>.</p>
+</li>
+<li>
+<p><b class="button">Add</b> on the <em>Tools</em> tab of the Job editor.</p>
+</li>
+<li>
+<p>The entry for a new TC in the <strong>Tool controller</strong> list in the task panel of an Operation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <strong>Tool controller</strong> list in the task panel of an Operation also has an entry that copies the current TC.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The command <code>CAM_ToolController</code> opens the same <em>Toolbit Selector</em> dialog.
+No menu and no toolbar contains this command.
+The command does nothing when the document contains no Job.</p>
+</div>
+<div class="paragraph">
+<p><a href="toolbit-library.html" class="xref page">Tool Library</a> describes how the dialog adds a Tool Bit to a Job.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tool-controller-editor"><a class="anchor" href="#tool-controller-editor"></a>Tool Controller editor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>Tool Controller Editor</em> shows and changes the values of one TC.
+These controls open the editor:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A double-click on the TC in the tree view opens the <em>Tool Controller Editor</em> task panel.</p>
+</li>
+<li>
+<p><b class="button">Edit</b> on the <em>Tools</em> tab of the Job editor opens the editor.</p>
+</li>
+<li>
+<p><span class="since">introduced in 1.1</span> The task panel of an Operation contains the editor for the TC of the Operation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The task panel of an Operation shows the editor on a separate tab.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows the <em>Tool Controller Editor</em> task panel.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/tool-controller/editor.png" alt="Tool Controller Editor task panel, with the Controller Name, the feeds that include No-Engagement feed, the rapid rates and the Spindle group" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>The editor has these controls:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Controller Name</strong>: the label of the TC.</p>
+</li>
+<li>
+<p><strong>Tool Number</strong>: the number for the <code>T</code> command. See <a href="#tool-numbers">Tool numbers</a>.</p>
+</li>
+<li>
+<p><strong>Horizontal feed</strong>: the feed for horizontal moves.</p>
+</li>
+<li>
+<p><strong>Vertical feed</strong>: the feed for vertical moves.</p>
+</li>
+<li>
+<p><strong>Lead-in feed</strong>: the feed for lead-in moves.</p>
+</li>
+<li>
+<p><strong>Lead-out feed</strong>: the feed for lead-out moves.</p>
+</li>
+<li>
+<p><strong>Ramp feed</strong>: the feed for ramp moves.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>No-Engagement feed</strong>: the feed for moves in which the Tool Bit does not engage material and is not retracted. Minimum: 0.</p>
+</li>
+<li>
+<p><strong>Horizontal rapid</strong>: the rate of the horizontal rapid moves.</p>
+</li>
+<li>
+<p><strong>Vertical rapid</strong>: the rate of the vertical rapid moves.</p>
+</li>
+<li>
+<p><em>Spindle</em>: the direction and the speed of the spindle. Direction values: <code>Forward</code>, <code>Reverse</code>, <code>None</code>. The speed is in rpm.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <b class="button">Feeds and Speeds Wizard</b>: opens the <em>Suggest Feeds &amp; Speeds</em> dialog. See <a href="feeds-speeds.html" class="xref page">Feeds and Speeds</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When the editor is in the task panel of an Operation, a warning gives the number of other Operations that use the same TC.</p>
+</div>
+<div class="paragraph">
+<p>You cannot delete a TC in the Job editor while an Operation uses the TC.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tool-numbers"><a class="anchor" href="#tool-numbers"></a>Tool numbers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>Tool Number</strong> property of a TC holds the number that the Job uses for the Tool Bit.
+Two TCs of a Job can have the same <strong>Tool Number</strong> only when they use the same Tool Bit.
+The CAM workbench compares the <strong>Tool Bit ID</strong> values of the two Tool Bits to find if the Tool Bits are the same.
+Two TCs with the same Tool Bit and the same number give one Tool Bit two sets of feeds and speeds.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The <strong>Tool Number</strong> field of the editor does not accept a number that a TC of a different Tool Bit has.
+The <em>Tool Number In Use</em> message shows the text <code>Tool number &lt;number&gt; is already used by &lt;label&gt;.</code> with the label of that TC.
+The field then shows the number that the TC had before, and the TC keeps this number.
+The figure shows the message.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/tool-controller/tool-number-in-use.png" alt="Tool Number In Use message with the text Tool number 1 is already used by TC: 5mm Endmill" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p><a href="toolbit-library.html#tool-numbers" class="xref page">Tool numbers</a> describes how the CAM workbench sets the number of a new TC.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="properties"><a class="anchor" href="#properties"></a>Properties</h2>
+<div class="sectionbody">
+<div class="ulist">
+<div class="title">Base</div>
+<ul>
+<li>
+<p><strong>Tool</strong> (<code>Link</code>): the Tool Bit that the TC uses.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Tool</div>
+<ul>
+<li>
+<p><strong>Tool Number</strong> (<code>IntegerConstraint</code>): the number that the Tool Bit change command contains. Values: 0 to 10000.</p>
+</li>
+<li>
+<p><strong>Spindle Speed</strong> (<code>Float</code>): the speed of the spindle in rpm.</p>
+</li>
+<li>
+<p><strong>Spindle Dir</strong> (<code>Enumeration</code>): the direction of the spindle. The TC receives the initial value from the <strong>Spindle Direction</strong> property of the Tool Bit. Values: <code>Forward</code>, <code>Reverse</code>, <code>None</code>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Feed</div>
+<ul>
+<li>
+<p><strong>Horiz Feed</strong> (<code>Speed</code>): the feed for horizontal moves.</p>
+</li>
+<li>
+<p><strong>Vert Feed</strong> (<code>Speed</code>): the feed for vertical moves in Z.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Ramp Feed</strong> (<code>Speed</code>): the feed for ramp moves. Default: the expression <code>HorizFeed</code>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Lead In Feed</strong> (<code>Speed</code>): the feed for lead-in moves. Default: the expression <code>HorizFeed</code>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Lead Out Feed</strong> (<code>Speed</code>): the feed for lead-out moves. Default: the expression <code>HorizFeed</code>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>No Engagement Feed</strong> (<code>Speed</code>): the feed for moves in which the Tool Bit does not engage material and is not retracted. An Operation reads the value when it recomputes. The property has no default expression.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A machine-based <a href="../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post) uses <strong>No Engagement Feed</strong> only when one Post-Processor Property is set.
+The name of this Post-Processor Property is <strong>Output non-engaging moves at the no-engagement feed rate</strong>.
+The Post then writes each <code>G0</code> move that has a no-engagement feed annotation as a <code>G1</code> move.
+The <code>F</code> value of this <code>G1</code> move is the no-engagement feed.
+The Post-Processor Property is off by default, and the Machine Editor sets it. See <a href="../output/machine.html" class="xref page">Machine</a>.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: When a TC in a document has no <strong>No Engagement Feed</strong> property, the CAM workbench adds the property when it opens the document.</p>
+</div>
+<div class="ulist">
+<div class="title">Rapid</div>
+<ul>
+<li>
+<p><strong>Horiz Rapid</strong> (<code>Speed</code>): the rate of the horizontal rapid moves.</p>
+</li>
+<li>
+<p><strong>Vert Rapid</strong> (<code>Speed</code>): the rate of the vertical rapid moves in Z.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Only the estimate of the cycle time and a Post that writes rapid moves as feed moves use the <strong>Horiz Rapid</strong> and <strong>Vert Rapid</strong> values.</p>
+</div>
+<div class="ulist">
+<div class="title">Feeds &amp; Speeds</div>
+<ul>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Op Type Hint</strong> (<code>Enumeration</code>): the type of cut for which you use the TC. The Feeds and Speeds dialog uses the value to find a <a href="../reference/glossary.html#preset" class="xref page">Preset</a>. Values: empty, <code>profile</code>, <code>pocket</code>, <code>slot</code>, <code>drill</code>, <code>adaptive</code>, <code>surface_finish</code>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Feed Speed Provenance</strong> (<code>Map</code>): the source that wrote each of <strong>Horiz Feed</strong>, <strong>Vert Feed</strong> and <strong>Spindle Speed</strong> last. An example of a source is <code>preset:tool/&lt;material&gt;/&lt;op&gt;</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The CAM workbench adds the two <em>Feeds &amp; Speeds</em> properties when you open the Feeds and Speeds dialog for the TC for the first time.
+See <a href="feeds-speeds.html" class="xref page">Feeds and Speeds</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="expressions-and-job-templates"><a class="anchor" href="#expressions-and-job-templates"></a>Expressions and Job Templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A feed property can hold an <a href="https://wiki.freecad.org/Expressions">expression</a>, for example <code>VertFeed = HorizFeed * 0.5</code>.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="../reference/glossary.html#job-template" class="xref page">Job Template</a> stores each TC of the Job and the Tool Bit of each TC.
+The Job Template keeps the expressions of the feed properties.
+When you create a Job from the Job Template, the CAM workbench creates the TCs again.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The Job Template stores <strong>No Engagement Feed</strong> with the key <code>noengagementfeed</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update-from-the-tool-library"><a class="anchor" href="#update-from-the-tool-library"></a>Update from the Tool Library</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The <b class="menuref">Update Tools from Library</b> command replaces the Tool Bit of a TC with a new copy of the library Tool Bit.
+The context menu of the Job contains the command.
+The CAM workbench can also make the comparison when you open a document.</p>
+</div>
+<div class="paragraph">
+<p>The CAM workbench finds the library Tool Bit by the <strong>Tool Bit ID</strong> of the Tool Bit that the TC has.
+The update sets the <strong>Tool</strong> property of the TC to the new Tool Bit object.
+The update then removes the old Tool Bit object from the document.
+The TC keeps its <strong>Tool Number</strong>, its feeds and its <strong>Spindle Speed</strong>.
+A TC with a Tool Bit that has no match in the library does not change.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="toolbit.html" class="xref page">Tool Bit</a> for the comparison, the <em>Tool Updates Available</em> dialog and the preference.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scripting"><a class="anchor" href="#scripting"></a>Scripting</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import FreeCAD as App
+import Path.Tool.Controller as PathToolController
+from Path.Tool.toolbit import ToolBit
+
+job = App.ActiveDocument.getObject("Job")
+
+tb = ToolBit.from_shape_id("endmill.fcstd").attach_to_doc(App.ActiveDocument)
+tc = PathToolController.Create("TC: 6mm Endmill", tool=tb, toolNumber=3)
+tc.HorizFeed = "600 mm/min"
+tc.SpindleSpeed = 12000
+job.Proxy.addToolController(tc)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The module <code>PathScripts.PathToolController</code> does not exist.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="index.html" class="xref page">Tools</a></p>
+</li>
+<li>
+<p><a href="toolbit.html" class="xref page">Tool Bit</a></p>
+</li>
+<li>
+<p><a href="toolbit-library.html" class="xref page">Tool Library</a></p>
+</li>
+<li>
+<p><a href="add-toolbit.html" class="xref page">Toolbit Dock</a></p>
+</li>
+<li>
+<p><a href="feeds-speeds.html" class="xref page">Feeds and Speeds</a></p>
+</li>
+<li>
+<p><a href="../output/machine.html" class="xref page">Machine</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="toolbit-library.html">Tool Library</a></span>
+  <span class="next"><a href="feeds-speeds.html">Feeds and Speeds</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>

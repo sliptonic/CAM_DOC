@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tools :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/pr-17/cam/wiki-2026-08/tools/index.html">
+    <link rel="prev" href="../misc/property-bag.html">
+    <link rel="next" href="tool-shape.html">
+    <meta name="description" content="The Tools section describes how Tool Shape, Tool Bit, Tool Library and Tool Controller relate, and where the CAM workbench stores them.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  <style>
+.diff-banner{position:sticky;top:var(--navbar-height,3.5rem);z-index:5;display:flex;flex-wrap:wrap;
+  gap:.4rem 1rem;align-items:center;margin:0 0 1rem;padding:.5rem .75rem;border:1px solid #c9c9c9;
+  border-radius:4px;background:#fffbe6;color:#222;font-size:.85rem;line-height:1.4}
+.diff-banner a{font-weight:600}
+.diff-banner button{font:inherit;padding:.1rem .5rem;cursor:pointer}
+.diff-banner .diff-key ins,.diff-banner .diff-key del{padding:0 .3rem}
+.doc ins{background:#d1f5d3;color:#0b3d12;text-decoration:none}
+.doc del{background:#ffd8d6;color:#6b1210;text-decoration:line-through}
+.doc ins img,.doc img.diff-img-new{outline:3px solid #2da44e;outline-offset:2px}
+.doc del img,.doc img.diff-img-old{outline:3px solid #cf222e;outline-offset:2px;opacity:.75}
+.doc .diff-img-pair{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start}
+.doc .diff-img-pair>span{display:flex;flex-direction:column;font-size:.8rem;color:#555}
+.doc .diff-block-add{background:#e6f9e7;outline:1px solid #2da44e}
+.doc .diff-block-del{background:#ffecea;outline:1px solid #cf222e;opacity:.8;text-decoration:line-through}
+.doc .diff-block-del img{opacity:.6}
+.doc .diff-changed{box-shadow:-.6rem 0 0 -.35rem #d4a72c}
+.doc .diff-current{box-shadow:-.6rem 0 0 -.35rem #0969da}
+.doc.diff-new-page{box-shadow:-.9rem 0 0 -.6rem #2da44e}
+</style></head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-17">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="index.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/tools/index.html">Wiki (Aug 2026)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>ToolBit architecture</li>
+    <li><a href="index.html">Tools</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="index.html">DEV (pre-release)</a>
+    <a class="version" href="../../wiki-2026-08/tools/index.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/tools/index.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="diff-banner"><span>This page changes in pull request #17.</span><a href="index.diff.html">Show the changes</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">Tools</h1>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="../index.html" class="xref page">CAM</a> workbench describes the item that cuts with four objects.
+A <a href="../reference/glossary.html#tool-shape" class="xref page">Tool Shape</a> is a template.
+A <a href="../reference/glossary.html#tool-bit" class="xref page">Tool Bit</a> is one item with its dimensions.
+A <a href="../reference/glossary.html#tool-library" class="xref page">Tool Library</a> is a numbered list of Tool Bits.
+A <a href="../reference/glossary.html#tool-controller" class="xref page">Tool Controller</a> (TC) connects one Tool Bit to the feeds and the Spindle Speed of a <a href="../reference/glossary.html#job" class="xref page">Job</a>.</p>
+</div>
+<div class="paragraph">
+<p>The CAM workbench stores each Tool Shape, each Tool Bit and each Tool Library as a file in the asset directory.
+A TC is an object in the document of the Job.
+This page gives the relation between these objects and links to each page of the section.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="relation-between-the-objects"><a class="anchor" href="#relation-between-the-objects"></a>Relation between the objects</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Tool Shape: a FreeCAD document (<code>.fcstd</code>) that gives the physical shape and the parameter names of a Tool Bit. Many Tool Bits can use one Tool Shape. For example, all Tool Bits of the <code>Endmill</code> type use the same Tool Shape file. See <a href="tool-shape.html" class="xref page">Tool Shape</a>.</p>
+</li>
+<li>
+<p>Tool Bit: a JSON file (<code>.fctb</code>) that names one Tool Shape and holds the parameter values and the attributes. The file name is the ID of the Tool Bit. See <a href="toolbit.html" class="xref page">Tool Bit</a>.</p>
+</li>
+<li>
+<p>Tool Library: a JSON file (<code>.fctl</code>) that gives a number to each Tool Bit ID. A Tool Library is independent of a Job. One Tool Bit can be a member of more than one Tool Library. See <a href="toolbit-library.html" class="xref page">Tool Library</a>.</p>
+</li>
+<li>
+<p>Tool Controller: an object in the Tools group of a Job. A TC connects one Tool Bit to a <strong>Tool Number</strong>, a Spindle Speed, a spindle direction, the feeds and the rates of the rapid moves. See <a href="tool-controller.html" class="xref page">Tool Controller</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An <a href="../reference/glossary.html#operation" class="xref page">Operation</a> refers to a TC.
+An Operation does not refer to a Tool Bit directly.
+The Operation reads the Tool Bit of its TC to calculate the <a href="../reference/glossary.html#toolpath" class="xref page">Toolpath</a>.</p>
+</div>
+<div class="paragraph">
+<p>When you add a Tool Bit to a Job, the CAM workbench puts a copy of the Tool Bit into the document.
+The TC owns this Tool Bit object.
+The Tool Bit object keeps the ID of the library Tool Bit.
+A change of the library Tool Bit does not change the Tool Bit object in the Job.
+See <a href="#update">Update from the Tool Library</a>.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows the tree view of a Job with one TC in the Tools group and the Tool Bit object below the TC.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/index/relation.png" alt="Tree view of a Job, with one Tool Controller in the Tools group and the Tool Bit object below the Tool Controller" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>More than one TC of a Job can use the same Tool Bit with different feeds and speeds.
+The number of a Tool Bit in a Tool Library is only the proposal for the <strong>Tool Number</strong> of a new TC.
+See <a href="toolbit-library.html#tool-numbers" class="xref page">Tool numbers</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="commands"><a class="anchor" href="#commands"></a>Commands</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Two commands of the <b class="menuref">CAM</b> menu give access to each Tool Bit and each Tool Library:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><span class="image"><img src="../_images/CAM_ToolTable.svg" alt="Add Toolbit…" width="16"></span> <a href="add-toolbit.html" class="xref page">Add Toolbit…</a>, <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span>: opens the <em>Toolbit Selector</em> dialog. The dialog adds the selected Tool Bits to a Job as TCs.</p>
+</li>
+<li>
+<p><span class="image"><img src="../_images/CAM_ToolTable.svg" alt="Toolbit Library Manager" width="16"></span> <a href="library-manager.html" class="xref page">Toolbit Library Manager</a>, <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Toolbit Library Manager</b></span>: opens the <em>Library Manager</em> dialog. The dialog creates, changes, imports and exports Tool Bits and Tool Libraries.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="work-sequence"><a class="anchor" href="#work-sequence"></a>Work sequence</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The usual sequence from a new Tool Bit to an Operation is:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Toolbit Library Manager</b></span>.</p>
+</li>
+<li>
+<p>Select the Tool Library for the new Tool Bit, or select <em>All Toolbits</em>.</p>
+</li>
+<li>
+<p>Press <b class="button">Adds a toolbit</b>. The <em>Toolbit Shape Selection</em> dialog lists the supplied Tool Shapes and your own Tool Shapes.</p>
+</li>
+<li>
+<p>Select a Tool Shape. The <em>Toolbit Parameter Editor</em> dialog opens.</p>
+</li>
+<li>
+<p>Enter the values of the Tool Bit and press <b class="button">OK</b>. See <a href="toolbit.html" class="xref page">Tool Bit</a>.</p>
+</li>
+<li>
+<p>Close the <em>Library Manager</em> dialog.</p>
+</li>
+<li>
+<p>Select <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span>.</p>
+</li>
+<li>
+<p>Select the Tool Bit and press <b class="button">Add to Job</b>. The CAM workbench creates a TC in the Job.</p>
+</li>
+<li>
+<p>Select the TC in the task panel of an Operation.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><a href="library-manager.html" class="xref page">Toolbit Library Manager</a> and <a href="add-toolbit.html" class="xref page">Add Toolbit…</a> describe the controls of the two dialogs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="asset-directory"><a class="anchor" href="#asset-directory"></a>Asset directory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 1.1</span>: The CAM workbench stores your Tool Bits, Tool Libraries and Tool Shapes in the CAM asset directory.
+The default asset directory is <code>CamAssets</code> in the application data directory of FreeCAD.
+<span class="menuseq"><b class="menu">Edit</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Assets</b></span> sets the location of the asset directory.
+See <a href="../reference/preferences.html" class="xref page">CAM Preferences</a>.</p>
+</div>
+<div class="paragraph">
+<p>The asset directory contains these folders:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Tools/Bit</code>: the Tool Bit files.</p>
+</li>
+<li>
+<p><code>Tools/Library</code>: the Tool Library files.</p>
+</li>
+<li>
+<p><code>Tools/Shape</code>: your own Tool Shapes.</p>
+</li>
+<li>
+<p><code>Machines</code>: the Machine Templates (<code>.fcm</code>). <span class="menuseq"><b class="menu">Edit</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Assets</b></span> adds and changes the Machine Templates. See <a href="../output/machine.html" class="xref page">Machine</a>.</p>
+</li>
+<li>
+<p><code>Templates</code>: the <a href="../reference/glossary.html#job-template" class="xref page">Job Templates</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>FreeCAD supplies a set of Tool Bits, Tool Libraries and Tool Shapes in the folders <code>Bit</code>, <code>Library</code> and <code>Shape</code> of the installation directory.
+The location of these folders is usually:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux: <code>/usr/lib64/FreeCAD/Mod/CAM/Tools</code></p>
+</li>
+<li>
+<p>Windows: <code>C:\Program Files\FreeCAD\Mod\CAM\Tools</code></p>
+</li>
+<li>
+<p>macOS: <code>/Applications/FreeCAD.app/Contents/Resources/Mod/CAM/Tools</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The CAM workbench copies the supplied Tool Bits and the <code>Default</code> Tool Library into the asset directory.
+See <a href="toolbit-library.html" class="xref page">Tool Library</a>.
+When the asset directory does not contain a Tool Shape, the CAM workbench uses the supplied Tool Shape in the installation directory.</p>
+</div>
+<div class="paragraph">
+<p>The <em>Library Manager</em> dialog writes each change to the asset directory immediately.
+The <em>Library Manager</em> dialog has no separate save step.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 1.1</span>: When you activate the CAM workbench, the CAM workbench looks for a custom tool directory of an earlier version.
+If the CAM workbench finds this directory, the <em>CAM Asset Migration</em> dialog opens.
+The <em>CAM Asset Migration</em> dialog offers to copy each Tool Bit, each Tool Library and each Tool Shape into the asset directory.</p>
+</div>
+<div class="paragraph">
+<p>When you open a document, the CAM workbench converts the Tool Bit property names <code>ShapeName</code> and <code>BitShape</code> to the current names.
+The CAM workbench does not load a Job Template that uses the tool table of the versions before 0.19.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update"><a class="anchor" href="#update"></a>Update from the Tool Library</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The CAM workbench compares the Tool Bits of a Job with the Tool Bits in the library.
+The CAM workbench finds the library Tool Bit by the ID that the Tool Bit object of the Job keeps.
+The comparison starts in two conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You open a document. The checkbox <strong>Check for tool updates from the library when opening a document</strong> in <span class="menuseq"><b class="menu">Edit</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b> <i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Assets</b></span> sets or stops this comparison.</p>
+</li>
+<li>
+<p>You select <b class="menuref">Update Tools from Library</b> in the context menu of the Job.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When a Tool Bit of a Job is different from the library Tool Bit, the <em>Tool Updates Available</em> dialog opens.
+<b class="button">Update</b> replaces each selected Tool Bit of the Job with the current library Tool Bit and recomputes the document.
+<b class="button">Cancel</b> changes nothing.</p>
+</div>
+<div class="paragraph">
+<p><a href="toolbit.html" class="xref page">Tool Bit</a> describes the comparison and the <em>Tool Updates Available</em> dialog.
+<a href="tool-controller.html" class="xref page">Tool Controller</a> describes the effect of the update on the TC.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="feeds-and-speeds"><a class="anchor" href="#feeds-and-speeds"></a>Feeds and Speeds</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A Tool Bit can store <a href="../reference/glossary.html#preset" class="xref page">Presets</a>.
+A Preset holds a surface speed and a chipload for one material and one type of cut.
+The Feeds and Speeds helper of the Tool Controller editor suggests the Spindle Speed and the feeds of a TC.
+The helper uses the Presets, the material of the <a href="../reference/glossary.html#stock" class="xref page">Stock</a> and the spindle limits of the Machine.
+See <a href="feeds-speeds.html" class="xref page">Feeds and Speeds</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="tool-shape.html" class="xref page">Tool Shape</a></p>
+</li>
+<li>
+<p><a href="toolbit.html" class="xref page">Tool Bit</a></p>
+</li>
+<li>
+<p><a href="toolbit-library.html" class="xref page">Tool Library</a></p>
+</li>
+<li>
+<p><a href="tool-controller.html" class="xref page">Tool Controller</a></p>
+</li>
+<li>
+<p><a href="library-manager.html" class="xref page">Toolbit Library Manager</a></p>
+</li>
+<li>
+<p><a href="add-toolbit.html" class="xref page">Add Toolbit…</a></p>
+</li>
+<li>
+<p><a href="feeds-speeds.html" class="xref page">Feeds and Speeds</a></p>
+</li>
+<li>
+<p><a href="../reference/preferences.html" class="xref page">CAM Preferences</a></p>
+</li>
+<li>
+<p><a href="../output/machine.html" class="xref page">Machine</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../misc/property-bag.html">Property Bag</a></span>
+  <span class="next"><a href="tool-shape.html">Tool Shape</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
