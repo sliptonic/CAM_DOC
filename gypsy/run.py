@@ -113,12 +113,17 @@ def main():
     ap.add_argument("--pr", action="store_true", help="commit, push and open the pull request")
     ap.add_argument("--rounds", type=int, default=2, help="revision rounds after the first draft")
     ap.add_argument("--no-figures", action="store_true")
+    ap.add_argument("--no-replan", action="store_true", help="do not apply the comments of people to the plan")
     ap.add_argument("--model", default=os.environ.get("GYPSY_DRAFT_MODEL", ""))
     a = ap.parse_args()
 
     c = work.load(a.issue)
     if "approved" not in c["labels"]:
         sys.exit(f"issue #{a.issue} does not have the label approved")
+    if c["guidance"] and not a.no_replan:        # the comments of the person can change the plan
+        subprocess.run([sys.executable, os.path.join(HERE, "propose.py"), "make", "--update", str(a.issue), "--replan"],
+                       cwd=ROOT, check=True)
+        c = work.load(a.issue)
     if not c.get("goals") or not c.get("plan"):
         sys.exit(f"issue #{a.issue} has no goals and plan; write it again with gypsy/propose.py make ... --update {a.issue}")
     draft.start_clean()

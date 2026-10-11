@@ -49,6 +49,13 @@ Decide what this unit of work must achieve, for the documentation as a whole:
 
 Use the vocabulary of the verdicts. Write short sentences.
 
+When "The present plan and the guidance of a person" has content, a person read the plan and
+wrote comments on it. Keep the plan, and change only what the comments ask for: an answer to a
+question can add a page, remove a page, move a fact to a different owner, or move an item
+between the goals and the list of what is not documented. A comment has priority over the rules
+above. Do not ask a question again that a comment answers; `questions` then has only what is
+still open.
+
 Respond with one JSON object: `title`, `summary`, `goals`, `excluded`, `pages`, `questions`.
 
 # Verdicts of this unit
@@ -58,6 +65,10 @@ $verdicts
 # Pages (title, attributes, headings; "(no such page)" when the page does not exist)
 
 $pages
+
+# The present plan and the guidance of a person
+
+$present
 
 # Pages that other open work holds
 

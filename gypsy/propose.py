@@ -121,15 +121,26 @@ def body_of(unit, verdicts):
 
 def make(a):
     still = open_pages()
-    verdicts = {vid: load(vid) for vid in a.ids}
+    ids = a.ids or [str(x) for x in (work.load(a.update).get("verdicts") or [])]
+    verdicts = {vid: load(vid) for vid in ids}
     names = sorted({p["page"] for v in verdicts.values() for p in v["pages"] if p["verdict"] != "no change"})
     held, issues = held_text()
     if a.update:                                 # the pages of the issue itself are not held by other work
         mine = next((i for i in issues if i["number"] == a.update), None)
         held = "\n".join(l for l in held.split("\n") if not l.endswith(f"work issue #{a.update}")) or "(none)"
+    present = "(none)"
+    if a.replan:                                 # keep the plan; apply the comments of people
+        c = work.load(a.update)
+        if not c["guidance"]:
+            return print(f"issue #{a.update}: no comment of a person; the plan stays")
+        names = sorted(set(names) | set(c.get("plan") or {}))
+        present = "Present plan:\n```yaml\n" + yaml.safe_dump(
+            {k: c[k] for k in ("title", "goals", "excluded", "pages", "plan") if c.get(k)}, sort_keys=False,
+            allow_unicode=True, width=100) + "```\n\nQuestions that the issue asked, and the comments:\n\n" + \
+            "\n\n".join(f"Comment {n}:\n{g}" for n, g in enumerate(c["guidance"], 1))
     unit, run = ask("propose", {
         "verdicts": "\n\n".join(verdict_text(vid, v, still.get(vid, [])) for vid, v in verdicts.items()),
-        "pages": "\n".join(triage.page_excerpt(p) for p in names), "held": held})
+        "pages": "\n".join(triage.page_excerpt(p) for p in names), "held": held, "present": present})
     n = len(unit["pages"])
     title = f"{unit['title']} ({n} page{'s' * (n != 1)}, {len(verdicts)} verdict{'s' * (len(verdicts) != 1)})"
     body = body_of(unit, verdicts)
@@ -137,6 +148,15 @@ def make(a):
         return print(f"{title}\n\n{body}\n\n[cost ${run.get('cost_usd') or 0:.2f}]")
     work.ensure_labels()
     forms = sorted({g["diataxis"] for g in unit["goals"]} | {p["diataxis"] for p in unit["pages"]})
+    if a.replan:                                 # the person approved the plan with these comments: labels stay
+        work.gh("issue", "edit", str(a.update), "--title", title, "--body", body,
+                *sum((["--add-label", f] for f in forms), []))
+        before, after = set(c.get("plan") or {}), {p["page"] for p in unit["pages"]}
+        work.comment(a.update, "The plan now follows the comments of the person.\n\n" +
+                     "\n".join([f"- Page added: `{p}`" for p in sorted(after - before)] +
+                               [f"- Page removed: `{p}`" for p in sorted(before - after)] or ["- The page list did not change."]))
+        return print(f"issue #{a.update}: plan follows the guidance; +{sorted(after - before)} -{sorted(before - after)}  "
+                     f"[cost ${run.get('cost_usd') or 0:.2f}]")
     if a.update:
         # the goals changed, so an approval of the old text does not count
         work.gh("issue", "edit", str(a.update), "--title", title, "--body", body, "--add-label", "gypsy",
@@ -156,10 +176,14 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("survey")
     m = sub.add_parser("make")
-    m.add_argument("ids", nargs="+")
+    m.add_argument("ids", nargs="*")
     m.add_argument("--update", type=int, help="write the body of this issue again")
+    m.add_argument("--replan", action="store_true",
+                   help="with --update: keep the plan and the labels, apply the comments of people")
     m.add_argument("--dry", action="store_true")
     a = ap.parse_args()
+    if getattr(a, "replan", False) and not a.update:
+        sys.exit("--replan needs --update N")
     {"survey": survey, "make": make}[a.cmd](a)
 
 
