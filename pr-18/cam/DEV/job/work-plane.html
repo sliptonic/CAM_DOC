@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Work Plane :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="prev" href="fixture.html">
+    <link rel="next" href="../output/postprocessor-customization.html">
+    <meta name="description" content="Create a named Work Plane on a Job, from a selected planar face or at the Job origin, and link Operations to it.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  <style>
+.diff-banner{position:sticky;top:var(--navbar-height,3.5rem);z-index:5;display:flex;flex-wrap:wrap;
+  gap:.4rem 1rem;align-items:center;margin:0 0 1rem;padding:.5rem .75rem;border:1px solid #c9c9c9;
+  border-radius:4px;background:#fffbe6;color:#222;font-size:.85rem;line-height:1.4}
+.diff-banner a{font-weight:600}
+.diff-banner button{font:inherit;padding:.1rem .5rem;cursor:pointer}
+.diff-banner .diff-key ins,.diff-banner .diff-key del{padding:0 .3rem}
+.doc ins{background:#d1f5d3;color:#0b3d12;text-decoration:none}
+.doc del{background:#ffd8d6;color:#6b1210;text-decoration:line-through}
+.doc ins img,.doc img.diff-img-new{outline:3px solid #2da44e;outline-offset:2px}
+.doc del img,.doc img.diff-img-old{outline:3px solid #cf222e;outline-offset:2px;opacity:.75}
+.doc .diff-img-pair{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start}
+.doc .diff-img-pair>span{display:flex;flex-direction:column;font-size:.8rem;color:#555}
+.doc .diff-block-add{background:#e6f9e7;outline:1px solid #2da44e}
+.doc .diff-block-del{background:#ffecea;outline:1px solid #cf222e;opacity:.8;text-decoration:line-through}
+.doc .diff-block-del img{opacity:.6}
+.doc .diff-changed{box-shadow:-.6rem 0 0 -.35rem #d4a72c}
+.doc .diff-current{box-shadow:-.6rem 0 0 -.35rem #0969da}
+.doc.diff-new-page{box-shadow:-.9rem 0 0 -.6rem #2da44e}
+</style></head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC/pr-18">FreeCAD CAM documentation (experiment) — pull request preview</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="work-plane.html" selected>DEV (pre-release)</option>
+            <option value="../../wiki-2026-08/index.html">Wiki (Aug 2026) (page not in this version)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
+    <li><a href="work-plane.html">Work Plane</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="work-plane.html">DEV (pre-release)</a>
+    <a class="version is-missing" href="../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/HEAD/modules/ROOT/pages/job/work-plane.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="diff-banner"><span>This page changes in pull request #18.</span><a href="work-plane.diff.html">Show the changes</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">Work Plane</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="openblock fcinfobox">
+<div class="content">
+<div class="paragraph fcTitle">
+<p><span class="image"><img src="../_images/CAM_Area_Workplane.svg" alt="Work Plane" width="32"></span> <strong>Work Plane</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Menu location</dt>
+<dd>
+<p><span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Work Plane</b></span></p>
+</dd>
+<dt class="hdlist1">Workbenches</dt>
+<dd>
+<p><a href="../index.html" class="xref page">CAM</a></p>
+</dd>
+<dt class="hdlist1">Default shortcut</dt>
+<dd>
+<p>none</p>
+</dd>
+<dt class="hdlist1">Introduced in version</dt>
+<dd>
+<p>26.3</p>
+</dd>
+<dt class="hdlist1">See also</dt>
+<dd>
+<p><a href="job.html" class="xref page">Job</a>, <a href="fixture.html" class="xref page">Fixture</a></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="description"><a class="anchor" href="#description"></a>Description</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <span class="image"><img src="../_images/CAM_Area_Workplane.svg" alt="Work Plane" width="16"></span> <strong>Work Plane</strong> command creates a named <a href="../reference/glossary.html#work-plane" class="xref page">Work Plane</a> on a <a href="../reference/glossary.html#job" class="xref page">Job</a>.
+The command creates the Work Plane from one selected planar face, or at the origin of the Job.
+The tooltip of the command is <code>Create a named work plane on the Job, from a selected planar face or at the Job origin. Operations can share one work plane.</code></p>
+</div>
+<div class="paragraph">
+<p>A Work Plane is the frame in which an <a href="../reference/glossary.html#operation" class="xref page">Operation</a> (Op) works.
+The Work Plane object is a <code>Part::LocalCoordinateSystem</code> in the <em>Workplanes</em> group of the Job.
+The local +Z of the Work Plane is the Tool Axis.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows a Job with two Work Planes in the <em>Workplanes</em> group.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/work-plane/tree-workplanes.png" alt="Tree view of a Job, with two Work Planes below the Workplanes group" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>An Operation links to no Work Plane or to one Work Plane, and several Operations can share one Work Plane.
+An Operation with a Work Plane calculates its <a href="../reference/glossary.html#toolpath" class="xref page">Toolpath</a> in the frame of the Work Plane:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The origin of the Work Plane is zero.</p>
+</li>
+<li>
+<p>The X axis of the Work Plane is the X axis of the Toolpath.</p>
+</li>
+<li>
+<p>Each depth and each height of the Operation is a distance from the Work Plane along the Tool Axis.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An Operation with no Work Plane works in the XY of the Job.
+A Work Plane that is not parallel to the table of the <a href="../reference/glossary.html#machine" class="xref page">Machine</a> makes the Operation Indexed.
+For an Indexed Operation, the rotary axes of the Machine point the Tool Bit along the Tool Axis before the cut, and do not move in the cut.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Optional: select one planar face of a <a href="../reference/glossary.html#model" class="xref page">Model</a> in the 3D view.</p>
+</li>
+<li>
+<p>Start the command with one of these controls:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Press the <span class="image"><img src="../_images/CAM_Area_Workplane.svg" alt="Work Plane" width="16"></span> <strong>Work Plane</strong> button in the <em>Project Setup</em> toolbar.</p>
+</li>
+<li>
+<p>Select <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Work Plane</b></span>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Find the new Work Plane in the <em>Workplanes</em> group of the Job in the <a href="https://wiki.freecad.org/Tree_view">tree view</a>. The command selects the new Work Plane.</p>
+</li>
+<li>
+<p>Optional: change the <strong>Label</strong> of the Work Plane.</p>
+</li>
+<li>
+<p>Optional: change the <strong>Attachment Offset</strong> of the Work Plane to move its origin.</p>
+</li>
+<li>
+<p>Optional: set the <strong>Fixture</strong> property of the Work Plane in the <a href="https://wiki.freecad.org/Property_editor">property editor</a>.</p>
+</li>
+<li>
+<p>Open the task panel of an Operation and select the Work Plane on the <a href="#heights"><em>Heights</em></a> page.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The command is available when the active document has a minimum of one Job.</p>
+</div>
+<div class="paragraph">
+<p>With one selected planar face, the command does these steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The command uses the Job that holds the Model of the face. When no Job holds that Model, the command uses the first Job of the document.</p>
+</li>
+<li>
+<p>The command attaches the Work Plane to the face of the <a href="../reference/glossary.html#resource-clone" class="xref page">Resource Clone</a> in the Job. The selected face can be on the original object or on the Resource Clone.</p>
+</li>
+<li>
+<p>The command sets the +Z of the Work Plane to the normal of the face.</p>
+</li>
+<li>
+<p>The command puts the origin of the Work Plane at the centroid of the face.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The figure shows a Work Plane on a tilted face of a Model.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/work-plane/result-face.png" alt="3D view of a Model with the axes of a Work Plane at the centroid of a tilted planar face" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>With no selection, the command creates the Work Plane at the origin of the Job, aligned with the axes of the Job.
+The command also does so when the selection is not exactly one planar face.
+The <a href="https://wiki.freecad.org/Report_view">report view</a> then shows the message <code>Created Workplane at the Job origin. Select a planar face before the command to derive one from the model.</code>, with the label of the new Work Plane.
+The command uses the first Job of the document.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="options"><a class="anchor" href="#options"></a>Options</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="heights"><a class="anchor" href="#heights"></a>Heights</h3>
+<div class="paragraph">
+<p>The <em>Heights</em> page of the task panel of an Operation has a Work Plane selector and a <b class="button">Reset to defaults</b> button.
+The figure shows the <em>Heights</em> page with a Work Plane selected.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/work-plane/task-panel-heights.png" alt="Profile task panel, Heights page, with a Work Plane selected in the Work Plane selector and the Reset to defaults button" width="600">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Work Plane selector: sets the Work Plane that the Operation links to. The Operation stores the link in its <code>Workplane</code> property.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A new Operation adopts the Work Plane of the previous Operation of the Job.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="properties"><a class="anchor" href="#properties"></a>Properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Work Plane object has the properties of a <code>Part::LocalCoordinateSystem</code> and one property that the CAM workbench adds.</p>
+</div>
+<div class="ulist">
+<div class="title">Workplane</div>
+<ul>
+<li>
+<p><strong>Fixture</strong> (<code>String</code>): the <a href="../reference/glossary.html#fixture" class="xref page">Fixture</a> that the control selects while the Operations of the Work Plane run. A Fixture is a G54 to G59.9 selection, not a clamp. Values <code>G54</code> to <code>G59.9</code>, or <code>G54.1 Pn</code>. Default: empty, which gives the Fixture of the Job.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The figure shows the property editor of a Work Plane with <strong>Fixture</strong> set to <code>G55</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/work-plane/properties-fixture.png" alt="Property editor of a Work Plane, with the Fixture property set to G55" width="400">
+</div>
+</div>
+<div class="ulist">
+<div class="title">Attachment</div>
+<ul>
+<li>
+<p><strong>Attachment Support</strong>: the face that the Work Plane follows. The command sets the property to the face of the Resource Clone. The property is empty for a Work Plane at the origin of the Job.</p>
+</li>
+<li>
+<p><strong>Map Mode</strong>: the command sets <code>FlatFace</code> for a Work Plane from a face.</p>
+</li>
+<li>
+<p><strong>Attachment Offset</strong>: the offset of the Work Plane in the attached frame. The command sets the offset from the attachment origin to the centroid of the face.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Base</div>
+<ul>
+<li>
+<p><strong>Placement</strong>: the position and orientation of the Work Plane. FreeCAD calculates the <strong>Placement</strong> of an attached Work Plane from the face. Set the <strong>Placement</strong> manually for a Work Plane that has no attachment.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notes-and-limitations"><a class="anchor" href="#notes-and-limitations"></a>Notes and limitations</h2>
+<div class="sectionbody">
+<div class="ulist">
+<div class="title">Attachment</div>
+<ul>
+<li>
+<p>An attached Work Plane follows its face when the Model changes.</p>
+</li>
+<li>
+<p>The <code>FlatFace</code> map mode puts the attachment origin at the projection of the global origin onto the face. The <strong>Attachment Offset</strong> moves the origin of the Work Plane from that point to the centroid of the face.</p>
+</li>
+<li>
+<p>When the selected face is not on a Model of the Job, the command attaches the Work Plane to the selected object and writes a warning to the report view.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">3D view</div>
+<ul>
+<li>
+<p>A new Work Plane is hidden. Select the Work Plane in the tree view and press <kbd>Space</kbd> to show it.</p>
+</li>
+<li>
+<p>The 3D view shows the axes and the origin of a visible Work Plane. The three datum planes of the Work Plane are hidden.</p>
+</li>
+<li>
+<p>You cannot select a Work Plane in the 3D view. A click on a face below the Work Plane selects the face. Select the Work Plane in the tree view to edit it.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Machine</div>
+<ul>
+<li>
+<p>You can create a Work Plane with any orientation on any Job. The command does not examine the Machine.</p>
+</li>
+<li>
+<p>The <a href="../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post) calculates the rotary positions for a Work Plane at output. The Post refuses a Work Plane that the Machine cannot reach.</p>
+</li>
+<li>
+<p>A Work Plane that is parallel to the table is applicable to a Machine without rotary axes. Such a Work Plane gives a datum for depths and a different X direction.</p>
+</li>
+<li>
+<p>A change of the Machine does not change the Toolpath of an Operation. Post-process the Job again after a change of the Machine.</p>
+</li>
+<li>
+<p>The <code>linuxcnc</code> Post supports only the TWP Rotation Strategy. The <code>linuxcnc</code> Post refuses a Machine that has the DWO Rotation Strategy.</p>
+</li>
+<li>
+<p>The <code>linuxcnc</code> Post writes a Work Plane that is not parallel to the table as a <code>G68.2</code> line. The <code>linuxcnc</code> Post then aligns the Tool Bit with the Tool Axis with <code>G53.1</code>, or with the line in its <code>twp_align</code> property.</p>
+</li>
+<li>
+<p>The <code>linuxcnc</code> Post cancels the Work Plane with <code>G69</code> before each Fixture change and before each Tool Bit change. See <a href="../output/post-process.html" class="xref page">Post Process</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Fixture</div>
+<ul>
+<li>
+<p>The Post selects the <strong>Fixture</strong> of a Work Plane before it positions the Machine for the Work Plane. The Post then goes back to the Fixture of the Job.</p>
+</li>
+<li>
+<p>The <strong>Fixture</strong> of a Work Plane and the <strong>Fixtures</strong> list of the Job are independent. See <a href="job.html" class="xref page">Job</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Dressups</div>
+<ul>
+<li>
+<p>A Dressup has no Work Plane of its own. A Dressup works in the frame of its base Operation.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scripting"><a class="anchor" href="#scripting"></a>Scripting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The example creates a Job for a box and two Work Planes.
+The first Work Plane is on the top face of the box.
+The second Work Plane has no attachment, and the Tool Axis of that Work Plane points along +X.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import FreeCAD
+import Path.Main.Job as PathJob
+import Path.Main.Workplane as PathWorkplane
+
+doc = FreeCAD.newDocument()
+box = doc.addObject("Part::Box", "Box")
+doc.recompute()
+
+job = PathJob.Create("Job", [box], templateFile=None)
+
+top = PathWorkplane.createWorkplane(job, box, "Face6", label="Top")
+top.Fixture = "G55"
+
+side = PathWorkplane.createWorkplaneFromToolAxis(job, FreeCAD.Vector(1, 0, 0), label="Side")
+doc.recompute()
+
+print([wp.Label for wp in PathWorkplane.workplanesOf(job)])
+print(PathWorkplane.fixtureOf(top))
+print(PathWorkplane.operationsUsing(job, top))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>PathWorkplane.createWorkplane(job, base=None, sub=None, label=None, placement=None)</code> adds a Work Plane to <code>job</code> and returns it.
+With <code>base</code> and <code>sub</code>, the function attaches the Work Plane to that planar face.
+With <code>placement</code> and no face, the function creates a Work Plane with no attachment at that placement.
+With no face and no placement, the function creates the Work Plane at the origin of the Job.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>createWorkplaneFromToolAxis(job, axis, origin=None, label=None)</code>: creates a Work Plane with no attachment, with <code>axis</code> as its +Z.</p>
+</li>
+<li>
+<p><code>workplanesOf(job)</code>: returns the Work Planes of the Job, in the sequence of the <em>Workplanes</em> group.</p>
+</li>
+<li>
+<p><code>operationsUsing(job, workplane)</code>: returns the Operations of the Job that link to <code>workplane</code>.</p>
+</li>
+<li>
+<p><code>fixtureOf(workplane)</code>: returns the <strong>Fixture</strong> of the Work Plane, or <code>None</code> when the property is empty.</p>
+</li>
+<li>
+<p><code>resolveToJobModel(job, obj)</code>: returns the Model of the Job that agrees with <code>obj</code>, or <code>None</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Link an Operation to a Work Plane with its <code>Workplane</code> property, for example <code>op.Workplane = top</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="job.html" class="xref page">Job</a></p>
+</li>
+<li>
+<p><a href="fixture.html" class="xref page">Fixture</a></p>
+</li>
+<li>
+<p><a href="../output/machine.html" class="xref page">Machine</a></p>
+</li>
+<li>
+<p><a href="../output/post-process.html" class="xref page">Post Process</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="fixture.html">CAM Fixture</a></span>
+  <span class="next"><a href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
