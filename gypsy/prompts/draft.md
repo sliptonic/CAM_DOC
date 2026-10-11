@@ -32,8 +32,9 @@ Rules:
   the same terms and the same facts as those pages. Link to them with `xref:` where the reader
   needs the detail; do not repeat their content. Do not link to a page that is not in the set and
   does not exist. If one of those pages contradicts the diffs or this page, say so in `notes`.
-- "Decisions of the person" are the answers a person gave when they confirmed this change set.
-  They are binding and overrule the current page and the other rules on scope and structure.
+- "Guidance of the person" is what people wrote on the work issue of this change set. Follow it
+  for scope, structure and emphasis, before the current page and before your own preference. It
+  does not overrule a fact from the diffs. If you do not follow a point, say why in `notes`.
 - A pending page text from an open gypsy pull request, if given, is what the page will look like
   once that PR merges: build on it rather than on `main`'s text, and say so in `notes`.
 
@@ -51,9 +52,9 @@ $style
 
 $glossary
 
-# Decisions of the person
+# Guidance of the person
 
-$decisions
+$guidance
 
 # Verdicts for this page
 

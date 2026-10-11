@@ -17,7 +17,7 @@ This is step 1 (Survey) of a gypsy iteration. It changes nothing. It joins:
   status     :page-status: of the page, and the unverified claims of its last draft (gypsy/jobs/)
   figures    block images with and without an entry in the figure manifest; figures wanted
   links in   how many other pages link to the page: the measure of how central it is
-  work       the cluster (gypsy/clusters/) and the open gypsy pull requests that hold the page
+  work       the open work issue (gypsy/work.py) and the open pull requests that hold the page
   GitHub     merged FreeCAD pull requests without a verdict; open issues of this repository
 
 Gap. The report starts with the gap between the documentation and the FreeCAD source, counted
@@ -47,6 +47,7 @@ import yaml
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lint  # noqa: E402
+import work  # noqa: E402
 import triage  # noqa: E402
 
 ROOT = triage.ROOT
@@ -176,42 +177,24 @@ def add_jobs(pages):
 
 
 def add_work(pages, offline):
-    """The cluster and the open gypsy pull requests that hold each page."""
-    clusters = {}
+    """The open work issue and the open pull requests that hold each page."""
     for rec in pages.values():
-        rec["cluster"], rec["open_prs"] = None, []
-    for f in sorted(glob.glob(os.path.join(HERE, "clusters", "*.yml"))):
-        c = yaml.safe_load(read(f))
-        slug = os.path.splitext(os.path.basename(f))[0]
-        members = [p for kind in ("rewrite", "new", "amend") for p in (c.get("pages") or {}).get(kind, [])]
-        clusters[slug] = {"title": c.get("title"), "issue": c.get("issue"), "pages": members, "state": None}
-        for p in members:
-            if p in pages:
-                pages[p]["cluster"] = slug
-    info = {"clusters": clusters, "untriaged": None, "issues": None, "open_gypsy_prs": None}
+        rec["issue"], rec["open_prs"] = None, []
+    info = {"work": None, "untriaged": None, "open_prs": None}
     if offline:
         return info
     try:
-        prs = gh_json("pr", "list", "--label", "gypsy", "--state", "open", "--json", "number,title,files")
-        info["open_gypsy_prs"] = [{"number": p["number"], "title": p["title"]} for p in prs]
-        for p in prs:
-            for fl in p["files"]:
-                rel = fl["path"].removeprefix("modules/ROOT/pages/")
-                if rel in pages:
-                    pages[rel]["open_prs"].append(p["number"])
-        issues = gh_json("issue", "list", "--state", "open", "--limit", "200",
-                         "--json", "number,title,labels,comments")
-        info["issues"] = [{"number": i["number"], "title": i["title"], "comments": len(i["comments"]),
-                           "labels": [l["name"] for l in i["labels"]]} for i in issues]
-        open_numbers = {i["number"] for i in issues}
-        for c in clusters.values():
-            if c["issue"]:
-                c["state"] = "open" if c["issue"] in open_numbers else "closed"
-                if c["state"] == "closed":                    # delivered: it holds no page now
-                    for p in c["pages"]:
-                        if p in pages and pages[p]["cluster"] in clusters and clusters[pages[p]["cluster"]] is c:
-                            pages[p]["cluster"] = None
-    except Exception as exc:                                  # no network, no login
+        items, prs = work.open_work()
+        info["open_prs"] = [p["number"] for p in prs]
+        for page, number in work.held_pages(prs).items():
+            if page in pages:
+                pages[page]["open_prs"].append(number)
+        info["work"] = [{k: i[k] for k in ("number", "title", "labels", "waits", "pages")} for i in items]
+        for i in items:
+            for p in i["pages"]:
+                if p in pages:
+                    pages[p]["issue"] = i["number"]
+    except SystemExit as exc:                                 # no network, no login
         info["error"] = str(exc)[:200]
     return info
 
@@ -239,7 +222,7 @@ def score(pages):
 
 
 def row(rec):
-    held = ", ".join(([rec["cluster"]] if rec["cluster"] else []) + [f"PR #{n}" for n in rec["open_prs"]])
+    held = ", ".join(([f"#{rec['issue']}"] if rec["issue"] else []) + [f"PR #{n}" for n in rec["open_prs"]])
     state = "missing" if not rec["exists"] else (rec["page_status"] or "-")
     figures = f"{rec['figures_captured']}/{rec['figures']}" + (f" +{rec['figures_wanted']}" if rec["figures_wanted"] else "")
     return [f"{rec['score']:.1f}", rec["page"][:-5], str(len(rec["pending"])),
@@ -286,21 +269,12 @@ def print_report(pages, info, last, top, prs_shown):
         print(f"  GitHub   not read: {info['error']}")
     elif info["untriaged"] is not None:
         print(f"  merged FreeCAD pull requests without a verdict   {len(info['untriaged'])}")
-        prs = info["open_gypsy_prs"]
-        print(f"  open gypsy pull requests   {len(prs)}" + ("  (" + ", ".join(f"#{p['number']}" for p in prs) + ")" if prs else ""))
-        people = [i for i in info["issues"] if "gypsy" not in i["labels"]]
-        print(f"  open issues   {len(info['issues'])}  ({len(people)} not from gypsy)")
-    for slug, c in info["clusters"].items():
-        left = sum(len(pages[p]["pending"]) for p in c["pages"] if p in pages)
-        print(f"  cluster {slug}: {len(c['pages'])} pages, {left} pending verdicts on them, issue #{c['issue']} {c['state'] or ''}")
-
-    sections = collections.defaultdict(lambda: [0, 0, 0.0, 0])
-    for r in recs:
-        s = sections[r["page"].split("/")[0] if "/" in r["page"] else "(top)"]
-        s[0] += 1
-        s[1] += len(r["pending"])
-        s[2] += r["score"]
-        s[3] += r["lint"]
+        print(f"  open pull requests   {len(info['open_prs'])}")
+    if info.get("work") is not None:
+        print(f"\nWork issues ({len(info['work'])} open)\n")
+        for i in info["work"]:
+            left = sum(len(pages[p]["pending"]) for p in i["pages"] if p in pages)
+            print(f"  #{i['number']:<4} {i['title'][:64]}\n        waits for {i['waits']}   {left} pending verdicts on its pages")
     if prs_shown is not None:
         byscore = {u["pr"]: sum(pages[p]["weight"] for p in u["open_pages"]) for u in info["upstream"]}
         rows = sorted((u for u in info["upstream"] if u["open_pages"]), key=lambda u: -byscore[u["pr"]])
@@ -322,7 +296,7 @@ def print_report(pages, info, last, top, prs_shown):
     print(f"\nPages ({len(shown)} of {len(ranked)}, by score)\n")
     table(["score", "page", "pend", "gui", "in", "lint", "status", "unver", "figures", "held by"], [row(r) for r in shown])
     print("\npend: verdicts not covered   gui: of these, need a running FreeCAD   in: pages that link here"
-          "\nfigures: captured/all, +wanted   held by: cluster or open pull request")
+          "\nfigures: captured/all, +wanted   held by: work issue or open pull request")
 
 
 def print_page(rec):
@@ -331,7 +305,7 @@ def print_page(rec):
     print(f"  status {rec['page_status'] or '-'}   exists {rec['exists']}   unverified claims {rec['unverified']}")
     print(f"  lint {rec['lint']} {rec['lint_kinds'] or ''}")
     print(f"  figures {rec['figures_captured']} captured of {rec['figures']}, {rec['figures_wanted']} wanted")
-    print(f"  cluster {rec['cluster'] or '-'}   open pull requests {rec['open_prs'] or '-'}")
+    print(f"  work issue {rec['issue'] or '-'}   open pull requests {rec['open_prs'] or '-'}")
     print(f"  covers upstream PRs: {', '.join(map(str, rec['covered'])) or '-'}")
     print(f"  pending verdicts: {len(rec['pending'])}")
     for p in rec["pending"]:
