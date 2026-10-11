@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -584,6 +587,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 </li>
 <li>
 <p>If the probe file is missing or invalid, the base Toolpath is passed through unchanged.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> The dressup corrects only a Toolpath whose <a href="../job/work-plane.html" class="xref page">Work Plane</a> is parallel to the machine table. For a Work Plane with a different Tool Axis, the dressup prints the warning <code>Z correction needs a work plane parallel to the table; path left unchanged</code> and outputs the unmodified base Toolpath.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> The Toolpath points are in the frame of the Work Plane of the Operation that the dressup modifies. The dressup converts each point to document coordinates and reads the probe map at that X, Y position. The warning for a point outside the probed area shows the point in document coordinates.</p>
 </li>
 </ul>
 </div>

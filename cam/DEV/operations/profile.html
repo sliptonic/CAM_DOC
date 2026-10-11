@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -604,9 +607,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="paragraph">
 <p><strong><em>Note</em></strong>: Not all of these Properties are available in the Task Window Editor. Some are only accessible in the Data tab of the Properties View panel for this Operation.</p>
 </div>
-<div class="paragraph">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="title">Base</div>
-<p>Note: It is suggested that you do not edit the Placement property of path operations. Rather, move or rotate the CAM Job model as needed.</p>
+<strong>Placement</strong> is read-only. The Operation sets <strong>Placement</strong> when it calculates the Toolpath.
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -719,7 +731,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p><strong>User Label</strong>: User assigned label</p>
 </li>
 <li>
-<p><strong>Workplane</strong>: <span class="since">introduced in 26.3</span> The orientation of the Tool Bit for this operation; default (0, 0, 1) for standard Z-up milling. Set with the <em>Set Workplane from Face</em> context menu command for 3+2 machining.</p>
+<p><strong>Workplane</strong>: <span class="since">introduced in 26.3</span> The link to the <a href="../job/work-plane.html" class="xref page">Work Plane</a> that the Operation works in. An Operation with no link works in the XY of the Job.</p>
 </li>
 </ul>
 </div>

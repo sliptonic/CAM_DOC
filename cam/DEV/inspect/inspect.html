@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -458,7 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </dd>
 <dt class="hdlist1">See also</dt>
 <dd>
-<p><em>None</em></p>
+<p><a href="../job/work-plane.html" class="xref page">Work Plane</a></p>
 </dd>
 </dl>
 </div>
@@ -476,22 +479,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>Selecting one or more lines in the viewer highlights the corresponding moves in the <a href="https://wiki.freecad.org/3D_View">3D View</a> (drawn with the <em>Highlight path</em> color from <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Colors</b></span>) and moves the Tool Bit shape of the Operation&#8217;s Tool Controller to the start point of the selection.</p>
 </div>
 <div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The Tool Bit shape in the 3D View points along the Tool Axis of the Operation.</p>
+</div>
+<div class="paragraph">
+<p>The figure shows the highlighted moves and the Tool Bit shape for an Operation on a tilted Work Plane.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/inspect/inspect/result-tool-axis.png" alt="3D view of a Profile operation on a tilted Work Plane, with highlighted moves and the Tool Bit shape along the Tool Axis" width="600">
+</div>
+</div>
+<div class="paragraph">
 <p><span class="since">introduced in 26.3</span>: line numbers are shown. For very long toolpaths (more than 1000 lines by default, parameter <code>MaxHighlighterSize</code>) syntax highlighting is switched off.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="../_images/Path_inspector.jpg" alt="Path inspector"></span></p>
+<p>The figure shows the dialog for a Profile operation.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-This screenshot predates line numbers and the unit note in the current dialog.
-</td>
-</tr>
-</table>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/inspect/inspect/dialog.png" alt="CAM Inspect dialog with the G-code of a Profile operation, line numbers, the note about the units, and the Raw checkbox" width="400">
+</div>
 </div>
 </div>
 </div>
@@ -537,7 +544,24 @@ This screenshot predates line numbers and the unit note in the current dialog.
 <li>
 <p>The size and position of the dialog are stored in the user parameters.</p>
 </li>
+<li>
+<p><strong>Raw</strong>: shows the commands as the Operation stored them. The viewer does not round the values and does not convert the units when <strong>Raw</strong> is set.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> The viewer does not apply the Placement of the Operation when <strong>Raw</strong> is set.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> When <strong>Raw</strong> is set and the Placement of the Operation is not the identity, the note in the dialog shows one more line. The line gives the origin of the frame of the Operation. The line says that the viewer does not apply the origin and the rotation of the frame.</p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The figure shows the dialog with <strong>Raw</strong> set for an Operation that links to a Work Plane.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/inspect/inspect/dialog-raw-work-plane.png" alt="CAM Inspect dialog with Raw set for an Operation on a Work Plane; the note has one more line with the origin of the frame" width="400">
+</div>
 </div>
 </div>
 </div>
@@ -548,6 +572,15 @@ This screenshot predates line numbers and the unit note in the current dialog.
 <ul>
 <li>
 <p>For an Operation deactivated with <a href="op-active-toggle.html" class="xref page">Toggle Operation</a> the viewer only shows <code>(inactive operation)</code>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> An Operation that links to a <a href="../job/work-plane.html" class="xref page">Work Plane</a> stores its Toolpath in the frame of the Work Plane. The viewer shows the Toolpath in Job coordinates when <strong>Raw</strong> is not set. The viewer shows the Toolpath in the frame of the Work Plane when <strong>Raw</strong> is set.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> The highlight in the 3D View has the Placement of the Operation. The highlight stays on the Toolpath of an Operation that links to a Work Plane.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> The position of the Tool Bit shape is the position of the selected line in Job coordinates. The Tool Axis of an Operation that links to a Work Plane is the local +Z of the Work Plane.</p>
 </li>
 </ul>
 </div>

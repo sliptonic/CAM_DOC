@@ -331,6 +331,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="job/fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -489,6 +492,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>The G-code is generated from directives and Operations contained in a CAM Job. The Job Workflow lists these in the order they will be executed. The list is populated by adding Operations, Path Dressups, Supplemental Commands, and Path Modifications from the CAM menu, or GUI buttons.</p>
 </div>
 <div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: An Operation works in a <a href="job/work-plane.html" class="xref page">Work Plane</a>, a named frame that the Job holds and that several Operations can share. An Operation with no Work Plane works in the XY of the Job, with the Tool Axis along +Z. The Operation generates its Toolpath in the frame of the Work Plane. The read-only <strong>Placement</strong> property of the Operation positions the Toolpath in the document.</p>
+</div>
+<div class="paragraph">
 <p>The CAM Workbench provides a <a href="tools/library-manager.html" class="xref page">Toolbit Library Manager</a> and a <a href="tools/add-toolbit.html" class="xref page">Toolbit selector</a>, G-code inspection, and two simulators. It links the Post-Processor and allows importing and exporting Job Templates.</p>
 </div>
 <div class="paragraph">
@@ -628,6 +634,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="paragraph caption">
 <p>Visual reference for Depth properties (settings)</p>
 </div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: Each height and each depth of an Operation is a distance along the Tool Axis, measured from the origin of the Work Plane of the Operation. The Tool Axis is the local +Z of the Work Plane. For an Operation with no Work Plane, each height and each depth is a Z value in the coordinates of the Job. The buttons that set <strong>Start Depth</strong> and <strong>Final Depth</strong> from the selected geometry measure from the Work Plane of the Operation. <a href="job/work-plane.html" class="xref page">Work Plane</a> gives the detail.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -642,6 +651,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <ul>
 <li>
 <p><span class="image"><img src="_images/CAM_Job.svg" alt="CAM Job" width="32"></span> <a href="job/job.html" class="xref page">New Job</a>: Creates a new CNC Job.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <a href="job/work-plane.html" class="xref page">Work Plane</a>: Creates a named Work Plane on a Job, from a selected planar face or at the Job origin.</p>
 </li>
 <li>
 <p><span class="image"><img src="_images/CAM_Sanity.svg" alt="CAM Sanity" width="32"></span> <a href="job/sanity-check.html" class="xref page">Sanity Check</a>: Checks the Job for common errors and produces an HTML report.</p>
@@ -896,6 +908,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 </li>
 <li>
 <p>On Operations: the Path Dressup submenu (single Operation), a Path Modification submenu with Array, Copy Operation and Simple Copy, Toggle Operation, <a href="inspect/inspect.html" class="xref page">Inspect Toolpath</a> (single Operation), Post Process and <a href="output/post-process-selected.html" class="xref page">Post Process Selected</a>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> On an Operation: <strong>Set Work Plane from Face</strong> creates a <a href="job/work-plane.html" class="xref page">Work Plane</a> from a picked planar face and links the Operation to the Work Plane.</p>
 </li>
 <li>
 <p>On an Operation that has a Start Point: <a href="inspect/set-start-point.html" class="xref page">Start Point Selection</a>.</p>

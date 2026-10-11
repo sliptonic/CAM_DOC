@@ -6,7 +6,7 @@
     <title>CAM Fixture :: FreeCAD CAM documentation (experiment)</title>
     <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/cam/wiki-2026-08/job/fixture.html">
     <link rel="prev" href="../reference/faq.html">
-    <link rel="next" href="../output/postprocessor-customization.html">
+    <link rel="next" href="work-plane.html">
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/freecad.css">
@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -499,6 +502,9 @@ In the CAM Workbench, <em>Fixture</em> means a work coordinate system selection,
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A <a href="work-plane.html" class="xref page">Work Plane</a> can name a Fixture of its own, which applies while the Operations of that Work Plane run.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -525,6 +531,12 @@ In the CAM Workbench, <em>Fixture</em> means a work coordinate system selection,
 </div>
 <div class="paragraph">
 <p>When the Job has a Machine, the <a href="../output/post-process.html" class="xref page">Post Process</a> dialog&#8217;s Overview tab shows a <strong>Fixtures</strong> checklist (<span class="since">introduced in 26.3</span>); unchecking a fixture omits it from that export without changing the Job.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The <strong>Fixture</strong> property of a <a href="work-plane.html" class="xref page">Work Plane</a> names the Fixture that the control has selected while the Operations of that Work Plane run. An empty <strong>Fixture</strong> property, the default, gives the Job&#8217;s own Fixture. When the <strong>Fixture</strong> property has a value, the Post-Processor selects that Fixture before the Post-Processor positions the Machine for the Work Plane. The Post-Processor selects the Job&#8217;s Fixture again after the Operations of the Work Plane.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>Fixture</strong> property of a Work Plane does not change the <strong>Fixtures</strong> property of the Job. The <strong>Fixtures</strong> property of the Job repeats the program for each listed Fixture, and the Post-Processor selects the Fixture of a Work Plane in each repetition. The <a href="sanity-check.html" class="xref page">Sanity Check</a> warns when a Work Plane names a Fixture that the <strong>Fixtures</strong> property of the Job also lists.</p>
 </div>
 </div>
 </div>
@@ -563,7 +575,7 @@ job.SplitOutput = True</code></pre>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="../reference/faq.html">CAM FAQ</a></span>
-  <span class="next"><a href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a></span>
+  <span class="next"><a href="work-plane.html">Work Plane</a></span>
 </nav>
 </article>
   </div>

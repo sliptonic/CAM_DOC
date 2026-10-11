@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>CAM Job :: FreeCAD CAM documentation (experiment)</title>
+    <title>Job :: FreeCAD CAM documentation (experiment)</title>
     <link rel="canonical" href="https://sliptonic.github.io/CAM_DOC/cam/wiki-2026-08/job/job.html">
     <link rel="prev" href="../index.html">
     <link rel="next" href="../output/post-process.html">
+    <meta name="description" content="Create a Job, the top-level CAM object that holds the Models, the Stock, the Tool Controllers, the Operations, the Work Planes and the output configuration.">
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/freecad.css">
@@ -332,6 +333,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -430,13 +434,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">CAM Job</h1>
+<h1 class="page">Job</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="openblock fcinfobox">
 <div class="content">
 <div class="paragraph fcTitle">
-<p><span class="image"><img src="../_images/CAM_Job.svg" alt="CAM Job" width="32"></span> <strong>CAM Job</strong></p>
+<p><span class="image"><img src="../_images/CAM_Job.svg" alt="Job" width="32"></span> <strong>Job</strong></p>
 </div>
 <div class="dlist">
 <dl>
@@ -450,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </dd>
 <dt class="hdlist1">Default shortcut</dt>
 <dd>
-<p><kbd>P</kbd> <kbd>J</kbd></p>
+<p><span class="keyseq"><kbd>P</kbd>+<kbd>J</kbd></span></p>
 </dd>
 <dt class="hdlist1">Introduced in version</dt>
 <dd>
@@ -458,7 +462,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </dd>
 <dt class="hdlist1">See also</dt>
 <dd>
-<p><a href="export-template.html" class="xref page">CAM ExportTemplate</a>, <a href="setup-sheet.html" class="xref page">CAM SetupSheet</a>, <a href="../output/machine.html" class="xref page">CAM Machine</a>, <a href="sanity-check.html" class="xref page">CAM Sanity</a>, <a href="../output/post-process.html" class="xref page">CAM Post</a></p>
+<p><a href="export-template.html" class="xref page">Export Template</a>, <a href="setup-sheet.html" class="xref page">Setup Sheet</a>, <a href="../output/machine.html" class="xref page">Machine</a>, <a href="sanity-check.html" class="xref page">Sanity Check</a>, <a href="work-plane.html" class="xref page">Work Plane</a>, <a href="../output/post-process.html" class="xref page">Post Process</a></p>
 </dd>
 </dl>
 </div>
@@ -470,32 +474,49 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="description"><a class="anchor" href="#description"></a>Description</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <span class="image"><img src="../_images/CAM_Job.svg" alt="CAM Job" width="24"></span> <a href="#">CAM Job</a> command creates a new Job object in the active document. It is found in the <strong>Project Setup</strong> toolbar and in the <span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">New Job</b></span> menu entry; its tooltip is <em>Creates a CAM job</em>. The Job object contains the following information:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>A list of Tool Controllers, each pairing a Tool Bit from the Tool Library with spindle speed, horizontal/vertical feed and rapid rates (Tools group).</p>
-</li>
-<li>
-<p>A Workplan: the sequential list of Operations.</p>
-</li>
-<li>
-<p>A Model group containing a clone of each base object (the Model) so the original geometry is never modified; a Job may hold several Models, including several copies of the same object.</p>
-</li>
-<li>
-<p>A Stock object representing the raw material. Stock types are: extend the Model&#8217;s bounding box (default), box, cylinder, or an existing solid of the document.</p>
-</li>
-<li>
-<p>A Setup Sheet, containing default values and expressions applied to the Operations of this Job.</p>
-</li>
-<li>
-<p>Output configuration: the destination path and file name template, the Post-Processor and its arguments (legacy argument-based posts), the Work Coordinate Systems (Fixtures) to output, the output ordering and file splitting, and optionally a Machine whose <code>.fcm</code> definition supplies the machine-based Post-Processor and its output options (<span class="since">Machine introduced in 26.3</span>).</p>
-</li>
-</ol>
+<p>The <span class="image"><img src="../_images/CAM_Job.svg" alt="Job" width="16"></span> <strong>New Job</strong> command creates a <a href="../reference/glossary.html#job" class="xref page">Job</a> in the active document.
+A Job is the top-level CAM object of one project.
+The tooltip of the command is <code>Creates a CAM job</code>.</p>
 </div>
 <div class="paragraph">
-<p>The Job&#8217;s children (Operations, Model, Stock, Setup Sheet, Tool Controllers) are shown under the Job in the Tree View. Deleting the Job also deletes its Operations, Model clones, Stock, Tool Controllers and Setup Sheet.</p>
+<p>A Job holds these objects and values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <a href="../reference/glossary.html#job-model-group" class="xref page">Job Model Group</a>. The Job Model Group holds a <a href="../reference/glossary.html#resource-clone" class="xref page">Resource Clone</a> of each <a href="../reference/glossary.html#model" class="xref page">Model</a>, and the Job does not change the original geometry. A Job can hold several Models and several copies of one object.</p>
+</li>
+<li>
+<p>A <a href="../reference/glossary.html#stock" class="xref page">Stock</a> object, which shows the material that the Tool Bit cuts. The Stock comes from the bounding box of the Models (default), a box, a cylinder, or an existing solid of the document.</p>
+</li>
+<li>
+<p>A <em>Tools</em> group of <a href="../reference/glossary.html#tool-controller" class="xref page">Tool Controllers</a> (TC). Each Tool Controller pairs a <a href="../reference/glossary.html#tool-bit" class="xref page">Tool Bit</a> with a Spindle Speed, a Horizontal Feed, a Vertical Feed and the speeds for rapid moves.</p>
+</li>
+<li>
+<p>The <a href="../reference/glossary.html#operation" class="xref page">Operations</a> (Op), in the sequence in which the Job outputs them.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> A <em>Workplanes</em> group of <a href="../reference/glossary.html#work-plane" class="xref page">Work Planes</a>. Several Operations of the Job can share one Work Plane. See <a href="work-plane.html" class="xref page">Work Plane</a>.</p>
+</li>
+<li>
+<p>A <a href="../reference/glossary.html#setup-sheet" class="xref page">Setup Sheet</a>. The Setup Sheet is the container of the default values and expressions of the Job for new Operations. The Setup Sheet is not a shop document.</p>
+</li>
+<li>
+<p>The output configuration: the output file, the <a href="../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> (Post), the <a href="../reference/glossary.html#machine" class="xref page">Machine</a>, the <a href="../reference/glossary.html#fixture" class="xref page">Fixtures</a>, the output sequence and the split of the output into files. A Fixture is a G54 to G59.9 selection. A Fixture is not a clamp.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <a href="https://wiki.freecad.org/Tree_view">tree view</a> shows the Operations, the Job Model Group, the Stock, the Setup Sheet, the <em>Tools</em> group and the <em>Workplanes</em> group below the Job.
+The figure shows the tree view of a Job with one Work Plane.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/tree-workplanes.png" alt="Tree view of a Job, with one Work Plane below the Workplanes group" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>When you delete the Job, FreeCAD also deletes the Operations, the Resource Clones, the Stock, the Tool Controllers, the Setup Sheet and the Work Planes of the Job.</p>
 </div>
 </div>
 </div>
@@ -505,41 +526,123 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>There are several ways to invoke the command:</p>
+<p>Optional: select the objects for the Model in the tree view.</p>
+</li>
+<li>
+<p>Start the command with one of these controls:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Press the <span class="image"><img src="../_images/CAM_Job.svg" alt="CAM Job" width="16"></span> <a href="#">New Job</a> button in the <strong>Project Setup</strong> toolbar.</p>
+<p>Press the <span class="image"><img src="../_images/CAM_Job.svg" alt="New Job" width="16"></span> <strong>New Job</strong> button in the <em>Project Setup</em> toolbar.</p>
 </li>
 <li>
-<p>Select the <span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">New Job</b></span> option from the menu.</p>
+<p>Select <span class="menuseq"><b class="menu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">New Job</b></span>.</p>
 </li>
 <li>
-<p>Use the keyboard shortcut: <kbd>P</kbd> then <kbd>J</kbd>.</p>
+<p>Press <kbd>P</kbd> then <kbd>J</kbd>.</p>
 </li>
 <li>
-<p>Alternatively, right-click a solid or 2D object in the Tree View and select <strong>New Job</strong> from the context menu; the selected objects are preselected as the Model.</p>
+<p>Right-click a solid or a 2D object in the tree view, then select <strong>New Job</strong>. The <em>New Job</em> dialog shows the selected objects as selected Models.</p>
 </li>
 </ul>
 </div>
 </li>
+<li>
+<p>Set the Job Template, the Models and the document units in the <a href="#new-job-dialog"><em>New Job</em> dialog</a>.</p>
+</li>
+<li>
+<p>Press <b class="button">OK</b>. The Job task panel opens with the <em>Setup</em> tab active.</p>
+</li>
+<li>
+<p>Set the Stock and the position of the Model on the <em>Setup</em> tab.</p>
+</li>
+<li>
+<p>Add a minimum of one Tool Controller on the <em>Tools</em> tab.</p>
+</li>
+<li>
+<p>Set the output file and the Machine or the Post-Processor on the <em>Output</em> tab.</p>
+</li>
+<li>
+<p>Press <b class="button">OK</b>.</p>
+</li>
 </ol>
 </div>
-<div class="sect2">
-<h3 id="new-job-dialog"><a class="anchor" href="#new-job-dialog"></a>New Job dialog</h3>
 <div class="paragraph">
-<p>Invoking the command opens the <strong>New Job</strong> dialog with three groups:</p>
+<p>Double-click the Job in the tree view to open the Job task panel again.
+The <strong>Edit</strong> entry of the Job context menu also opens the Job task panel.</p>
+</div>
+<div class="paragraph">
+<p>The Job task panel shows a message on <b class="button">OK</b> when the Job has no Model or no Tool Controller.
+The message has an <strong>Add</strong> button that adds the object.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Do not cancel the Job task panel immediately after you create a Job. FreeCAD removes the new Job.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="context-menu"><a class="anchor" href="#context-menu"></a>Context menu</h3>
+<div class="paragraph">
+<p>Right-click a Job in the tree view to get these entries:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Template</strong>: select a Job Template; the list contains <em>(none)</em> plus every <code>job_*.json</code> found in the asset Templates directory, the CAM file path and the macro directory. Hovering an entry shows its description (<span class="since">introduced in 26.3</span>). See <a href="export-template.html" class="xref page">CAM ExportTemplate</a>.</p>
+<p><strong>Edit</strong>: opens the Job task panel.</p>
 </li>
 <li>
-<p><strong>Model</strong>: a tree with <em>Solids</em>, <em>2D</em> and <em>Jobs</em> categories. Check the objects to machine, and optionally raise the <strong>Count</strong> column to machine several copies of the same object. Checking another Job reuses that Job&#8217;s Models with their placement.</p>
+<p><span class="since">introduced in 26.3</span> <strong>Update Tools from Library</strong>: compares the Tool Bits of the Job with the <a href="../reference/glossary.html#tool-library" class="xref page">Tool Library</a> and offers an update of the presets and the geometry. The command finds the related Tool Bit in the Tool Library by its Tool Bit ID. The command does not change a Tool Bit that the Tool Library does not have.</p>
 </li>
 <li>
-<p><strong>Document Units</strong> (<span class="since">introduced in 26.3</span>): the unit schema applied to the document on <b class="button">OK</b>. Schemas expressing velocity per minute are shown green; per-second schemas are shown red because they are unsafe for G-code feed rates.</p>
+<p><strong>Toggle Operation</strong></p>
+</li>
+<li>
+<p><strong>Export Template</strong>: see <a href="export-template.html" class="xref page">Export Template</a>.</p>
+</li>
+<li>
+<p><strong>Sanity Check</strong>: see <a href="sanity-check.html" class="xref page">Sanity Check</a>.</p>
+</li>
+<li>
+<p><strong>Post Process</strong>: see <a href="../output/post-process.html" class="xref page">Post Process</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The figure shows the context menu of a Job.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/context-menu.png" alt="Context menu of a Job in the tree view, with the Update Tools from Library entry" width="400">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="options"><a class="anchor" href="#options"></a>Options</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="new-job-dialog"><a class="anchor" href="#new-job-dialog"></a>New Job dialog</h3>
+<div class="paragraph">
+<p>The command opens the <em>New Job</em> dialog, which has three groups:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Template</em>: selects a <a href="../reference/glossary.html#job-template" class="xref page">Job Template</a>. The list contains <code>(none)</code> and each <code>job_*.json</code> file in the asset Templates directory, the CAM file path and the macro directory. <span class="since">introduced in 26.3</span>: A list entry shows its description when the pointer is on it. See <a href="export-template.html" class="xref page">Export Template</a>.</p>
+</li>
+<li>
+<p><em>Model</em>: a tree with the categories <code>Solids</code>, <code>2D</code> and <code>Jobs</code>. Select the objects for the Model. Increase the value in the <strong>Count</strong> column to get several copies of one object. When you select a different Job, the new Job uses the Models of that Job with their placement.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <em>Document Units</em>: the unit schema that <b class="button">OK</b> applies to the document. The dialog shows a schema with velocity per minute in green. The dialog shows a schema with velocity per second in red, because that schema is not safe for G-code feed values.</p>
 </li>
 </ul>
 </div>
@@ -547,76 +650,148 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="sect2">
 <h3 id="job-task-panel"><a class="anchor" href="#job-task-panel"></a>Job task panel</h3>
 <div class="paragraph">
-<p>After creation the Job task panel opens (with the Setup tab active). It can be re-opened later by double-clicking the Job in the Tree View or via the Job context menu entry <strong>Edit</strong>. Cancelling the panel immediately after creating a Job removes the Job again. On <b class="button">OK</b>, a warning is shown if the Job has no Model or no Tool Controller, with an <strong>Add</strong> button to add one.</p>
+<p>The Job task panel has six tabs, in this sequence: <em>Setup</em>, <em>General</em>, <em>Output</em>, <em>Tools</em>, <em>Workplan</em> and <em>Advanced</em>.
+The Job task panel applies the changes and recomputes the Job when you select the <em>Setup</em> tab again.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="setup"><a class="anchor" href="#setup"></a>Setup</h3>
 <div class="paragraph">
-<p>The Job task panel has six tabs, in order: <b class="menuref">Setup</b>, <b class="menuref">General</b>, <b class="menuref">Output</b>, <b class="menuref">Tools</b>, <b class="menuref">Workplan</b> and <b class="menuref">Advanced</b> (<span class="since">Advanced introduced in 1.1</span>). Switching back to the Setup tab applies and recomputes pending changes.</p>
+<p>The <em>Setup</em> tab sets the Stock, the position of the Model and the Stock, and the default values of the Job.</p>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="setup"><a class="anchor" href="#setup"></a>Setup</h2>
-<div class="sectionbody">
 <div class="imageblock">
 <div class="content">
 <img src="../_images/job/job/task-panel-setup.png" alt="Job task panel, Setup tab, with the Layout section open" width="600">
 </div>
 </div>
-<div class="sect2">
-<h3 id="stock"><a class="anchor" href="#stock"></a>Stock</h3>
-<div class="paragraph">
-<p>Choose how the Stock is created:</p>
-</div>
+<div class="ulist">
+<div class="title">Stock</div>
+<ul>
+<li>
+<p>Stock source: sets how the Job makes the Stock. Values <code>Create box</code>, <code>Create cylinder</code>, <code>Extend model&#8217;s bounding box</code>, <code>Use existing solid</code>. Default: <code>Extend model&#8217;s bounding box</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Create box</strong>: enter Length, Width and Height.</p>
+<p><code>Create box</code>: enter <strong>Length</strong>, <strong>Width</strong> and <strong>Height</strong>.</p>
 </li>
 <li>
-<p><strong>Create cylinder</strong>: enter Radius and Height.</p>
+<p><code>Create cylinder</code>: select <strong>Axis</strong>, then enter <strong>Radius</strong> and <strong>Height</strong>.</p>
 </li>
 <li>
-<p><strong>Extend model&#8217;s bounding box</strong> (default): enter extra allowance in negative and positive X, Y and Z; entering a negative value shrinks the stock.</p>
+<p><code>Extend model&#8217;s bounding box</code>: enter the added material in the negative and the positive direction of X, Y and Z. A negative value makes the Stock smaller.</p>
 </li>
 <li>
-<p><strong>Use existing solid</strong>: pick a solid of the document; it is cloned as the Stock.</p>
+<p><code>Use existing solid</code>: select a solid of the document. The Job makes a clone of the solid and uses the clone as the Stock.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Axis</strong>: the axis of the cylinder. Values <code>X</code>, <code>Y</code>, <code>Z</code>. Default: <code>Z</code>.</p>
+</li>
+<li>
+<p><b class="button">Refresh</b>: makes the Stock again from the values in the panel.</p>
+</li>
+<li>
+<p><b class="button">Assign Material</b>: assigns a material to the Stock. The <a href="../reference/glossary.html#sanity-check" class="xref page">Sanity Check</a> report and the feed and speed calculation use the material.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><b class="button">Refresh</b> recreates the Stock from the current settings. <b class="button">Assign Material</b> assigns a machining material to the Stock (used by the <a href="sanity-check.html" class="xref page">Sanity report</a> and feeds and speeds).</p>
+<p>A new cylinder gets its dimensions from the bounding box of the Models.
+<strong>Height</strong> is the length of the bounding box along <strong>Axis</strong>, with a minimum of 1 mm.
+<strong>Radius</strong> is half of the diagonal of the two other dimensions of the bounding box.
+The cylinder starts at the minimum of the bounding box along <strong>Axis</strong>, and its axis goes through the center of the two other dimensions.
+The figure shows the <em>Stock</em> group with <code>Create cylinder</code> selected.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-setup-stock-cylinder.png" alt="Job task panel, Setup tab, with the Stock set to Create cylinder and the Axis, Radius and Height controls" width="600">
+</div>
+</div>
+<div class="ulist">
+<div class="title">Selection Target</div>
+<ul>
+<li>
+<p><b class="button">Model</b>: selections in the 3D view come from the Model. You cannot select the Stock.</p>
+</li>
+<li>
+<p><b class="button">Stock</b>: selections in the 3D view come from the Stock. You cannot select the Model.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The two buttons are toggle buttons. Only one of the two buttons is active at a time.</p>
+</div>
+<div class="ulist">
+<div class="title">Origin &amp; Alignment</div>
+<ul>
+<li>
+<p><b class="button">Move to Origin</b>: moves only the selected object so that the selected point is at the origin.</p>
+</li>
+<li>
+<p><b class="button">Set Origin</b>: moves the Model and the Stock so that the selected point becomes the origin.</p>
+</li>
+<li>
+<p><b class="button">Center XYZ in Stock</b>: centers the selected object in the Stock in X, Y and Z.</p>
+</li>
+<li>
+<p><b class="button">Center XY in Stock</b>: centers the selected object in the Stock in X and Y. The Z position does not change.</p>
+</li>
+<li>
+<p><b class="button">X-Axis</b>, <b class="button">Y-Axis</b>, <b class="button">Z-Axis</b>: rotate the object so that the selected edge or planar face aligns with that axis.</p>
+</li>
+<li>
+<p><b class="button">X=0</b>, <b class="button">Y=0</b>, <b class="button">Z=0</b>: translate the object so that the selection is at zero on that axis.</p>
+</li>
+<li>
+<p><strong>Link stock and model</strong>: when selected, the Stock follows each translation and rotation of the Model that the Job task panel makes. When clear, you position the Stock independently of the Model.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><b class="button">Move to Origin</b> and <b class="button">Set Origin</b> accept a vertex, an edge or a face.
+The selected point of a straight edge is its midpoint.
+The selected point of an arc is the center of the arc.
+The selected point of a face is the center of the face.</p>
+</div>
+<div class="ulist">
+<div class="title">Transform</div>
+<ul>
+<li>
+<p>Arrow buttons below <strong>X/Y</strong>: move the selection along -X, +X, -Y or +Y by the step distance.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> Arrow buttons below <strong>Z</strong>: move the selection along +Z or -Z by the step distance.</p>
+</li>
+<li>
+<p>Step distance field, between the <strong>X/Y</strong> arrow buttons: the distance of one move, in document units. Default: 1 mm, or 0.1 in when the unit system is imperial.</p>
+</li>
+<li>
+<p><strong>Rotate</strong> buttons: rotate the selection counter-clockwise or clockwise around the selected axis by the angle.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> Rotation axis list: the axis of the rotation. Values <code>X Axis</code>, <code>Y Axis</code>, <code>Z Axis</code>. Default: <code>Z Axis</code>.</p>
+</li>
+<li>
+<p>Angle field: the angle of one rotation. Minimum -180°, maximum 360°. Default: 90°.</p>
+</li>
+<li>
+<p><strong>Compound</strong>: has an effect only when you select more than one object. When selected, all selected objects rotate together around the center of their common bounding box. When clear, each object rotates around its own center. Default: selected.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Default values</div>
+<ul>
+<li>
+<p>Expressions and offsets that the <a href="setup-sheet.html" class="xref page">Setup Sheet</a> keeps for new Operations: start depth, final depth, step down, clearance height, safe height and coolant mode.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="alignment"><a class="anchor" href="#alignment"></a>Alignment</h3>
-<div class="paragraph">
-<p>With a vertex, circular edge or face selected: <b class="button">Set Origin</b> moves Model and Stock so the selection becomes the origin; <b class="button">Move to Origin</b> moves only the selected object. <b class="button">Picking: Model</b>/<b class="button">Picking: Stock</b> (<span class="since">introduced in 26.3</span>) toggles whether 3D picks target the Model or the Stock. <b class="button">Center in Stock</b> and <b class="button">XY in Stock</b> center the selected object in the Stock.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="origin-orientation"><a class="anchor" href="#origin-orientation"></a>Origin &amp; Orientation</h3>
-<div class="paragraph">
-<p>With an edge or planar face selected, <b class="button">X-Axis</b>, <b class="button">Y-Axis</b> and <b class="button">Z-Axis</b> rotate the object so the selection aligns with that axis; <b class="button">X=0</b>, <b class="button">Y=0</b> and <b class="button">Z=0</b> translate the object so the selection sits at zero on that axis. <strong>Link stock and model</strong> makes the Stock follow Model moves.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="move-xy-rotate-around-z"><a class="anchor" href="#move-xy-rotate-around-z"></a>Move - XY / Rotate around Z</h3>
-<div class="paragraph">
-<p>Nudge the selected objects by the given distance in eight directions, or rotate them about Z by the given angle (<strong>Compound</strong> rotates several selected objects about their common center).</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="default-values"><a class="anchor" href="#default-values"></a>Default values</h3>
-<div class="paragraph">
-<p>Expressions and offsets stored in the <a href="setup-sheet.html" class="xref page">Setup Sheet</a> for new Operations: Start depth, Final depth, Step down, Clearance and Safe height expression/offset, and Coolant mode.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="general"><a class="anchor" href="#general"></a>General</h2>
-<div class="sectionbody">
+<h3 id="general"><a class="anchor" href="#general"></a>General</h3>
 <div class="imageblock">
 <div class="content">
 <img src="../_images/job/job/task-panel-general.png" alt="Job task panel, General tab" width="600">
@@ -625,21 +800,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Label</strong>: The label of the Job as displayed in the Tree View.</p>
+<p><strong>Label</strong>: the label of the Job in the tree view.</p>
 </li>
 <li>
-<p><strong>Model</strong>: lists the Models of the Job (with a count for duplicates). Press <b class="button">Edit</b> to open the <strong>Model Selection</strong> dialog (the same tree as in the New Job dialog) and add, remove or multiply Models.</p>
+<p><strong>Model</strong>: the list of the Models of the Job, with a count for copies. <b class="button">Edit</b> opens the <em>Model Selection</em> dialog, which has the same tree as the <em>New Job</em> dialog. Use the <em>Model Selection</em> dialog to add Models, remove Models or change the count.</p>
 </li>
 <li>
-<p><strong>Description</strong>: You can add some notes to the Job here. Notes are only for your information and have no effect on the Toolpath.</p>
+<p><strong>Description</strong>: notes about the Job. The notes have no effect on the <a href="../reference/glossary.html#toolpath" class="xref page">Toolpath</a>.</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="output"><a class="anchor" href="#output"></a>Output</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="output"><a class="anchor" href="#output"></a>Output</h3>
 <div class="imageblock">
 <div class="content">
 <img src="../_images/job/job/task-panel-output.png" alt="Job task panel, Output tab, with Machine set to (Legacy post-processor)" width="600">
@@ -648,95 +821,138 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="ulist">
 <ul>
 <li>
-<p><span class="since">introduced in 26.3</span> <strong>Machine</strong>: selects the Machine for this Job from the <code>.fcm</code> files in the asset path. The first entry, <code>(Legacy post-processor)</code>, selects no Machine. With a Machine selected, post-processing uses the machine-based flow. The Machine definition supplies the Post-Processor and the output options, and the <a href="../output/post-process.html" class="xref page">Post-Processing Dialog</a> opens. <b class="button">New Machine</b> opens the Machine Editor to create a Machine; the new Machine is selected after saving. See <a href="../output/machine.html" class="xref page">Machine</a> and <a href="../output/machine-configuration.html" class="xref page">Machine Configuration</a>.</p>
+<p><span class="since">introduced in 26.3</span> <strong>Machine</strong>: selects the Machine of the Job from the <code>.fcm</code> files in the asset path. The first entry, <code>(Legacy post-processor)</code>, selects no Machine. With a Machine selected, the Machine supplies the Post-Processor and the output options, and the <a href="../output/post-process.html" class="xref page">Post-Processing Dialog</a> opens for output. See <a href="../output/machine.html" class="xref page">Machine</a> and <a href="../output/machine-configuration.html" class="xref page">Machine Configuration</a>.</p>
 </li>
 <li>
-<p><strong>Output File</strong>: Set the name, extension, and the file path of the G-code output. You can use the following placeholders:</p>
+<p><b class="button">New Machine</b>: opens the Machine Editor to create a Machine. The Job selects the new Machine after you save it.</p>
+</li>
+<li>
+<p><strong>Output File</strong>: the directory, the name and the extension of the G-code output file. The value can contain the placeholders in the list that follows. Without an extension, the output uses <code>.nc</code>. A machine-based Post-Processor uses the file extension of the Machine.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>%D</strong> directory of the active document</p>
+<p><code>%D</code>: the directory of the active document.</p>
 </li>
 <li>
-<p><strong>%d</strong> name of the active document</p>
+<p><code>%d</code>: the name of the active document.</p>
 </li>
 <li>
-<p><strong>%M</strong> user macro directory</p>
+<p><code>%M</code>: the macro directory.</p>
 </li>
 <li>
-<p><strong>%j</strong> label of the Job</p>
+<p><code>%j</code>: the label of the Job.</p>
+</li>
+<li>
+<p><code>%T</code>: the <strong>Tool Number</strong>. <code>%t</code>: the label of the Tool Controller. <code>%W</code>: the Fixture. <code>%O</code>: the label of the Operation. <code>%S</code>: the sequence number. These five placeholders apply only in the file name, and only when <strong>Split Output</strong> is selected. Split output always gets a sequence number at the end of the file name when <code>%S</code> is absent.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Processor</strong>: selects an argument-based <a href="../output/post-process.html" class="xref page">Post-Processor</a>. The list contains only the Post-Processors that the preferences enable, and no machine-based Post-Processors. The panel shows <strong>Processor</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
+</li>
+<li>
+<p><strong>Arguments</strong>: the arguments for the argument-based Post-Processor. The panel shows <strong>Arguments</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
+</li>
+<li>
+<p><em>Work Coordinate Systems</em> group:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Order by</strong>: sets the groups of the output when the Job outputs several Fixtures. Values <code>Fixture</code>, <code>Tool</code>, <code>Operation</code>.</p>
+</li>
+<li>
+<p><strong>Systems</strong>: a list of the Fixtures G54 to G59.9 with a check box for each. The Job outputs the selected Fixtures. Default: G54. See <a href="fixture.html" class="xref page">Fixture</a>.</p>
+</li>
+<li>
+<p><strong>Split Output</strong>: writes one G-code file for each group that <strong>Order by</strong> sets.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>In the file-name part only, when Split Output is enabled: <strong>%T</strong> tool number, <strong>%t</strong> Tool Controller label, <strong>%W</strong> Work Coordinate System, <strong>%O</strong> operation label, <strong>%S</strong> sequence number (a sequence number is always appended when output is split if %S is absent). If no extension is given, <code>.nc</code> is used (machine-based posts use the machine&#8217;s file extension).</p>
+<p>The <strong>Output File</strong> field has a control that opens the <em>Select Output File</em> dialog.
+The <em>Select Output File</em> dialog starts at the file name that the current value of <strong>Output File</strong> gives.
+When that file and its directory do not exist, the dialog starts in the directory of the active document.
+After you select a file, a <em>Warning</em> message shows <code>This will replace filename template</code> and <code>Are you sure?</code>.
+<b class="button">Ok</b> replaces the value of <strong>Output File</strong> with the selected file. <b class="button">Cancel</b> keeps the value.
+The figure shows the message.</p>
 </div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Processor</strong>: selects a legacy argument-based <a href="../output/post-process.html" class="xref page">Post-Processor</a>. The list contains only the Post-Processors enabled in the preferences. The list does not contain machine-based Post-Processors; select a <strong>Machine</strong> to use a machine-based Post-Processor. The panel shows <strong>Processor</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
-</li>
-<li>
-<p><strong>Arguments</strong>: the arguments for the legacy <a href="../output/post-process.html" class="xref page">Post-Processor</a>. The panel shows <strong>Arguments</strong> only when <strong>Machine</strong> is <code>(Legacy post-processor)</code>.</p>
-</li>
-<li>
-<p><strong>Work Coordinate Systems</strong>:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Order by</strong> (Fixture, Tool or Operation) defines how the output is grouped when several coordinate systems are selected.</p>
-</li>
-<li>
-<p><strong>Systems</strong>: a checklist of G54 to G59.9 fixtures to output (default G54). See <a href="fixture.html" class="xref page">CAM Fixture</a>.</p>
-</li>
-<li>
-<p><strong>Split Output</strong>: writes a separate G-code file per group as defined by Order by.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/output-file-warning.png" alt="Warning message with the text This will replace filename template, and the Ok and Cancel buttons" width="400">
 </div>
 </div>
+<div class="paragraph">
+<p>The <strong>Systems</strong> list repeats the program for each selected Fixture.
+A <a href="work-plane.html" class="xref page">Work Plane</a> can name a Fixture of its own, which the Post-Processor selects in each repetition.</p>
 </div>
-<div class="sect1">
-<h2 id="tools"><a class="anchor" href="#tools"></a>Tools</h2>
-<div class="sectionbody">
+</div>
+<div class="sect2">
+<h3 id="tools"><a class="anchor" href="#tools"></a>Tools</h3>
 <div class="imageblock">
 <div class="content">
 <img src="../_images/job/job/task-panel-tools.png" alt="Job task panel, Tools tab, with one Tool Controller" width="600">
 </div>
 </div>
 <div class="paragraph">
-<p>The table lists the Job&#8217;s Tool Controllers (Name, tool number, horizontal feed, vertical feed and spindle speed; a negative spindle value means reverse direction). Cells can be edited in place.</p>
+<p>The table lists the Tool Controllers of the Job with the name, the <strong>Tool Number</strong>, the Horizontal Feed, the Vertical Feed and the Spindle Speed.
+A negative Spindle Speed value gives the reverse direction.
+You can edit a cell in the table.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><b class="button">Add</b> opens the Tool Bit selector to pick one or more Tool Bits from a <a href="../tools/library-manager.html" class="xref page">Tool Library</a>; a Tool Controller is created for each with the library tool number (or the next free number).</p>
+<p><b class="button">Add</b>: opens the Tool Library dialog. Each Tool Bit that you add in the dialog gets a Tool Controller in the Job, and the table shows the Tool Controller immediately. The dialog stays open until you close it. See <a href="../tools/library-manager.html" class="xref page">Tool Library</a>.</p>
 </li>
 <li>
-<p><b class="button">Edit</b> opens the <a href="../tools/tool-controller.html" class="xref page">Tool Controller</a> editor.</p>
+<p><b class="button">Edit</b>: opens the <a href="../tools/tool-controller.html" class="xref page">Tool Controller</a> editor.</p>
 </li>
 <li>
-<p><b class="button">Remove</b> is only available for Tool Controllers not used by any Operation; at least one Tool Controller must remain.</p>
+<p><b class="button">Remove</b>: removes a Tool Controller. The button is available only for a Tool Controller that no Operation uses. A minimum of one Tool Controller stays in the Job.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Changing feeds or speeds here does not modify the Tool Library. The <strong>Default Values → Rapid Speeds</strong> group sets the horizontal and vertical rapid rates applied to new Tool Controllers via the Setup Sheet.</p>
+<p><span class="since">introduced in 26.3</span>: The Tool Library dialog has an <code>All Tools</code> view that shows the Tool Bits of all Tool Libraries.
+A Tool Bit from <code>All Tools</code> has no number from a Tool Library, and the dialog asks for a <strong>Tool Number</strong>.
+The default is the subsequent free number in the Job.
+The figure shows the dialog with the <code>All Tools</code> view.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/task-panel-tools-library.png" alt="Tool Library dialog with the All Tools view selected" width="400">
 </div>
 </div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The table refuses a <strong>Tool Number</strong> that a Tool Controller with a different Tool Bit uses.
+The <em>Tool Number In Use</em> message names the Tool Controller that has the number, and the cell shows the previous number again.
+Two Tool Controllers with the same Tool Bit can have the same <strong>Tool Number</strong>.
+The figure shows the message for a number that <code>TC: 5mm Endmill</code> has.</p>
 </div>
-<div class="sect1">
-<h2 id="workplan"><a class="anchor" href="#workplan"></a>Workplan</h2>
-<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="../_images/job/job/tool-number-in-use.png" alt="Tool Number In Use message, which names the Tool Controller that has the number" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>A change of a feed or a speed in the table does not change the Tool Library.
+The <em>Rapid Speeds</em> group of <em>Default Values</em> sets the horizontal and vertical rapid speeds that the Setup Sheet applies to new Tool Controllers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="workplan"><a class="anchor" href="#workplan"></a>Workplan</h3>
 <div class="imageblock">
 <div class="content">
 <img src="../_images/job/job/task-panel-workplan.png" alt="Job task panel, Workplan tab, with a Profile and a Drilling Operation" width="600">
 </div>
 </div>
 <div class="paragraph">
-<p>Lists the Operations in execution order. Select an Operation and use the up/down arrows to reorder it, or <b class="button">Delete</b> to remove it from the document.</p>
+<p>The <em>Workplan</em> tab lists the Operations in the sequence in which the Job outputs them.
+Select an Operation and press an arrow button to move it up or down in the sequence.
+<b class="button">Delete</b> removes the selected Operation from the document.</p>
 </div>
 <div class="paragraph">
 <p><span class="since">introduced in 26.3</span>: The <em>Workplan</em> list shows one row for each Operation, with these columns:</p>
@@ -744,7 +960,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="ulist">
 <ul>
 <li>
-<p><strong>#</strong>: the position of the Operation in the execution order. The first Operation has the number 0.</p>
+<p><strong>#</strong>: the position of the Operation in the sequence. The first Operation has the number 0.</p>
 </li>
 <li>
 <p><strong>Operation</strong>: the label of the Operation.</p>
@@ -764,45 +980,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="advanced"><a class="anchor" href="#advanced"></a>Advanced</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="advanced"><a class="anchor" href="#advanced"></a>Advanced</h3>
 <div class="paragraph">
-<p><span class="since">introduced in 1.1</span></p>
+<p><span class="since">introduced in 1.1</span>: The <em>Operation Defaults</em> tab has a list of Operation types.
+For the selected Operation type, a table lists the default values that the Setup Sheet applies to new Operations of that type.
+See <a href="setup-sheet.html" class="xref page">Setup Sheet</a>.</p>
 </div>
-<div class="paragraph">
-<p>The <strong>Operation Defaults</strong> sub-tab shows a combo of Operation types; for the chosen type a table lists the Setup Sheet&#8217;s per-operation default values that will be applied to newly created Operations of that type. See <a href="setup-sheet.html" class="xref page">CAM SetupSheet</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="context-menu"><a class="anchor" href="#context-menu"></a>Context menu</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Right-clicking a Job in the Tree View offers:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Edit</strong>: opens the task panel.</p>
-</li>
-<li>
-<p><strong>Update Tools from Library</strong> (<span class="since">introduced in 26.3</span>): compares the embedded Tool Bits with the Tool Library and offers to update presets and geometry.</p>
-</li>
-<li>
-<p><strong>Toggle operation active</strong></p>
-</li>
-<li>
-<p><strong>Export Template</strong>: see <a href="export-template.html" class="xref page">CAM ExportTemplate</a>.</p>
-</li>
-<li>
-<p><strong>Sanity Check</strong>: see <a href="sanity-check.html" class="xref page">CAM Sanity</a>.</p>
-</li>
-<li>
-<p><strong>Post Process</strong>: see <a href="../output/post-process.html" class="xref page">CAM Post</a>.</p>
-</li>
-</ul>
 </div>
 </div>
 </div>
@@ -813,22 +997,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="title">Base</div>
 <ul>
 <li>
-<p><strong>Model</strong> (<code>Link</code>): group holding the Model clones.</p>
+<p><strong>Model</strong> (<code>Link</code>): the Job Model Group, which holds the Resource Clones of the Models.</p>
 </li>
 <li>
-<p><strong>Stock</strong> (<code>Link</code>): solid used as stock.</p>
+<p><strong>Stock</strong> (<code>Link</code>): the solid that the Job uses as the Stock.</p>
 </li>
 <li>
-<p><strong>Tools</strong> (<code>Link</code>): group of Tool Controllers.</p>
+<p><strong>Tools</strong> (<code>Link</code>): the group of Tool Controllers.</p>
 </li>
 <li>
-<p><strong>SetupSheet</strong> (<code>Link</code>): the <a href="setup-sheet.html" class="xref page">Setup Sheet</a> holding the defaults for this Job.</p>
+<p><strong>Setup Sheet</strong> (<code>Link</code>): the <a href="setup-sheet.html" class="xref page">Setup Sheet</a> that holds the default values of the Job.</p>
 </li>
 <li>
-<p><strong>Operations</strong> (<code>Link</code>, hidden): group of all Operations in the order they are processed.</p>
+<p><strong>Operations</strong> (<code>Link</code>, hidden): the group of all Operations, in the sequence in which the Job outputs them.</p>
 </li>
 <li>
-<p><strong>JobType</strong> (<code>Enumeration</code>, hidden): 2D, 2.5D, Lathe or Multiaxis; not used yet.</p>
+<p><span class="since">introduced in 26.3</span> <code>Workplanes</code> (<code>Link</code>, hidden): the group of named <a href="work-plane.html" class="xref page">Work Planes</a> that the Operations can share.</p>
+</li>
+<li>
+<p><strong>Job Type</strong> (<code>Enumeration</code>, hidden): values <code>2D</code>, <code>2.5D</code>, <code>Lathe</code>, <code>Multiaxis</code>. The workbench does not use the value.</p>
 </li>
 </ul>
 </div>
@@ -836,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="title">Geometry</div>
 <ul>
 <li>
-<p><strong>GeometryTolerance</strong> (<code>Length</code>): tolerance for computing Toolpaths; smaller increases accuracy but slows computation (default from preferences).</p>
+<p><strong>Geometry Tolerance</strong> (<code>Length</code>): the tolerance for the calculation of Toolpaths. A smaller value increases the accuracy and the calculation time. Default: the value in the preferences.</p>
 </li>
 </ul>
 </div>
@@ -844,25 +1031,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="title">Output</div>
 <ul>
 <li>
-<p><strong>PostProcessorOutputFile</strong> (<code>File</code>): G-code output path/file-name template (see placeholders above).</p>
+<p><code>PostProcessorOutputFile</code> (<code>File</code>): the directory and file name of the G-code output, with the placeholders of <a href="#_output">Output</a>.</p>
 </li>
 <li>
-<p><strong>PostProcessor</strong> (<code>Enumeration</code>): legacy Post-Processor (enumeration of enabled legacy posts, may be empty).</p>
+<p><code>PostProcessor</code> (<code>Enumeration</code>): the argument-based Post-Processor. The values are the argument-based Post-Processors that the preferences enable. The list can be empty.</p>
 </li>
 <li>
-<p><strong>PostProcessorArgs</strong> (<code>String</code>): arguments for the legacy Post-Processor.</p>
+<p><code>PostProcessorArgs</code> (<code>String</code>): the arguments for the argument-based Post-Processor.</p>
 </li>
 <li>
-<p><strong>SplitOutput</strong> (<code>Bool</code>): split output into multiple G-code files.</p>
+<p><strong>Split Output</strong> (<code>Bool</code>): splits the output into several G-code files.</p>
 </li>
 <li>
-<p><strong>Machine</strong> (<code>String</code>) <span class="since">introduced in 26.3</span>: name of the Machine (<code>.fcm</code>) for the Job; when set, machine-based post-processing is used.</p>
+<p><span class="since">introduced in 26.3</span> <strong>Machine</strong> (<code>String</code>): the name of the Machine (<code>.fcm</code>) of the Job. When the property has a value, output uses the machine-based Post-Processor.</p>
 </li>
 <li>
-<p><strong>PostProcessorPropertyOverrides</strong> (<code>Map</code>) <span class="since">introduced in 26.3</span>: JSON dictionary of Post-Processor properties that override the machine defaults for this Job.</p>
+<p><span class="since">introduced in 26.3</span> <code>PostProcessorPropertyOverrides</code> (<code>Map</code>): a JSON dictionary of Post-Processor properties that replace the Machine defaults for this Job.</p>
 </li>
 <li>
-<p><strong>LastPostProcessDate</strong>, <strong>LastPostProcessOutput</strong> (hidden): recorded at the last post-processing.</p>
+<p><strong>Last Post Process Date</strong>, <strong>Last Post Process Output</strong> (hidden): the date and the output file of the last output.</p>
 </li>
 </ul>
 </div>
@@ -870,10 +1057,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="title">Path</div>
 <ul>
 <li>
-<p><strong>Description</strong> (<code>String</code>): optional description.</p>
+<p><strong>Description</strong> (<code>String</code>): an optional description.</p>
 </li>
 <li>
-<p><strong>CycleTime</strong> (<code>String</code>, read-only): estimated cycle time of all Operations.</p>
+<p><strong>Cycle Time</strong> (<code>String</code>, read-only): the estimated cycle time of all Operations.</p>
 </li>
 </ul>
 </div>
@@ -881,58 +1068,161 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="title">WCS</div>
 <ul>
 <li>
-<p><strong>Fixtures</strong> (<code>StringList</code>): list of Work Coordinate Systems (G54 to G59.9) to output; default G54.</p>
+<p><strong>Fixtures</strong> (<code>StringList</code>): the list of Fixtures (G54 to G59.9) that the Job outputs. Default: G54.</p>
 </li>
 <li>
-<p><strong>OrderOutputBy</strong> (<code>Enumeration</code>): Fixture, Tool or Operation.</p>
+<p><strong>Order Output By</strong> (<code>Enumeration</code>): values <code>Fixture</code>, <code>Tool</code>, <code>Operation</code>.</p>
 </li>
 </ul>
-</div>
-<div class="sect2">
-<h3 id="stock-properties"><a class="anchor" href="#stock-properties"></a>Stock properties</h3>
-<div class="paragraph">
-<p>Depending on the stock type the Stock object has:</p>
 </div>
 <div class="ulist">
+<div class="title">Stock object</div>
 <ul>
 <li>
-<p><strong>Base</strong> and <strong>ExtXneg</strong>, <strong>ExtXpos</strong>, <strong>ExtYneg</strong>, <strong>ExtYpos</strong>, <strong>ExtZneg</strong>, <strong>ExtZpos</strong>: extra allowance from the Model bounding box (<span class="since">negative values allowed in 26.3</span>); or</p>
+<p><strong>Base</strong>, <strong>Ext Xneg</strong>, <strong>Ext Xpos</strong>, <strong>Ext Yneg</strong>, <strong>Ext Ypos</strong>, <strong>Ext Zneg</strong>, <strong>Ext Zpos</strong>: for a Stock from the bounding box of the Model. The six values give the added material on each side. Default: 1 mm, or 3.175 mm when the unit of the preferences is the inch. <span class="since">introduced in 26.3</span>: The properties accept negative values.</p>
 </li>
 <li>
-<p><strong>Length</strong>, <strong>Width</strong>, <strong>Height</strong> (box); or</p>
+<p><strong>Length</strong>, <strong>Width</strong>, <strong>Height</strong>: for a box.</p>
 </li>
 <li>
-<p><strong>Radius</strong>, <strong>Height</strong> (cylinder);</p>
+<p><strong>Radius</strong>, <strong>Height</strong>: for a cylinder.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> <strong>Axis</strong> (<code>Enumeration</code>): the axis of a cylinder. Values <code>X</code>, <code>Y</code>, <code>Z</code>. Default: <code>Z</code>.</p>
+</li>
+<li>
+<p><strong>Placement</strong>: the position of the Stock.</p>
+</li>
+<li>
+<p><strong>Stock Type</strong> (hidden): the method that made the Stock.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>plus <strong>Placement</strong>. A hidden <strong>StockType</strong> records the creation method. Flat Models get a minimum stock height of 1 mm (<span class="since">introduced in 1.1</span>).</p>
+<p><span class="since">introduced in 1.1</span>: The Stock of a flat Model has a minimum height of 1 mm.</p>
 </div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A new Stock shows as tan dotted lines in the <code>Flat Lines</code> display mode, with <strong>Transparency</strong> 95 and <strong>Selectable</strong> <code>false</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="preferences"><a class="anchor" href="#preferences"></a>Preferences</h2>
+<h2 id="notes-and-limitations"><a class="anchor" href="#notes-and-limitations"></a>Notes and limitations</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Defaults for new Jobs (template, geometry tolerance, stock shape and placement, Post-Processor, output path) are set in <span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Job preferences</b></span>. See <a href="../reference/preferences.html" class="xref page">CAM Preferences</a>.</p>
+<div class="ulist">
+<div class="title">Work Planes</div>
+<ul>
+<li>
+<p>The Job creates the <em>Workplanes</em> group when you create the Job. The Job also creates the group when you open a document in which the Job has none.</p>
+</li>
+<li>
+<p>The <a href="work-plane.html" class="xref page">Work Plane</a> command puts each new Work Plane in the <em>Workplanes</em> group of the Job.</p>
+</li>
+<li>
+<p>When you open a document, the Job moves into the <em>Workplanes</em> group each Work Plane that an Operation links to and the group does not hold.</p>
+</li>
+<li>
+<p>When you open a document, the Job adds the <strong>Fixture</strong> property to each Work Plane that does not have it.</p>
+</li>
+<li>
+<p>The Job accepts a Work Plane with any orientation. The Post-Processor refuses a Work Plane that the Machine cannot reach.</p>
+</li>
+<li>
+<p>The <strong>Fixtures</strong> list of the Job and the <strong>Fixture</strong> of a Work Plane are independent. The <strong>Fixtures</strong> list repeats the program for each Fixture. The Post-Processor selects the <strong>Fixture</strong> of a Work Plane in each repetition, then goes back to the Fixture of the Job.</p>
+</li>
+<li>
+<p>A Work Plane with an empty <strong>Fixture</strong> uses the Fixture of the Job.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Tool Bits</div>
+<ul>
+<li>
+<p><span class="since">introduced in 26.3</span> When you open a document, FreeCAD compares the Tool Bits of the Job with the Tool Library. When the Tool Library has newer presets, FreeCAD asks if you want the update. The default answer is no.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Preferences</div>
+<ul>
+<li>
+<p><span class="menuseq"><b class="menu">Edit</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Preferences</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">CAM</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Job preferences</b></span> sets the defaults for new Jobs: the Job Template, the geometry tolerance, the Stock shape and placement, the Post-Processor and the output directory. See <a href="../reference/preferences.html" class="xref page">Preferences</a>.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="scripting"><a class="anchor" href="#scripting"></a>Scripting</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The example creates a Job for a box, sets the output file, and replaces the Stock with a cylinder along X.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import Path.Main.Job as PathJob
-job = PathJob.Create('Job', [FreeCAD.ActiveDocument.Box], templateFile=None)
-job.PostProcessorOutputFile = '/tmp/%j.nc'
-FreeCAD.ActiveDocument.recompute()</code></pre>
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import FreeCAD
+import Path.Main.Job as PathJob
+import Path.Main.Stock as PathStock
+
+doc = FreeCAD.newDocument()
+box = doc.addObject("Part::Box", "Box")
+doc.recompute()
+
+job = PathJob.Create("Job", [box], templateFile=None)
+job.PostProcessorOutputFile = "/tmp/%j.nc"
+
+stock = PathStock.CreateCylinder(job, axis="X")
+doc.removeObject(job.Stock.Name)
+job.Stock = stock
+doc.recompute()</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the GUI use <code>Path.Main.Gui.Job.Create(base, template=None, openTaskPanel=True)</code>. The legacy <code>PathScripts.PathJob</code> module is gone.</p>
+<p><code>PathStock.CreateCylinder(job, radius=None, height=None, placement=None, axis=None)</code> calculates each value that you do not give from the bounding box of the Models.
+In the GUI, use <code>Path.Main.Gui.Job.Create(base, template=None, openTaskPanel=True)</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="setup-sheet.html" class="xref page">Setup Sheet</a></p>
+</li>
+<li>
+<p><a href="export-template.html" class="xref page">Export Template</a></p>
+</li>
+<li>
+<p><a href="fixture.html" class="xref page">Fixture</a></p>
+</li>
+<li>
+<p><a href="work-plane.html" class="xref page">Work Plane</a></p>
+</li>
+<li>
+<p><a href="sanity-check.html" class="xref page">Sanity Check</a></p>
+</li>
+<li>
+<p><a href="../tools/tool-controller.html" class="xref page">Tool Controller</a></p>
+</li>
+<li>
+<p><a href="../tools/library-manager.html" class="xref page">Tool Library</a></p>
+</li>
+<li>
+<p><a href="../output/machine.html" class="xref page">Machine</a></p>
+</li>
+<li>
+<p><a href="../output/machine-configuration.html" class="xref page">Machine Configuration</a></p>
+</li>
+<li>
+<p><a href="../output/post-process.html" class="xref page">Post Process</a></p>
+</li>
+<li>
+<p><a href="../reference/preferences.html" class="xref page">Preferences</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>

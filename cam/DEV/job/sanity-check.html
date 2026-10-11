@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -484,13 +487,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="paragraph">
 <p>The <span class="image"><img src="../_images/CAM_Sanity.svg" alt="CAM Sanity" width="24"></span> <a href="#">CAM Sanity</a> command (tooltip: <em>Checks the CAM job for common errors</em>; toolbar: <strong>Project Setup → Sanity Check</strong>) is used to generate this kind of setup-oriented information. The output is a standalone HTML report with embedded images that can be opened in a web browser.</p>
 </div>
+<div class="paragraph">
+<p>The figure shows the report of a Job that has one Profile Operation.</p>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="../_images/Sanity.jpg" alt="Sanity" width="600">
+<img src="../_images/job/sanity-check/report.png" alt="Setup Report for CAM Job: Job, with the Run Summary table and the Squawks section" width="600">
 </div>
 </div>
 <div class="paragraph caption">
-<p>Above: Example of a CAM Sanity generated report (from an older version; the current report is titled "Setup Report for CAM Job: &lt;label&gt;" and its fixtures section is titled "Fixtures")</p>
+<p>Above: Example of a CAM Sanity generated report</p>
 </div>
 </div>
 </div>
@@ -510,6 +516,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h3 id="run-summary"><a class="anchor" href="#run-summary"></a>Run Summary</h3>
 <div class="paragraph">
 <p>Lists the estimated total cycle time, the lowest and highest Z of the Job, and a table of every Operation with its Z range, cycle time and coolant mode. Inactive Operations are flagged with "(INACTIVE)"; Dressups are listed with their base Operation.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: The Z values of the Run Summary are in Job coordinates. For an Operation that links to a <a href="work-plane.html" class="xref page">Work Plane</a>, the report calculates the Z range from the Toolpath at its position in the Job. The Z range of the Job is the lowest Z and the highest Z of all its Operations. An Operation without a Toolpath has an empty Z range.</p>
 </div>
 </div>
 <div class="sect2">
@@ -578,6 +587,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>The check ignores a commanded Spindle Speed of 0.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A machine-based Post-Processor checks the rotary axis moves between the Operations of the Job. The rotary axis check calculates the rotary axis positions of each active Operation from the Work Plane of the Operation. A Dressup uses the Work Plane of its base Operation.</p>
+</div>
+<div class="paragraph">
+<p>The rotary axis check gives a <code>WARNING</code> Squawk when all these conditions are true:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Machine has rotary axes.</p>
+</li>
+<li>
+<p>The <strong>Pre-Rotary Move</strong> Post-Processor Property of the Machine is empty.</p>
+</li>
+<li>
+<p>Two consecutive active Operations have different rotary axis positions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The text of the rotary axis Squawk is: <code>The rotary axes move between operations and the Pre-Rotary Move property of machine '&lt;machine&gt;' is empty. Put the moves that bring the tool clear of the part there, in machine coordinates (for example G53 G0 Z0).</code></p>
+</div>
+<div class="paragraph">
+<p>The rotary axis check ignores an Operation on a Work Plane that the Machine cannot index to. The Post-Processor refuses that Operation when it writes the G-code.</p>
+</div>
+<div class="paragraph">
+<p><span class="since">introduced in 26.3</span>: A machine-based Post-Processor checks the <strong>Fixture</strong> property of each Work Plane of the Job. A Fixture is a <code>G54</code> to <code>G59.9</code> selection, not the clamping of the Stock. The Fixture check ignores a Work Plane that names no Fixture.</p>
+</div>
+<div class="paragraph">
+<p>The Fixture check gives these Squawks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>Fixture</strong> value that is not an accepted Fixture word gives a <code>WARNING</code> Squawk: <code>Work plane '&lt;plane&gt;' names '&lt;fixture&gt;' as its fixture, which is not a work coordinate system (G54-G59.9, or G54.1 Pn). The post will refuse it.</code></p>
+</li>
+<li>
+<p>A Fixture that is also in the <strong>Fixtures</strong> list of the Job gives a <code>WARNING</code> Squawk when that list has more than one Fixture: <code>Work plane '&lt;plane&gt;' selects &lt;fixture&gt;, which is also one of the fixtures the Job repeats its program for. Inside each repetition the plane&#8217;s selection wins.</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;plane&gt;</code> in a Fixture Squawk is the label of the Work Plane. The accepted Fixture words are <code>G54</code> to <code>G59</code>, each with an optional decimal digit from 1 to 9 and an optional <code>P</code> number. The Fixture check accepts upper case and lower case letters.</p>
 </div>
 <div class="paragraph">
 <p>A Post-Processor can replace, add or remove a check. Refer to <a href="../output/mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a>.</p>

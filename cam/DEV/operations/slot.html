@@ -332,6 +332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../job/fixture.html">CAM Fixture</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../output/postprocessor-customization.html">CAM Postprocessor Customization</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -761,7 +764,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p><strong>User Label</strong>: User assigned label</p>
 </li>
 <li>
-<p><strong>Workplane</strong>: The orientation of the tool for this operation. Default is (0, 0, 1) for standard Z-up milling. <span class="since">introduced in 26.3</span> Used for 3+2 positioning with a Job of type Multiaxis; can be set from the context menu entry <strong>Set Workplane from Face</strong>.</p>
+<p><strong>Workplane</strong>: <span class="since">introduced in 26.3</span> The link to the <a href="../job/work-plane.html" class="xref page">Work Plane</a> that the Operation works in. An Operation with no link works in the XY of the Job.</p>
 </li>
 </ul>
 </div>
