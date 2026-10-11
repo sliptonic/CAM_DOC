@@ -1,0 +1,31 @@
+# One cause, all its pages, one pull request. See README.md in this folder.
+title: Tool Bits and the Tool Library
+issue: 13
+prs: [31300, 32211, 32220, 32278, 32371, 32818, 33079]
+# tools/tool-controller.adoc is rewritten for all its pending verdicts. This pull request has a
+# different cause; only its effect on that page is delivered here.
+partial:
+  31691: No-Engagement feed; operations/adaptive.adoc and reference/scripting.adoc
+# Proposed in issue 13. The merge of this file confirms them.
+decisions:
+  - >-
+    The seven rewritten pages are one section. Each fact has one page: tools/toolbit.adoc for the
+    Tool Bit and its properties, tools/tool-shape.adoc for shapes and their drawings,
+    tools/library-manager.adoc for the Library Manager, tools/toolbit-library.adoc for the dock
+    that adds Tool Bits to a Job. The other pages link to that page and do not repeat it.
+  - >-
+    tools/index.adoc is the entry page of the section. It says how Tool Bit, Tool Library and
+    Tool Controller relate, and links to each page of the section.
+pages:
+  rewrite:
+    - tools/toolbit.adoc
+    - tools/tool-shape.adoc
+    - tools/library-manager.adoc
+    - tools/toolbit-library.adoc
+    - tools/add-toolbit.adoc
+    - tools/tool-controller.adoc
+    - tools/index.adoc
+  amend:
+    - tools/feeds-speeds.adoc
+    - reference/preferences.adoc
+    - reference/artwork.adoc
