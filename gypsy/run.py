@@ -167,11 +167,12 @@ def main():
         history.append({"round": rnd, "findings": res["findings"], "goals": res["goals"]})
         print(f"check {rnd}: {len(res['findings'])} findings, {len(must)} must; goals " +
               ", ".join(g["met"] for g in res["goals"]) + f"; cost ${run['cost_usd']:.2f}")
-        if not must:
+        act = [f for f in res["findings"] if f["page"] in by_page] if rnd == 1 else must
+        if not act:                              # round 1 corrects each finding; later rounds only `must`
             break
         todo = {}
-        for f in res["findings"]:                # a writer that drafts again also gets its `should` findings
-            if f["page"] in {m["page"] for m in must}:
+        for f in res["findings"]:                # a writer that drafts again gets all its findings
+            if f["page"] in {m["page"] for m in act}:
                 todo.setdefault(f["page"], []).append(f"- ({f['kind']}) {f['text']}\n  Do: {f['fix']}")
         with concurrent.futures.ThreadPoolExecutor(WRITERS) as pool:
             list(pool.map(lambda p: draft.revise_page(by_page[p], "\n".join(todo[p]), a.model), todo))
@@ -197,6 +198,18 @@ def main():
     left = [f for f in final["findings"] if f["severity"] == "must"]
     print(f"final check: {len(final['findings'])} findings, {len(left)} must; goals " + ", ".join(g["met"] for g in final["goals"]))
 
+    # the writers correct what the last check and the last lint found; no check follows
+    todo = {}
+    for f in final["findings"]:
+        if f["page"] in by_page and f["kind"] != "figure":
+            todo.setdefault(f["page"], []).append(f"- ({f['kind']}) {f['text']}\n  Do: {f['fix']}")
+    for j in jobs:
+        if j["lint_rc"]:
+            todo.setdefault(j["page"], []).append("- (lint) " + j["lint"].strip().replace("\n", "\n  "))
+    if todo:
+        with concurrent.futures.ThreadPoolExecutor(WRITERS) as pool:
+            list(pool.map(lambda p: draft.revise_page(by_page[p], "\n".join(todo[p]), a.model), todo))
+        print(f"finish: revised {len(todo)} pages: " + ", ".join(f"{p} (lint rc={by_page[p]['lint_rc']})" for p in todo))
     for j in jobs:
         j.pop("prompt", None)
     cost = sum(j["cost_usd"] for j in jobs) + sum(r["cost_usd"] for r in runs) + \
@@ -216,7 +229,9 @@ def main():
     body = [f"**{c['title']}**", "", f"Closes #{a.issue}", "", "## Goals of the issue", "", "| Goal | Result | Where |", "|---|---|---|"]
     body += [f"| {g['goal']} | {mark[g['met']]}{': ' + g['note'] if g['met'] != 'yes' and g['note'] else ''} | {g['where']} |"
              for g in final["goals"]]
-    body += ["", "## Open findings of the last check", ""] + (findings_md(final["findings"]) or ["None."])
+    body += ["", "## Findings of the last check", "",
+             "The writers got these findings and corrected the pages after the check. No check ran after that, "
+             "so examine each item. A `figure` finding is not corrected.", ""] + (findings_md(final["findings"]) or ["None."])
     body += ["", "## Pages", "", "| Page | Part | Change | Lint | Not verified |", "|---|---|---|---|---|"]
     body += [f"| `{j['page']}` | {c['plan'][j['page']]['role']} | {j['mode']} | {'clean' if j['lint_rc'] == 0 else 'findings'} | "
              f"{len(j['unverified'])} |" for j in jobs]
