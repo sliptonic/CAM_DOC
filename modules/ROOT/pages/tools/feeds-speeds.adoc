@@ -2,6 +2,7 @@
 :page-icon: CAM_FeedsSpeeds.svg
 :page-since: 26.3
 :page-audit: applied
+:page-source-pr: 31300
 
 [.fcinfobox]
 --
@@ -23,18 +24,26 @@ See also:: xref:tools/tool-controller.adoc[CAM ToolController], xref:tools/toolb
 
 A Preset is a named Feeds & Speeds record stored on a Tool Bit for a material and an operation type. Presets are edited on the _Feeds && Speeds_ tab of the Toolbit Parameter Editor (open the Tool Bit from the Library Manager to change the library copy; open it from a Job to change only the embedded copy). The tab lists Name, Material, Op type, Surface speed, Chipload and Notes and offers btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete].
 
+FreeCAD writes the Presets that are edited on an embedded Tool Bit only to the *Presets* property of the document object, not to the Tool Library. An update from the library replaces the full embedded Tool Bit, with its Presets; see xref:tools/toolbit.adoc[Tool Bit].
+
+The *Notes* cell of the table shows the notes of the Preset on one line, and the tooltip of the cell shows the full text. A double-click on a row of the table opens the Preset in the _Edit preset_ dialog.
+
+btn:[Copy] operates only when a Preset is selected. btn:[Copy] opens the _Edit preset_ dialog with the values of the selected Preset and with the name selected for edit. btn:[OK] in that dialog adds a new Preset and does not change the selected Preset. The name rule applies to the new Preset, thus its name, its material or its op type must be different.
+
 The _Edit preset_ dialog has:
 
-* *Name* (required).
+* *Name*: necessary. When the field is empty or has only spaces, btn:[OK] shows the warning _Name required_ with the text _Give the preset a name._ and the dialog stays open.
 * *Material*: chosen with btn:[Browse…] from the materials that carry the Machinability model, or btn:[Generic (any material)].
 * *Op type*: any, profile, pocket, slot, drill, adaptive, surface_finish.
 * *Surface speed* (m/min, or ft/min with an imperial unit schema).
 * *Chipload (per tooth)*.
 * *Vert feed ratio*: vertical feed as a fraction of the horizontal feed, default 0.33.
 * A _Direct feed and speed_ group (*Horiz feed* and *Spindle speed*) that is kept in sync with surface speed and chipload using the Tool Bit's Diameter and Flutes.
-* *Notes*.
+* *Notes*: a text field for one or more lines in the _Notes_ group. FreeCAD saves the text in the `"notes"` key of the Preset record and saves empty notes as `null`.
 
 Only Surface Speed, Chipload and the ratio are stored; feed and spindle speed are recomputed from the Tool Bit geometry when the Preset is used. Two Presets on one Tool Bit may not share the same name, material and op type. A new Preset's chipload is seeded from the Tool Bit's *Chipload* attribute.
+
+Two Presets of one Tool Bit can have the same name when the material or the op type is different. When the name, the material and the op type are the same as those of a different Preset, btn:[OK] shows the warning _Duplicate preset_ and the dialog stays open. The text of the warning is _This tool already has a preset named '<name>' for this material and op type._
 
 == Suggest Feeds & Speeds dialog
 

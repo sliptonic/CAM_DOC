@@ -297,3 +297,45 @@ figures:
   freecad: 62544c4c6e8
   date: '2026-10-10'
   alt: Assets page of the CAM preferences, with the Machines list and the buttons Add, Import..., Edit and Delete
+- file: tools/add-toolbit/tool-number-dialog-conflict.png
+  page: tools/add-toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/add-toolbit/tool-number-dialog-conflict.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: Tool Number dialog, which names the Tool Controller that has the library tool number and asks for the tool number of the new Tool Bit
+- file: tools/add-toolbit/toolbit-selector-all-tools.png
+  page: tools/add-toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/add-toolbit/toolbit-selector-all-tools.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: Toolbit Selector with All Tools selected, the list of Tool Bits and the buttons Open Library Editor, Add to Job and Close
+- file: tools/add-toolbit/toolbit-selector-library.png
+  page: tools/add-toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/add-toolbit/toolbit-selector-library.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: Toolbit Selector with a Tool Library selected, the library tool number in each list entry and the sort drop-down
+- file: tools/toolbit/editor-task-panel.png
+  page: tools/toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/toolbit/editor-task-panel.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: ToolBit editor as a task panel, with the properties and the shape drawing of the Tool Bit
+- file: tools/toolbit/editor-toolbit-tab.png
+  page: tools/toolbit.adoc
+  model: null
+  recipe: recipes/tools/toolbit/editor-toolbit-tab.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: Toolbit Parameter Editor on the Toolbit tab, with the properties and the shape drawing of an endmill
+- file: tools/toolbit/tool-updates-available.png
+  page: tools/toolbit.adoc
+  model: drilling-1
+  recipe: recipes/tools/toolbit/tool-updates-available.py
+  freecad: ef63368faf4
+  date: '2026-10-11'
+  alt: Tool Updates Available dialog with two rows, and the Changes cell of the first row expanded

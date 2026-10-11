@@ -3,6 +3,8 @@
 :page-origin-revision: 68c5376d73 2025-11-05
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32278, 33079, 33371
+:page-status: draft
 
 == Description
 
@@ -44,7 +46,7 @@ The shape type determines the parameters a xref:tools/toolbit.adoc[Tool Bit] of 
 * Endmill: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter.
 * Ballend: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter.
 * Bullnose: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, CornerRadius (older files using FlatRadius are converted).
-* Chamfer: CuttingEdgeAngle, CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TipDiameter.
+* Chamfer: CuttingEdgeAngle, CuttingEdgeHeight, Diameter (calculated), Flutes, Length, ShankDiameter, TipDiameter.
 * V-Bit: CuttingEdgeAngle, CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TipDiameter.
 * Drill: Diameter, Flutes, Length, TipAngle.
 * Dovetail: TipDiameter (crest height), CuttingEdgeAngle, CuttingEdgeHeight (dovetail height), Diameter (major diameter), Flutes, Length, NeckDiameter, NeckHeight, ShankDiameter.
@@ -56,6 +58,10 @@ The shape type determines the parameters a xref:tools/toolbit.adoc[Tool Bit] of 
 * Tapered Ball Nose [.since]#introduced in 26.3#: CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter, TaperAngle, TaperDiameter.
 * Radius Mill: CuttingEdgeHeight, Diameter, CuttingRadius, Flutes, Length, ShankDiameter, TipDiameter.
 * Custom (any other Body label): CuttingEdgeHeight, Diameter, Flutes, Length, ShankDiameter plus every property found in the `Attributes` PropertyBag.
+
+[.since]#introduced in 26.3#: The `Diameter` of the Chamfer Tool Shape is a calculated parameter and is not an input. FreeCAD calculates the Chamfer `Diameter` as `TipDiameter + 2 * CuttingEdgeHeight * tan(CuttingEdgeAngle / 2)`. FreeCAD calculates the Chamfer `Diameter` again when a parameter of the Tool Bit changes.
+
+The _ToolBit editor_ does not show a calculated parameter, thus the _ToolBit editor_ of a Chamfer Tool Bit has no *Diameter* field. For a Chamfer Tool Bit in a document, the property view shows *Diameter* as read-only.
 
 == Aliases and subtypes
 
