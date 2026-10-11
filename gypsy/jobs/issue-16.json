@@ -26,6 +26,32 @@
     "turns": 11,
     "model": "claude-opus-5-5"
    }
+  },
+  {
+   "page": "output/machine.adoc",
+   "wanted": [
+    "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible"
+   ],
+   "figures": [
+    {
+     "wanted": "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible",
+     "status": "done",
+     "file": "output/machine/editor-postprocessor-tab.png",
+     "recipe": "recipes/output/machine/editor-postprocessor-tab.py",
+     "shows": "The Machine Editor dialog, whole, with the Postprocessor tab selected. The property list of the linuxcnc Post is moved to its end. The visible rows are: Tool Return after tool changes, Pre-Rotary Move, Post-Rotary Move, the four Tilted work plane properties (control positions the rotaries, declare, align, cancel), Generated Parameter Order for GCode, TLO after tool-change, Allow tool-change, the three precision properties, Output F parameter for G0, Output non-engaging moves, Path Blending Mode (BLEND), Blend Tolerance (0.0000), and as the last row Tilted work plane: kinematics select with an empty field. The buttons Edit as Text, Validate, Save and Close are below.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The recipe was already in the repository and is correct, so I did not change it. The old image came from an older FreeCAD build and did not have the row Tilted work plane: kinematics select. I ran the recipe again with the current FreeCAD source; one capture attempt was sufficient. The capture replaced the image and updated its entry in manifest.yml. The page is not changed: the image line at line 103, its alt text and the sentence before it (line 101) are still correct for the new image. The lint gives 0 findings. Changed files: modules/ROOT/images/output/machine/editor-postprocessor-tab.png and modules/ROOT/images/manifest.yml. Nothing is committed.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.35021,
+    "duration_ms": 29778,
+    "turns": 12,
+    "model": "claude-opus-5-5"
+   }
   }
  ],
  "issue": 16,
@@ -260,9 +286,7 @@
     "The text of the error that the export gives for a Machine with the `linuxcnc` Post and a Rotation Strategy of DWO. The diff shows only `ROTATION_STRATEGIES = (\"twp\",)`; the page says only that the Operation cannot post.",
     "The statement that the `linuxcnc` Post cancels the plane before each Fixture change and each tool change comes from the class docstring. The output was not generated to confirm it."
    ],
-   "figures_wanted": [
-    "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible"
-   ],
+   "figures_wanted": [],
    "notes": "Lint fix: line 195 used the words \"work offset\". The sentence now reads \"because the LinuxCNC control does not support DWO\". No fact was removed. The UI value `Dynamic work offset (DWO)` in the Rotation Strategy bullet is an interface string from the current page and is not changed. `:page-status:` was `draft` before this change and stays `draft`, because `unverified` is not empty. The LinuxCNC-specific help text of *Pre-Rotary Move* and *Tilted work plane: align* (`G53.5 G0 Z0`, `G53.1 P1`/`P2`/`Q1`, `G53.6`) is not repeated here; it belongs on the pages that list post-specific properties (output/postprocessor-customization.adoc). The second commit of PR 33254 (arc center words follow the active plane, `G17`/`G18`/`G19` as supported commands, name-by-name match of the command lists) does not make a statement of this page false. The default of *Generated Parameter Order for GCode* on this page is the common default and stays correct. No pending gypsy text was given; the page builds on the text of `main`. The outlines of the other pages of the change set show no contradiction.",
    "lint_rc": 0,
    "lint": "",
@@ -329,6 +353,6 @@
    ]
   }
  ],
- "cost_usd": 6.9280486,
+ "cost_usd": 7.2782586,
  "generated": "2026-10-11T16:11:28+00:00"
 }

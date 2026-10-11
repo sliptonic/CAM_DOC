@@ -196,8 +196,8 @@ figures:
   page: output/machine.adoc
   model: null
   recipe: recipes/output/machine/editor-postprocessor-tab.py
-  freecad: 62544c4c6e8
-  date: '2026-10-10'
+  freecad: ef63368faf4
+  date: '2026-10-11'
   alt: Machine Editor, Postprocessor tab, moved down to the last properties of the linuxcnc Post
 - file: output/machine/editor-toolheads-tab.png
   page: output/machine.adoc
