@@ -83,7 +83,7 @@ def page_excerpt(rel):
     if not os.path.exists(p):
         return f"### {rel}\n(no such page)\n"
     lines = open(p, encoding="utf-8").read().split("\n")
-    keep = [l for l in lines[:25] if l.startswith(("=", ":"))]
+    keep = [l for l in lines[:25] if l.startswith(("= ", ":"))]
     keep += [l for l in lines if l.startswith("== ") or l.startswith("=== ")]
     return f"### {rel}\n" + "\n".join(keep) + "\n"
 

@@ -1,0 +1,85 @@
+{
+  "title": "gypsy work unit",
+  "type": "object",
+  "required": [
+    "title",
+    "summary",
+    "goals",
+    "excluded",
+    "pages",
+    "questions"
+  ],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "what",
+          "why"
+        ],
+        "properties": {
+          "what": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "page",
+          "role",
+          "mode",
+          "does"
+        ],
+        "properties": {
+          "page": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "supporting",
+              "capture"
+            ]
+          },
+          "mode": {
+            "enum": [
+              "new",
+              "rewrite",
+              "amend",
+              "capture"
+            ]
+          },
+          "does": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
