@@ -286,9 +286,10 @@ def run_cluster(a):
         if os.path.exists(path):
             done[g["page"]] = open(path, encoding="utf-8").read()
         generated.append(g["page"])
-    jobs = []
+    jobs, commits = [], set()
     for page, mode, prs in plan:
         vs = verdicts_for(page, prs)
+        commits |= {v[3] for v in vs}
         if not vs:
             sys.exit(f"{slug}: no verdict of its pull requests names {page}")
         others = {k: v for k, v in done.items() if k != page}
@@ -313,7 +314,10 @@ def run_cluster(a):
             lines.insert(at + 1, entry["line"])
         open(nav, "w", encoding="utf-8").write("\n".join(lines))
     figure_pages = []
-    if not a.no_figures:                                     # the figures that the drafts want
+    lacks = [] if a.no_figures else config.update_freecad_tree(commits)
+    if lacks:                                                # no figure from a build without the change
+        print(f"{slug}: no figures: the FreeCAD tree does not contain {', '.join(c[:11] for c in lacks)}", flush=True)
+    if not a.no_figures and not lacks:                       # the figures that the drafts want
         import figures
         figure_pages = figures.make({j["page"]: j["figures_wanted"] for j in jobs if j["figures_wanted"]}, a.model)
         made = {f["wanted"] for p in figure_pages for f in p["figures"] if f["status"] != "failed" and not f["check"]}

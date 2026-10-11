@@ -43,3 +43,23 @@ def require_own_worktree(what):
 def require_freecad_tree():
     if not os.path.isdir(os.path.join(FREECAD_TREE, "src/Mod/CAM")):
         sys.exit(f"gypsy: no FreeCAD tree at {FREECAD_TREE}; run gypsy/freecad-tree.sh")
+
+
+def freecad_tree_lacks(commits):
+    """The commits of `commits` that the FreeCAD tree does not contain."""
+    def has(c):
+        return subprocess.run(["git", "merge-base", "--is-ancestor", c, "HEAD"], cwd=FREECAD_TREE,
+                              capture_output=True).returncode == 0
+    return sorted(c for c in commits if c and not has(c))
+
+
+def update_freecad_tree(commits):
+    """Move the FreeCAD tree to the main branch of FreeCAD and build it, when it lacks one of
+    `commits`. A figure of a change needs a build that contains the change. Returns the commits
+    that the tree still lacks."""
+    if not freecad_tree_lacks(commits):
+        return []
+    print(f"gypsy: the FreeCAD tree lacks {len(freecad_tree_lacks(commits))} of the changes; freecad-tree.sh",
+          flush=True)
+    subprocess.run([os.path.join(HERE, "freecad-tree.sh")], stdout=subprocess.DEVNULL)
+    return freecad_tree_lacks(commits)
