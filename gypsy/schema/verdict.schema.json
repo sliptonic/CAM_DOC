@@ -2,28 +2,84 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "gypsy verdict",
   "type": "object",
-  "required": ["pr", "summary", "pages", "unmapped"],
+  "required": [
+    "pr",
+    "summary",
+    "intent",
+    "pages",
+    "unmapped"
+  ],
   "properties": {
-    "pr": {"type": "integer"},
-    "summary": {"type": "string"},
+    "pr": {
+      "type": "integer"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string",
+      "description": "What the documentation must achieve as a whole in response. Empty when nothing is to be documented."
+    },
     "pages": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["page", "verdict", "needs_gui", "reason", "sections"],
+        "required": [
+          "page",
+          "verdict",
+          "role",
+          "needs_gui",
+          "reason",
+          "sections"
+        ],
         "properties": {
-          "page": {"type": "string"},
-          "verdict": {"enum": ["no change", "revise", "new page", "capture only"]},
-          "needs_gui": {"type": "boolean"},
-          "reason": {"type": "string"},
-          "sections": {"type": "array", "items": {"type": "string"}}
+          "page": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "no change",
+              "revise",
+              "new page",
+              "capture only"
+            ]
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "supporting",
+              "capture",
+              "none"
+            ]
+          },
+          "needs_gui": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
-    "unmapped": {"type": "array", "items": {"type": "string"}},
+    "unmapped": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "meta": {
       "type": "object",
       "description": "Added by triage.py: merge commit, candidate list, model, timestamp, cost."
+    },
+    "source": {
+      "type": "object",
+      "description": "Added by the tool that writes the verdict: type (upstream-pr, request, review) and ref."
     }
   }
 }

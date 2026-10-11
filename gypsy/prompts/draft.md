@@ -43,6 +43,13 @@ Rules:
   the same terms and the same facts as those pages. Link to them with `xref:` where the reader
   needs the detail; do not repeat their content. Do not link to a page that is not in the set and
   does not exist. If one of those pages contradicts the diffs or this page, say so in `notes`.
+- "The unit of work", if given, is the plan that a person approved: the goals, the part of this
+  page, the parts of the other pages, and the brief. Write the part of this page, so that the
+  pages together achieve the goals. The brief is the authority for names, interface strings,
+  values and behaviour: use its words, also when you read the diff differently. If the brief is
+  wrong or does not have a fact that you need, say so in `notes` and list the claim in
+  `unverified`. Do not tell a fact that a different page owns: give one clause and a link. Do
+  not write what the unit lists as not documented.
 - "Guidance of the person" is what people wrote on the work issue of this change set. Follow it
   for scope, structure and emphasis, before the current page and before your own preference. It
   does not overrule a fact from the diffs. If you do not follow a point, say why in `notes`.
@@ -62,6 +69,10 @@ $style
 # ADR-000 (vocabulary)
 
 $glossary
+
+# The unit of work
+
+$unit
 
 # Guidance of the person
 

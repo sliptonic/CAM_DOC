@@ -54,7 +54,11 @@ BLOCK = re.compile(r"<details>\s*<summary>Work definition[^<]*</summary>\s*```ya
 LABELS = {"gypsy": ("5319e7", "Work that gypsy does"),
           "proposed": ("fbca04", "gypsy proposes this work; it waits for a person"),
           "approved": ("0e8a16", "A person approved this work; gypsy drafts it"),
-          "blocked": ("d93f0b", "gypsy cannot continue; its last comment says why")}
+          "blocked": ("d93f0b", "gypsy cannot continue; its last comment says why"),
+          "check-findings": ("d93f0b", "The last check of the runner has findings that a reader must not get")}
+DIATAXIS = {"tutorial": "learning: a lesson", "how-to": "a goal: steps", "explanation": "understanding: concepts",
+            "reference": "information: exact facts"}
+LABELS.update({k: ("1d76db", f"Diátaxis: {v}") for k, v in DIATAXIS.items()})
 KINDS = ("rewrite", "new", "amend")
 DOES = {"rewrite": "Full rewrite to STYLE.md.", "new": "New page.", "amend": "Small change only.",
         "generated": "Written by a tool from the FreeCAD source.", "reference": "Read, not changed."}
@@ -259,7 +263,8 @@ def run(a):
         if clash:
             print(f"#{i['number']}: waits, its pages are in open pull request(s) {', '.join(f'#{n}' for n in clash)}")
             continue
-        cmd = [sys.executable, os.path.join(HERE, "draft.py"), "--issue", str(i["number"]), "--pr"]
+        tool = ["run.py", str(i["number"])] if i["work"].get("goals") else ["draft.py", "--issue", str(i["number"])]
+        cmd = [sys.executable, os.path.join(HERE, tool[0]), *tool[1:], "--pr"]
         print(f"#{i['number']}: draft   {' '.join(cmd[1:])}", flush=True)
         if a.dry:
             return

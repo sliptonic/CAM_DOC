@@ -1,0 +1,60 @@
+{
+  "title": "gypsy survey",
+  "type": "object",
+  "required": [
+    "units",
+    "nothing",
+    "held"
+  ],
+  "properties": {
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "verdicts",
+          "why"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "verdicts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "nothing": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "verdict",
+          "why"
+        ],
+        "properties": {
+          "verdict": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

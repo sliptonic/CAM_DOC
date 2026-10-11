@@ -18,6 +18,11 @@
   "cost_usd": 0.26033325,
   "duration_ms": 5909,
   "session": "147f4234-9f1b-46a1-83a1-b8d06c9097a1",
-  "generated": "2026-10-01T20:52:08+00:00"
+  "generated": "2026-10-01T20:52:08+00:00",
+  "release": "26.3"
+ },
+ "source": {
+  "type": "upstream-pr",
+  "ref": 31423
  }
 }

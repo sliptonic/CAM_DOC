@@ -1,62 +1,69 @@
 {
  "pr": 32278,
- "summary": "Adds four CAM preferences for ToolBit shape drawing colors and brightness, makes the ToolBit editor's shape drawing interactive (hover/click a dimension to highlight/focus its field), strips dimensions from small shape icons, and turns the Chamfer shape's Diameter into a read-only derived property.",
+ "summary": "The PR adds four CAM preferences for the ToolBit shape drawing, makes the Chamfer `Diameter` a derived read-only parameter, and makes the shape drawing theme-aware with a highlight link between each dimension and its property field.",
+ "intent": "A reader can find the new \"Tool Bit Shape Drawing\" group in the CAM preferences and can set the dimension color for a light theme, the dimension color for a dark theme, the highlight color, and the artwork brightness. `reference/preferences.adoc` tells this, with the defaults and the 10 % to 100 % range of the brightness. A reader also learns that the Chamfer `Diameter` is not an input: FreeCAD calculates it from `TipDiameter`, `CuttingEdgeHeight` and `CuttingEdgeAngle`, the ToolBit editor does not show it, and the property view shows it as read-only. `tools/tool-shape.adoc` tells this. The theme colors and the highlight between a dimension and its field are appearance only, thus `tools/toolbit.adoc` needs only new figures of the ToolBit editor.",
  "pages": [
   {
    "page": "reference/preferences.adoc",
    "verdict": "revise",
+   "role": "primary",
    "needs_gui": true,
-   "reason": "Gui/DlgSettingsPathColor.ui: new 'Tool Bit Shape Drawing' group with Dimension color (light theme, default #111111), Dimension color (dark theme, default #23818d), Dimension highlight color (default #ff8c00) and Tool artwork brightness (dark theme, 10-100 %, default 85); Path/Preferences.py adds the matching Mod/CAM keys",
+   "reason": "Gui/DlgSettingsPathColor.ui: new group box 'Tool Bit Shape Drawing' with ToolBitDimensionColorLight (#111111), ToolBitDimensionColorDark (#23818d), ToolBitDimensionHighlightColor (#ff8c00) and ToolBitArtworkBrightness (85 %, range 10 to 100); Path/Preferences.py adds the four parameter names",
    "sections": [
-    "GUI",
-    "Default Path Colors"
-   ]
-  },
-  {
-   "page": "tools/toolbit.adoc",
-   "verdict": "revise",
-   "needs_gui": true,
-   "reason": "Path/Tool/toolbit/ui/editor.py + shape/ui/shapewidget.py + docobject/ui/docobject.py: ShapeWidget(interactive=True) in the editor; hovering a dimension in the drawing highlights its property field and vice versa, clicking a dimension focuses the field; editor.py load_toolbit hides derived parameters (Chamfer Diameter) from the form and toolbit/models/base.py sets them read-only (setEditorMode 1)",
-   "sections": [
-    "Toolbit Parameter Editor",
-    "Properties"
+    "GUI"
    ]
   },
   {
    "page": "tools/tool-shape.adoc",
    "verdict": "revise",
+   "role": "primary",
    "needs_gui": true,
-   "reason": "shape/models/chamfer.py: derived_parameters() computes Diameter = TipDiameter + 2*CuttingEdgeHeight*tan(CuttingEdgeAngle/2), so Chamfer Diameter is no longer user-entered; shape/models/icon.py theme_svg() recolors dimensions via #ff0000/#00ff00 sentinels and dim-<label> groups, and toolbit/models/base.py get_thumbnail / shapebutton.py / tablecell.py render icons with dimensions=False",
+   "reason": "Path/Tool/shape/models/chamfer.py: derived_parameters() calculates Diameter = TipDiameter + 2 * CuttingEdgeHeight * tan(CuttingEdgeAngle / 2); toolbit/models/base.py sets editor mode read-only and toolbit/ui/editor.py removes derived parameters from the editor form. This is the part a reader acts on; the theme colors of the drawings are appearance only",
    "sections": [
     "Parameters",
     "Tool Thumbnail Images"
    ]
   },
   {
-   "page": "tools/add-toolbit.adoc",
+   "page": "tools/toolbit.adoc",
    "verdict": "capture only",
+   "role": "capture",
    "needs_gui": true,
-   "reason": "Path/Tool/toolbit/ui/tablecell.py: tool table icons now rendered with dimensions=False and theme-aware colors; text unaffected",
+   "reason": "Path/Tool/toolbit/ui/editor.py and shape/models/icon.py: the shape drawing in the ToolBit editor has theme colors and a dimension highlight, and the Chamfer editor form does not show Diameter; figures of the editor are now wrong, the text stays correct",
    "sections": [
-    "Usage"
+    "Toolbit Parameter Editor"
    ]
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "verdict": "no change",
+   "role": "none",
+   "needs_gui": false,
+   "reason": "Path/Tool/toolbit/ui/tablecell.py: the list icon drops the dimensions (dimensions=False); appearance only and the page does not describe it",
+   "sections": []
   },
   {
    "page": "job/job.adoc",
    "verdict": "no change",
+   "role": "none",
    "needs_gui": false,
-   "reason": "Path/Main/Gui/Job.py: _applyButtonIcons only switches to the shared PathGuiTheme.is_dark_theme() helper; behaviour unchanged",
+   "reason": "Path/Main/Gui/Job.py: theme detection moves to Path/Base/Gui/Theme.py; refactor with no change of behaviour",
    "sections": []
   },
   {
    "page": "reference/experimental.adoc",
    "verdict": "no change",
+   "role": "none",
    "needs_gui": false,
-   "reason": "DlgSettingsPathColor changes add normal preferences, nothing under the experimental flags",
+   "reason": "Gui/DlgSettingsPathColor.ui and Path/Preferences.py: the new preferences are not experimental feature flags; the page does not describe them",
    "sections": []
   }
  ],
  "unmapped": [],
+ "source": {
+  "type": "upstream-pr",
+  "ref": 32278
+ },
  "meta": {
   "merge_commit": "0a9a02abe9b4a7d2ef60acc861b4cc0cef82cb9d",
   "merged_at": "2026-08-31T21:29:32Z",
@@ -73,10 +80,11 @@
    "src/Mod/CAM/Path/Base/Gui/Theme.py"
   ],
   "files": 45,
-  "model": "claude-haiku-4-5-20251001",
-  "cost_usd": 0.9271852500000001,
-  "duration_ms": 24728,
-  "session": "b79a0d23-1b72-4540-bfcf-ac177663f4b4",
-  "generated": "2026-10-01T23:50:14+00:00"
+  "release": "26.3",
+  "model": "claude-opus-5-5",
+  "cost_usd": 0.484128,
+  "duration_ms": 19535,
+  "session": "57d858d6-e074-4dbb-bcb5-f02541c027f7",
+  "generated": "2026-10-11T19:15:20+00:00"
  }
 }

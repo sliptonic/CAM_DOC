@@ -1,0 +1,86 @@
+{
+  "title": "gypsy check",
+  "type": "object",
+  "required": [
+    "goals",
+    "findings",
+    "notes"
+  ],
+  "properties": {
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "goal",
+          "met",
+          "where",
+          "note"
+        ],
+        "properties": {
+          "goal": {
+            "type": "string"
+          },
+          "met": {
+            "enum": [
+              "yes",
+              "partly",
+              "no"
+            ]
+          },
+          "where": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "page",
+          "kind",
+          "severity",
+          "text",
+          "fix"
+        ],
+        "properties": {
+          "page": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "wrong",
+              "contradiction",
+              "repeat",
+              "excluded",
+              "missing",
+              "term",
+              "figure",
+              "guidance"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "must",
+              "should"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "fix": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

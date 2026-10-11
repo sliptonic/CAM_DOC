@@ -1,0 +1,65 @@
+{
+  "title": "gypsy brief",
+  "type": "object",
+  "required": [
+    "facts",
+    "terms",
+    "unknown",
+    "notes"
+  ],
+  "properties": {
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "fact",
+          "source",
+          "owner"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fact": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "use",
+          "not"
+        ],
+        "properties": {
+          "use": {
+            "type": "string"
+          },
+          "not": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "unknown": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
