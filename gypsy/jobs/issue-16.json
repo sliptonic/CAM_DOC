@@ -1,6 +1,33 @@
 {
  "cluster": "issue-16",
- "figures": [],
+ "figures": [
+  {
+   "page": "output/machine.adoc",
+   "wanted": [
+    "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible"
+   ],
+   "figures": [
+    {
+     "wanted": "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible",
+     "status": "failed",
+     "file": "",
+     "recipe": "",
+     "shows": "No new image. The image that the repository has (output/machine/editor-postprocessor-tab.png) shows the Machine Editor, Postprocessor tab, linuxcnc Post, at the end of the property list. It shows the four common tilted work plane properties (control positions the rotaries, declare, align, cancel). It does not show a property with the name Tilted work plane: kinematics select.",
+     "problem": "The figure needs a state that a script cannot create. The FreeCAD tree at /home/sliptonic/FreeCAD-gypsy does not contain the property. A search of src/Mod/CAM for 'kinematics select' and 'G12.1' found nothing. The file linuxcnc_post.py, in src and in build/Mod/CAM, has no tilted work plane or kinematics text. The tree is thus older than FreeCAD PR #33254. No capture attempt was made, because the Machine Editor of this build cannot show the property.",
+     "check": []
+    }
+   ],
+   "notes": "I changed no file. The page, the manifest, the recipe `recipes/output/machine/editor-postprocessor-tab.py` and its image stay as they were. I did not delete that recipe, because it makes the correct figure for the build that the tree has.\n\nTo make the figure, move the gypsy FreeCAD tree to a commit that contains PR #33254 (`gypsy/freecad-tree.sh <commit>`), then run the figure stage again. The recipe will then need a small change: the property is Machine-scope, so it is possibly not at the end of the list, where the recipe moves the scroll area now. The alt text in the recipe and on the page must then name the property.\n\nI could not read the commit of the FreeCAD tree: the permission mode refused the `git log` command in that directory.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.3603986,
+    "duration_ms": 32086,
+    "turns": 11,
+    "model": "claude-opus-5-5"
+   }
+  }
+ ],
  "issue": 16,
  "branch": "gypsy/issue-16",
  "pages": [
@@ -302,6 +329,6 @@
    ]
   }
  ],
- "cost_usd": 6.56765,
+ "cost_usd": 6.9280486,
  "generated": "2026-10-11T16:11:28+00:00"
 }
