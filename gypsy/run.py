@@ -93,6 +93,25 @@ def page_verdicts(page, c, vs):
                   for v in vs.values() if isinstance(v.get("pr"), int))
 
 
+def add_nav(page):
+    """Put a new page into the navigation, after the last entry of its folder."""
+    nav = os.path.join(ROOT, "modules/ROOT/nav.adoc")
+    lines = open(nav, encoding="utf-8").read().split("\n")
+    if any(f"xref:{page}[" in l for l in lines):
+        return
+    text = open(os.path.join(PAGES, page), encoding="utf-8").read()
+    title = next((l[2:].strip() for l in text.split("\n") if l.startswith("= ")), page)
+    folder = os.path.dirname(page)
+    while folder and not any(f"xref:{folder}/" in l for l in lines):
+        folder = os.path.dirname(folder)         # no entry of the folder yet: use the folder above
+    at = max((i for i, l in enumerate(lines) if f"xref:{folder}/" in l), default=None) if folder else None
+    if at is None:
+        at = max(i for i, l in enumerate(lines) if l.startswith("*"))
+    stars = lines[at].split(" ", 1)[0]
+    lines.insert(at + 1, f"{stars} xref:{page}[{title}]")
+    open(nav, "w", encoding="utf-8").write("\n".join(lines))
+
+
 def check(c, brief, modes, model):
     amended = [os.path.join("modules/ROOT/pages", p) for p, m in modes.items() if m == "amend"]
     diff = draft.sh("git", "diff", "origin/main", "--", *amended) if amended else "(none)"
@@ -157,6 +176,9 @@ def main():
     for j in jobs:
         print(f"drafted {j['page']} ({j['mode']}); lint rc={j['lint_rc']}; cost ${j['cost_usd']:.2f}")
     by_page = {j["page"]: j for j in jobs}
+    for page, mode in modes.items():
+        if mode == "new":
+            add_nav(page)
 
     # 3 and 4. check and revise
     history = []
