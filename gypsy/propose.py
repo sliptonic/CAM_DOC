@@ -136,7 +136,9 @@ def make(a):
         return print(f"{title}\n\n{body}\n\n[cost ${run.get('cost_usd') or 0:.2f}]")
     work.ensure_labels()
     if a.update:
-        work.gh("issue", "edit", str(a.update), "--title", title, "--body", body, "--add-label", "gypsy")
+        # the goals changed, so an approval of the old text does not count
+        work.gh("issue", "edit", str(a.update), "--title", title, "--body", body, "--add-label", "gypsy",
+                "--add-label", "proposed", "--remove-label", "approved")
         number = a.update
     else:
         url = work.gh("issue", "create", "--title", title, "--body", body, "--label", "gypsy", "--label", "proposed").strip()

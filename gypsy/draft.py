@@ -152,7 +152,8 @@ def siblings_text(done, budget=SIBLING_BUDGET):
     return "\n\n".join(out)
 
 
-def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", guidance=()):
+def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", guidance=(),
+               unit="(none)"):
     """Draft one page in the working tree. Returns a job entry; with dry, prints the prompt."""
     page_path = os.path.join(PAGES, page)
     smap = triage.load_map()
@@ -187,6 +188,7 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
         "facts": "\n\n".join(facts) or "(none)",
         "pending": pending,
         "siblings": siblings,
+        "unit": unit,
         "guidance": "\n\n".join(f"Comment {n}:\n{g}" for n, g in enumerate(guidance, 1)) or "(none)",
     }
     prompt = tmpl
@@ -220,7 +222,31 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
     return {"page": page, "mode": mode, "prs": prs, "changes": res["changes"], "unverified": res["unverified"],
             "figures_wanted": res["figures_wanted"], "notes": res["notes"], "lint_rc": rc, "lint": report,
             "pending_prs": pending_prs, "facts": facts_files, "facts_commit": facts_commit, "runs": runs,
-            "cost_usd": sum(r.get("cost_usd") or 0 for r in runs), "verdicts": vs}
+            "cost_usd": sum(r.get("cost_usd") or 0 for r in runs), "verdicts": vs, "prompt": prompt}
+
+
+def revise_page(job, findings, model):
+    """Draft a page again from the findings of the check. Changes the job entry in place."""
+    path = os.path.join(PAGES, job["page"])
+    schema = json.load(open(os.path.join(HERE, "schema", "draft.schema.json")))
+    since = "origin/main" if job["mode"] == "amend" else None
+    text = (job["prompt"] + "\n\n# Your previous draft\n\n" + open(path, encoding="utf-8").read() +
+            "\n\n# Findings of the check on it\n\nA check compared the pages of the unit with the goals, the "
+            "plan, the brief, the FreeCAD source and each other. Correct each finding and return the full page "
+            "again, with the same JSON fields. Change nothing else. If a finding is wrong, keep the text and "
+            "say why in `notes`.\n\n" + findings)
+    for attempt in range(1 + FIX_ATTEMPTS):
+        res, run = ask(text if attempt == 0 else text + "\n\n# gypsy lint findings on your revision\n\n"
+                       "Fix each finding without a loss of content.\n\n" + report, model, schema)
+        job["runs"].append(run)
+        open(path, "w", encoding="utf-8").write(res["page_text"].rstrip("\n") + "\n")
+        report, rc = lint(path, since)
+        if rc == 0:
+            break
+    for k in ("unverified", "figures_wanted", "notes"):
+        job[k] = res[k]
+    job["lint"], job["lint_rc"] = report, rc
+    job["cost_usd"] = sum(r.get("cost_usd") or 0 for r in job["runs"])
 
 
 def start_clean():
@@ -324,6 +350,8 @@ def run_cluster(a):
         for j in jobs:                                       # what is still wanted after this stage
             j["figures_wanted"] = [w for w in j["figures_wanted"] if w not in made]
             j["lint"], j["lint_rc"] = lint(os.path.join(PAGES, j["page"]), "origin/main" if j["mode"] == "amend" else None)
+    for j in jobs:
+        j.pop("prompt", None)
     cost = sum(j["cost_usd"] for j in jobs) + sum(p["run"].get("cost_usd") or 0 for p in figure_pages)
     jobdir = os.path.join(HERE, "jobs")
     os.makedirs(jobdir, exist_ok=True)

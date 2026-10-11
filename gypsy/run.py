@@ -1,0 +1,240 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: LGPL-2.1-or-later
+"""gypsy run: the runner. It takes one approved unit of work from its issue to a pull request.
+
+    python3 gypsy/run.py ISSUE [--pr] [--rounds N] [--no-figures]
+
+    1. brief     one agent reads the FreeCAD source and writes the facts that all pages share
+    2. draft     one writer for each page, in parallel, with the goals, the plan and the brief
+    3. check     one agent compares the pages with the goals, the plan, the brief, the source and
+                 each other
+    4. revise    the writer of each page with a finding of severity `must` drafts again;
+                 steps 3 and 4 repeat, at most N rounds (default 2)
+    5. figures   the figure stage makes the images that the pages want
+    6. check     one last check; its result is the report of the pull request
+    7. pull request, linked to the issue
+
+Lint runs after each draft and each revision. The issue must have the label `approved`.
+"""
+import argparse, concurrent.futures, datetime, functools, json, os, subprocess, sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import config   # noqa: E402
+import draft    # noqa: E402
+import triage   # noqa: E402
+import work     # noqa: E402
+
+print = functools.partial(print, flush=True)
+ROOT, PAGES = config.ROOT, draft.PAGES
+READ_TOOLS = "Read,Grep,Glob"
+BUDGET = os.environ.get("GYPSY_AGENT_BUDGET", "10")          # US dollars for one brief or one check
+WRITERS = int(os.environ.get("GYPSY_WRITERS", "4"))
+
+
+def agent(name, fields, model):
+    """Run a read-only agent with a prompt template and a schema. Returns (result, run)."""
+    prompt = open(os.path.join(HERE, "prompts", f"{name}.md"), encoding="utf-8").read()
+    for k in sorted(fields, key=len, reverse=True):
+        prompt = prompt.replace(f"${k}", fields[k])
+    schema = json.load(open(os.path.join(HERE, "schema", f"{name}.schema.json")))
+    cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema),
+           "--add-dir", config.FREECAD_TREE, "--allowedTools", READ_TOOLS, "--max-budget-usd", BUDGET]
+    if model:
+        cmd += ["--model", model]
+    r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=ROOT)
+    try:
+        env = json.loads(r.stdout)
+    except ValueError:
+        sys.exit(f"{name}: {(r.stderr or r.stdout).strip()[:1500]}")
+    res = env.get("structured_output")
+    if not isinstance(res, dict):
+        sys.exit(f"{name}: no result: {str(env.get('result') or env.get('subtype'))[:1500]}")
+    return res, {"stage": name, "cost_usd": env.get("total_cost_usd") or 0, "turns": env.get("num_turns"),
+                 "duration_ms": env.get("duration_ms")}
+
+
+def unit_text(c, page=None):
+    out = ["Goals:"] + [f"{n}. {g}" for n, g in enumerate(c["goals"], 1)]
+    if c.get("excluded"):
+        out += ["", "Not documented in this unit:"] + [f"- {x}" for x in c["excluded"]]
+    out += ["", "Plan (the part of each page):"]
+    out += [f"- {p} ({v['role']}): {v['does']}" for p, v in c["plan"].items()]
+    if page:
+        out += ["", f"Your page is {page}. Its part: {c['plan'][page]['does']}"]
+    return "\n".join(out)
+
+
+def brief_text(b):
+    out = ["Facts (id, owner page, fact, source):"]
+    out += [f"- {f['id']} [{f['owner']}] {f['fact']} ({f['source']})" for f in b["facts"]]
+    out += ["", "Terms:"] + [f"- Use \"{t['use']}\". Do not use: {t['not']}." for t in b["terms"]]
+    out += ["", "Not established from the source:"] + [f"- {u}" for u in b["unknown"] or ["nothing"]]
+    return "\n".join(out)
+
+
+def verdicts_of(c):
+    vs = {vid: json.load(open(os.path.join(HERE, "verdicts", f"{vid}.json"), encoding="utf-8"))
+          for vid in map(str, c.get("verdicts") or c["prs"])}
+    return vs
+
+
+def page_verdicts(page, c, vs):
+    """The verdict entries for a page, in the form that draft_page reads. A page that the plan
+    added without a verdict gets the plan text for each upstream pull request of the unit."""
+    found = draft.verdicts_for(page, set(c["prs"]))
+    if found:
+        return found
+    part = {"verdict": "revise", "needs_gui": False, "sections": [], "reason": c["plan"][page]["does"]}
+    return sorted((v["meta"]["merged_at"], v["pr"], v["meta"]["title"], v["meta"]["merge_commit"], part)
+                  for v in vs.values() if isinstance(v.get("pr"), int))
+
+
+def check(c, brief, modes, model):
+    amended = [os.path.join("modules/ROOT/pages", p) for p, m in modes.items() if m == "amend"]
+    diff = draft.sh("git", "diff", "origin/main", "--", *amended) if amended else "(none)"
+    res, run = agent("check", {
+        "freecad_tree": config.FREECAD_TREE, "unit": unit_text(c), "brief": brief_text(brief),
+        "guidance": "\n\n".join(c["guidance"]) or "(none)",
+        "pages": "\n".join(f"- {p}: {m}" for p, m in modes.items()), "diff": diff[:200_000]}, model)
+    return res, run
+
+
+def findings_md(findings):
+    return [f"- `{f['page']}` ({f['kind']}, {f['severity']}): {f['text']}" for f in findings]
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("issue", type=int)
+    ap.add_argument("--pr", action="store_true", help="commit, push and open the pull request")
+    ap.add_argument("--rounds", type=int, default=2, help="revision rounds after the first draft")
+    ap.add_argument("--no-figures", action="store_true")
+    ap.add_argument("--model", default=os.environ.get("GYPSY_DRAFT_MODEL", ""))
+    a = ap.parse_args()
+
+    c = work.load(a.issue)
+    if "approved" not in c["labels"]:
+        sys.exit(f"issue #{a.issue} does not have the label approved")
+    if not c.get("goals") or not c.get("plan"):
+        sys.exit(f"issue #{a.issue} has no goals and plan; write it again with gypsy/propose.py make ... --update {a.issue}")
+    draft.start_clean()
+    branch = work.branch(a.issue)
+    draft.sh("git", "checkout", "-q", "-B", branch, "origin/main")
+    vs = verdicts_of(c)
+    lacks = config.update_freecad_tree({v["meta"]["merge_commit"] for v in vs.values() if v.get("meta")})
+    if lacks:
+        sys.exit(f"the FreeCAD tree does not contain {', '.join(x[:11] for x in lacks)}; the brief needs the source")
+    modes = {p: m for m in ("new", "rewrite", "amend") for p in c["pages"].get(m, [])}
+    runs = []
+
+    # 1. brief
+    files = sorted({f["filename"] for pr in c["prs"] for f in triage.gh_paged(f"repos/{triage.REPO}/pulls/{pr}/files")})
+    vtext = "\n\n".join(f"## {vid}: {v['meta']['title']}\n{v['summary']}\n" + (v.get("intent") or "") + "\n" +
+                        "\n".join(f"- {p['page']}: {p['reason']}" for p in v["pages"] if p["verdict"] != "no change")
+                        for vid, v in vs.items())
+    brief, run = agent("brief", {"freecad_tree": config.FREECAD_TREE, "unit": unit_text(c), "verdicts": vtext,
+                                 "files": "\n".join(f"- {f}" for f in files)}, a.model)
+    runs.append(run)
+    print(f"brief: {len(brief['facts'])} facts, {len(brief['terms'])} terms, {len(brief['unknown'])} unknown; "
+          f"cost ${run['cost_usd']:.2f}")
+
+    # 2. draft, one writer for each page
+    def write(page):
+        return draft.draft_page(page, page_verdicts(page, c, vs), modes[page], c.get("facts") or [], "(the plan and "
+                                "the brief replace the text of the other pages)", a.model, guidance=c["guidance"],
+                                unit=unit_text(c, page) + "\n\nBrief:\n" + brief_text(brief))
+    with concurrent.futures.ThreadPoolExecutor(WRITERS) as pool:
+        jobs = list(pool.map(write, modes))
+    for j in jobs:
+        print(f"drafted {j['page']} ({j['mode']}); lint rc={j['lint_rc']}; cost ${j['cost_usd']:.2f}")
+    by_page = {j["page"]: j for j in jobs}
+
+    # 3 and 4. check and revise
+    history = []
+    for rnd in range(1, a.rounds + 1):
+        res, run = check(c, brief, modes, a.model)
+        runs.append(run)
+        must = [f for f in res["findings"] if f["severity"] == "must" and f["page"] in by_page]
+        history.append({"round": rnd, "findings": res["findings"], "goals": res["goals"]})
+        print(f"check {rnd}: {len(res['findings'])} findings, {len(must)} must; goals " +
+              ", ".join(g["met"] for g in res["goals"]) + f"; cost ${run['cost_usd']:.2f}")
+        if not must:
+            break
+        todo = {}
+        for f in res["findings"]:                # a writer that drafts again also gets its `should` findings
+            if f["page"] in {m["page"] for m in must}:
+                todo.setdefault(f["page"], []).append(f"- ({f['kind']}) {f['text']}\n  Do: {f['fix']}")
+        with concurrent.futures.ThreadPoolExecutor(WRITERS) as pool:
+            list(pool.map(lambda p: draft.revise_page(by_page[p], "\n".join(todo[p]), a.model), todo))
+        print(f"revised {len(todo)} pages: " + ", ".join(f"{p} (lint rc={by_page[p]['lint_rc']})" for p in todo))
+
+    # 5. figures
+    figure_pages = []
+    wanted = {j["page"]: j["figures_wanted"] for j in jobs if j["figures_wanted"]}
+    for p in c["pages"].get("capture", []):
+        wanted.setdefault(p, []).append(f"{p[:-5]}/(the figure of the page that changed): {c['plan'][p]['does']}")
+    if wanted and not a.no_figures:
+        import figures
+        figure_pages = figures.make(wanted, a.model)
+        made = {f["wanted"] for p in figure_pages for f in p["figures"] if f["status"] != "failed" and not f["check"]}
+        for j in jobs:
+            j["figures_wanted"] = [w for w in j["figures_wanted"] if w not in made]
+            j["lint"], j["lint_rc"] = draft.lint(os.path.join(PAGES, j["page"]), "origin/main" if j["mode"] == "amend" else None)
+
+    # 6. the last check is the report
+    final, run = check(c, brief, modes, a.model)
+    runs.append(run)
+    history.append({"round": "final", "findings": final["findings"], "goals": final["goals"]})
+    left = [f for f in final["findings"] if f["severity"] == "must"]
+    print(f"final check: {len(final['findings'])} findings, {len(left)} must; goals " + ", ".join(g["met"] for g in final["goals"]))
+
+    for j in jobs:
+        j.pop("prompt", None)
+    cost = sum(j["cost_usd"] for j in jobs) + sum(r["cost_usd"] for r in runs) + \
+        sum(p["run"].get("cost_usd") or 0 for p in figure_pages)
+    os.makedirs(os.path.join(HERE, "jobs"), exist_ok=True)
+    jobfile = os.path.join(HERE, "jobs", f"issue-{a.issue}.json")
+    json.dump({"issue": a.issue, "branch": branch, "brief": brief, "checks": history, "pages": jobs, "figures": figure_pages,
+               "runs": runs, "cost_usd": cost,
+               "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")},
+              open(jobfile, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    print(f"issue {a.issue}: {len(jobs)} pages on {branch}; cost ${cost:.2f}; job {jobfile}")
+    if not a.pr:
+        return
+
+    # 7. pull request
+    mark = {"yes": "achieved", "partly": "in part", "no": "not achieved"}
+    body = [f"**{c['title']}**", "", f"Closes #{a.issue}", "", "## Goals of the issue", "", "| Goal | Result | Where |", "|---|---|---|"]
+    body += [f"| {g['goal']} | {mark[g['met']]}{': ' + g['note'] if g['met'] != 'yes' and g['note'] else ''} | {g['where']} |"
+             for g in final["goals"]]
+    body += ["", "## Open findings of the last check", ""] + (findings_md(final["findings"]) or ["None."])
+    body += ["", "## Pages", "", "| Page | Part | Change | Lint | Not verified |", "|---|---|---|---|---|"]
+    body += [f"| `{j['page']}` | {c['plan'][j['page']]['role']} | {j['mode']} | {'clean' if j['lint_rc'] == 0 else 'findings'} | "
+             f"{len(j['unverified'])} |" for j in jobs]
+    if figure_pages:
+        import figures
+        lines = figures.report_lines(figure_pages)[0]
+        body += ["", "## Figures", ""] + lines
+    rounds = [h for h in history if h["round"] != "final"]
+    body += ["", "## How the runner worked", "",
+             f"- Brief: {len(brief['facts'])} shared facts, {len(brief['terms'])} terms, {len(brief['unknown'])} not established.",
+             *[f"- Check {h['round']}: {len(h['findings'])} findings, {sum(f['severity'] == 'must' for f in h['findings'])} of them `must`."
+               for h in rounds],
+             f"- Cost: ${cost:.2f}.", "", "Review the rendered changes from the preview comment below.", "",
+             "<details><summary>Changes, unverified claims and lint for each page</summary>", ""]
+    for j in jobs:
+        body += draft.page_report(j)
+    body += ["</details>", "", "<details><summary>Brief</summary>", "", brief_text(brief), "", "</details>", "",
+             "🤖 Generated with [Claude Code](https://claude.com/claude-code)"]
+    labels = ["gypsy"] + (["draft"] if any(j["unverified"] for j in jobs) else []) + \
+        (["lint-failed"] if any(j["lint_rc"] for j in jobs) else []) + (["check-findings"] if left else [])
+    n = len(jobs)
+    work.ensure_labels()
+    url = draft.publish(branch, f"gypsy: {c['title']} ({n} pages)"[:120],
+                        f"{c['title']}: {n} pages for issue #{a.issue}", "\n".join(body)[:64000], labels)
+    print(f"pull request: {url}")
+
+
+if __name__ == "__main__":
+    main()
