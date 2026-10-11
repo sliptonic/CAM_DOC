@@ -3,6 +3,7 @@
 """gypsy draft: revise pages for the verdicts that name them, lint, and open a pull request.
 
     python3 gypsy/draft.py PAGE [--facts gypsy/facts/machine.json] [--pr] [--model M] [--dry]
+    python3 gypsy/draft.py --upstream PR [--pr]      # ongoing work: one upstream pull request
     python3 gypsy/draft.py --cluster gypsy/clusters/NAME.yml [--pr] [--model M] [--dry]
 
 A cluster is one cause with all its pages (gypsy/clusters/README.md). Its pages are drafted
@@ -257,10 +258,27 @@ def page_report(job):
     return out + [""]
 
 
+def upstream_cluster(pr):
+    """The ongoing path: one merged upstream pull request is one cluster, made from its verdict."""
+    path = os.path.join(HERE, "verdicts", f"{pr}.json")
+    if not os.path.exists(path):
+        sys.exit(f"no verdict for upstream pull request {pr}; run gypsy/triage.py {pr} first")
+    v = json.load(open(path, encoding="utf-8"))
+    want = [p["page"] for p in v["pages"] if p["verdict"] != "no change"]
+    if not want:
+        sys.exit(f"upstream pull request {pr} has no effect on the documentation")
+    exists = lambda p: os.path.exists(os.path.join(PAGES, p))
+    return {"title": f"FreeCAD #{pr}: {v['meta']['title']}", "prs": [pr],
+            "pages": {"new": [p for p in want if not exists(p)], "amend": [p for p in want if exists(p)]}}
+
+
 def run_cluster(a):
-    with open(a.cluster, encoding="utf-8") as fh:
-        c = yaml.safe_load(fh)
-    slug = os.path.splitext(os.path.basename(a.cluster))[0]
+    if a.upstream:
+        c, slug = upstream_cluster(a.upstream), f"upstream-{a.upstream}"
+    else:
+        with open(a.cluster, encoding="utf-8") as fh:
+            c = yaml.safe_load(fh)
+        slug = os.path.splitext(os.path.basename(a.cluster))[0]
     owned, partial = set(c["prs"]), set(c.get("partial") or {})
     pages = c["pages"]
     # New pages first: a rewritten page links to them, and lint refuses a link without a target.
@@ -362,6 +380,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("page", nargs="?")
     ap.add_argument("--cluster", help="a cluster file; drafts all its pages as one pull request")
+    ap.add_argument("--upstream", type=int, metavar="PR",
+                    help="a merged FreeCAD pull request with a verdict; drafts all its pages as one pull request")
     ap.add_argument("--facts", action="append", default=[])
     ap.add_argument("--pr", action="store_true")
     ap.add_argument("--no-figures", action="store_true", help="cluster: do not make the wanted figures")
@@ -369,7 +389,7 @@ def main():
     ap.add_argument("--model", default=os.environ.get("GYPSY_DRAFT_MODEL", ""))
     a = ap.parse_args()
     config.require_freecad_tree()
-    if a.cluster:
+    if a.cluster or a.upstream:
         return run_cluster(a)
     if not a.page:
         ap.error("give a PAGE or --cluster FILE")
