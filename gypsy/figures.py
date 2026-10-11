@@ -111,10 +111,11 @@ def check(page, fig):
 
 
 def make(wanted, model=""):
-    """Run the agent for each page of `wanted` (page -> lines). Returns one entry for each page."""
+    """Run the agent for each page of `wanted` (page -> lines). Returns one entry for each page.
+
+    A line can name an image that exists: a draft asks for a new capture of a figure that changed."""
     pages = []
     for page, lines in wanted.items():
-        lines = [l for l in lines if not os.path.exists(os.path.join(IMAGES, l.split(":", 1)[0].strip()))]
         if not lines:
             continue
         res, run = run_agent(page, lines, model)
