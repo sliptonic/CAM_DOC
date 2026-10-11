@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32903
 
 [.fcinfobox]
 --
@@ -65,6 +66,8 @@ All other settings are edited in the property editor.
 
 * [.since]#introduced in 26.3# If any point of the Toolpath lies outside the probed area, the dressup prints a warning with the point and the probe area bounds and outputs the unmodified base Toolpath (earlier versions raised an error).
 * If the probe file is missing or invalid, the base Toolpath is passed through unchanged.
+* [.since]#introduced in 26.3# The dressup corrects only a Toolpath whose xref:job/work-plane.adoc[Work Plane] is parallel to the machine table. For a Work Plane with a different Tool Axis, the dressup prints the warning `Z correction needs a work plane parallel to the table; path left unchanged` and outputs the unmodified base Toolpath.
+* [.since]#introduced in 26.3# The Toolpath points are in the frame of the Work Plane of the Operation that the dressup modifies. The dressup converts each point to document coordinates and reads the probe map at that X, Y position. The warning for a point outside the probed area shows the point in document coordinates.
 
 == Scripting
 

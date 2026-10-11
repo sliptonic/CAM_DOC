@@ -8,6 +8,7 @@
 :page-since: 1.1
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -91,6 +92,8 @@ The Toolpath is a helical G2/G3 move at the thread pitch, repeated for the numbe
 
 .Path
 * *Active*, *Base*, *Comment*, *Coolant Mode*, *Cycle Time*, *Tool Controller*, *User Label*, *Workplane*.
+
+[.since]#introduced in 26.3#: The *Workplane* property links the Operation to a named xref:job/work-plane.adoc[Work Plane] that the Job holds.
 
 .Op Values
 * *Op Final Depth*, *Op Start Depth*, *Op Stock ZMax*, *Op Stock ZMin*, *Op Tool Diameter*. All read-only.

@@ -8,6 +8,7 @@
 :page-since: 0.19
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -146,7 +147,7 @@ Other sections: Base Geometry (Import, Add, Remove, Clear), Heights (Clearance, 
 * *Tolerance* ([.since]#introduced in 26.3#): Vcarve Tolerance; default is the CAM geometry tolerance preference. Used to decide when the cutter can follow an already-carved edge instead of retracting (virtual edge backtracking).
 * *Tool Controller*: The tool controller that will be used to calculate the path.
 * *User Label*: User Assigned Label.
-* *Workplane*: The orientation of the tool for this operation. Default is (0, 0, 1) for standard Z-up milling. [.since]#introduced in 26.3#
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 ==== Hidden
 

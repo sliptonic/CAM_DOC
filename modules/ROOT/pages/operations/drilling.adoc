@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-audit: applied
 :page-imported: true
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -130,7 +131,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Locations*: Base locations for this operation (list of X/Y points edited in the Base Location section)
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: The orientation of the tool for this operation. Default is (0, 0, 1) for standard Z-up milling. Multi-axis positioning of holes not normal to the Z axis is done through this property together with a Job of type Multiaxis; the former Rotation properties (Enable Rotation, Attempt Inverse Angle, Inverse Angle, B_Axis Error Override, Reverse Direction) no longer exist.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Sorting
 [.since]#introduced in 26.3#

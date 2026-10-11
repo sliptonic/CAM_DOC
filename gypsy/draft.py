@@ -263,8 +263,9 @@ def run_cluster(a):
     slug = os.path.splitext(os.path.basename(a.cluster))[0]
     owned, partial = set(c["prs"]), set(c.get("partial") or {})
     pages = c["pages"]
-    plan = [(p, "rewrite", owned | partial) for p in pages.get("rewrite", [])] + \
-           [(p, "new", owned) for p in pages.get("new", [])] + \
+    # New pages first: a rewritten page links to them, and lint refuses a link without a target.
+    plan = [(p, "new", owned) for p in pages.get("new", [])] + \
+           [(p, "rewrite", owned | partial) for p in pages.get("rewrite", [])] + \
            [(p, "amend", owned) for p in pages.get("amend", [])]
     if not a.dry:
         start_clean()

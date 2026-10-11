@@ -9,7 +9,7 @@
 :page-since: 0.19
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32366
+:page-source-pr: 32366, 32903
 
 [.fcinfobox]
 --
@@ -35,10 +35,12 @@ Even if the G-code itself is correct, differences between the programmed setup a
 
 The image:CAM_Sanity.svg[width=24] xref:job/sanity-check.adoc[CAM Sanity] command (tooltip: _Checks the CAM job for common errors_; toolbar: *Project Setup → Sanity Check*) is used to generate this kind of setup-oriented information. The output is a standalone HTML report with embedded images that can be opened in a web browser.
 
-image::Sanity.jpg[width=600]
+The figure shows the report of a Job that has one Profile Operation.
+
+image::job/sanity-check/report.png["Setup Report for CAM Job: Job, with the Run Summary table and the Squawks section",600]
 
 [.caption]
-Above: Example of a CAM Sanity generated report (from an older version; the current report is titled "Setup Report for CAM Job: <label>" and its fixtures section is titled "Fixtures")
+Above: Example of a CAM Sanity generated report
 
 == About the Report
 
@@ -51,6 +53,8 @@ Shows the CAD file name and last save date, the Customer (document Company field
 === Run Summary
 
 Lists the estimated total cycle time, the lowest and highest Z of the Job, and a table of every Operation with its Z range, cycle time and coolant mode. Inactive Operations are flagged with "(INACTIVE)"; Dressups are listed with their base Operation.
+
+[.since]#introduced in 26.3#: The Z values of the Run Summary are in Job coordinates. For an Operation that links to a xref:job/work-plane.adoc[Work Plane], the report calculates the Z range from the Toolpath at its position in the Job. The Z range of the Job is the lowest Z and the highest Z of all its Operations. An Operation without a Toolpath has an empty Z range.
 
 === Rough Stock
 
@@ -87,6 +91,27 @@ The Spindle Speed check has these conditions:
 * The check applies only when the Machine has exactly one Toolhead and the type of that Toolhead is `rotary`.
 * A Toolhead limit of 0 is a limit that is not specified. The check does not compare the Spindle Speed with a limit that is not specified.
 * The check ignores a commanded Spindle Speed of 0.
+
+[.since]#introduced in 26.3#: A machine-based Post-Processor checks the rotary axis moves between the Operations of the Job. The rotary axis check calculates the rotary axis positions of each active Operation from the Work Plane of the Operation. A Dressup uses the Work Plane of its base Operation.
+
+The rotary axis check gives a `WARNING` Squawk when all these conditions are true:
+
+* The Machine has rotary axes.
+* The *Pre-Rotary Move* Post-Processor Property of the Machine is empty.
+* Two consecutive active Operations have different rotary axis positions.
+
+The text of the rotary axis Squawk is: `The rotary axes move between operations and the Pre-Rotary Move property of machine '<machine>' is empty. Put the moves that bring the tool clear of the part there, in machine coordinates (for example G53 G0 Z0).`
+
+The rotary axis check ignores an Operation on a Work Plane that the Machine cannot index to. The Post-Processor refuses that Operation when it writes the G-code.
+
+[.since]#introduced in 26.3#: A machine-based Post-Processor checks the *Fixture* property of each Work Plane of the Job. A Fixture is a `G54` to `G59.9` selection, not the clamping of the Stock. The Fixture check ignores a Work Plane that names no Fixture.
+
+The Fixture check gives these Squawks:
+
+* A *Fixture* value that is not an accepted Fixture word gives a `WARNING` Squawk: `Work plane '<plane>' names '<fixture>' as its fixture, which is not a work coordinate system (G54-G59.9, or G54.1 Pn). The post will refuse it.`
+* A Fixture that is also in the *Fixtures* list of the Job gives a `WARNING` Squawk when that list has more than one Fixture: `Work plane '<plane>' selects <fixture>, which is also one of the fixtures the Job repeats its program for. Inside each repetition the plane's selection wins.`
+
+The `<plane>` in a Fixture Squawk is the label of the Work Plane. The accepted Fixture words are `G54` to `G59`, each with an optional decimal digit from 1 to 9 and an optional `P` number. The Fixture check accepts upper case and lower case letters.
 
 A Post-Processor can replace, add or remove a check. Refer to xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor].
 

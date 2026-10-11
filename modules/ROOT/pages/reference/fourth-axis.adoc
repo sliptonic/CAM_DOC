@@ -3,16 +3,24 @@
 :page-origin-revision: 3bfc2423dd 2025-07-04
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722, 32903
+:page-status: draft
 
 NOTE: This page is incomplete; it was marked as unfinished on the wiki. Requires FreeCAD 26.3 or later, with OpenCAMLib and experimental features enabled for the Rotary Surface operation.
 
 == Description
 
-[.since]#Since 26.3#, rotary-axis support is built on Machine definitions. A Machine (`.fcm`) declares its rotary axes (name A/B/C, rotation vector, limits, table or head role and wrap strategy) and is assigned to the Job on the General tab. Operations then emit the required rotary positioning automatically, and dedicated operations and dressups generate continuous 4-axis toolpaths.
+[.since]#Since 26.3#, rotary-axis support is built on Machine definitions. A Machine (`.fcm`) declares its rotary axes (name A/B/C, rotation vector, limits, table or head role and wrap strategy) and is assigned to the Job on the General tab. The Post-Processor commands the rotary positions for an Operation on a tilted Work Plane, and dedicated operations and dressups generate continuous 4-axis toolpaths.
 
 == 3+2 indexed machining
 
-Every operation has a Workplane property. When it is not Z-up and the Job's Machine has rotary axes, the operation solves the A/B/C angles that bring the workplane normal to Z, emits a G0 rotary move before its toolpath, and computes depths and Base Geometry in the rotated frame. If no rotary machine is assigned, the operation produces an empty toolpath with the comment `(workplane rotation unavailable)`.
+[.since]#introduced in 26.3#: An Operation links to zero or one xref:job/work-plane.adoc[Work Plane] through its *Workplane* property. A Work Plane is a named frame that the Job holds, and several Operations can link to the same Work Plane. The local +Z of the Work Plane is the Tool Axis. An Operation with an empty *Workplane* property works in the XY of the Job, which is Z-up milling.
+
+A Work Plane that is not parallel to the Machine table makes the Operation Indexed (3+2). The Operation generates its Toolpath in the frame of the Work Plane: the origin of the Work Plane is zero and the Tool Axis is Z. Each depth and each height of the Operation is a distance along the Tool Axis from the Work Plane. The Toolpath of an Indexed Operation contains no rotary words. The read-only *Placement* property of the Operation holds the frame of the Work Plane and positions the Toolpath on the Model.
+
+The Operation does not read the Machine when it generates the Toolpath. A Job accepts a Work Plane of any orientation, also when its Machine has no rotary axes. When the Machine has rotary axes and cannot index to the Work Plane, the Operation writes a warning to the https://wiki.freecad.org/Report_view[Report view] and generates the Toolpath.
+
+The xref:job/work-plane.adoc[Work Plane] page describes how to create a Work Plane and how to link an Operation to it.
 
 == Rotary Surface operation
 
@@ -38,14 +46,28 @@ The xref:dressups/axis-map.adoc[Axis Map dressup] wraps a flat toolpath onto a c
 
 Toolpaths with A/B/C words are drawn about `Path.Center` using the full angular travel [.since]#since 26.3#. Machine-based post-processors expand rotary moves according to the axis Wrap Strategy (unwound, wrapped, shortest) defined in the Machine; legacy post-processors output the angle words unchanged. Feed handling for rotary-only moves was fixed in 1.1.
 
+The Toolpath of an Indexed Operation has no A/B/C words. The 3D view, the simulators and xref:inspect/inspect.adoc[Inspect] position the Toolpath of an Indexed Operation with the *Placement* of the Operation.
+
+The Post-Processor solves the rotary positions from the *Placement* of the Operation when it writes the output. A change of Machine requires a new post-process run, not a recompute of the Operation. The Rotation Strategy of the Machine sets the form of the output. The `rotation_strategy` value in the kinematics of the Machine (`.fcm`) holds the Rotation Strategy:
+
+* `none`: The Machine does not declare a Rotation Strategy. Default.
+* `dwo` (DWO, for example Haas `G254` and Fanuc `G54.2`/`G54.4`): The Post-Processor commands the rotary positions and writes the Toolpath rotated into the frame that the Machine reaches. The control applies the pivot offsets.
+* `twp` (tilted work plane): The Post-Processor declares the Work Plane to the control and writes the Toolpath in the coordinates of the Work Plane. The control positions the rotary axes and applies the pivot.
+* `post_transform`: A Machine can declare this value. The Post-Processor does not write output for this value.
+
+A Machine file that has `dwo_supported` set and no `rotation_strategy` value loads with the Rotation Strategy `dwo`.
+
 == Limitations
 
 * The simulators do not animate rotary axes.
-* 3+2 orientation requires a Machine with enough rotary axes to reach the workplane normal; otherwise the operation reports "Cannot solve workplane orientation".
+* An Indexed Operation posts only to a Machine that has rotary axes and a `rotation_strategy` of `dwo` or `twp`.
+* The Post-Processor does not write output for a Work Plane that the Machine cannot index to.
+* A legacy Post-Processor does not post an Indexed Operation.
 * Rotary Surface supports a single rotary axis only.
 
 == See also
 
+* xref:job/work-plane.adoc[Work Plane]
 * xref:operations/rotary-surface.adoc[Rotary Surface]
 * xref:dressups/axis-map.adoc[Axis Map dressup]
 * xref:operations/surface.adoc[3D Surface]

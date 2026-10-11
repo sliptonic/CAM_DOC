@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -106,7 +107,7 @@ By default *Override Arc Feed Rate* (hidden property, default checked) adjusts t
 * *Cycle Time*: (read-only) The cycle time estimation for this operation.
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: [.since]#introduced in 26.3# The orientation of the Tool Bit for this operation; default (0, 0, 1) for standard Z-up milling.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Op Values
 These read-only properties hold values calculated by the operation. They are useful as sources for expressions.

@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -121,7 +122,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Locations*: Base locations for this operation
 * *Tool Controller*: Defines the Tool Controller used in the Operation
 * *User Label*: User assigned label
-* *Workplane*: [.since]#introduced in 26.3# The orientation of the Tool Bit for this operation; default (0, 0, 1) for standard Z-up milling.
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 Note: Adaptive has no *Start Point* and no Linking group.
 

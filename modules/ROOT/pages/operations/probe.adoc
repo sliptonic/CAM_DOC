@@ -7,6 +7,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 [.fcinfobox]
 --
@@ -59,6 +60,7 @@ The operation emits a comment `(Begin Probing <file name>)`, a rapid to Clearanc
 .Path
 * *OutputFileName* (`File`): The output location for the probe data to be written.
 * *ToolController* (`Link`), *CoolantMode*, *Active*, *Comment*, *UserLabel*, *CycleTime*: standard Operation properties.
+* The Operation works in the xref:job/work-plane.adoc[Work Plane] that the Operation links to; an Operation with no link works in the XY of the Job.
 
 .Depth
 * *StartDepth*, *FinalDepth*, *StepDown*, *FinishDepth*, *ClearanceHeight*, *SafeHeight*: standard depth and height properties; only *FinalDepth*, *SafeHeight* and *ClearanceHeight* affect the probe moves.

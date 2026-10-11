@@ -8,6 +8,7 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32722
 
 NOTE: This page is incomplete; it was marked as unfinished on the wiki.
 
@@ -102,7 +103,7 @@ Note: It is suggested that you do not edit the Placement property of path operat
 * *Split Arcs*: Split arcs into discrete segments.
 * *Tool Controller*: The Tool Controller that will be used to calculate the Toolpath
 * *User Label*: User assigned label
-* *Workplane*: The orientation of the Tool Bit for this Operation. Default (0, 0, 1) for standard Z-up milling; other values require a Machine with rotary axes and emit rotary positioning moves at the start of the Toolpath. [.since]#introduced in 26.3#
+* *Workplane*: [.since]#introduced in 26.3# The link to the xref:job/work-plane.adoc[Work Plane] that the Operation works in. An Operation with no link works in the XY of the Job.
 
 .Pocket
 * *Adaptive Pocket Finish*: Use adaptive algorithm to eliminate excessive air milling below planar pocket bottom.

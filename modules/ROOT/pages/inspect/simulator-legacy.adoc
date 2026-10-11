@@ -9,6 +9,8 @@
 :page-see-also: CAM Inspect, CAM SimulatorGL
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32903
+:page-status: draft
 
 NOTE: This page is incomplete; it was marked as unfinished on the wiki.
 
@@ -63,3 +65,5 @@ The panel notes: _Volumetric simulation, inaccuracies are inherent_.
 * The Tool Bit's actual shape from the Tool Controller is used for material removal (any Tool Shape).
 * Canned drilling cycles G73, G81, G82 and G83 are expanded; G2/G3 arcs are subdivided.
 * Rotary axis words are ignored, so 4th-axis Toolpaths are not simulated. Use xref:inspect/camotics.adoc[CAMotics] or another external simulator instead.
+* [.since]#introduced in 26.3# The voxel simulation shows the Toolpath of an Operation at the position of its xref:job/work-plane.adoc[Work Plane]. The voxel simulation removes material along Z only and shows the Tool Bit vertical. The voxel simulation does not represent a cut in a Work Plane that is not parallel to the table.
+* [.since]#introduced in 26.3# The boolean simulation works in the frame of the Work Plane of the Operation. The boolean simulation shows the Tool Bit along the Tool Axis, which is the local +Z of the Work Plane. The boolean simulation moves the swept solid to the position of the Work Plane, then cuts the swept solid from the Stock.

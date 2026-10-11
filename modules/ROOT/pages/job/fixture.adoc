@@ -6,6 +6,8 @@
 :page-workbench: CAM
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 32903
+:page-status: draft
 
 WARNING: THIS COMMAND IS OBSOLETE. It was removed from the menus in [.since]#1.1 and later#; the command still exists but is not exposed in any toolbar or menu. Fixtures (work coordinate systems) are now a property of the xref:job/job.adoc[Job].
 
@@ -29,6 +31,8 @@ G54 to G59 and the extended G59.1 to G59.9 select one of the work offsets stored
 
 NOTE: In the CAM Workbench, _Fixture_ means a work coordinate system selection, not the physical workholding device.
 
+[.since]#introduced in 26.3#: A xref:job/work-plane.adoc[Work Plane] can name a Fixture of its own, which applies while the Operations of that Work Plane run.
+
 == Fixtures on the Job
 
 Since 1.0 the work coordinate systems are selected on the Job:
@@ -40,6 +44,10 @@ Since 1.0 the work coordinate systems are selected on the Job:
 In the Job task panel these are on the menu:Output[] tab under *Work Coordinate Systems* (checklist G54 to G59.9, Order by, Split Output). The Post-Processor emits the fixture command before the Operations of each group.
 
 When the Job has a Machine, the xref:output/post-process.adoc[Post Process] dialog's Overview tab shows a *Fixtures* checklist ([.since]#introduced in 26.3#); unchecking a fixture omits it from that export without changing the Job.
+
+[.since]#introduced in 26.3#: The *Fixture* property of a xref:job/work-plane.adoc[Work Plane] names the Fixture that the control has selected while the Operations of that Work Plane run. An empty *Fixture* property, the default, gives the Job's own Fixture. When the *Fixture* property has a value, the Post-Processor selects that Fixture before the Post-Processor positions the Machine for the Work Plane. The Post-Processor selects the Job's Fixture again after the Operations of the Work Plane.
+
+The *Fixture* property of a Work Plane does not change the *Fixtures* property of the Job. The *Fixtures* property of the Job repeats the program for each listed Fixture, and the Post-Processor selects the Fixture of a Work Plane in each repetition. The xref:job/sanity-check.adoc[Sanity Check] warns when a Work Plane names a Fixture that the *Fixtures* property of the Job also lists.
 
 == Properties
 

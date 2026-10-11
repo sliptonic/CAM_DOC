@@ -1,0 +1,1477 @@
+{
+ "cluster": "work-planes",
+ "figures": [
+  {
+   "page": "job/job.adoc",
+   "wanted": [
+    "job/job/task-panel-setup-stock-cylinder.png: Job task panel, Setup tab, Stock group with Create cylinder selected and the Axis, Radius and Height controls",
+    "job/job/context-menu.png: Job context menu in the tree view with the Update Tools from Library entry",
+    "job/job/tree-workplanes.png: tree view of a Job with the Workplanes group and one Work Plane below it",
+    "job/job/output-file-warning.png: Warning message 'This will replace filename template' with the Ok and Cancel buttons",
+    "job/job/tool-number-in-use.png: Tool Number In Use message on the Tools tab",
+    "job/job/task-panel-tools-library.png: Tool Library dialog opened from Add on the Tools tab, with the All Tools view"
+   ],
+   "figures": [
+    {
+     "wanted": "job/job/task-panel-setup-stock-cylinder.png: Job task panel, Setup tab, Stock group with Create cylinder selected and the Axis, Radius and Height controls",
+     "status": "done",
+     "file": "job/job/task-panel-setup-stock-cylinder.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/task-panel-setup-stock-cylinder.py",
+     "shows": "Job task panel, Setup tab, Layout section. The Stock group has Create cylinder selected, with Axis Z, Radius 143.67 mm and Height 40.00 mm, the Refresh and Assign Material buttons. Selection Target and the top of Origin & Alignment are below.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/job/context-menu.png: Job context menu in the tree view with the Update Tools from Library entry",
+     "status": "done",
+     "file": "job/job/context-menu.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/context-menu.py",
+     "shows": "The full context menu of a Job from the tree view. Edit and Update Tools from Library (with its icon) are the first two entries. The standard tree entries follow, then Toggle Operation, Export Template, Sanity Check and Post Process.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/job/tree-workplanes.png: tree view of a Job with the Workplanes group and one Work Plane below it",
+     "status": "done",
+     "file": "job/job/tree-workplanes.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/tree-workplanes.py",
+     "shows": "Tree view of the document drilling-1. The Job is open and shows Operations, Model, Stock, SetupSheet, Tools and Workplanes. The Workplanes group is open and has one object, Workplane.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/job/output-file-warning.png: Warning message 'This will replace filename template' with the Ok and Cancel buttons",
+     "status": "done",
+     "file": "job/job/output-file-warning.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/output-file-warning.py",
+     "shows": "Message box with the text 'This will replace filename template', the text 'Are you sure?', and the Ok and Cancel buttons. The window frame with the title Warning is not in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/job/tool-number-in-use.png: Tool Number In Use message on the Tools tab",
+     "status": "done",
+     "file": "job/job/tool-number-in-use.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/tool-number-in-use.py",
+     "shows": "Message box with the warning icon, the text 'Tool number 1 is already used by TC: 5mm Endmill.' and the OK button. The window frame with the title Tool Number In Use is not in the image. The Tools tab is not in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/job/task-panel-tools-library.png: Tool Library dialog opened from Add on the Tools tab, with the All Tools view",
+     "status": "done",
+     "file": "job/job/task-panel-tools-library.png",
+     "recipe": "modules/ROOT/images/recipes/job/job/task-panel-tools-library.py",
+     "shows": "Tool Library dialog (window title Toolbit Selector) with All Tools selected in the library list, All Toolbit Types, the search field, a list of Tool Bits from 3.175mm Endmill to 90 Deg. V-Bit, and the buttons Open Library Editor, Add to Job (not available, no Tool Bit selected) and Close.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "All six figures are in job/job.adoc, each with one short sentence before it. The lint gives 0 findings. No old figure was replaced. The manifest has the six new entries.\n\nItems for the reviewer:\n- context-menu.py: the tree view opens its menu with exec() in C++, and a script cannot replace that call. The recipe sends a context menu event to the Job item, captures the menu from a timer, then closes the menu. The capture did not stop. This is the only recipe that lets a modal object open.\n- tool-number-in-use.py: the source calls the static QMessageBox.warning(), which waits. The recipe replaces it with a function that makes the same message box (Warning icon, same title, text, OK, same parent) and shows it. The cell edit that starts the message goes through the table of the Tools tab.\n- output-file-warning.py: the recipe replaces QFileDialog.getSaveFileName with a fixed file name and QMessageBox.exec with show(). The Output File button of the panel starts the message.\n- task-panel-tools-library.py: the recipe creates ToolBitLibraryDock(job) as the Add button does, and shows it without exec_(). It sends a Leave event to the list, because the pointer of the off-screen display highlighted one row.\n- The two message figures and the tree view figure are small (322, 500 and 260 pixels wide). The page sets width 400 as the rule for a dialog. The tree view figure also has width 400, because the rules give no width for a tree view; the browser will enlarge it.\n- New shared file: recipes/job/job/_tree.py (Job and its tree item), used by context-menu.py and tree-workplanes.py.\n\nPossible page error, not changed (outside this task): the page lists the context menu entry as *Toggle operation active*. The captured menu shows the entry as \"Toggle Operation\".\n\nSTE conflict: none. The recipe code and the alt texts follow the project conventions.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.4661973999999998,
+    "duration_ms": 265598,
+    "turns": 51,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "job/work-plane.adoc",
+   "wanted": [
+    "job/work-plane/result-face.png: 3D view of a Model with a Work Plane on a tilted planar face, with the axes of the Work Plane at the centroid of the face",
+    "job/work-plane/tree-workplanes.png: tree view of a Job with the Workplanes group open and two Work Planes",
+    "job/work-plane/task-panel-heights.png: Operation task panel, Heights page, with the Work Plane selector and the Reset to defaults button",
+    "job/work-plane/properties-fixture.png: property editor of a Work Plane with the Fixture property set to G55"
+   ],
+   "figures": [
+    {
+     "wanted": "job/work-plane/result-face.png: 3D view of a Model with a Work Plane on a tilted planar face, with the axes of the Work Plane at the centroid of the face",
+     "status": "done",
+     "file": "job/work-plane/result-face.png",
+     "recipe": "recipes/job/work-plane/result-face.py",
+     "shows": "Isometric 3D view of the drilling-1 Model in its Stock outline, plain white background. The red X, green Y and blue Z axes of the Work Plane, with their labels, are on the small tilted face at the right corner of the Model. The Z axis is tilted away from vertical. The axes are small, because the view is fitted to the Stock.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/work-plane/tree-workplanes.png: tree view of a Job with the Workplanes group open and two Work Planes",
+     "status": "done",
+     "file": "job/work-plane/tree-workplanes.png",
+     "recipe": "recipes/job/work-plane/tree-workplanes.py",
+     "shows": "Tree view of the document drilling-1 with the Job open: Operations, Model, Stock, SetupSheet, Tools and Workplanes. The Workplanes group is open and holds two Work Planes, Workplane (attached to a face) and Workplane001 (at the Job origin). The two Work Planes are grey, because they are hidden.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/work-plane/task-panel-heights.png: Operation task panel, Heights page, with the Work Plane selector and the Reset to defaults button",
+     "status": "done",
+     "file": "job/work-plane/task-panel-heights.png",
+     "recipe": "recipes/job/work-plane/task-panel-heights.py",
+     "shows": "Profile task panel with the tabs Base Geometry, Heights, Tool Controller and Operation. The Heights tab is selected. The Work plane selector at the top shows Workplane. Below are the heights diagram, the fields Clearance 46.00 mm, Retract 44.00 mm, Start 41.00 mm, Step down 5.00 mm, Final -1.00 mm, the Reset to defaults button, and the Linking group.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "job/work-plane/properties-fixture.png: property editor of a Work Plane with the Fixture property set to G55",
+     "status": "done",
+     "file": "job/work-plane/properties-fixture.png",
+     "recipe": "recipes/job/work-plane/properties-fixture.py",
+     "shows": "Data tab of the property editor for a Work Plane. The groups are Attachment (Map Mode FlatFace, support Model-Drilling1), Base (Placement, Label Workplane, Group) and Workplane. The Workplane group has one property, Fixture, with the value G55. At the default width the editor cuts some property names (\"Attache…\", \"Placem…\").",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "All four figures are captured, are in the page, and have manifest entries. The lint gives 0 findings. Each figure has one new sentence before it. The shared code is in recipes/job/work-plane/_workplane.py. The tilted face is Face7 of drilling-1 (normal 0, 0.357, 0.934).\n\n1. Page conflict, not corrected (outside the figure task): a new Work Plane is hidden in the 3D view. After CAM_Workplane, ViewObject.Visibility of the Work Plane is False, and the tree view shows the Work Plane in grey. The page says \"The 3D view shows the axes and the origin of a Work Plane\" and does not tell the user to make the Work Plane visible. The result-face recipe runs Std_ToggleVisibility on the selected Work Plane to show the axes, which a user can do with the Space key.\n\n2. Unstable model: in 2 of the first 3 runs of the Work Plane recipes, FreeCAD printed \"Sketch: Solving the sketch failed\" a second time during the recompute of drilling-1. The Stock was then empty and the Work Plane had no attachment. The helper _workplane.py now raises an error in this condition, so a bad run fails and does not write a wrong image. Run the recipe again if this error occurs. The 5 subsequent runs were correct.\n\n3. result-face: the view is fitted to the Stock (STYLE.md §10.3), and the tilted face is small, so the axes are small at width 600. A model with a larger tilted face would give a clearer figure.\n\n4. properties-fixture: the recipe sets Fixture by script (workplane.Fixture = \"G55\"), not by text entry in the editor. The capture is the Data editor at its default width of 258 pixels.\n\n5. task-panel-heights: the selector label in the UI is \"Work plane\". The heights in the figure are the values before a Reset to defaults for the new Work Plane.\n\n6. job/job/tree-workplanes.png (one Work Plane, for job/job.adoc) is a different figure and is not changed.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.5016202,
+    "duration_ms": 297153,
+    "turns": 76,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "index.adoc",
+   "wanted": [
+    "index/heights-depths-work-plane.png: an Operation with a Work Plane that is not parallel to the table, with Clearance Height, Safe Height, Start Depth and Final Depth shown as distances along the Tool Axis from the origin of the Work Plane"
+   ],
+   "figures": [
+    {
+     "wanted": "index/heights-depths-work-plane.png: an Operation with a Work Plane that is not parallel to the table, with Clearance Height, Safe Height, Start Depth and Final Depth shown as distances along the Tool Axis from the origin of the Work Plane",
+     "status": "failed",
+     "file": "",
+     "recipe": "",
+     "shows": "",
+     "problem": "The figure needs a state that a script cannot create. FreeCAD has no view that shows the four values as distances along a tilted Tool Axis. I read the source and found only these displays: (1) The Heights page of the Operation task panel shows a fixed diagram (`CAM_HeightsDiagram.svg` or `CAM_HeightsDiagram_NoFinish.svg`, `TaskPanelHeightsPage.updateHeightsDiagram` in `Path/Op/Gui/Base.py`). The diagram is always vertical and does not change when a Work Plane is selected. (2) The 3D view shows only three 50 mm axis lines on a selected Operation that has a rotated Placement (`ViewProvider.attach` in `Path/Op/Gui/Base.py`). The CAM workbench has no dimension or text node in the 3D view (no `SoText`, `SoDatumLabel` or `SoAnnotation` in `src/Mod/CAM`). Thus the image would need labels or dimension lines that are drawn on the capture, and STYLE.md §10.3 prohibits annotation. A capture of the Toolpath on a tilted Work Plane does not identify the four values, so it does not show what the description says. I made no capture attempt, wrote no recipe and wrote no image.",
+     "check": []
+    }
+   ],
+   "notes": "I did not change `modules/ROOT/pages/index.adoc`. The old figure `Path-DepthsAndHeights.gif` and its caption stay on the page. I did not run the lint, because the page has no change from this stage.\n\nThe wanted figure is a concept diagram, not a capture. A person can draw it as an SVG (a tilted Work Plane, the Tool Axis, and the four labelled distances from the origin). That is outside the capture rules of this stage.\n\nThe nearest figure that exists is `job/work-plane/task-panel-heights.png` (recipe `recipes/job/work-plane/task-panel-heights.py`). I looked at it. It shows the Heights page of the Profile task panel with a Work Plane selected, the values 46 mm, 44 mm, 41 mm, 5 mm and -1 mm, and the fixed vertical diagram. It does not show a tilted Tool Axis or the origin of the Work Plane, so I did not report it as `covered`. The page `index.adoc` already links to `job/work-plane.adoc`, which has this figure.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.43840080000000003,
+    "duration_ms": 39966,
+    "turns": 19,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "wanted": [
+    "job/sanity-check/report.png: the current Sanity Check report, with the title \"Setup Report for CAM Job: <label>\", the Run Summary table and the Squawks section; replaces Sanity.jpg, which shows an older report"
+   ],
+   "figures": [
+    {
+     "wanted": "job/sanity-check/report.png: the current Sanity Check report, with the title \"Setup Report for CAM Job: <label>\", the Run Summary table and the Squawks section; replaces Sanity.jpg, which shows an older report",
+     "status": "done",
+     "file": "job/sanity-check/report.png",
+     "recipe": "modules/ROOT/images/recipes/job/sanity-check/report.py",
+     "shows": "The full HTML report, 1100 x 4108 pixels. Title \"Setup Report for CAM Job: Job\". Table of Contents. Part Information with an image of the drilling-1 model. Run Summary table with one row: Profile, Minimum Z -1.00 mm, Maximum Z 46.00 mm, Coolant Mode None, Cycle Time \"Tool Feedrate Error\". Rough Stock with an image of the Stock. Tool Data for T1 (5 mm Endmill) with an image of the Tool Bit. Output (G-code) with empty values. Fixtures with ['G54'] and the Part Datum image. Squawks with four rows: \"The Job has not been post-processed\" (Note), \"Consider Specifying the Stock Material\" (Tip), and two Warnings for the Tool Controller without feedrate and without spindlespeed.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The recipe runs the CAM_Sanity command on a Job with one Profile Operation. It replaces the file dialog and the `webbrowser.open_new_tab` call, then shows the HTML file in a QWebEngineView of the FreeCAD PySide6. The view has the height of the report, so the capture shows the full report.\n\nItems to know:\n- The report code gives no images when `XDG_SESSION_TYPE` is `wayland` (ImageBuilder.py). `gypsy/capture.py` removes only `WAYLAND_DISPLAY`. The first capture had empty image cells for this reason. The recipe sets `XDG_SESSION_TYPE` to `x11`, because the capture runs on Xvfb. A better location for this setting is `gypsy/capture.py`.\n- The Tool Controller of a new Job has a feed rate of 0 and a spindle speed of 0. Thus the Cycle Time cell shows \"Tool Feedrate Error\" and the Squawks section shows two Warnings. This is the default state; the recipe does not change it.\n- The Squawks dates and the CAD File path (a temporary folder) change on each capture. The image is not the same pixel for pixel between two captures.\n- The image is long (4108 pixels). STYLE.md has no width for a report page; the page uses 600, the width of the old figure.\n\nPage changes: the new block image replaces `image::Sanity.jpg[width=600]`. One sentence before the figure refers to it. The caption no longer says that the figure is from an older version. `modules/ROOT/images/Sanity.jpg` has no other reference in `modules/`; the file was not deleted. The lint check gives 0 findings.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.7398656,
+    "duration_ms": 102653,
+    "turns": 27,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "inspect/inspect.adoc",
+   "wanted": [
+    "inspect/inspect/dialog.png: the CAM Inspect dialog with line numbers, the unit note and the Raw checkbox; replaces Path_inspector.jpg",
+    "inspect/inspect/dialog-raw-work-plane.png: the CAM Inspect dialog with Raw set for an Operation that links to a Work Plane, with the added line of the note that gives the frame origin",
+    "inspect/inspect/result-tool-axis.png: the 3D view with highlighted moves and the Tool Bit shape along the Tool Axis of an Operation on a tilted Work Plane"
+   ],
+   "figures": [
+    {
+     "wanted": "inspect/inspect/dialog.png: the CAM Inspect dialog with line numbers, the unit note and the Raw checkbox; replaces Path_inspector.jpg",
+     "status": "done",
+     "file": "inspect/inspect/dialog.png",
+     "recipe": "modules/ROOT/images/recipes/inspect/inspect/dialog.py",
+     "shows": "The whole CAM Inspect dialog (600 x 500) for a Profile operation. The viewer shows 19 lines of G-code with syntax colors and a black line number column. The note below gives \"Current units: metric, length - mm, feed - mm/min\". The bottom row has the Raw checkbox (not set), the \"Show tool: Endmill\" checkbox (not set) and the Close button.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "inspect/inspect/dialog-raw-work-plane.png: the CAM Inspect dialog with Raw set for an Operation that links to a Work Plane, with the added line of the note that gives the frame origin",
+     "status": "done",
+     "file": "inspect/inspect/dialog-raw-work-plane.png",
+     "recipe": "modules/ROOT/images/recipes/inspect/inspect/dialog-raw-work-plane.py",
+     "shows": "The whole CAM Inspect dialog with Raw set, for a Profile operation that links to a Work Plane on the tilted face. The viewer shows values that are not rounded (6 decimal places), with line numbers and no syntax colors. The note gives \"Current units: length - mm, feed - mm/s\" and one more line: \"Raw: as stored, in the operation's own frame; the frame's origin (103.684, 69.706, 23.882) and rotation are not applied.\"",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "inspect/inspect/result-tool-axis.png: the 3D view with highlighted moves and the Tool Bit shape along the Tool Axis of an Operation on a tilted Work Plane",
+     "status": "done",
+     "file": "inspect/inspect/result-tool-axis.png",
+     "recipe": "modules/ROOT/images/recipes/inspect/inspect/result-tool-axis.py",
+     "shows": "Isometric 3D view of the drilling-1 Model with the Stock outline. The green Toolpath of the Profile operation is in planes that are tilted with the Work Plane. The selected moves (lines 6 to 38) are thick orange lines near the tilted chamfer face. The Endmill shape, with its thin shank, is at the start of the selection and is tilted from the vertical, along the Tool Axis.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The three figures are in the page and the lint gives 0 findings.\n\nPage changes:\n- `image:Path_inspector.jpg[]` and the NOTE that said the screenshot was old are replaced by `dialog.png` and one lead sentence.\n- `result-tool-axis.png` is after the paragraph about the Tool Axis in Description, with one lead sentence.\n- `dialog-raw-work-plane.png` is after the Options list, with one lead sentence.\n- The file `Path_inspector.jpg` is not deleted. No other page was examined for a reference to it.\n\nRecipe facts:\n- The shared file `_inspect.py` makes the Job, the Profile operation, the Work Plane (the `CAM_Workplane` command on `Face7`) and the dialog.\n- The recipe sets `op.Workplane` directly as a property. It does not use the Work Plane selector of the task panel.\n- The recipe makes `GCodeEditorDialog(op)` as the command does, but without `exec()`. It sets Raw and \"Show tool\" through the checkboxes and selects the lines through the text cursor of the viewer.\n- The first recompute of the Profile on drilling-1 fails in some runs (\"shape is not planar\"). This gave an empty viewer in the first capture and stopped two later runs. `_inspect.py` now does one more recompute and stops with an error if the Toolpath stays empty. All three recipes passed after this, but `dialog-raw-work-plane.png` was not captured again after the last change to `_inspect.py`.\n\nWhat the images show that the reader can find unusual:\n- The line number column of the viewer is black in the light theme. `Editor.py` paints it with `QtCore.Qt.black`.\n- With Raw set, the viewer shows no syntax colors.\n- The Profile on the tilted Work Plane goes around the whole Model in tilted planes, so the Toolpath in `result-tool-axis.png` is far from the Model in some areas. The highlight and the tilt of the Tool Bit shape are clear.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.0185402000000001,
+    "duration_ms": 193998,
+    "turns": 39,
+    "model": "claude-opus-5-5"
+   }
+  }
+ ],
+ "issue": 9,
+ "branch": "gypsy/work-planes",
+ "pages": [
+  {
+   "page": "job/job.adoc",
+   "mode": "rewrite",
+   "prs": [
+    30421,
+    30644,
+    31208,
+    31300,
+    32211,
+    32722,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 30421,
+     "what": "Setup tab: the 'Alignment' group became 'Selection Target' with the Model and Stock toggle buttons. 'Origin && Orientation' became 'Origin & Alignment'. The buttons 'Center XYZ in Stock' and 'Center XY in Stock' replace 'Center in Stock' and 'XY in Stock'. The 'Transform' group replaces 'Move - XY' and 'Rotate around Z': the diagonal arrows are gone, Z up and Z down arrows and a rotation axis list (X Axis, Y Axis, Z Axis, default Z Axis) are new. The step distance defaults to 0.1 in for imperial units. Set Origin and Move to Origin accept a straight edge and use its midpoint. Compound now describes rotation around the common bounding box center. Stock extension default is 3.175 mm for inch units. The new Stock view defaults are in Properties."
+    },
+    {
+     "pr": 30644,
+     "what": "Output tab: the Select Output File dialog starts at the file that the Output File value gives, or in the document directory. A Warning message asks for confirmation before the selected file replaces the file name template."
+    },
+    {
+     "pr": 31208,
+     "what": "Setup tab and Stock properties: the cylinder Stock has an Axis control and an Axis property (X, Y, Z, default Z). The page gives the calculation of the dimensions and the placement along the selected axis. The Scripting example uses CreateCylinder with the axis parameter."
+    },
+    {
+     "pr": 31300,
+     "what": "Context menu: the 'Update Tools from Library' entry, with the match by Tool Bit ID. Notes and limitations: the prompt at document open, with the default answer no."
+    },
+    {
+     "pr": 32211,
+     "what": "Tools tab: Add opens the Tool Library dialog, which stays open and adds Tool Controllers to the table immediately. The 'All Tools' view asks for a Tool Number. The table refuses a Tool Number that a different Tool Bit uses and shows the 'Tool Number In Use' message."
+    },
+    {
+     "pr": 32722,
+     "what": "Description, Properties and Notes and limitations: the Job holds a Workplanes group of Work Planes, shows it in the tree view, removes it with the Job, and has a hidden Workplanes link property. The Job moves Work Planes that an Operation links to into the group at document open."
+    },
+    {
+     "pr": 32903,
+     "what": "Output tab and Notes and limitations: the Job adds the Fixture property to each Work Plane at document open. The page separates the Fixtures list of the Job from the Fixture of a Work Plane. The Job accepts a Work Plane with any orientation; the Post-Processor refuses one that the Machine cannot reach."
+    }
+   ],
+   "unverified": [
+    "Setup tab: the label and the control type of the Stock source selector, and the position of the Axis list above Radius and Height in the panel.",
+    "Setup tab: the Model and Stock buttons of Selection Target are mutually exclusive, and Model is active by default. The diff of Gui/Job.py is truncated.",
+    "Setup tab: Move to Origin moves only the selected object and Set Origin moves the Model and the Stock, after the change to edge midpoints.",
+    "Setup tab: the step distance default of 1 mm for metric and 0.1 in for imperial. The value comes from the pull request description, not from the visible diff.",
+    "Setup tab: the layout of the Transform group (arrow buttons below the X/Y and Z labels, the Rotate label, the positions of the axis list and the angle field).",
+    "Stock: the default of 3.175 mm for the Ext properties with inch units, and the view defaults (tan dotted lines, Flat Lines, Transparency 95, Selectable false). The Stock.py diff for PR 30421 is not visible.",
+    "Context menu: the title and the content of the dialog that 'Update Tools from Library' opens, and that the update includes geometry and presets.",
+    "Document open: the prompt for Tool Bits that are not current, and its default answer of no.",
+    "Output tab: the appearance and the label of the control that opens the Select Output File dialog, and the appearance of the Warning message with the Ok and Cancel buttons.",
+    "Tools tab: the title of the dialog that Add opens, its 'All Tools' view and the request for a Tool Number.",
+    "Tree view: the Workplanes group shows below the Job with the label 'Workplanes'.",
+    "Properties: the names of the properties as the property editor shows them (for example 'Setup Sheet', 'Geometry Tolerance', 'Ext Xneg').",
+    "Scripting: the example was not run on a FreeCAD build."
+   ],
+   "figures_wanted": [
+    "job/job/task-panel-setup.png: Job task panel, Setup tab, with the Selection Target, Origin & Alignment and Transform groups (replacement of the current figure)"
+   ],
+   "notes": "The page is built on the text of `main`. There is no pending gypsy text.\n\nLint fix: the six `xref:job/work-plane.adoc[...]` links are removed, because the target page does not exist and the change set contains no other pages. The statements about Work Planes stay in the page; no fact, figure or admonition was removed. The first use of Work Plane still links to the glossary entry.\n\nConflict with a decision of the person: the decision says that job/job.adoc links to job/work-plane.adoc for the detail. That link cannot resolve until job/work-plane.adoc exists. When the page exists, restore the links in these places: the infobox \"See also\" line, the Workplanes bullet in Description, the last paragraph of Output, the `Workplanes` property, the *Work Plane* command bullet in Notes and limitations, and the Related list.\n\nIn Notes and limitations, \"The *Work Plane* command\" now uses the menu text of the command (`Work Plane`) as bold interface text in place of the link.\n\nStructure: the page follows the command page skeleton. The old \"Context menu\" section is a level-three heading below Usage. The old \"Preferences\" section is a block in Notes and limitations. The old tab sections are level-three headings below Options.\n\nNaming difference in the sources: the description of PR 31300 names the menu entry \"Sync Tool Presets from Library\". The code in the diff names it \"Update Tools from Library\". The page uses the code string.\n\n`Introduced in version` in the infobox stays \"-\" and `:page-since:` is not set, because no source gives the version.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 1.2001,
+     "duration_ms": 242602,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.971575,
+     "duration_ms": 122211,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.9295910000000001,
+     "duration_ms": 101196,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 3.101266,
+   "verdicts": [
+    [
+     "2026-08-19T03:12:44Z",
+     31300,
+     "CAM: Sync tool presets from the library into embedded Job tools",
+     "revise"
+    ],
+    [
+     "2026-08-21T17:31:36Z",
+     30644,
+     "CAM: Use current file path as default for file selection dialog",
+     "revise"
+    ],
+    [
+     "2026-08-24T20:36:00Z",
+     30421,
+     "CAM: Update Job Task Panel GUI",
+     "revise"
+    ],
+    [
+     "2026-08-28T20:10:33Z",
+     32211,
+     "CAM: Add toolbits from any library",
+     "revise"
+    ],
+    [
+     "2026-09-07T15:47:17Z",
+     31208,
+     "CAM: Job - Stock cylinder",
+     "revise"
+    ],
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/work-plane.adoc",
+   "mode": "new",
+   "prs": [
+    32722,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "New command page for CAM_Workplane. The page gives the Work Plane object (a Part::LocalCoordinateSystem in the Workplanes group of the Job), the creation from one selected planar face or at the Job origin, the Job selection, the attachment to the Resource Clone, the 3D view configuration and the scripting functions of Path.Main.Workplane."
+    },
+    {
+     "pr": 32903,
+     "what": "Added the Fixture property of the Work Plane, the origin at the face centroid through Attachment Offset, and the Toolpath calculation in the frame of the Work Plane. The page says that a Work Plane with any orientation can be created on any Job and that the Post-Processor refuses a Work Plane that the Machine cannot reach."
+    }
+   ],
+   "unverified": [
+    "The Work Plane command is in the Project Setup toolbar and in the CAM menu with the label 'Work Plane'. The diff shows only that CAM_Workplane is in projcmdlist.",
+    "The command has no default shortcut. The GetResources dictionary has no Accel entry.",
+    "The icon file CAM_Area_Workplane.svg exists in modules/ROOT/images.",
+    "The Heights page of an Operation task panel has a Work Plane selector and a 'Reset to defaults' button. The diffs for this page do not show the control labels, the list entries or the function of the button.",
+    "The Operation stores the link in a property with the name Workplane, and the property editor shows it with that spelling.",
+    "The property editor shows the Fixture property in a group with the name 'Workplane', and shows the attachment properties as 'Attachment Support', 'Map Mode' and 'Attachment Offset'.",
+    "The 3D view shows the axes and the origin of a Work Plane, hides the three datum planes, and does not let you select the Work Plane.",
+    "The report view message for a Work Plane at the Job origin shows the label 'Workplane' for the first Work Plane.",
+    "The Scripting example runs on FreeCAD main without a GUI, and Face6 is the top face of a default Part::Box.",
+    "A new Operation adopts the Work Plane of the previous Operation. The statement comes from ADR-000, not from the diffs for this page."
+   ],
+   "figures_wanted": [],
+   "notes": "Lint fix: the vocabulary finding was the phrase \"a Tool Axis\" in the introduction of the Scripting section. The introduction now uses \"the Tool Axis of that Work Plane\", in three short sentences. No fact, figure or admonition was removed. All other text is the same as the previous draft.\n\nThe decisions of the person make this page the one place for the Work Plane selector and the Reset to defaults button. The diffs for this page do not include the Heights page code, so the page names the two controls and gives only the link that the selector sets. The function of the Reset to defaults button is not in the page and is in `unverified`.\n\nThe page agrees with job/job.adoc on the Workplanes group, the Fixture property, the independence of the Fixtures list, and the refusal by the Post-Processor. No contradiction was found.\n\nConflict with the global STE standard: STYLE.md permits sentences to 30 words and sets fixed forms (for example the tooltip quotation), and STYLE.md was obeyed where the two differ.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.586867,
+     "duration_ms": 82165,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.545111,
+     "duration_ms": 44267,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.1319780000000002,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "new page"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "new page"
+    ]
+   ]
+  },
+  {
+   "page": "index.adoc",
+   "mode": "amend",
+   "prs": [
+    32722,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "General concepts: added a paragraph that names the Work Plane as a frame the Job holds and Operations share, with a link to job/work-plane.adoc. Project Commands: added the Work Plane command (CAM_Workplane) between New Job and Sanity Check. Context menu: added the Operation entry 'Set Work Plane from Face', which creates a Work Plane from a planar face and links the Operation to it. Heights and depths: added that heights and depths are distances along the Tool Axis of the Work Plane."
+    },
+    {
+     "pr": 32903,
+     "what": "General concepts: added that an Operation generates its Toolpath in the frame of its Work Plane and that the read-only Placement of the Operation positions the Toolpath. Heights and depths: added that heights and depths are measured from the origin of the Work Plane, and that the buttons that set Start Depth and Final Depth from selected geometry measure from the Work Plane."
+    }
+   ],
+   "unverified": [
+    "The menu label and the icon of the CAM_Workplane command. Path/Main/Gui/WorkplaneCmd.py is not in the diff. The Project Commands entry uses the page title 'Work Plane' and has no icon.",
+    "The position of the CAM_Workplane command in the toolbar and in the CAM menu. The diff shows only its position in projcmdlist, between CAM_Job and CAM_Sanity.",
+    "The context menu of an Operation in the tree view shows 'Set Work Plane from Face'. The string comes from setupContextMenu in Path/Op/Gui/Base.py; no capture confirms it.",
+    "The property editor shows the Placement property of an Operation as read-only. The code sets editor mode 1; no capture confirms it.",
+    "The '[.since]#introduced in 26.3#' markers on the added lines assume that the two pull requests ship in release 26.3."
+   ],
+   "figures_wanted": [
+    "index/heights-depths-work-plane.png: an Operation with a Work Plane that is not parallel to the table, with Clearance Height, Safe Height, Start Depth and Final Depth shown as distances along the Tool Axis from the origin of the Work Plane"
+   ],
+   "notes": "The text builds on the `main` text of index.adoc. No pending gypsy text was given.\n\nMode AMEND ONLY: four additions and two attribute lines. All other lines are unchanged, also the lines that do not follow STYLE.md.\n\n- Added `:page-source-pr: 32722, 32903`. The page had no such attribute.\n- Added `:page-status: draft` because `unverified` is not empty. The page had no `:page-status:` attribute.\n- The first use of Work Plane links to xref:job/work-plane.adoc and not to the glossary. I could not confirm that reference/glossary.adoc exists, and this session has no file tools.\n- The Project Commands entry has no icon macro because the diff does not give the icon file name.\n\nStatements that I did not change, but that a person must examine:\n\n- Limitations, second bullet: \"Indexed 3+2 positioning is derived from the selected Machine definition\". After PR 32903, the Work Plane of the Operation defines the Indexed position, and the Post-Processor solves the rotary positions for the Machine at output time. The Post-Processor part of PR 32903 is not in the diff for this page, thus I did not write the sentence again.\n- Other, \"CAM fourth axis\" bullet: \"Indexed 3+2 positioning from the Machine definition\". The same problem applies. reference/fourth-axis.adoc is not in this change set.\n- Introduction, Job bullet: the list of what the Job holds does not include Work Planes. The statement is not false. The verdicts do not list the Introduction, thus I did not change it.\n- Miscellaneous, \"Area Workplane\": this command uses \"workplane\" for a different concept (ADR-000 names this as a non-use of the term). The line is unchanged.\n\nConflict with the global STE instruction: the page text follows STYLE.md, which is the project rule (for example, 30 words is the ceiling for a sentence). The added sentences stay below 25 words where possible. The unchanged lines of the page do not follow STE.\n\nI found no contradiction between the outlines of job/job.adoc and job/work-plane.adoc and the diffs. Only outlines were available, thus I could not compare the full facts.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.8771709999999999,
+     "duration_ms": 112868,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.8771709999999999,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/sanity-check.adoc",
+   "mode": "amend",
+   "prs": [
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32903,
+     "what": "Run Summary: added that the Z values are in Job coordinates, that the report calculates the Z range of an Operation on a Work Plane from the placed Toolpath, and that the Z range of the Job comes from its Operations. Squawks: added the rotary axis check (WARNING when the rotary axes move between Operations and the Pre-Rotary Move property is empty) and the Fixture check for the Fixture of a Work Plane (WARNING for a value that is not a Fixture word, WARNING for a Fixture that is also in a Fixtures list of the Job with more than one entry). Added 32903 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding fixed: the prose no longer contains \"work coordinate system\". The definition sentence now says that a Fixture is a `G54` to `G59.9` selection, not the clamping of the Stock. The first bullet of the Fixture check now says \"not an accepted Fixture word\".\n\nOne occurrence of \"work coordinate system\" stays on the page. It is in the quoted text of the WARNING Squawk, in monospace, as the interface spells it (STYLE.md §4.1). A change to that text removes a fact. If the lint also reads monospace text, it will report this line again; the finding cannot be fixed there without a loss of content.\n\nAll other lines are the same as in the previous draft. `:page-status:` is not set, because `unverified` is empty and the page on `main` has no `:page-status:` attribute. No pending gypsy text was given; the page builds on the text of `main`. The outlines of the other pages of the change set show no contradiction with this page.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.568931,
+     "duration_ms": 65712,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.568607,
+     "duration_ms": 48002,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.137538,
+   "verdicts": [
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/surface.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the `Workplane` property line in the `.Path` group. The property is now a link to a named Work Plane, not a tool orientation vector with default (0, 0, 1). The line names the Work Plane and links to xref:job/work-plane.adoc[]. Added 32722 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name on line 205 is now monospace (`Workplane`) and not bold. The name is the identifier that the code gives (`obj.addProperty(\"App::PropertyLink\", \"Workplane\", \"Path\", ...)`), thus it cannot become \"Work Plane\" without the invention of an interface label. STYLE.md §6.3 marks a code identifier as monospace. If the lint also flags monospace text, the finding cannot be fixed without the loss of the property name; the vocabulary check then needs an exception for this identifier.\n\nPer the decisions of the person, the page does not describe the Work Plane selector or the Reset to defaults button. The `=== Heights` list stays as it is; job/work-plane.adoc holds that content. All other lines are unchanged (AMEND ONLY), also the lines that do not follow STYLE.md. `:page-status:` was not on the page and `unverified` is empty, thus it was not added. The Surface.py change to `opUpdateDepths` is internal and makes no statement of the page false.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.605259,
+     "duration_ms": 71704,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.675107,
+     "duration_ms": 70060,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.280366,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "inspect/inspect.adoc",
+   "mode": "amend",
+   "prs": [
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32903,
+     "what": "Description: added one paragraph that says the Tool Bit shape points along the Tool Axis of the Operation. Options: added the *Raw* checkbox, the fact that *Raw* does not apply the Placement of the Operation, and the added line of the note that gives the frame origin. Notes: added the frame of the listing with and without *Raw*, the Placement of the 3D highlight, and the position and the orientation of the Tool Bit shape. Infobox: added Work Plane to See also. Attributes: added :page-source-pr: 32903 and set :page-status: draft."
+    }
+   ],
+   "unverified": [
+    "The label of the checkbox is \"Raw\". The diff shows the tooltip and the note text, but not the label of the checkbox.",
+    "The added line of the note shows in the dialog as: \"Raw: as stored, in the operation's own frame; the frame's origin (x, y, z) and rotation are not applied.\" The position of this line in the dialog is not confirmed.",
+    "The Tool Bit shape shows tilted along the Tool Axis in the 3D View for an Operation that links to a Work Plane that is not parallel to the table.",
+    "The highlight in the 3D View stays on the Toolpath of an Operation that links to a Work Plane, also for arc moves."
+   ],
+   "figures_wanted": [],
+   "notes": "Lint fix: the 39-word sentence on line 30 is text from `main` that this page must keep unchanged in AMEND ONLY mode. The previous draft added a new sentence to that line, and the linter then examined the full line. The line is now the same as on `main`, and the new sentence is a separate paragraph. No content was removed. If the linter continues to report line 30, the finding is about text that is not in the scope of this change.\n\nOne more correction: the previous draft put a `[.since]` marker on the full *Raw* bullet. The diff shows that the checkbox was there before PR 32903; only the Placement behaviour is new. The *Raw* bullet now has no marker, and a separate bullet with the marker gives the Placement behaviour.\n\nNo pending gypsy text was given; the page builds on the text of `main`. The other pages of the set were given as outlines only, thus a check for contradictions was not possible. The page keeps the non-skeleton heading `== Notes` and the title `CAM Inspect` because the mode keeps the heading structure.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.395607,
+     "duration_ms": 43516,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.39749899999999994,
+     "duration_ms": 33926,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.7931059999999999,
+   "verdicts": [
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "inspect/simulator-legacy.adoc",
+   "mode": "amend",
+   "prs": [
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32903,
+     "what": "Added two items to the Notes section. The first item says that the voxel simulation shows the Toolpath at the position of the Work Plane, removes material along Z only, shows a vertical Tool Bit, and does not represent a cut in a Work Plane that is not parallel to the table. The second item says that the boolean simulation works in the frame of the Work Plane, with the Tool Bit along the Tool Axis. Added `:page-source-pr: 32903` and `:page-status: draft`."
+    }
+   ],
+   "unverified": [
+    "The diff does not show how `isVoxel` is set. It is not confirmed that the task panel of the Legacy CAM Simulator has a control that selects the boolean simulation. If the boolean simulation is not available in the interface, remove the second new item in the Notes section.",
+    "The voxel simulation shows a vertical Tool Bit and an incorrect material removal for an Operation with a Work Plane that is not parallel to the table. This is read from the code comment and the code; it is not confirmed in FreeCAD.",
+    "The boolean simulation shows the Tool Bit along the local +Z of the Work Plane and cuts the Stock correctly for a tilted Work Plane. This is read from `toolPlacement()` and `PerformCutBoolean()`; it is not confirmed in FreeCAD."
+   ],
+   "figures_wanted": [],
+   "notes": "Mode AMEND ONLY: all lines of the current page are the same, and only the Notes section has new items. The page had no `:page-source-pr:` and no `:page-status:` attribute; the two attributes are new. The Task panel section has no change, because the diff shows no new control and no changed control. The verdict names the Task panel section, but the diff does not show which control selects the boolean simulation, so no control is described. The first use of Work Plane links to job/work-plane.adoc and not to the glossary, because the glossary page is not in this change set. The existing item about rotary axis words stays: the diff does not contradict it, because a Toolpath in a Work Plane has no rotary words. No contradiction was found with the other pages of the set; only their outlines were available. Conflict with the global STE rule: STYLE.md permits sentences of 30 words and the terms of ADR-000, and the page text obeys STYLE.md. The new lines are also in the STE limits (25 words maximum).",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.388407,
+     "duration_ms": 39032,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.388407,
+   "verdicts": [
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/drilling.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the description of the `Workplane` property in the .Path group. The property is now a link to a Work Plane, and the line links to xref:job/work-plane.adoc[Work Plane]. Removed the false statements: the vector default (0, 0, 1) and the reference to a Job of type Multiaxis. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding on line 134: the word is the name of the property (`Workplane` in Path/Op/Base.py), not prose. The name is a fact of the page, so the line keeps it. The markup of the name changed from bold to monospace, which STYLE.md §6.3 gives for a code identifier. This change was not tested against the lint. If the lint also examines monospace text, the finding is a false positive, because 'Work Plane' is not the name of the property. The other properties in the list use bold; the property editor shows the same string, 'Workplane', thus a reviewer can restore bold if the lint permits it. The prose of the line uses the ADR-000 term Work Plane. Per the decisions of the person, the page does not describe the Work Plane selector or the Reset to defaults button; job/work-plane.adoc has that content. No other line changed. :page-status: was not set and stays unset, because `unverified` is empty.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.5277270000000001,
+     "duration_ms": 49499,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.585087,
+     "duration_ms": 60944,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.1128140000000002,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/waterline.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: the `Workplane` entry changed. The property is a link to a Work Plane of the Job, not a vector for the Tool Bit orientation. The entry links to xref:job/work-plane.adoc[Work Plane] and says that an empty link means the XY of the Job. `:page-source-pr:` has the value 32722."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name on line 170 is now the code identifier `Workplane` in monospace (STYLE.md §6.3), not bold text. The identifier is the spelling in `Path/Op/Base.py` and cannot change to \"Work Plane\". The prose in the same entry uses the ADR-000 term \"Work Plane\" with the link. If the lint also examines monospace text, the finding needs an exemption for this code identifier; the fact stays on the page. The entry is now two sentences, each with one idea.\n\nThe decision of the person applies: the page does not describe the Work Plane selector or the Reset to defaults button. The \"Heights\" list under \"Tasks Window Editor Layout\" has no change. The detail is in job/work-plane.adoc.\n\n`:page-status:` is not on the page and `unverified` is empty, thus no `:page-status:` line was added. The change to `opUpdateDepths` in `Waterline.py` is internal and makes no statement of the page false. No pending gypsy text was given; the draft uses the text of `main`.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.538579,
+     "duration_ms": 51500,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.586139,
+     "duration_ms": 51723,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.124718,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/profile.adoc",
+   "mode": "amend",
+   "prs": [
+    32722,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: the `Workplane` property is a link to a Work Plane, not a Tool Bit orientation vector. The line now names the Work Plane and links to job/work-plane.adoc. The reference to the 'Set Workplane from Face' context menu command is removed, because the command has a new label and job/work-plane.adoc describes it."
+    },
+    {
+     "pr": 32903,
+     "what": "Properties, Base group: the paragraph that told the reader not to edit Placement is replaced by a NOTE. The NOTE says that Placement is read-only and that the Operation sets it when it calculates the Toolpath."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name `Workplane` is now in monospace as a code identifier (STYLE.md 6.3), not in bold. The property is `Workplane` in the code, so the page cannot use \"Work Plane\" as the property name. This is a conflict between STYLE.md 4.1 (property names as the property editor shows them, in bold) and the vocab rule. If the linter also flags monospace text, the linter needs an exception for this property name; the fact stays on the page. No other line changed from the previous draft.\n\nScope: the decisions of the person limit this page to one sentence about the Work Plane. The page does not describe the Work Plane selector, the 'Reset to defaults' button, or the new offer of Side when the Work Plane changes. job/work-plane.adoc must contain these facts.\n\nNot changed, but related: the Heights section says that the buttons adjacent to Start and Final transfer the Z value of the selected feature. With a Work Plane, the code measures this depth along the Tool Axis from the Work Plane. The statement stays true for an Operation with no Work Plane, so the line is not changed.\n\n`:page-status:` is not on the page and `unverified` is empty, so the attribute was not added.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.627303,
+     "duration_ms": 65359,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.646235,
+     "duration_ms": 54209,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.273538,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/pocket.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the description of the `Workplane` property in the Path property group. The old text gave a vector with default (0, 0, 1) and the context menu command \"Set Workplane from Face\"; the pull request makes the two statements false. The new line names the Work Plane and links to job/work-plane.adoc. Added 32722 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name on line 90 is now monospace (`Workplane`) and not bold. `Workplane` is the code identifier of the property and its spelling is fixed, thus the name cannot become \"Work Plane\". The other properties in the list stay bold, so this line differs from them in markup. If the lint also examines monospace text, the finding stays and needs an exemption for this identifier; the name was not removed because that removes a fact. No pending gypsy text was given; the page builds on the text of `main`. By the decision of the person, the Heights list does not get the Work Plane selector or the Reset to defaults button; job/work-plane.adoc describes them. `:page-status:` was not added because `unverified` is empty. No other line was changed.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.480495,
+     "duration_ms": 40889,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.508563,
+     "duration_ms": 40991,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.989058,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/thread-milling.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Added one sentence below the `.Path` property list in Properties. The sentence says that the *Workplane* property links the Operation to a named Work Plane that the Job holds, and it links to xref:job/work-plane.adoc[Work Plane]. Added `:page-source-pr: 32722`. No other line changed."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The page text builds on the text of `main`. No pending gypsy text was given.\n\nThe decision of the person permits one sentence about the Work Plane on an Operation page. This page has no Heights section, so the sentence is in Properties, below the `.Path` list that names *Workplane*. The sentence does not describe the Work Plane selector or the `Reset to defaults` button; job/work-plane.adoc contains that detail.\n\nThe pull request makes no statement of this page false. Usage step 4 lists only Clearance, Retract, Start and Final for the Heights section. That step stays as it is, because the decision of the person keeps the selector off Operation pages.\n\nThe `[.since]#introduced in 26.3#` marker on the new sentence comes from the merge of PR 32722 into `main` (26.3dev). The diff shows that a *Workplane* property of a different type (a vector) was on the Operation before this pull request. If that property was in release 1.1, a reviewer can remove the marker.\n\n`:page-status:` is not on the page and `unverified` is empty, so no `:page-status:` line was added. The code establishes the one new statement: `Path/Op/Base.py` adds `Workplane` as `App::PropertyLink` in the `Path` group for each Operation.\n\nThe lines that do not follow STYLE.md stay unchanged, as the AMEND ONLY mode requires. Examples are the `CAM ThreadMilling` title, the `== Notes` heading, the `[.until]` marker and the plain `Note:` paragraph.\n\nOnly the outlines of the other pages of this change set were available. No contradiction with the diffs or with this page was found in them.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.47501899999999997,
+     "duration_ms": 39408,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.47501899999999997,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "reference/fourth-axis.adoc",
+   "mode": "amend",
+   "prs": [
+    32722,
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Section '3+2 indexed machining': the *Workplane* property is a link to a named Work Plane that the Job holds, not a tool-axis vector. Several Operations can share one Work Plane. Added the link to job/work-plane.adoc in the section and in 'See also'. Removed the 'Cannot solve workplane orientation' limitation."
+    },
+    {
+     "pr": 32903,
+     "what": "Sections 'Description', '3+2 indexed machining', 'Display and post-processing of rotary moves' and 'Limitations': the Operation generates its Toolpath in the frame of the Work Plane with no rotary words, and the read-only *Placement* positions the Toolpath. Removed the G0 rotary move and the `(workplane rotation unavailable)` comment. Added the `rotation_strategy` values (`none`, `dwo`, `twp`, `post_transform`), the `dwo_supported` load rule, the advisory warning of the Operation, and the post-process limits for Indexed Operations."
+    }
+   ],
+   "unverified": [
+    "The Operation writes the 'cannot index to work plane' warning to the Report view. The diff shows a Path.Log.warning call; the destination was not confirmed in a FreeCAD session.",
+    "The 3D view, the simulators and Inspect position the Toolpath of an Indexed Operation with the Placement of the Operation. The source is a code comment in Path/Op/Base.py, not a test in a FreeCAD session.",
+    "An Indexed Operation does not post to a Machine with rotary axes and the Rotation Strategy `none`. The source is the RotationStrategy docstring and ADR-000; the Post-Processor code is not in the diffs.",
+    "The Post-Processor does not write output for a Work Plane that the Machine cannot index to. The source is ADR-000 and the PR description; the Post-Processor code is not in the diffs.",
+    "A legacy Post-Processor does not post an Indexed Operation. The source is ADR-000 and the verdict; the Post-Processor code is not in the diffs.",
+    "The Post-Processor does not write output for `post_transform`. The source is the RotationStrategy docstring ('not emitted yet').",
+    "The property editor shows the property label as *Workplane* and shows *Placement* as read-only on an Operation."
+   ],
+   "figures_wanted": [],
+   "notes": "Lint fix: line 54 no longer contains the words 'work offset'. The `dwo` item now reads 'DWO, for example Haas `G254` and Fanuc `G54.2`/`G54.4`'. The ADR-000 expansion of DWO contains the prohibited words, so the page gives the ADR-000 short form and the control codes from the RotationStrategy docstring. No fact was removed; the spelled-out expansion of DWO is the only loss.\n\nNo other line changed from the previous draft. Mode is AMEND ONLY, so lines that do not follow STYLE.md stay as they are: the title with the 'CAM ' prefix, the `[.since]#Since 26.3#` variants, the '== See also' heading and the history sentences in the unchanged sections.\n\nThe sentence 'legacy post-processors output the angle words unchanged' stays. It applies to Toolpaths that contain A/B/C words (Rotary Surface, 3D Surface rotational scan, Axis Map), which the pull requests do not change. The new limitation 'A legacy Post-Processor does not post an Indexed Operation' applies to Work Plane output only.\n\nThe page keeps xrefs to operations/rotary-surface.adoc, dressups/axis-map.adoc, output/machine.adoc and reference/preferences.adoc from the current page. These pages are not in the change set; the xrefs were not checked.\n\nNo pending gypsy text was given. The draft builds on the text of `main`.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.6682589999999999,
+     "duration_ms": 77038,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.608755,
+     "duration_ms": 34109,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.2770139999999999,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ],
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "dressups/zcorrect.adoc",
+   "mode": "amend",
+   "prs": [
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32903,
+     "what": "Added two items to Limitations. The dressup corrects only a Toolpath on a Work Plane parallel to the machine table; for a different Tool Axis it prints a warning and outputs the unmodified Toolpath. The dressup reads the probe map at the document X, Y position of each Work Plane frame point, and the out-of-area warning shows document coordinates. Added 32903 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: line 70 now reads \"the Operation that the dressup modifies\" in place of \"the base Operation\". No content was removed. All lines of the page from main are unchanged. :page-status: is not set, because `unverified` is empty and the page on main has no such attribute. The page has no \"Notes\" section; the verdict named \"Limitations\" and \"Notes\", and all new text is in \"Limitations\". No pending gypsy text was given; the draft builds on main.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.374171,
+     "duration_ms": 31136,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.383683,
+     "duration_ms": 25209,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.757854,
+   "verdicts": [
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/fixture.adoc",
+   "mode": "amend",
+   "prs": [
+    32903
+   ],
+   "changes": [
+    {
+     "pr": 32903,
+     "what": "Added one sentence to Description: a Work Plane can name a Fixture of its own. Added two paragraphs to \"Fixtures on the Job\": the *Fixture* property of a Work Plane, its empty default, the sequence in which the Post-Processor selects the Fixture and returns to the Job's Fixture, the relation to the *Fixtures* property of the Job, and the Sanity Check warning. Added links to job/work-plane.adoc and job/sanity-check.adoc. Added `:page-source-pr: 32903` and `:page-status: draft`."
+    }
+   ],
+   "unverified": [
+    "The Sanity Check warns when a Work Plane names a Fixture that the Fixtures property of the Job also lists. Only the verdict text states this behavior. The diff excerpt for this page (Path/Main/Workplane.py) does not show the check, the Squawk type, or the Squawk text."
+   ],
+   "figures_wanted": [],
+   "notes": "Mode AMEND ONLY: all lines of the current page are returned without change, also the lines that do not obey STYLE.md (title with \"CAM \" prefix, capitalised warning, `[.since]#1.1 and later#`, `[.until]` markers, \"Since 1.0\", non-skeleton headings). The heading structure is the same.\n\nThe verdict names the sections \"Description\" and \"Notes\". The page has no Notes heading, and the mode does not permit a new heading. The Notes content is in the \"Fixtures on the Job\" section.\n\nBy the decision of the person, job/work-plane.adoc is the one place that describes the Work Plane. This page gives only the relation between the Fixture of a Work Plane and the Fixtures of the Job, and links to job/work-plane.adoc for the property detail. The Properties and Scripting sections do not list the Work Plane *Fixture* property.\n\nThe first use of \"Work Plane\" links to job/work-plane.adoc and not to a glossary anchor, because reference/glossary.adoc is not in the change set and its existence was not confirmed.\n\nThe page had no `:page-status:` attribute. `:page-status: draft` was added because `unverified` is not empty. If a reviewer confirms the Sanity Check statement from the full diff of PR 32903, remove the attribute value.\n\nThe help text of the property permits \"G54-G59.9, G54.1 Pn\". The page does not give the G54.1 Pn form; job/work-plane.adoc must give the permitted values. The diff shows no validation of the text value.\n\nOnly the outlines of the other pages were available, thus a check for contradictions with their text was not possible. No file in the worktree was read or changed.\n\nSTE conflict: STYLE.md and ADR-000 terms and the fixed `[.since]` marker form were obeyed where they differ from ASD-STE100.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.406623,
+     "duration_ms": 46406,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.406623,
+   "verdicts": [
+    [
+     "2026-09-30T02:15:58Z",
+     32903,
+     "CAM:  Operations respect workplane frame",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/engrave.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the description of the `Workplane` property in the Path group. The property is a link to a Work Plane of the Job, not a tool orientation vector with the default (0, 0, 1). The new sentence links to xref:job/work-plane.adoc[Work Plane]. Added 32722 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name on line 98 is now monospace (`Workplane`) and not bold. The name is the code identifier of the property and FreeCAD spells it as one word, so the page cannot write \"Work Plane\" there. The other properties in the list stay bold, thus this one line has a different markup. If the lint also flags monospace text, add this identifier to the lint exceptions; do not change the spelling.\n\nThe decisions of the person apply: the page does not describe the Work Plane selector or the Reset to defaults button of the Heights page. Those controls are in job/work-plane.adoc. The Heights list under Options is not changed.\n\nNo statement of the page is unverified, thus `:page-status:` is not added. All other lines are the same as on `main`, also the lines that do not follow STYLE.md.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.470875,
+     "duration_ms": 36146,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.48753100000000005,
+     "duration_ms": 31658,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.9584060000000001,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/mill-face.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the property line in the Path group that described a Tool Bit orientation vector with default (0, 0, 1). The line now names the link to the Work Plane, gives the meaning of an empty link, and links to job/work-plane.adoc. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The lint finding is fixed: the changed line no longer contains the word that the lint refused. The fix has a cost. The code identifier of the property is `Workplane`, and the property editor probably shows that same spelling. The line now identifies the property by the linked term Work Plane and does not give a bold property label. A reviewer who wants the identifier back must add a lint exception for the UI string (STYLE.md §4.1). All other lines are the same as on main. The page does not describe the Work Plane selector or the Reset to defaults button, as the decisions of the person require; job/work-plane.adoc has that detail. No :page-status: attribute was added because `unverified` is empty.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.492335,
+     "duration_ms": 39711,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.519183,
+     "duration_ms": 39120,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.011518,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/mill-facing.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: the `Workplane` property is now a link to a Work Plane of the Job, not a tool orientation vector with a default of (0, 0, 1). The line links to job/work-plane.adoc. Notes: the context menu command is now _Set Work Plane from Face_; it creates a Work Plane from a planar face and links the Operation to it. Added 32722 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding, line 78: the property name `Workplane` is an interface string. The code adds the property with the name `Workplane`, and the property editor shows it as one word. STYLE.md §4.1 tells the writer to quote an interface string as the interface spells it. Thus the spelling stays, and the name is now bold and monospace (*`Workplane`*) to mark it as a fixed identifier. If the lint does not ignore monospace text, this finding cannot be fixed without a false property name; the content stays. The prose of the same line uses the ADR-000 term Work Plane.\n\nPer the decisions of the person, this page does not describe the Work Plane selector or the Reset to defaults button on the Heights page. It also does not describe the FinalDepth check in a Work Plane. These topics belong to job/work-plane.adoc. The Heights list under Tasks Window Editor Layout is thus not changed.\n\n`:page-status:` is not set because `unverified` is empty; the page had no `:page-status:` attribute before.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.48884299999999997,
+     "duration_ms": 42365,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.490975,
+     "duration_ms": 32750,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.979818,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/probe.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Added one sentence to the Path group of Properties. The sentence names the Work Plane that the Operation links to and links to job/work-plane.adoc. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The lint finding is fixed. The new line does not contain the property identifier `Workplane`, because the vocabulary rule refuses that word. The line now names the Work Plane and gives the link only. The property name and its type (`Link`) are not on this page; job/work-plane.adoc must give them. The page does not describe the Work Plane selector or the Reset to defaults button, as the decisions of the person require. Thus no claim needs a GUI check, and :page-status: is not changed. All other lines are the same as on main, also the lines that do not obey STYLE.md. No project rule conflicted with STE in the added line.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.45425899999999997,
+     "duration_ms": 32299,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.457527,
+     "duration_ms": 24155,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.911786,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/slot.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: replaced the description of the Workplane property. The property is now a link to a Work Plane of the Job, not a tool orientation vector. Removed the false statements about the (0, 0, 1) default, the Job of type Multiaxis and the context menu entry \"Set Workplane from Face\". Added one sentence that names the Work Plane and links to job/work-plane.adoc. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name `Workplane` on line 123 is now in monospace as a code identifier (STYLE.md §6.3), not in bold. The property editor shows the name as one word, \"Workplane\", so the text cannot use \"Work Plane\" for the property name without a false interface string. If the vocab lint also examines monospace text, the finding stays and needs an exception for this identifier; no content was removed. The other property names in the list stay in bold, so this one line differs in markup from the lines around it.\n\nThe decision of the person applies: the page does not describe the Work plane selector or the Reset to defaults button on the Heights page. The Heights section is unchanged. job/work-plane.adoc must contain that description, the renamed context menu entry \"Set Work Plane from Face\", and the fact that an empty link means the XY of the Job.\n\n`unverified` is empty, because the diff of Path/Op/Base.py confirms the one changed statement. Thus :page-status: stays as it was (not set).\n\nOnly the outline of the other pages was available, so a comparison of their statements with this page was not possible.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.5421670000000001,
+     "duration_ms": 51492,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.569035,
+     "duration_ms": 46932,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.111202,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/tapping.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Added one sentence to Description. The sentence names the *Workplane* property and links to job/work-plane.adoc. Added 32722 to `:page-source-pr:`. No other line changed."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The decisions of the person permit one Work Plane sentence on an Operation page. The page does not describe the Work Plane selector or the Reset to defaults button. Thus the `needs_gui` claims of the verdict are not on this page, and `unverified` is empty. The page had no `:page-status:` attribute, and none was added.\n\nThe diff adds the `Workplane` link in `Path/Op/Base.py` (`ObjectOp.__init__` and `onDocumentRestored`). The diff does not show `Path/Op/Tapping.py`. The new sentence assumes that the Tapping Operation derives from `ObjectOp`, as ADR-000 states for each Operation.\n\nNo statement of the current page became false. The page does not obey STYLE.md in these items: the title prefix \"CAM\", the headings `Migration` and `Legacy properties`, the `[.obsolete]` marker, and the history in Description. AMEND ONLY mode keeps these lines as they are.\n\nNo pending text from an open gypsy pull request was given. The page builds on the text of `main`.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.422259,
+     "duration_ms": 22310,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.422259,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/vcarve.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: the Workplane entry now describes a link to a Work Plane of the Job, not a tool orientation vector with the default (0, 0, 1). The entry links to job/work-plane.adoc. Added 32722 to :page-source-pr:. No other line changed."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding on line 150: the property name `Workplane` is now in monospace as a code identifier, not in bold. The property name is a fact of the page, and the diff gives the identifier as \"Workplane\" (one word), so the name stays. If the vocabulary check also reads monospace text, this finding cannot be fixed without the loss of the property name; the check then needs an exception for this identifier. The other property names in the list stay in bold, so this one entry has a different markup. Per the decisions of the person, the page does not describe the Work Plane selector or the Reset to defaults button on the Heights page; job/work-plane.adoc holds that content. :page-status: is not set, because no claim is unverified. This page has no pending text from an open gypsy pull request; the text builds on main.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.513535,
+     "duration_ms": 44028,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.546467,
+     "duration_ms": 44340,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.0600019999999999,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/adaptive.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Replaced the description of the `Workplane` property in the Path property group. The property is now a link to a Work Plane of the Job, not a tool orientation vector with default (0, 0, 1). The entry names the Work Plane and links to job/work-plane.adoc. Added 32722 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name on line 125 is now marked as a code identifier (`Workplane`, monospace) and not as bold text. The name is the identifier that the code gives (`App::PropertyLink` \"Workplane\"), so the spelling stays. The ADR-000 term \"Work Plane\" is in the same line as the link text. If the lint also flags the monospace form, the identifier needs a lint exception, because the removal of the name removes a fact. The other property names in the list are bold; this one entry is different on purpose. As the person decided, the Heights section does not list the Work Plane selector or the Reset to defaults button; job/work-plane.adoc describes them. `:page-status:` is not set because `unverified` is empty. All other lines are the same as on main.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.530651,
+     "duration_ms": 46075,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.567203,
+     "duration_ms": 45277,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.0978539999999999,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/deburr.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, group Path: the `Workplane` property is a link to a Work Plane of the Job, not a tool orientation vector with the default (0, 0, 1). The bullet names the Work Plane and links to xref:job/work-plane.adoc. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding on line 101: the property name is now marked as a code identifier inside the bold property markup (*`Workplane`*). The name stays `Workplane` because the code defines the property with this name, and STYLE.md §4.1 keeps an interface string as the interface spells it. The spelling \"Work Plane\" for the property name would be a false interface string. I did not run the lint. If the lint also examines monospace text, the finding stays and needs an exemption for this property name; the content was kept.\n\nOnly the one bullet and :page-source-pr: are different from `main`. All other lines are the same, also those that do not obey STYLE.md.\n\nThe decision of the person applies: the page does not describe the Work Plane selector or the Reset to defaults button. Thus the sentence in Options about the Heights section does not list these two controls. job/work-plane.adoc describes them.\n\n:page-status: is not on the page and `unverified` is empty, so the attribute was not added.\n\nNo contradiction was found with the other pages of the change set; only their outlines were available.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.47553500000000004,
+     "duration_ms": 35634,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.492491,
+     "duration_ms": 32359,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.968026,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/helix.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, group Path: the `Workplane` entry now describes a link to a Work Plane of the Job, not a tool orientation vector with default (0, 0, 1). The entry links to xref:job/work-plane.adoc[Work Plane]. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint finding on line 110: the property name is `Workplane` in the code (Path/Op/Base.py, `_addWorkplaneProperty`), and the property editor shows it as one word. A change to \"Work Plane\" gives a false interface string. The name is now in monospace as a code identifier (STYLE.md §6.3), not in bold. The prose in the same line uses the ADR-000 term \"Work Plane\". If the lint also flags monospace text, the lint needs an exception for this property name; the content stays. The other property entries in the list use bold, so this one entry has different markup. The page does not describe the Work Plane selector or the Reset to defaults button, as the decisions of the person require; job/work-plane.adoc holds that content. No pending gypsy text was given; the page builds on the text of `main`. :page-status: is not set, because `unverified` is empty.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.524295,
+     "duration_ms": 47515,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.545723,
+     "duration_ms": 41271,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.070018,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "operations/pocket-3d.adoc",
+   "mode": "amend",
+   "prs": [
+    32722
+   ],
+   "changes": [
+    {
+     "pr": 32722,
+     "what": "Properties, Path group: replaced the description of the `Workplane` property. The property is now a link to a named Work Plane on the Job, not a tool orientation vector. The line names the Work Plane and links to xref:job/work-plane.adoc. Removed the false statements about the (0, 0, 1) default and the rotary moves. Added 32722 to :page-source-pr:."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fix: the property name `Workplane` on line 106 is now in monospace as a code identifier (STYLE.md §6.3), not in bold. The name is the identifier that Path/Op/Base.py gives to the property, so the page cannot spell it \"Work Plane\". The prose term on the same line is \"Work Plane\", as ADR-000 spells it. If the lint also examines monospace text, this finding needs an exemption for the property identifier; no content was removed. The other property names in the list stay in bold, because AMEND ONLY mode does not permit a change to them. The page does not describe the Work Plane selector or the Reset to defaults button, as the decisions of the person require; thus no claim needs a GUI check and :page-status: is not changed. All other lines are the same as on main, also the lines that do not obey STYLE.md.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.516579,
+     "duration_ms": 45739,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.535003,
+     "duration_ms": 41836,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.051582,
+   "verdicts": [
+    [
+     "2026-09-23T02:40:33Z",
+     32722,
+     "CAM: Shared work planes held by the Job",
+     "revise"
+    ]
+   ]
+  }
+ ],
+ "cost_usd": 31.933565199999997,
+ "generated": "2026-10-10T22:56:14+00:00"
+}
