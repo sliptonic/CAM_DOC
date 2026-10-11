@@ -257,8 +257,16 @@ def run(a):
     items, prs = open_work()
     held = held_pages(prs)
     for i in items:
-        if "approved" not in i["labels"] or "blocked" in i["labels"] or i["pr"] or i["work"] is None:
+        if "approved" not in i["labels"] or "blocked" in i["labels"] or i["work"] is None:
             continue
+        if i["pr"]:                              # a person asked for changes: revise the same pull request
+            if i["pr"]["reviewDecision"] != "CHANGES_REQUESTED" or not i["work"].get("goals"):
+                continue
+            cmd = [sys.executable, os.path.join(HERE, "run.py"), str(i["number"]), "--revise", "--pr"]
+            print(f"#{i['number']}: revise  {' '.join(cmd[1:])}", flush=True)
+            if not a.dry:
+                subprocess.run(cmd, cwd=ROOT)
+            return
         clash = sorted({held[p] for p in i["pages"] if p in held})
         if clash:
             print(f"#{i['number']}: waits, its pages are in open pull request(s) {', '.join(f'#{n}' for n in clash)}")

@@ -153,7 +153,7 @@ def siblings_text(done, budget=SIBLING_BUDGET):
 
 
 def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="origin/main", guidance=(),
-               unit="(none)"):
+               unit="(none)", prompt_only=False):
     """Draft one page in the working tree. Returns a job entry; with dry, prints the prompt."""
     page_path = os.path.join(PAGES, page)
     smap = triage.load_map()
@@ -194,6 +194,8 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
     prompt = tmpl
     for k in sorted(fields, key=len, reverse=True):       # $page_text before $page
         prompt = prompt.replace(f"${k}", fields[k])
+    if prompt_only:
+        return prompt
     if dry:
         print(prompt)
         print(f"\n[{page}: mode {mode}; prompt {len(prompt)} chars; PRs {prs}]", file=sys.stderr)

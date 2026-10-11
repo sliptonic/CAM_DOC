@@ -25,6 +25,11 @@ Write `terms`: for each thing that has more than one name in the source, the int
 present pages, the one name that all pages use, and the names they do not use. Follow the
 interface for interface strings and the ADR-000 vocabulary for concepts.
 
+For a dialog, a window, a tab, a button or a command, the name is the text that the interface
+shows (the window title, the label), and no other name is permitted for it. The ADR-000
+vocabulary gives the names of concepts only. When the present pages already use the correct name
+of a thing, keep that name.
+
 Write `unknown`: what a writer will want to say that you could not establish from the source,
 with the reason.
 
