@@ -4,7 +4,7 @@
 :page-menu: Edit → Preferences → CAM → Assets → Machines
 :page-since: 26.3
 :page-audit: applied
-:page-source-pr: 31819,32081,32096,32129,32250,32274,32323,32366,32367,32427,32485,32854,32903
+:page-source-pr: 31819,32081,32096,32129,32250,32274,32323,32366,32367,32427,32485,32854,32903,33254
 :page-status: draft
 :description: Define a CNC machine with its axes, Toolheads, kinematics and Post-Processor settings, and assign it to a Job.
 
@@ -156,6 +156,10 @@ These properties apply when the Machine's *Rotation Strategy* is TWP.
 * *Tilted work plane: align*: the line that points the Tool Axis along a declared plane when the control positions the rotary axes itself. Empty uses the plane command's own form. Default empty.
 * *Tilted work plane: cancel*: the line that cancels a declared plane. Empty uses the plane command's own form. Default empty.
 
+The `linuxcnc` Post adds one Machine-scope property for tilted Work Planes.
+
+* *Tilted work plane: kinematics select*: a line written after the preamble when the Job has an Operation on a tilted Work Plane. A switchable kinematics module that starts in identity kinematics gets its `G12.1 P1` here. Default empty.
+
 .Output format
 * *TLO after tool-change*: output G43 after a tool change. Unchecked, existing G43 commands are replaced by a comment. Default checked.
 * *Allow tool-change*: Job scope. Unchecked suppresses M6. Default checked.
@@ -187,6 +191,8 @@ The options `--strict`, `--json`, `--verbose` and `--no-postprocessor-check` cha
 The *Template* list offers the machine types above, your saved Machines, and Machine Templates from add-ons. Any installed add-on whose `package.xml` declares a machine content item, for example the *FreeCAD/Machines* add-on from the Addon Manager, contributes the `.fcm` files of its `machines/` folder as read-only templates grouped by add-on name. Selecting one copies it into your own Machine, so later add-on updates do not change your Machine. Add-ons can likewise ship Post-Processors in a `posts/` folder. A file named `ADDON_DISABLED` in an add-on folder, or `ALL_ADDONS_DISABLED` in the Mod folder, hides them.
 
 An Operation on a tilted Work Plane needs a Machine with rotary axes, a *Rotation Strategy* of DWO or TWP, and a Post-Processor that can emit that strategy. Otherwise the export refuses the Operation and names the Operation, the Machine and the missing piece. A Work Plane the Machine cannot index to is refused with the plane's name and the Machine's rotary limits. A legacy Post-Processor refuses every Operation on a tilted Work Plane. A Work Plane parallel to the table posts on any Machine. Changing the Machine changes the output on the next export; the Operations are not recomputed.
+
+The `linuxcnc` Post emits the TWP strategy only, because the LinuxCNC control does not support DWO. A Machine that has the `linuxcnc` Post and a *Rotation Strategy* of DWO cannot post an Operation on a tilted Work Plane. The `linuxcnc` Post declares a tilted Work Plane with `G68.2`, aligns the Tool Axis with `G53.1` and cancels the plane with `G69`. The `linuxcnc` Post cancels the plane before each Fixture change and each tool change.
 
 The Sanity Check compares every spindle speed commanded by M3 or M4 against the rotary Toolhead's min and max rpm and emits a `WARNING` Squawk for each speed outside the range. A Machine with several Toolheads gets a `NOTE` Squawk saying the speeds were not checked, because the model does not mark one Toolhead as active.
 

@@ -1,6 +1,6 @@
 = Fanuc Post-Processor
 :page-since: 26.3
-:page-source-pr: 33069
+:page-source-pr: 33069, 33254
 :page-status: draft
 :description: Reference for the fanuc Post-Processor: its properties, its defaults and the G-code that it writes for Fanuc mill controls.
 
@@ -118,13 +118,10 @@ The `fanuc` Post changes the defaults of these common properties. Each other com
 |Checked
 
 |*Supported G-code Commands*
-|The common list, with `G17`, `G54.1` and the program end commands added
+|The common list, with `G54.1` and the program end commands added
 
 |*Spindle-speed precision in output*
 |`0`. The S word is an integer.
-
-|*Generated Parameter Order for GCode*
-|`XYZABCUVWFSIJTQRPDHL`. This value is the common order without the K word.
 |===
 
 The `fanuc` Post also changes the help text of *Pre-Rotary Move*, *Post-Rotary Move* and *Tilted work plane: align*. <<_work_planes,Work Planes>> describes the values for a Fanuc control.
@@ -194,7 +191,28 @@ The system variable `#4120` is the active T code. The control gets the length of
 
 === Arcs
 
-The default word order of the `fanuc` Post has no K word. A helical arc gives its pitch through the Z word.
+The `fanuc` Post writes only the arc center words that are in the active plane. The Post omits the center word along the normal of the active plane, because a Fanuc control refuses that word.
+
+[cols="1,2,2",options="header"]
+|===
+|Active plane |Center words in the output |Center word that the Post omits
+
+|`G17`
+|I and J
+|K
+
+|`G18`
+|I and K
+|J
+
+|`G19`
+|J and K
+|I
+|===
+
+The active plane follows each `G17`, `G18` and `G19` command in the Toolpath. The active plane also follows these commands in the text blocks that the Post writes without change, for example the preamble. A tool change does not change the active plane. The active plane is `G17` when no command selects a plane.
+
+A helical arc gives its pitch through the axis word along the normal of the active plane. For a `G17` arc, this word is the Z word.
 
 === Work Planes
 

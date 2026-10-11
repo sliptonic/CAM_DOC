@@ -3,7 +3,7 @@
 :page-origin-revision: 8b09057daf 2026-02-04
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 31722,32096,32099,32129,32132,32274,32282,32293,32323,32863,32886,32903,33069
+:page-source-pr: 31722,32096,32099,32129,32132,32274,32282,32293,32323,32863,32886,32903,33069,33254
 :page-status: draft
 :description: How a Post-Processor is named, written, configured and installed, for legacy script posts and for machine-based posts.
 
@@ -83,7 +83,7 @@ These Posts are good examples to read:
 * `linuxcnc_legacy_post.py`: a script Post for http://linuxcnc.org/[LinuxCNC].
 * `grbl_post.py`: a class Post for https://github.com/grbl/grbl[grbl].
 * `generic_post.py`: the smallest machine-based Post. Use this file as the start of a new machine-based Post.
-* `linuxcnc_post.py`: a machine-based Post with two Job-scope properties.
+* `linuxcnc_post.py`: a machine-based Post with two Job-scope properties and one Machine-scope property. The Post emits only the `twp` strategy for a tilted Work Plane.
 * `fanuc_post.py`: a machine-based Post that changes many defaults of the common properties and adds its own properties.
 * `generic_sheet_cutting_post.py`: a machine-based Post for plasma, laser and waterjet machines. The Post changes the Toolpath commands before the conversion.
 * `heidenhain_post.py`: a machine-based Post that does not write G-code. The Post replaces each conversion function and writes Klartext blocks.
@@ -260,6 +260,7 @@ The table lists the properties that the included machine-based Posts add to the 
 |Post |Property |Scope |Values and default
 |`linuxcnc` |*Path Blending Mode* |Job |`EXACT_PATH`, `EXACT_STOP`, `BLEND`. Default: `BLEND`.
 |`linuxcnc` |*Blend Tolerance* |Job |Default: 0.0.
+|`linuxcnc` |*Tilted work plane: kinematics select* |Machine |One line of G-code. Default: empty.
 |`opensbp` |*Automatic Tool Changer* |Machine |Default: unchecked.
 |`opensbp` |*Automatic Spindle Control* |Machine |Default: unchecked.
 |`generic_sheet_cutting` |*Pierce Delay* |Job |Default: 1000.
@@ -290,6 +291,8 @@ The *Control Method For Cutter* values of the `generic_sheet_cutting` Post have 
 * `Spindle_Control`: the Post writes each `M3` and `M5` command of the Toolpath without a change.
 
 The `opensbp` Post sets the default of the common property *Ignore G-code Commands* to its own list of tolerated commands. The `opensbp` Post always expands the drill cycles into moves.
+
+<<work-planes-and-rotary-axes,Work Planes and rotary axes>> describes the effect of *Tilted work plane: kinematics select* of the `linuxcnc` Post.
 
 === Export sequence
 
@@ -343,7 +346,19 @@ A Post for a control that runs every cycle sets the default of *Drill Cycles to 
 
 * *Supported G-code Commands* lists the commands that the Post accepts.
 * *Ignore G-code Commands* lists commands that the Post accepts and removes from the output. A command in this list is not necessary in *Supported G-code Commands*.
+* *Supported G-code Commands* and *Ignore G-code Commands* contain one command name on each line. The Post compares a command with each full name, thus the entry `G17` does not match the command `G1`.
+* The default list of supported commands contains the plane commands `G17`, `G18` and `G19`. The Post writes the plane commands as modal commands.
+* The `opensbp` Post tolerates `G17` and does not support `G18` and `G19`, because a ShopBot arc is always in the XY plane.
 * `translate_no_engagement_feed` changes a marked `G0` move into a `G1` move. An Operation that has a no-engagement feed marks these moves with that feed. Default: unchecked.
+
+The Post records the active arc plane. These rules apply to the arc plane:
+
+* The default plane is `G17`.
+* A `G17`, `G18` or `G19` command in the Toolpath changes the plane.
+* A text block that the Post writes without a change, such as the preamble, changes the plane when the block contains a plane word. The last plane word of the block applies.
+* A tool change does not change the plane.
+
+The Post does not write the arc centre word along the normal of the active plane. The removed word is `K` on a `G17` arc, `J` on a `G18` arc and `I` on a `G19` arc. A helix has its pitch in the axis word, not in the centre word.
 
 === Modal output and line numbers
 
@@ -377,6 +392,14 @@ Two class attributes tell the export what a Post can write for an Operation on a
 `G68_2` and `G268` take intrinsic Z-X-Z Euler angles. `PLANE_SPATIAL` takes spatial angles about the fixed machine axes X, Y and Z. The common properties *Tilted work plane: declare*, *Tilted work plane: align* and *Tilted work plane: cancel* replace one line for a control with a different form. xref:output/machine.adoc[Machine] describes these properties and the *Rotation Strategy* of the Machine.
 
 When the rotary axes move, the Post writes the *Pre-Rotary Move* block before the move and the *Post-Rotary Move* block after the move. The Post writes rotary axis angles with the axis precision and does not convert them between millimetres and inches.
+
+The `linuxcnc` Post sets `ROTATION_STRATEGIES` to `("twp",)` and `PLANE_COMMAND` to `PlaneCommand.G68_2`. The export with the `linuxcnc` Post stops for a Machine that selects the `dwo` strategy. The `linuxcnc` Post cancels the plane before each Fixture change and each tool change.
+
+These rules apply to the properties of the `linuxcnc` Post for a tilted Work Plane:
+
+* *Tilted work plane: kinematics select* holds one line of G-code, such as `G12.1 P1` for a control with switchable kinematics. The Post writes the line after the preamble and the blend command when the Job has an Operation on a tilted Work Plane. An empty value writes no line.
+* An empty *Tilted work plane: align* writes `G53.1`, which moves only the rotary axes. The values `G53.1 P1` and `G53.1 P2` select one of the two poses. The word `Q1` lets the table take part in the move. The value `G53.6` keeps the centre point of the Tool Bit in its position.
+* The Post writes the *Pre-Rotary Move* block before the rotary axes move and before the align line. The line `G53 G0 Z0` in the block lifts the tip of the Tool Bit to machine Z zero.
 
 === Machine output options
 

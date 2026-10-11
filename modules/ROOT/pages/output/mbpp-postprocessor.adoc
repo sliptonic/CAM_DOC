@@ -1,7 +1,7 @@
 = Writing a Machine-Based Post-Processor
 :page-since: 26.3
 :page-audit: applied
-:page-source-pr: 31035,31720,31722,31819,32096,32099,32129,32132,32274,32282,32293,32313,32323,32366,32863,32903,33069
+:page-source-pr: 31035,31720,31722,31819,32096,32099,32129,32132,32274,32282,32293,32313,32323,32366,32863,32903,33069,33254
 :page-status: draft
 :description: The class contract, property schema, export sequence, hooks and tests of a machine-based Post-Processor.
 
@@ -133,7 +133,7 @@ The types map to controls as follows: `bool` gives a checkbox, `int` and `float`
 
 Three class methods carry the schema:
 
-* `get_common_property_schema()`: `PostProcessor` defines the properties that all Posts share. Override the method to change defaults. Edit the entries of the inherited list, as in the minimal example. Do not remove entries, because the export sequence reads them.
+* `get_common_property_schema()`: `PostProcessor` defines the properties that all Posts share. Override the method to change defaults and help texts. Edit the entries of the inherited list, as in the minimal example. Do not remove entries, because the export sequence reads them.
 * `get_property_schema()`: the properties of your Post. `PostProcessor` returns an empty list.
 * `get_full_property_schema()`: the common properties and the properties of your Post. Do not override this method.
 
@@ -342,13 +342,19 @@ An Operation stores its Toolpath in the frame of its xref:reference/glossary.ado
 * `ROTATION_STRATEGIES`: the strategies that the Post can emit for an Operation on a tilted Work Plane. Default: `("dwo", "twp")`.
 * `PLANE_COMMAND`: the xref:reference/glossary.adoc#plane-command[Plane Command] family that the Post writes for the `twp` strategy. Default: `TiltedWorkPlane.PlaneCommand.G68_2`, from `Path.Post.TiltedWorkPlane`.
 
+A Post sets the two attributes to what its control runs. The `linuxcnc` Post sets `ROTATION_STRATEGIES = ("twp",)` and `PLANE_COMMAND = PlaneCommand.G68_2`, because LinuxCNC does not run the `dwo` strategy.
+
 The export stops with a `CAMValueError` when an Operation is on a tilted Work Plane and one of these conditions is true:
 
 * The Machine has no rotary axes.
 * The Machine declares no Rotation Strategy.
 * The Machine declares the `post_transform` strategy.
 
+The export also stops with an error when the Rotation Strategy of the Machine is not in the `ROTATION_STRATEGIES` of the Post.
+
 The four `twp_` properties change the lines of the `twp` strategy for a control with a different form. `format_parameter()` does not convert A, B and C values between millimetres and inches. xref:output/machine.adoc[Machine] lists the conditions that the export examines.
+
+A Post can add a property for its control. The `linuxcnc` Post adds `twp_kinematics_select`, a `string` property with Machine scope. When the Job has an Operation on a tilted Work Plane, the `linuxcnc` Post adds that line to the end of the preamble.
 
 == Hooks
 
@@ -360,7 +366,7 @@ Override only the hooks that your dialect needs. Call `super()` for the remainde
 |`init_values(values)` |Set entries in the values dict. Call `super().init_values(values)` first, then set `POSTPROCESSOR_FILE_NAME`.
 |`_merge_machine_config()` |Change how the output options of the Machine go into `self.values`, or force a value.
 |`_expand_postprocessor_commands(postables)` |Add, remove or change commands after the postable list is complete and before the expansion.
-|`_expand_prefix(postables)` and the other `_expand_*` passes |Change one expansion pass. The `linuxcnc` Post adds its blend command (G61 or G64) to the preamble in `_expand_prefix`.
+|`_expand_prefix(postables)` and the other `_expand_*` passes |Change one expansion pass. The `linuxcnc` Post adds its blend command (G61 or G64) to the preamble in `_expand_prefix`. The `linuxcnc` Post also adds the `twp_kinematics_select` line there when the Job has an Operation on a tilted Work Plane.
 |`_expand_tool_length_offset_post_command(item, command)` |Return the list of `Path.Command` objects that the Post writes after M6 for the tool length offset. The default returns `G43 H<tool>` with the `tool_length_offset` annotation.
 |`_add_line_numbers(postables)` |Change the line number rule. The `heidenhain` Post disables this pass and numbers the blocks of the finished text.
 |`_convert_move(command)` and the other `_convert_*` methods |Change the conversion of one class of command into text.
@@ -380,6 +386,8 @@ A hook reports an error with a class from `Path.Post.CAMErrors`: `CAMError`, `CA
 
 A `MachineState` object (`Path.Base.MachineState`) follows the abstract machine. It holds the X, Y, Z, A, B and C position, F, S, T, the coolant, the active Fixture, and the drill return mode (G98 or G99). The F of G0 moves is held apart from F, as `G0F`.
 
+The `Plane` attribute holds the arc plane as a command name: `G17`, `G18` or `G19`. Default: `G17`. `Plane` is not in `MachineState.Tracked`. Read it as the attribute `machine_state.Plane`.
+
 `self.machine_state` is `None` unless a `with self.use_machine_state():` block is active. The conversion stage opens one such block for each output section. The state thus starts new for each section.
 
 The conversion calls `machine_state.addCommand(cmd)` before it calls the conversion hook for `cmd`. These rules follow:
@@ -394,6 +402,15 @@ The state becomes unknown, with each value `None`, after these events:
 * A `str` postable, because its text can contain G-code.
 * A command with the `as-is` annotation.
 
+These events do not set `Plane` to `None`. Two methods set `Plane`:
+
+* `addCommand(cmd)` sets `Plane` from a `G17`, `G18` or `G19` command.
+* `addGcodeText(text)` sets `Plane` from the last `G17`, `G18` or `G19` word in a block of text. The method reads nothing else from the text.
+
+The conversion calls `addGcodeText()` with the text of each `str` postable and with the text of each `as-is` annotation. `copy()` returns a state with the same `Plane`.
+
+`_convert_move()` reads `Plane` for an arc move and omits the centre word along the normal of the plane: K for `G17`, J for `G18`, I for `G19`. When `self.machine_state` is `None`, `_convert_move()` uses `G17`.
+
 An M3 or M4 without an S parameter sets `S` to `None`. `setState(state)` sets the keys of the dict and sets each other key to `None`. `updateState(state)` sets the keys of the dict and does not change the other keys. `setState(None)` sets each key to `None`. If your hook writes motion that the tracker did not see, update the state, because the next command reads it.
 
 [#command-filtering]
@@ -405,7 +422,9 @@ The conversion examines each command in this order:
 . A command whose name is in `ignored_commands` gives no output.
 . Each other command must be in `supported_commands`. If it is not, the export stops with an error.
 
-Three classes of command pass the third step when they are not in the list: a comment, a bare `T` word with its tool number, and a command with the `allow_unsupported` annotation. The lists in `Constants.py` supply the default of `supported_commands`: moves, drill cycles, probe commands, offsets, and the spindle and coolant M-codes. The default also has the set that Operations must not emit but Posts can: radius compensation, distance mode, units, return mode and cycle cancel.
+The conversion compares the complete command name with each line of `ignored_commands` and `supported_commands`. The name `G1` does not match a line that contains `G17`.
+
+Four classes of command pass the third step when they are not in the list. The classes are a command with an empty name, a comment, a bare `T` word with its tool number, and a command with the `allow_unsupported` annotation. A command with an empty name carries only its parameters, because the modal suppression removed the name. The lists in `Constants.py` supply the default of `supported_commands`: moves, drill cycles, probe commands, offsets, and the spindle and coolant M-codes. The default also has the plane selection commands `G17`, `G18` and `G19`, which the conversion writes as modal commands. The default also has the set that Operations must not emit but Posts can: radius compensation, distance mode, units, return mode and cycle cancel.
 
 A `Path.Command` carries annotations. `Constants.py` defines the keys.
 
@@ -521,7 +540,7 @@ A Post for FreeCAD itself goes into `src/Mod/CAM/Path/Post/scripts/`. Add an ent
 |===
 |Post |Shows
 |`generic_post.py` |The minimal shape: `PostProcessor` with no overrides.
-|`linuxcnc_post.py` |Changed schema defaults, a `choice` property with Job scope (blend mode), an `_expand_prefix` hook, and the rigid tapping conversion.
+|`linuxcnc_post.py` |Changed schema defaults and help texts, a `choice` property with Job scope (blend mode), a `string` property with Machine scope (`twp_kinematics_select`), the `ROTATION_STRATEGIES` and `PLANE_COMMAND` attributes, an `_expand_prefix` hook, and the rigid tapping conversion.
 |`generic_sheet_cutting_post.py` |A Post with many properties, for plasma, laser and waterjet machines: delays, the `cutter_control` choice (`Z_Control`, `Spindle_Control`, `G0_Control`), `STRIP_Z`, `STRIP_F`, and Run-scope switches. The Post changes the postables in `_expand_postprocessor_commands` and calls `super().get_sanity_checks(job)`.
 |`heidenhain_post.py` |A dialect that is not G-code (Klartext). The Post replaces each conversion hook, forces values in `_merge_machine_config`, reads `machine_state.previous`, and numbers the blocks of the finished text.
 |`opensbp_post.py` |A dialect that is not G-code (ShopBot OpenSBP), with probe support.

@@ -1,0 +1,307 @@
+{
+ "cluster": "issue-16",
+ "figures": [],
+ "issue": 16,
+ "branch": "gypsy/issue-16",
+ "pages": [
+  {
+   "page": "output/post-process.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Added 33254 to :page-source-pr:. Work Planes: added the tilted Work Plane output of the linuxcnc Post (TWP only, stop with a DWO Machine, G68.2 / G53.1 / G69 lines, the twp_align property, the Machine-scope property 'Tilted work plane: kinematics select', the Pre-Rotary Move block before G53.1) and a NOTE that the syntax follows a LinuxCNC draft. Functions of a Post-Processor: added one paragraph on the arc plane (G17, G18, G19) and the omitted arc center word (K, J or I) in machine-based output. Included Post-Processors table: added a linuxcnc row, and added the G17/G18/G19 behaviour to the opensbp and heidenhain rows."
+    }
+   ],
+   "unverified": [
+    "The heidenhain Post does not accept G18 and G19. The source is the description of PR 33254 only; the heidenhain diff was not supplied.",
+    "The linuxcnc Post stops the export with a DWO Machine. The PR description says so, but the diff does not show if the stop also occurs for a Job that has no Operation on a tilted Work Plane.",
+    "The opensbp Post reaction to G18 or G19 (stop of the export or a message) is not in the diff. The page says only that the Post does not accept them.",
+    "The Machine Editor label of the twp_align property is not in the diff. The page gives the identifier `twp_align`.",
+    "The words X, Y and Z of G68.2 are not described on the page. The diff does not say directly that they give the origin of the Work Plane.",
+    "The position of the *Pre-Rotary Move* block before the G53.1 line comes from the help text of the property, not from the emit code."
+   ],
+   "figures_wanted": [],
+   "notes": "The base is the text of `main`; no pending gypsy text was given. `:page-status:` was `draft` and stays `draft`.\n\nNo heading was added. The arc plane paragraph is at the end of \"Functions of a Post-Processor\", because the verdict names \"Notes and limitations\" and no subsection is specific to arcs.\n\nNot put on this page:\n- The ignored and supported command lists are now matched name by name, one name on each line. The labels of these Machine properties are not in the diff. This fact belongs on output/machine.adoc.\n- The new help text of `pre_rotary_move` and `twp_align` for linuxcnc (G53 G0 Z0, G53.5 G0 Z0, the Q1 word). These are Machine Editor tooltips and belong on output/machine.adoc.\n- The fanuc Post no longer overrides `parameter_order`. The page has no statement on this.\n\nThe NOTE in \"Work Planes\" tells the reader that the linuxcnc syntax follows a LinuxCNC draft. STYLE.md section 9 forbids a link to the pull request, thus the page gives no link. Remove the NOTE if it is seen as a forward statement.\n\nThe output of each machine-based Post changed: a G17 arc has no K word. Figures or G-code examples on other pages that show `K0.000` on a G17 arc are now incorrect. This page has no such example.\n\nSTE and STYLE.md did not conflict in the added lines.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.633623,
+     "duration_ms": 103862,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.633623,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Included Post-Processors: the `linuxcnc_post.py` entry names the new Machine-scope property and the `twp`-only strategy. Properties of the included Post-Processors: added the row *Tilted work plane: kinematics select* (Machine scope, default empty) and a pointer to the Work Planes section. Commands and rapid moves: added the name-by-name match of the supported and ignored command lists, the plane commands `G17`, `G18`, `G19` as supported modal commands, the `opensbp` exception, the arc plane rules, and the removal of the arc centre word along the plane normal. Work Planes and rotary axes: added the `ROTATION_STRATEGIES` and `PLANE_COMMAND` values of the `linuxcnc` Post, the stop for a `dwo` Machine, the plane cancel before a Fixture change and a tool change, and the LinuxCNC values of *Tilted work plane: kinematics select*, *Tilted work plane: align* and *Pre-Rotary Move*. Lint correction: the `G53.6` sentence now says \"the centre point of the Tool Bit\"."
+    }
+   ],
+   "unverified": [
+    "The Machine Editor shows the property `twp_kinematics_select` of the `linuxcnc` Post with the label *Tilted work plane: kinematics select*, and the Post-Processing Dialog does not show it (Machine scope).",
+    "The interface labels *Supported G-code Commands* and *Ignore G-code Commands* are multi-line text fields with one command name on each line. The diff shows only the line split in `_command_names()`.",
+    "The `linuxcnc` Post cancels the plane (`G69`) before each Fixture change and each tool change. The source is the class docstring; the diff does not show the code that emits the cancel line.",
+    "The export with the `linuxcnc` Post stops with an error for a Machine with the `dwo` strategy. The source is the PR description and `ROTATION_STRATEGIES = (\"twp\",)`; the error text is not in the diff.",
+    "The `heidenhain` Post refuses `G18` and `G19`. The PR description says so, but the diff of `heidenhain_post.py` is not given, thus the page does not make this statement."
+   ],
+   "figures_wanted": [],
+   "notes": "The lint finding at line 401 is corrected: \"keeps the tool centre point\" is now \"keeps the centre point of the Tool Bit\". No content was removed. No other line changed from the previous draft.\n\nThe page text builds on the text of branch `main`. No pending gypsy text was given.\n\nThe page does not include the Heidenhain refusal of `G18` and `G19`, because the diff of `heidenhain_post.py` was not supplied. The claim is in `unverified`.\n\nThe page does not include the `G53.5 G0 Z0` form of the *Pre-Rotary Move* help text. That form depends on LinuxCNC pull request #4374, which is a draft, and STYLE.md §9 does not permit links to pull requests.\n\n`:page-status:` stays `draft` because `unverified` is not empty.\n\nOnly the outline of `output/post-process.adoc` was given. A comparison of its \"Included Post-Processors\" and \"Work Planes\" sections with this page was not possible.\n\nThe global ASD-STE100 rule and STYLE.md agree for the lines added. Lines that belong to other work stay as they are, also where they do not obey STE (AMEND ONLY mode).",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.712283,
+     "duration_ms": 123892,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.734787,
+     "duration_ms": 89854,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.44707,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "MachineState: added the `Plane` attribute (default `G17`, not in `Tracked`, not cleared by a tool change, a `str` postable or an `as-is` command), the `addGcodeText()` method, and the `copy()` behaviour. Added that `_convert_move()` omits the arc centre word along the plane normal (K for `G17`, J for `G18`, I for `G19`). Command filter: added the name-by-name match of `ignored_commands` and `supported_commands`, the command with an empty name as a fourth class that passes the supported-command check, and `G17`, `G18`, `G19` as supported modal commands. Work Planes and rotary axes: added the `linuxcnc` values of `ROTATION_STRATEGIES` and `PLANE_COMMAND`, the error for a Machine strategy that the Post does not declare, and the `twp_kinematics_select` property. Property schema: `get_common_property_schema()` also changes help texts. Hooks table and Reference implementations: updated the `linuxcnc` entries. Added 33254 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Lint fixes in this revision. (1) Work Planes section: the clause \"because LinuxCNC has no dynamic work offset\" is now \"because LinuxCNC does not run the `dwo` strategy\". The fact stays; the prohibited term is gone. (2) Command filter section: the 36-word sentence is now two sentences, with no loss of content. No other line changed from the previous draft. `:page-status:` stays `draft` as on `main`, because `unverified` is empty and the mode says to leave the attribute as it is. The page keeps headings that do not follow the STYLE.md skeleton, because the mode is AMEND ONLY. The diff does not show the code that refuses a Machine strategy outside `ROTATION_STRATEGIES`; that statement comes from the pull request description (\"a machine set to `DWO` now raises an error\"), so the page does not name the exception class. The diff does not show `Constants.py`; the statement that `G17`, `G18` and `G19` are in the default of `supported_commands` comes from the pull request description. The other pages of the set were given as outlines only, so no comparison of their facts with this page was possible.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.818911,
+     "duration_ms": 150642,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.8668549999999999,
+     "duration_ms": 112730,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.6857659999999999,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/posts/fanuc.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Section \"Defaults of the common properties\": removed the row *Generated Parameter Order for GCode*, because the fanuc Post no longer overrides this default. Changed the row *Supported G-code Commands*: `G17` is no longer an addition of the fanuc Post, because the common list has the plane commands. Section \"Arcs\": replaced the statement that the word order has no K word. The section now says that the Post omits only the center word along the normal of the active plane (K for G17, J for G18, I for G19), how the active plane follows `G17`, `G18` and `G19`, and that the default plane is `G17`. Added 33254 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [
+    "The _Postprocessor_ tab of the Machine Editor shows the common default of *Generated Parameter Order for GCode*, with the K word, for a Machine that uses the fanuc Post.",
+    "The *Supported G-code Commands* field of a fanuc Machine shows `G17`, `G18` and `G19` from the common list. The diff does not show the constant that adds these commands to the common list.",
+    "A `G18` arc and a `G19` arc from a Custom Operation post with the center words I and K, and J and K. The statement comes from the code in `_convert_move`, not from an export."
+   ],
+   "figures_wanted": [],
+   "notes": "The page text builds on the text of branch `main`. No pending gypsy text was given. `:page-status:` stays `draft` because `unverified` is not empty.\n\nThe new table in \"Arcs\" has three columns of data (plane, words in the output, omitted word), which STYLE.md §6.7 permits.\n\nThe other pages of the change set were given as outlines only, so a comparison of their statements was not possible. PR 33254 changes facts that those pages probably contain. Examine these points in output/postprocessor-customization.adoc (\"Commands and rapid moves\", \"Properties of the included Post-Processors\") and output/mbpp-postprocessor.adoc (\"MachineState\", \"Command filter and annotations\"): `G17`, `G18` and `G19` are supported modal commands for each machine-based Post; `MachineState` has a `Plane`; the ignored and supported command lists are compared name by name; a G17 arc no longer has `K0.000` in the output of each machine-based Post; the LinuxCNC Post no longer overrides `parameter_order`.\n\nThe PR also changes the LinuxCNC Post (TWP output, `twp_kinematics_select`, refusal of `DWO`). That content is not in the scope of this page. A LinuxCNC page is not in this change set.\n\nThe user's global rule asks for ASD-STE100. STYLE.md is the project rule and has priority where the two conflict. The added lines obey the two standards; no conflict occurred in the added text. Lines of the current page that do not obey STE were not changed, because the mode is AMEND ONLY.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.473731,
+     "duration_ms": 56054,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.473731,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Added 33254 to :page-source-pr:. Below the table of supported G-code commands, added two statements: a machine-based Post-Processor supports G17, G18 and G19 as modal commands (Constants.GCODE_PLANE in GCODE_SUPPORTED), and it removes the arc center word along the normal of the active plane (Constants.ARC_CENTER_WORD_NORMAL_TO_PLANE). In the MachineState section, added the Plane attribute (default G17, not in Tracked, not changed by a tool change), addCommand() for G17/G18/G19, addGcodeText(text), and copy() that keeps Plane. In the MachineState code example, removed 'plane' from the comment on getState() and added a line that reads ms.Plane."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Mode AMEND ONLY: all other lines are unchanged, also the lines that do not follow STYLE.md. :page-status: stays `draft` as it was; `unverified` is empty.\n\n1. getState() and Plane: the diff does not show getState(). The diff shows that Plane is not in Tracked and that copy() must set Plane after MachineState(self.getState()). From this, the page now says that getState() does not return Plane, and the example comment on getState() no longer lists 'plane'. A reviewer can confirm this in Path/Base/MachineState.py.\n\n2. setState(None): the verdict says that setState(None) keeps Plane. The diff does not show setState(), so the page does not make this statement. The page gives the statement from the code comment: a tool change does not change Plane.\n\n3. The sentence 'A machine-based Post-Processor calls addGcodeText() for the text that it writes without change, for example the preamble' comes from the docstring of addGcodeText() and the PR description. The call sites are not in the diff given for this page.\n\n4. The in-page reference <<machinestate,MachineState>> uses the automatic section ID of '== MachineState'. If the Antora configuration sets a different idprefix, change the anchor.\n\n5. The Post-Processor glossary link is now on the first use that follows STYLE.md (below the command table). The existing link in the Annotations section is unchanged because of the mode.\n\n6. The refusals of G18/G19 by the OpenSBP and Heidenhain posts, and the name-by-name match of the ignored and supported command lists, are not on this page. They belong to the Post-Processor pages of this change set. No contradiction was found with the outlines of those pages; only outlines were available.\n\n7. The two new paragraphs below the command table carry the [.since]#introduced in 26.3# marker. The MachineState additions do not, because the section marker scopes the section.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.704875,
+     "duration_ms": 118605,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.704875,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "output/machine.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Properties: added the `linuxcnc` Machine-scope property *Tilted work plane: kinematics select* below the tilted work plane list. Notes and limitations: added one paragraph. It says that the `linuxcnc` Post emits TWP only, that a Machine set to DWO cannot post an Operation on a tilted Work Plane, and that the post writes `G68.2`, `G53.1` and `G69` and cancels the plane before each Fixture change and tool change. Added 33254 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [
+    "The Machine Editor shows the label \"Tilted work plane: kinematics select\" in the property group of the Postprocessor tab when the `linuxcnc` Post is selected. The label comes from the schema in the diff; the editor was not run.",
+    "The text of the error that the export gives for a Machine with the `linuxcnc` Post and a Rotation Strategy of DWO. The diff shows only `ROTATION_STRATEGIES = (\"twp\",)`; the page says only that the Operation cannot post.",
+    "The statement that the `linuxcnc` Post cancels the plane before each Fixture change and each tool change comes from the class docstring. The output was not generated to confirm it."
+   ],
+   "figures_wanted": [
+    "output/machine/editor-postprocessor-tab.png: Machine Editor, Postprocessor tab, with the `linuxcnc` Post selected and the property Tilted work plane: kinematics select visible"
+   ],
+   "notes": "Lint fix: line 195 used the words \"work offset\". The sentence now reads \"because the LinuxCNC control does not support DWO\". No fact was removed. The UI value `Dynamic work offset (DWO)` in the Rotation Strategy bullet is an interface string from the current page and is not changed. `:page-status:` was `draft` before this change and stays `draft`, because `unverified` is not empty. The LinuxCNC-specific help text of *Pre-Rotary Move* and *Tilted work plane: align* (`G53.5 G0 Z0`, `G53.1 P1`/`P2`/`Q1`, `G53.6`) is not repeated here; it belongs on the pages that list post-specific properties (output/postprocessor-customization.adoc). The second commit of PR 33254 (arc center words follow the active plane, `G17`/`G18`/`G19` as supported commands, name-by-name match of the command lists) does not make a statement of this page false. The default of *Generated Parameter Order for GCode* on this page is the common default and stays correct. No pending gypsy text was given; the page builds on the text of `main`. The outlines of the other pages of the change set show no contradiction.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.574419,
+     "duration_ms": 82578,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.5983670000000001,
+     "duration_ms": 68261,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.172786,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  },
+  {
+   "page": "job/work-plane.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Notes and limitations, Machine list: added three items for the `linuxcnc` Post. The items give the TWP-only Rotation Strategy and the refusal of DWO, the `G68.2` line with the `G53.1` or `twp_align` alignment, and the `G69` cancel before each Fixture change and Tool Bit change. Added 33254 to `:page-source-pr:`."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The text builds on the `main` page. No pending gypsy text was given. `:page-status:` stays `draft` because the page had that value and the mode says to leave it when `unverified` is empty.\n\nThe refusal of a Machine with the DWO Rotation Strategy comes from the pull request description and from `ROTATION_STRATEGIES = (\"twp\",)`. The diff for this page does not show the code that raises the error or the error text, so the page does not quote a message.\n\nThe page names `twp_align` in monospace as a code identifier, because the diff shows only its help text and not its interface label. The `twp_kinematics_select` property and the `pre_rotary_move` help text are not on this page. They belong to the Post-Processor pages of this change set.\n\nThe new items do not link Rotation Strategy to the glossary, because the anchor in `reference/glossary.adoc` was not available to confirm. Add the link at review if the anchor exists. The link to Post Process goes to the page, not to its \"Work Planes\" section, because the section ID was not available to confirm.\n\nThe other pages of the set came as outlines only, so a comparison of their facts with this page was not possible.\n\nSTE conflict: STYLE.md permits sentences to 30 words; the added lines obey the stricter STE limit of 25 words. Unchanged lines stay as they were, as the mode requires.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.44979899999999995,
+     "duration_ms": 48379,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 0.44979899999999995,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "revise"
+    ]
+   ]
+  }
+ ],
+ "cost_usd": 6.56765,
+ "generated": "2026-10-11T16:11:28+00:00"
+}

@@ -10,7 +10,7 @@
 :page-see-also: CAM PostSelected, CAM Machine, CAM Postprocessor Customization
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 30644,31589,31819,32099,32129,32274,32282,32293,32313,32615,32854,32863,32903,33069
+:page-source-pr: 30644,31589,31819,32099,32129,32274,32282,32293,32313,32615,32854,32863,32903,33069,33254
 :page-status: draft
 :description: Export the selected Job to G-code files through the Post-Processor of the Job or of its Machine.
 
@@ -159,6 +159,8 @@ A Post does these functions for its control:
 
 Typical targets are mills, lathes, 3D printers, drag-knife machines, laser machines, engravers and plasma machines.
 
+[.since]#introduced in 26.3#: A machine-based Post follows the arc plane that `G17`, `G18` or `G19` selects. The Post reads these commands from the Toolpath and from the text blocks that it writes unchanged, such as the preamble. The default arc plane is `G17`, and a tool change does not change the arc plane. A machine-based Post does not write the arc center word along the normal of the arc plane. This word is K for `G17`, J for `G18` and I for `G19`.
+
 === Settings of the two flows
 
 A legacy Post takes its settings from the *Arguments* field of the Job, for example `--no-header --line-numbers --precision 4`. The tooltip of the *Arguments* field lists the arguments. A machine-based Post takes the same settings from the output options of the Machine (`.fcm`). Edit them in the Machine Editor, or override them for one export on the _Options_ tab of the Post-Processing Dialog. xref:output/machine-configuration.adoc[Machine Configuration] gives the priority of the value sources.
@@ -215,9 +217,10 @@ The table gives notes on individual Posts.
 |===
 |Post |Notes
 |`generic_sheet_cutting` |For plasma, laser and waterjet machines. *Control Method For Cutter* has the values `Z_Control`, `Spindle_Control` and `G0_Control`. Default: `Z_Control`.
-|`heidenhain` |Writes a Klartext program with block numbers, not G-code.
+|`heidenhain` |Writes a Klartext program with block numbers, not G-code. Does not accept `G18` and `G19`.
 |`fanuc` |Writes the `%` tape marks and an `O` program number.
-|`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation.
+|`linuxcnc` |[.since]#introduced in 26.3#: Posts an Operation on a tilted Work Plane with the TWP Rotation Strategy only. <<_work_planes,Work Planes>> gives the commands.
+|`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation. Accepts `G17` and does not accept `G18` and `G19`, because the arcs of the control are in the XY plane only.
 |===
 
 === Drill cycles and tapping
@@ -245,6 +248,16 @@ The Sanity Check of a machine-based Post gives a `WARNING` Squawk in these condi
 * The rotary axes move between Operations and the *Pre-Rotary Move* property of the Machine is empty.
 * A Work Plane names a Fixture that is not a G54 to G59.9 word or G54.1 Pn.
 * A Work Plane names a Fixture that is also in the *Fixtures* list of the Job, and that list has more than one Fixture.
+
+[.since]#introduced in 26.3#: The `linuxcnc` Post emits the TWP Rotation Strategy only. With a Machine whose *Rotation Strategy* is DWO, the `linuxcnc` Post stops the export. The `linuxcnc` Post writes these lines for an Operation on a tilted Work Plane:
+
+* `G68.2` with the words X, Y, Z, I, J and K declares the Work Plane. The words I, J and K are Euler angles about Z, then the new X, then the new Z.
+* `G53.1` aligns the Tool Axis with the normal of the Work Plane. The `twp_align` property of the Machine replaces this line, for example with `G53.1 P1`, `G53.1 P2` or `G53.6`.
+* `G69` cancels the Work Plane before each Fixture change and each tool change.
+* *Tilted work plane: kinematics select*: a Post-Processor Property with Machine scope. Default: empty. When the Job has an Operation on a tilted Work Plane, the Post writes the value as one line after the preamble. An example value is `G12.1 P1`, for a kinematics module that you can switch.
+* The Post writes the *Pre-Rotary Move* block of the Machine before the rotary axes move and before the `G53.1` line.
+
+NOTE: The tilted Work Plane syntax of the `linuxcnc` Post follows a draft of the LinuxCNC project. Make sure that the LinuxCNC control accepts `G68.2`, `G53.1` and `G69`.
 
 == Scripting
 

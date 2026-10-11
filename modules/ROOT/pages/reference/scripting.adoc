@@ -3,7 +3,7 @@
 :page-origin-revision: 5446a45b21 2025-11-05
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 31722,32129
+:page-source-pr: 31722,32129,33254
 :page-status: draft
 
 == Introduction
@@ -84,6 +84,10 @@ G90 (The command name is G90, there are no arguments)
 |===
 
 NOTE: Rotary axis words A, B, C on G0/G1/G2/G3 are rendered using the full angular travel about `Path.Center` [.since]#introduced in 26.3#.
+
+[.since]#introduced in 26.3#: A machine-based xref:reference/glossary.adoc#post-processor[Post-Processor] supports `G17`, `G18` and `G19` as modal commands. The `Constants` module lists the three commands in `GCODE_PLANE` and includes `GCODE_PLANE` in `GCODE_SUPPORTED`.
+
+[.since]#introduced in 26.3#: A machine-based Post-Processor removes the arc center word along the normal of the active plane from an arc. The removed word is `K` for `G17`, `J` for `G18` and `I` for `G19`. The dictionary `Constants.ARC_CENTER_WORD_NORMAL_TO_PLANE` holds this relation. <<machinestate,MachineState>> describes how the Post-Processor finds the active plane.
 
 == The Command object
 
@@ -538,10 +542,21 @@ from Path.Base.MachineState import MachineState
 ms = MachineState()
 ms.addCommands(path.Commands)
 ms.getPosition()   # the current XYZ
-ms.getState()      # the modal dictionary (units, plane, G90/G91, feed, return mode)
+ms.getState()      # the modal dictionary (units, G90/G91, feed, return mode)
+ms.Plane           # the active arc plane: 'G17', 'G18' or 'G19'
 ----
 
 Dressups and post-processors use it to expand drilling cycles accurately.
+
+The attribute `Plane` holds the active arc plane. The value of `Plane` is `G17`, `G18` or `G19`. Default: `G17`.
+
+* `addCommand(command)` sets `Plane` when the name of the command is `G17`, `G18` or `G19`.
+* `addGcodeText(text)` reads the plane selection from a block of G-code text. The last `G17`, `G18` or `G19` in the block sets `Plane`. `addGcodeText()` reads no other value from the text.
+* `copy()` returns a new `MachineState` that has the same state and the same `Plane`.
+
+`Plane` is not in the `Tracked` list of `MachineState`, and `getState()` does not return `Plane`. A tool change does not change `Plane`.
+
+A machine-based Post-Processor calls `addGcodeText()` for the text that it writes without change, for example the preamble.
 
 == See also
 

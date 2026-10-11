@@ -5,7 +5,7 @@
 :page-toolbar: Project Setup
 :page-workbench: CAM
 :page-since: 26.3
-:page-source-pr: 32722, 32903
+:page-source-pr: 32722, 32903, 33254
 :page-status: draft
 :description: Create a named Work Plane on a Job, from a selected planar face or at the Job origin, and link Operations to it.
 
@@ -126,6 +126,9 @@ image::job/work-plane/properties-fixture.png["Property editor of a Work Plane, w
 * The xref:reference/glossary.adoc#post-processor[Post-Processor] (Post) calculates the rotary positions for a Work Plane at output. The Post refuses a Work Plane that the Machine cannot reach.
 * A Work Plane that is parallel to the table is applicable to a Machine without rotary axes. Such a Work Plane gives a datum for depths and a different X direction.
 * A change of the Machine does not change the Toolpath of an Operation. Post-process the Job again after a change of the Machine.
+* The `linuxcnc` Post supports only the TWP Rotation Strategy. The `linuxcnc` Post refuses a Machine that has the DWO Rotation Strategy.
+* The `linuxcnc` Post writes a Work Plane that is not parallel to the table as a `G68.2` line. The `linuxcnc` Post then aligns the Tool Bit with the Tool Axis with `G53.1`, or with the line in its `twp_align` property.
+* The `linuxcnc` Post cancels the Work Plane with `G69` before each Fixture change and before each Tool Bit change. See xref:output/post-process.adoc[Post Process].
 
 .Fixture
 * The Post selects the *Fixture* of a Work Plane before it positions the Machine for the Work Plane. The Post then goes back to the Fixture of the Job.
