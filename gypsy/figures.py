@@ -126,7 +126,8 @@ def make(wanted, model=""):
         pages.append({"page": page, "wanted": lines, "figures": figures, "notes": (res or {}).get("notes", ""),
                       "lint_rc": rc, "lint": report, "run": run})
         done = sum(1 for f in figures if f["status"] == "done" and not f["check"])
-        print(f"{page}: {done} of {len(lines)} figures done; lint rc={rc}; "
+        covered = sum(1 for f in figures if f["status"] == "covered")
+        print(f"{page}: {done} of {len(lines)} figures done, {covered} exist already; lint rc={rc}; "
               f"cost ${run.get('cost_usd') or 0:.2f}" + (f"; ERROR {run['error'][:200]}" if run.get("error") else ""),
               flush=True)
     return pages
@@ -140,7 +141,7 @@ def report_lines(pages):
     if done:
         out += ["| Page | Figure | Shows |", "|---|---|---|"]
         out += [f"| `{pg}` | `{f['file']}` | {f['shows']} |" for pg, f in done]
-    rest = [(pg, f) for pg, f in all_figs if (pg, f) not in done]
+    rest = [(pg, f) for pg, f in all_figs if (pg, f) not in done and f["status"] != "covered"]
     if rest:
         out += ["", "Figures not made:", ""]
         out += [f"- `{pg}`: {f['wanted'].split(':', 1)[0]}: {f['status']}. "
