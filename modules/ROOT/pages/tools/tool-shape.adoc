@@ -61,7 +61,7 @@ The shape type determines the parameters a xref:tools/toolbit.adoc[Tool Bit] of 
 
 [.since]#introduced in 26.3#: The `Diameter` of the Chamfer Tool Shape is a calculated parameter and is not an input. FreeCAD calculates the Chamfer `Diameter` as `TipDiameter + 2 * CuttingEdgeHeight * tan(CuttingEdgeAngle / 2)`. FreeCAD calculates the Chamfer `Diameter` again when a parameter of the Tool Bit changes.
 
-The _ToolBit editor_ does not show a calculated parameter, thus the _ToolBit editor_ of a Chamfer Tool Bit has no *Diameter* field. For a Chamfer Tool Bit in a document, the property view shows *Diameter* as read-only.
+The _ToolBit editor_ (window title _Toolbit Parameter Editor_) does not show a calculated parameter, thus it has no *Diameter* field for a Chamfer Tool Bit. For a Chamfer Tool Bit in a document, the property view shows *Diameter* as read-only.
 
 == Aliases and subtypes
 

@@ -318,6 +318,20 @@ figures:
   freecad: ef63368faf4
   date: '2026-10-11'
   alt: Toolbit Selector with a Tool Library selected, the library tool number in each list entry and the sort drop-down
+- file: tools/feeds-speeds/edit-preset-dialog.png
+  page: tools/feeds-speeds.adoc
+  model: null
+  recipe: recipes/tools/feeds-speeds/edit-preset-dialog.py
+  freecad: ef63368faf4
+  date: '2026-10-12'
+  alt: Edit preset dialog with the Name field, the material, the op type, the feed and speed values and the Notes group
+- file: tools/feeds-speeds/presets-tab.png
+  page: tools/feeds-speeds.adoc
+  model: null
+  recipe: recipes/tools/feeds-speeds/presets-tab.py
+  freecad: ef63368faf4
+  date: '2026-10-12'
+  alt: Feeds & Speeds tab of the Tool Bit editor with two Presets, the Notes column and the buttons Add preset, Edit, Copy and Delete
 - file: tools/toolbit/editor-task-panel.png
   page: tools/toolbit.adoc
   model: drilling-1

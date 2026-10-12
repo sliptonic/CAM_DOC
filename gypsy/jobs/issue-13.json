@@ -760,6 +760,327 @@
      "note": ""
     }
    ]
+  },
+  {
+   "round": 4,
+   "findings": [
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 137: \"The task panel has the same editor as the _Toolbit Parameter Editor_ dialog of the Library Manager.\" The source says a different thing. The task panel uses ToolBitEditorPanel, which has only the ToolBitPropertiesWidget (src/Mod/CAM/Path/Tool/toolbit/ui/panel.py:41; toolbit/ui/editor.py:318-346). The dialog is the class ToolBitEditor, which has the tab widget and adds the 'Feeds && Speeds' tab (toolbit/ui/editor.py:363-436). PresetsTab is made only at editor.py:433. The figure editor-task-panel.png also shows no tabs and no Feeds & Speeds tab. A reader looks for the presets in the task panel and does not find them.",
+     "fix": "Replace the sentence in line 137 with: \"The task panel shows the Label, the Toolbit Type, the Properties list and the shape drawing of the Tool Bit. The task panel does not have the _Feeds && Speeds_ tab.\" Keep the sentences about btn:[OK] and btn:[Cancel]."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "The changed lines use three names for one editor: \"the editor of the Tool Bit\" (lines 62, 137, 143), \"_Toolbit Parameter Editor_\" (line 137 and the alt text in line 40) and \"ToolBit editor\" (the alt text in line 141). The brief gives the name \"ToolBit editor\" and forbids \"parameter editor\". The window title in the source is 'Toolbit Parameter Editor' (src/Mod/CAM/Gui/Resources/panels/ToolBitEditor.ui:14).",
+     "fix": "Use \"ToolBit editor\" in each changed line (lines 48, 62, 137, 143 and the two alt texts). Keep \"window title _Toolbit Parameter Editor_\" only in line 33, where the page gives the title of the dialog."
+    },
+    {
+     "page": "tools/tool-shape.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 64 uses \"_ToolBit editor_\" two times. The unchanged lines 40 and 68 of the same page use \"Toolbit Parameter Editor\" for the same editor. The reader gets two names for one thing on one page.",
+     "fix": "In line 64, write \"The _ToolBit editor_ (window title _Toolbit Parameter Editor_) does not show a calculated parameter, thus it has no *Diameter* field for a Chamfer Tool Bit.\""
+    },
+    {
+     "page": "tools/index.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 81 uses \"_ToolBit editor_\". The unchanged lines 10 and 65 of the same page use \"Toolbit Parameter Editor\" for the same editor. The reader gets two names for one thing on one page.",
+     "fix": "In line 81, write \"The _ToolBit editor_ (window title _Toolbit Parameter Editor_) shows the values of a Tool Bit in the `Units` of the Tool Bit\"."
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 27: \"only to the *Presets* property of the document object, not to the Tool Library.\" A Tool Library holds only tool numbers and Tool Bit IDs. The presets are on the library Tool Bit. The owner page tools/toolbit.adoc (line 183) says \"is not written to the library\", and the brief term is \"library Tool Bit\".",
+     "fix": "In line 27, replace \"not to the Tool Library\" with \"not to the library Tool Bit\"."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "The pages use three names for one editor. tools/index.adoc line 81 ('The _ToolBit editor_ shows the values'), tools/tool-shape.adoc line 64 ('The _ToolBit editor_ does not show a calculated parameter') and reference/preferences.adoc ('in the ToolBit editor') use the brief term. The owner page uses 'Toolbit Parameter Editor' (line 33, the window title in Gui/Resources/panels/ToolBitEditor.ui:14) and, in the changed lines 62, 137 and 143, 'the editor of the Tool Bit'. The owner page does not say that the ToolBit editor is the Toolbit Parameter Editor, thus a reader who comes from the other pages does not find the name.",
+     "fix": "In line 33, write 'The ToolBit editor (window title _Toolbit Parameter Editor_) has two tabs:'. In the changed lines 62, 137 and 143, replace 'the editor of the Tool Bit' with 'the ToolBit editor'."
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 128: 'FreeCAD writes the Presets ... only to the *Presets* property of the document object, not to the Tool Library.' A Tool Library is the list of tool numbers (.fctl). The presets are in the library Tool Bit (F19: 'not written to the library'; tools/toolbit.adoc line 183 says 'is not written to the library').",
+     "fix": "Replace 'not to the Tool Library' with 'not to the library Tool Bit'."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and select which tools to update",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library",
+     "note": ""
+    },
+    {
+     "goal": "2. An update replaces the full Tool Bit by its ToolBitID, the Tool Controller points to the new copy, local edits do not stay",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library (with the CAUTION); tools/tool-controller.adoc, Tool Bit replacement; tools/feeds-speeds.adoc, Presets",
+     "note": ""
+    },
+    {
+     "goal": "3. Add a tool from any library to a Job, give it a tool number, two different tools cannot have the same number",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, Description and Usage; tools/tool-controller.adoc, Task panel; tools/toolbit-library.adoc, Tool numbers",
+     "note": ""
+    },
+    {
+     "goal": "4. Units and precision of a Tool Bit, when the unit schema and the Units Decimals preference apply, with the Camotics export and import",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Toolbit Parameter Editor, Properties and JSON Structure; tools/toolbit-library.adoc, Usage and Export; tools/library-manager.adoc, Import",
+     "note": ""
+    },
+    {
+     "goal": "5. Exact facts of the new controls: tool update preference, Tool Bit Shape Drawing preferences, calculated Chamfer Diameter, Notes field, name rule and Copy button",
+     "met": "yes",
+     "where": "reference/preferences.adoc, Tool Bit Shape Drawing and Assets; tools/tool-shape.adoc, Parameters; tools/feeds-speeds.adoc, Presets",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 5,
+   "findings": [
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "contradiction",
+     "severity": "must",
+     "text": "Line 25 (unchanged) says: \"open the Tool Bit from the Library Manager to change the library copy; open it from a Job to change only the embedded copy\". tools/toolbit.adoc line 137 (changed, owner of the edit of a Tool Bit in a document) says: \"The task panel does not have the _Feeds && Speeds_ tab.\" The source agrees with tools/toolbit.adoc: Path/Tool/toolbit/ui/panel.py:41 uses ToolBitEditorPanel, which holds only ToolBitPropertiesWidget (toolbit/ui/editor.py:333). PresetsTab is only in ToolBitEditor (editor.py:433), which only the library browsers open (library/ui/browser.py:339, toolbit/ui/browser.py:315). The new line 27 (\"the Presets that are edited on an embedded Tool Bit\") continues the old statement.",
+     "fix": "In line 25, remove the words in parentheses \"(open the Tool Bit from the Library Manager to change the library copy; open it from a Job to change only the embedded copy)\". Say that the _Feeds && Speeds_ tab is in the ToolBit editor that opens from a Tool Library, and that the task panel of a Tool Bit in a document does not have this tab; link to xref:tools/toolbit.adoc[Tool Bit]. In line 27, do not tell the reader that the interface edits the presets of an embedded Tool Bit: write that a change of the *Presets* property of an embedded Tool Bit stays in the document object and is not written to the library Tool Bit."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 183 says \"A preset that you edit on an embedded Tool Bit is not written to the library\". Line 137 of the same page says \"The task panel does not have the _Feeds && Speeds_ tab.\" The reader has no interface to edit a preset on an embedded Tool Bit (panel.py:41, editor.py:333 and 433). The CAUTION in line 181 already says that the update removes the local presets.",
+     "fix": "Change line 183 to: a change of the *Presets* property of an embedded Tool Bit is not written to the library; see xref:tools/feeds-speeds.adoc[Feeds & Speeds presets]. Do not write \"A preset that you edit on an embedded Tool Bit\". Or remove the paragraph, because the CAUTION gives the result."
+    },
+    {
+     "page": "tools/add-toolbit.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 72 says: \"The label *Tool number for <Tool Bit label>:* shows that the Tool Bit has no library tool number.\" The source (Path/Tool/library/ui/dock.py:180-184) puts the line \"Tool number for {}:\" also in the label of the conflict condition, below \"Tool number {} is already used by {}.\" The figure tool-number-dialog-conflict.png on this page shows the two lines together. Thus the line alone does not identify the condition.",
+     "fix": "Change the two bullets of lines 72-73. First bullet: when the label is only *Tool number for <Tool Bit label>:*, the Tool Bit has no library tool number. Second bullet: when the line *Tool number <number> is already used by <Tool Controller label>.* is above that line, a different Tool Bit uses the library tool number."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "figure",
+     "severity": "should",
+     "text": "Line 177 says \"btn:[Cancel] changes nothing and is the default button.\" (correct: UpdateDocumentToolsDlg.py:226-227, setDefault and setFocus on Cancel). The image tools/toolbit/tool-updates-available.png shows btn:[Update] with the highlight of the default button and btn:[Cancel] without it.",
+     "fix": "Make the capture again with the dialog in its initial state (no pointer on btn:[Update], focus on btn:[Cancel]), or ask for a new capture. Do not change the text of line 177."
+    },
+    {
+     "page": "tools/index.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "Section \"Tool Bit units\" (line 258) has three sentences of facts that tools/toolbit.adoc owns (\"each Tool Bit has the `Units` property…\", \"The _ToolBit editor_ … shows the values…\", \"FreeCAD saves the values of a Tool Bit in the `Units` of the Tool Bit.\") and a fourth fact that tools/toolbit-library.adoc owns (\"The Camotics export does not use the `Units` property\"). The plan asks for a short summary with links.",
+     "fix": "Keep the first sentence. Make one sentence of the second and the third (\"The _ToolBit editor_ shows the values of a Tool Bit in these units and FreeCAD saves them in these units.\"). Keep the link to xref:tools/toolbit.adoc[Tool Bits]. Change the Camotics sentence to a link clause only: \"For the units of a Camotics export, see xref:tools/toolbit-library.adoc[Tool Libraries].\""
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "contradiction",
+     "severity": "must",
+     "text": "Line 25 (not changed) says 'open it from a Job to change only the embedded copy', and the new line 27 continues with 'the Presets that are edited on an embedded Tool Bit'. tools/toolbit.adoc line 137 says 'The task panel does not have the _Feeds && Speeds_ tab'. The source agrees with tools/toolbit.adoc: the task panel of a Tool Bit in a document uses ToolBitEditorPanel (src/Mod/CAM/Path/Tool/toolbit/ui/panel.py:41), which has only the properties widget (toolbit/ui/editor.py:318-361). PresetsTab is made only in ToolBitEditor (toolbit/ui/editor.py:431-435), and only the library browsers open ToolBitEditor (toolbit/ui/browser.py:315, library/ui/browser.py:339, library/ui/editor.py:512). The figure editor-task-panel.png also shows no tabs. Thus a reader cannot open the Presets tab from a Job.",
+     "fix": "In line 25, remove the clause 'open it from a Job to change only the embedded copy' and say that the Presets tab is in the ToolBit editor that the Library Manager and the Toolbit Selector open. In line 27, do not tell of an edit in the interface: say that the Presets of an embedded Tool Bit are in the *Presets* property of the document object, and that a change of that property is not written to the library Tool Bit. Keep the clause on the update from the library and the link to tools/toolbit.adoc."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 183 says 'A preset that you edit on an embedded Tool Bit is not written to the library', and line 181 lists 'presets' as local edits. Line 137 of the same page says 'The task panel does not have the _Feeds && Speeds_ tab'. The source gives no interface route to edit presets on an embedded Tool Bit (toolbit/ui/panel.py:41, toolbit/ui/editor.py:318-361 and 431-435). The reader cannot do what line 183 tells.",
+     "fix": "Change line 183 to a statement on the property, not on an edit by the reader, for example: 'The presets of an embedded Tool Bit are in its *Presets* property and are not written to the library; see xref:tools/feeds-speeds.adoc[...]. An update from the library replaces them with the presets of the library Tool Bit.' Keep 'presets' in the CAUTION of line 181."
+    },
+    {
+     "page": "tools/index.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "Line 81, 'Tool Bit units', has four statements on a subject that tools/toolbit.adoc and tools/toolbit-library.adoc own: 'each Tool Bit has the `Units` property with the values `Metric` and `Imperial`', 'The _ToolBit editor_ (window title _Toolbit Parameter Editor_) shows the values ...', 'FreeCAD saves the values of a Tool Bit in the `Units` of the Tool Bit', and 'The Camotics export does not use the `Units` property'. The plan asks for a short summary with links.",
+     "fix": "Keep two sentences: one that says each Tool Bit has the `Units` property (`Metric` or `Imperial`) and that FreeCAD shows and saves its values in these units, and one with the links to tools/toolbit.adoc (tool precision, unit schema, Units Decimals preference) and tools/toolbit-library.adoc (Camotics export). Remove the window title clause and the separate sentence on the Camotics export."
+    },
+    {
+     "page": "tools/index.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "The changed lines 77 and 81 use the link texts 'Tool Bits' for tools/toolbit.adoc and 'Tool Libraries' for tools/toolbit-library.adoc. The other pages of the unit use 'Tool Bit' (reference/preferences.adoc line 64, tools/feeds-speeds.adoc line 27, tools/tool-controller.adoc line 78) and 'Tool Library' (tools/add-toolbit.adoc line 49, tools/library-manager.adoc line 78, tools/toolbit.adoc line 83).",
+     "fix": "In lines 77 and 81, use the link text 'Tool Bit' for tools/toolbit.adoc and 'Tool Library' for tools/toolbit-library.adoc."
+    },
+    {
+     "page": "tools/toolbit-library.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 21 (changed) says 'The Library Manager moves the other Tool Bit to the next free number'. The brief keeps 'next free number' for the highest Tool Number in the Job plus 1, and tools/add-toolbit.adoc line 51 defines it so. Line 23 then tells of the Job. One name has two meanings in adjacent paragraphs.",
+     "fix": "In line 21, write 'the next free number of the Tool Library', or 'a free tool number of the Tool Library', so that the reader does not use the Job definition for the library."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and select which tools to update",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Update from library' (lines 158-177)",
+     "note": ""
+    },
+    {
+     "goal": "2. An update replaces the full Tool Bit by its ToolBitID, the Tool Controller then points to the new copy, and local edits do not stay",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Update from library' (lines 151, 179-183); tools/tool-controller.adoc, 'Tool Bit replacement'",
+     "note": "The fact is correct. But the pages say that the reader edits presets on an embedded Tool Bit, and the interface has no such route (see the findings on tools/feeds-speeds.adoc and tools/toolbit.adoc)."
+    },
+    {
+     "goal": "3. Add a tool from any library to a Job, give it a tool number, and know that two different tools in a Job cannot have the same number",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, 'Description' and 'Create Tool Controllers'; tools/tool-controller.adoc, 'Task panel' (lines 34-36); tools/toolbit-library.adoc, 'Tool numbers'",
+     "note": ""
+    },
+    {
+     "goal": "4. Units and precision of a Tool Bit, when the unit schema and the Units Decimals preference apply, with the Camotics export and import",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Toolbit Parameter Editor' (lines 46-48) and 'JSON Structure' (lines 72-83); tools/toolbit-library.adoc, 'Usage' (line 37) and 'Export' (lines 51-57); tools/library-manager.adoc, 'Import'",
+     "note": ""
+    },
+    {
+     "goal": "5. Exact facts of the new controls: tool update preference, Tool Bit Shape Drawing preferences, calculated Chamfer Diameter, Notes field, name rule and Copy button",
+     "met": "yes",
+     "where": "reference/preferences.adoc, 'Tool Bit Shape Drawing' and 'Machines' (line 64); tools/tool-shape.adoc, 'Parameters' (lines 49, 62-64); tools/feeds-speeds.adoc, 'Presets' (lines 27-46)",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": "final",
+   "findings": [
+    {
+     "page": "tools/index.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "Line 258, 'Tool Bit units': the summary has five sentences. tools/toolbit.adoc owns the subject. The sentences \"The _ToolBit editor_ (window title _Toolbit Parameter Editor_) shows the values of a Tool Bit in the `Units` of the Tool Bit.\" and \"FreeCAD saves the values of a Tool Bit in the `Units` of the Tool Bit.\" tell the subject again. The sentence \"The Camotics export does not use the `Units` property\" tells a fact that tools/toolbit-library.adoc owns.",
+     "fix": "Keep two sentences. Sentence 1: each Tool Bit has the `Units` property with the values `Metric` and `Imperial`, and the ToolBit editor and the saved file use these units. Sentence 2: one 'See' sentence with the links xref:tools/toolbit.adoc[Tool Bits] (tool precision, unit schema, Units Decimals preference) and xref:tools/toolbit-library.adoc[Tool Libraries] (Camotics units). Remove the other sentences."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 183 says \"A preset that you edit on an embedded Tool Bit is not written to the library\". Line 137 of the same page says \"The task panel does not have the _Feeds && Speeds_ tab\", and tools/feeds-speeds.adoc line 25 says the same. The source agrees with line 137: the task panel uses ToolBitEditorPanel, which has no Presets tab (src/Mod/CAM/Path/Tool/toolbit/ui/panel.py:41, toolbit/ui/editor.py:318-345). Thus the reader cannot edit a preset on an embedded Tool Bit in the task panel, and line 183 tells of an edit that the page gives no procedure for.",
+     "fix": "Change line 183 to agree with tools/feeds-speeds.adoc line 31: \"A change of the *Presets* property of an embedded Tool Bit is not written to the library Tool Bit; see xref:tools/feeds-speeds.adoc[Feeds & Speeds presets].\" Keep the second sentence about the update."
+    },
+    {
+     "page": "tools/add-toolbit.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 73: \"The label *Tool number <number> is already used by <Tool Controller label>.* shows that a different Tool Bit uses the library tool number.\" The label also shows when the number that the reader entered is used. In _ask_tool_number the loop sets `taken` to the Tool Controller that has the entered number, and the next dialog shows that number and that label (src/Mod/CAM/Path/Tool/library/ui/dock.py, _ask_tool_number, while loop).",
+     "fix": "Change the bullet to: \"The label *Tool number <number> is already used by <Tool Controller label>.* shows that a different Tool Bit uses the library tool number or the number that you entered.\""
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 25 says \"the editor that opens for a Tool Bit from a Tool Library\" and does not give the name of the editor. The alt text of the image at line 29 says \"Feeds & Speeds tab of the Tool Bit editor\". The brief forbids \"Tool Bit editor\"; the name is \"ToolBit editor\". tools/toolbit.adoc and tools/tool-shape.adoc use \"_ToolBit editor_ (window title _Toolbit Parameter Editor_)\".",
+     "fix": "In line 25 write \"the _Feeds && Speeds_ tab of the _ToolBit editor_ (window title _Toolbit Parameter Editor_), which opens for a Tool Bit from a Tool Library\". In the alt text of presets-tab.png, change \"Tool Bit editor\" to \"ToolBit editor\"."
+    },
+    {
+     "page": "tools/toolbit-library.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 21: \"The Library Manager moves the other Tool Bit to the next free number when a Tool Bit gets a number that is already used.\" The brief gives \"next free number\" one meaning: the highest Tool Number in the Job plus 1 (tools/add-toolbit.adoc line 51). Here the term is used for a number in a Tool Library, two paragraphs before the link to tools/add-toolbit.adoc.",
+     "fix": "Change the sentence to use different words for the library, for example \"The Library Manager gives the other Tool Bit a different free tool number of the Tool Library when a Tool Bit gets a tool number that is already used.\""
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "figure",
+     "severity": "should",
+     "text": "The page writes the tab name as \"_Feeds && Speeds_\" in the changed line 137 (\"The task panel does not have the _Feeds && Speeds_ tab\"). The figures editor-toolbit-tab.png and tools/feeds-speeds/presets-tab.png show the tab name \"Feeds & Speeds\". The \"&&\" is the Qt escape of the source string (src/Mod/CAM/Path/Tool/toolbit/ui/editor.py:435); the interface shows one \"&\".",
+     "fix": "Write the tab name as \"_Feeds & Speeds_\" in line 137. Correct line 36 also, so that the page has one name for the tab."
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "figure",
+     "severity": "should",
+     "text": "The changed lines 25 and 27 write the tab name as \"_Feeds && Speeds_\" (three times). The figure presets-tab.png at line 29 shows the tab name \"Feeds & Speeds\", and the alt text of that figure also says \"Feeds & Speeds tab\". The \"&&\" is the Qt escape of the source string (src/Mod/CAM/Path/Tool/toolbit/ui/editor.py:435).",
+     "fix": "Write the tab name as \"_Feeds & Speeds_\" in lines 25 and 27."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 145 (unchanged, directly below the new Transform paragraph) says: \"A Tool Bit placed in a document can be written back to a file from its tree-view context menu: menu:Save Tool[] (only if the object came from a file) and menu:Save Tool As…[] open a save dialog\". Fact F28 of the brief, which this page owns, says that the context menu of a Tool Bit has no CAM entry of its own. The source agrees: src/Mod/CAM/Path/Tool/toolbit/ui/view.py:109-112, setupContextMenu has only `pass`. The new line 143 describes the same context menu, thus the page now gives a menu entry that does not exist.",
+     "fix": "Remove the sentence about menu:Save Tool[] and menu:Save Tool As…[] from line 145. Keep the sentence about `CAM_ToolBitCreate` and `CAM_ToolBitLoad`. If you keep a statement about the context menu, say that it has no CAM entry of its own (F28)."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 183 says \"A preset that you edit on an embedded Tool Bit is not written to the library\". Line 137 of the same page says \"The task panel does not have the _Feeds && Speeds_ tab\", and tools/feeds-speeds.adoc line 25 says \"The task panel of a Tool Bit in a document does not have the _Feeds && Speeds_ tab\". The source agrees with line 137: ToolBitEditorPanel (toolbit/ui/editor.py:318-362) has no PresetsTab. Thus the reader cannot edit a preset on an embedded Tool Bit in the editor, and line 183 implies that this is possible.",
+     "fix": "Change line 183 to the words of the owner page tools/feeds-speeds.adoc: \"FreeCAD does not write a change of the *Presets* property of an embedded Tool Bit to the library Tool Bit; see xref:tools/feeds-speeds.adoc[Feeds & Speeds presets].\" Keep the second sentence."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 135 (unchanged) says \"Several Tool Controllers may reference the same Tool Bit object.\" The new line 179 says \"FreeCAD then sets the *Tool* property of the Tool Controller to the new copy and removes the old Tool Bit object from the document.\" If two Tool Controllers have one Tool Bit object, the update removes the object of the second Tool Controller. The source says the opposite of line 135: UpdateDocumentTools.py:226-229, \"a ToolBit is only ever referenced by its owning ToolController, never shared or linked elsewhere\", and dock.py:206-213 attaches a new object for each Tool Controller.",
+     "fix": "Remove the sentence \"Several Tool Controllers may reference the same Tool Bit object.\" from line 135, or replace it with: \"Each Tool Controller has its own Tool Bit object.\""
+    },
+    {
+     "page": "tools/add-toolbit.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 73 says: \"The label *Tool number <number> is already used by <Tool Controller label>.* shows that a different Tool Bit uses the library tool number.\" The same label also shows when the dialog opens again (line 75), and then <number> is the number that the reader entered, not the library tool number. Source: src/Mod/CAM/Path/Tool/library/ui/dock.py:178-198 (_ask_tool_number sets `taken` from the entered number and builds the label from `taken.ToolNumber`).",
+     "fix": "Change line 73 to: \"The label *Tool number <number> is already used by <Tool Controller label>.* shows that a different Tool Bit uses the library tool number or the number that you entered.\""
+    },
+    {
+     "page": "tools/index.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "Line 81, 'Tool Bit units', has five sentences. tools/toolbit.adoc owns the subject. The sentences \"The _ToolBit editor_ (window title _Toolbit Parameter Editor_) shows the values of a Tool Bit in the `Units` of the Tool Bit. FreeCAD saves the values of a Tool Bit in the `Units` of the Tool Bit.\" tell again what tools/toolbit.adoc lines 46, 62 and 74 tell. The plan gives this page a short summary with links.",
+     "fix": "Keep the first sentence (\"each Tool Bit has the `Units` property with the values `Metric` and `Imperial`\") and one sentence with the links: \"See xref:tools/toolbit.adoc[Tool Bits] for the tool precision and the conditions in which the unit schema and the Units Decimals preference apply, and xref:tools/toolbit-library.adoc[Tool Libraries] for the units of the Camotics export.\" Remove the two sentences about the ToolBit editor and the saved values."
+    },
+    {
+     "page": "tools/feeds-speeds.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 29, the alternative text of presets-tab.png, says \"Feeds & Speeds tab of the Tool Bit editor\". The brief forbids \"Tool Bit editor\"; the name is \"ToolBit editor\". tools/toolbit.adoc and tools/tool-shape.adoc use \"ToolBit editor\".",
+     "fix": "Change the alternative text to \"Feeds & Speeds tab of the ToolBit editor with two Presets, the Notes column and the buttons Add preset, Edit, Copy and Delete\"."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and select which tools to update",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Update from library'",
+     "note": ""
+    },
+    {
+     "goal": "2. An update replaces the full Tool Bit by its ToolBitID, with presets and shape geometry; the Tool Controller then points to the new copy; local edits do not stay",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Update from library' (with the CAUTION); tools/tool-controller.adoc, 'Tool Bit replacement'; tools/index.adoc, 'Tool update from library'",
+     "note": ""
+    },
+    {
+     "goal": "3. Add a tool from any library to a Job, give it a tool number, and know that two different tools in a Job cannot have the same number",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, 'Description' and 'Create Tool Controllers'; tools/tool-controller.adoc, 'Task panel'; tools/toolbit-library.adoc, 'Tool numbers'",
+     "note": ""
+    },
+    {
+     "goal": "4. Units and precision of a Tool Bit, when the unit schema and the Units Decimals preference apply and when they do not, with the Camotics export and import",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, 'Toolbit Parameter Editor', 'Properties' and 'JSON Structure'; tools/toolbit-library.adoc, 'Usage' (import) and 'Export'; tools/library-manager.adoc, 'Import'",
+     "note": ""
+    },
+    {
+     "goal": "5. Exact facts of the new controls: tool update preference, Tool Bit Shape Drawing preferences, calculated Chamfer Diameter, and the Notes field, name rule and Copy button of the presets",
+     "met": "yes",
+     "where": "reference/preferences.adoc, 'Tool Bit Shape Drawing', 'Machines' and 'Parameters without a preferences page'; tools/tool-shape.adoc, 'Parameters'; tools/feeds-speeds.adoc, 'Presets'",
+     "note": ""
+    }
+   ]
   }
  ],
  "pages": [
@@ -796,22 +1117,17 @@
     }
    ],
    "unverified": [
-    "The exact text of a value in the expanded Changes cell (for example '5.000 mm') and the layout of the 'Tool Updates Available' dialog.",
-    "Whether the new copy of the Tool Bit keeps the label and the tree position of the old Tool Bit after an update.",
+    "The task panel of a Tool Bit in a document shows the Label, the Toolbit Type, the Properties list and the shape drawing, and has no Feeds && Speeds tab (from the check finding on ToolBitEditorPanel; not seen in a running FreeCAD).",
+    "The tree-view context menu of a Tool Bit in a document has the Transform entry and no CAM entry (setupContextMenu has only `pass`; the menu was not seen in a running FreeCAD).",
+    "The commands CAM_ToolBitCreate and CAM_ToolBitLoad are still registered and have the menu texts 'New Toolbit' and 'Load Tool' (statement of the current page; not in the diffs).",
+    "The exact text of a value in the Changes tree of the Tool Updates Available dialog.",
     "Whether Undo reverses an update from the library.",
-    "Whether the update changes a property of the Tool Controller other than Tool.",
-    "The label and the Preferences path of the Units Decimals preference as the interface spells them.",
-    "Whether a Tool Bit without a Units value can exist in the interface (the fallback to the active unit schema).",
-    "Whether the check at document load also occurs for a new document or for a document that gets its first Job after activation.",
-    "The title that the task panel shows for the editor of a Tool Bit in a document, and that its OK and Cancel are the task panel buttons.",
-    "That the three figures (editor-toolbit-tab.png, editor-task-panel.png, tool-updates-available.png) show what the text before each figure says."
+    "Whether the new copy of the Tool Bit keeps the label and the tree position of the old Tool Bit.",
+    "Whether a Tool Bit without a *Units* value can exist in the interface (F23).",
+    "The path Edit > Preferences > CAM > Assets to the checkbox 'Check for tool updates from the library when opening a document'."
    ],
-   "figures_wanted": [
-    "tools/toolbit/editor-toolbit-tab.png: the Toolbit Parameter Editor on the Toolbit tab for the Tool Bit 5mm Endmill, with the Properties list and the current endmill shape drawing",
-    "tools/toolbit/editor-task-panel.png: the editor of a Tool Bit as a task panel after a double-click on a Tool Bit in the tree view of a document with a Job",
-    "tools/toolbit/tool-updates-available.png: the 'Tool Updates Available' dialog with two stale Tool Bits, the Changes cell of the first row expanded"
-   ],
-   "notes": "All three check findings are corrected. Only the lines of the findings changed.\n\nConflict between the check, the brief and the lint: the brief and the check say to write 'ToolBit editor' without italic. The lint rejects 'ToolBit' in lines 62, 137 and 143. I wrote 'the editor of the Tool Bit' in these three lines, thus the lint passes and the page has no second name for the editor. Line 137 connects the task panel to the _Toolbit Parameter Editor_ dialog of the Library Manager in a separate sentence. The brief term 'ToolBit editor' stays only in the alt text of the task panel figure, which the lint did not report. If the lint must permit 'ToolBit editor' as an interface name, add it to the lint allow list and I can restore the term.\n\nThe sentence 'The task panel has the same editor as the _Toolbit Parameter Editor_ dialog' comes from F27 and from panel.py (ToolBitEditorPanel). The title that the task panel shows is not confirmed and is in `unverified`.\n\nThe image macros of the previous draft stay, because the findings did not address them. The images directory modules/ROOT/images/tools/ is not committed; confirm that the three files exist before the build.\n\nSTYLE.md permits 30 words for each sentence; the global STE rule permits 25. The changed lines obey the STE limit. Unchanged lines of the imported page do not follow STE or STYLE.md, as the AMEND ONLY mode requires.",
+   "figures_wanted": [],
+   "notes": "This draft builds on the pending text of open gypsy PR #27, not on a different text of `main`.\n\nAll four check findings are correct and are applied:\n1. The presets sentence in Update from library uses the words of tools/feeds-speeds.adoc. The second sentence now says \"the changed presets\", because \"that preset\" had no referent after the change.\n2. The sentence about menu:Save Tool[] and menu:Save Tool As…[] is removed. The Transform paragraph has the F28 statement that the context menu has no CAM entry of its own.\n3. \"Several Tool Controllers may reference the same Tool Bit object.\" is replaced by \"Each Tool Controller has its own Tool Bit object.\"\n\nLint finding (line 145, 'Toolbit'): 'New Toolbit' is the menu text of the command `CAM_ToolBitCreate`, thus the spelling is fixed. The text is now marked as an interface string in italics (_New Toolbit_, _Load Tool_), as _Toolbit_ and _All Toolbits_ are on the lines that the lint accepts. If the lint does not ignore italics, the lint needs an exception for this interface string; the content was kept.\n\nNo figure is requested: the three image macros of the page are from PR #27 and their captures are part of that pull request. I did not examine the image files.\n\n:page-status: stays `draft` because `unverified` is not empty.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -847,9 +1163,29 @@
      "cost_usd": 1.081223,
      "duration_ms": 81053,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.110487,
+     "duration_ms": 65953,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.156239,
+     "duration_ms": 81947,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.114667,
+     "duration_ms": 64208,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.135411,
+     "duration_ms": 72877,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 6.50211,
+   "cost_usd": 11.018914,
    "verdicts": [
     [
      "2026-08-19T03:12:44Z",
@@ -951,18 +1287,18 @@
     }
    ],
    "unverified": [
-    "The appearance of the _Tool Number_ input dialog: the two label lines, the btn:[OK] and btn:[Cancel] button labels of the Qt input dialog.",
-    "The Job editor (Tools tab, btn:[Add]) opens the _Toolbit Selector_ without the request for a tool number, thus a Tool Bit from `All Tools` gets the next free number and FreeCAD does not ask. The Job editor code is not in the diff.",
-    "The new Tool Controller gets the *Spindle Direction* of the Tool Bit. The statement is from the current page; the diff does not show it.",
-    "The content and the layout of the list entries in the _Toolbit Selector_ after PR 32371, for the two figures of the tool list.",
-    "The name `Default` of the Tool Library in the first figure sentence, and the label `TC: 5mm Endmill` in the sentence before the third figure. The two names depend on the capture."
+    "The appearance and the text of the 'Tool Number' input dialog in a running FreeCAD: the title 'Tool Number', the two label forms, the default as the next free number and the minimum of 1. The code establishes them; no capture confirms them.",
+    "That the 'Tool Number' dialog shows the entered number and the label of its Tool Controller when the dialog opens again. The while loop of _ask_tool_number establishes it; it was not run.",
+    "That `All Tools` is the first entry of the library drop-down in the Toolbit Selector and that the list entries then show no library tool number.",
+    "That the Job editor (Tools tab, Add) opens the Toolbit Selector without the request for a tool number. The diff of the Job editor code is not in the material for this page.",
+    "That the new Tool Controller gets the Spindle Direction of the Tool Bit. The statement is from the current page; the diffs do not show it."
    ],
    "figures_wanted": [
-    "tools/add-toolbit/toolbit-selector-library.png: the Toolbit Selector with a Tool Library selected, with the library tool number in each list entry, the sort drop-down and the new format of the list entries.",
-    "tools/add-toolbit/toolbit-selector-all-tools.png: the Toolbit Selector with `All Tools` selected in the library drop-down, with the list of Tool Bits and the buttons Open Library Editor, Add to Job and Close.",
-    "tools/add-toolbit/tool-number-dialog-conflict.png: the Tool Number input dialog with the label 'Tool number N is already used by TC: 5mm Endmill.' and 'Tool number for <Tool Bit label>:', with the next free number as the default."
+    "tools/add-toolbit/toolbit-selector-library.png: the Toolbit Selector with a Tool Library selected, with the list entries in the 26.3 format (for example '5.000 mm 4-flute endmill') and the sort drop-down",
+    "tools/add-toolbit/toolbit-selector-all-tools.png: the Toolbit Selector with 'All Tools' selected, with the list entries in the 26.3 format and without the sort drop-down",
+    "tools/add-toolbit/tool-number-dialog-conflict.png: the 'Tool Number' input dialog with the label 'Tool number N is already used by TC: ...' and the next free number as default"
    ],
-   "notes": "The finding of the check is correct and is applied. The two sentences about the library tool number are now one sentence with the link to tools/toolbit-library.adoc, which owns F37. The sentences about the _Tool Number_ dialog stay. No other line changed.\n\nThe page keeps the three image macros of the previous draft. The work tree has the untracked directory modules/ROOT/images/tools/, but I did not examine its content in this round. If a file is absent, the capture in `figures_wanted` must supply it before the build.\n\nMode is AMEND ONLY. Thus the title, the infobox, the headings and the lines of the current page that do not follow STYLE.md stay as they are.\n\n`:page-status:` is `draft` because `unverified` is not empty.",
+   "notes": "The two findings are the same finding and are correct. The bullet now has the text that the check gave. No other line changed.\n\nThis draft builds on the pending text of open gypsy PR #27 (branch gypsy/issue-13), which is the same as the text on main.\n\n`:page-status:` stays `draft` because `unverified` is not empty. `:page-source-pr:` already has 32211 and 32371.\n\nMode is AMEND ONLY, thus lines that do not follow STYLE.md stay as they are. Examples are the title 'CAM ToolBitDock', the `[.since]#introduced in 1.1#` history sentence and the `-ing` forms in Description.\n\nGuidance comment 1 names tools/toolbit-library.adoc as the page for the dock that adds Tool Bits to a Job. The approved plan gives that procedure to tools/add-toolbit.adoc. This page obeys the plan, and links to tools/toolbit-library.adoc for the library tool number as a suggestion.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -988,9 +1324,14 @@
      "cost_usd": 0.6484989999999999,
      "duration_ms": 32091,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.664115,
+     "duration_ms": 28827,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 2.7041079999999997,
+   "cost_usd": 3.368223,
    "verdicts": [
     [
      "2026-08-28T20:10:33Z",
@@ -1192,12 +1533,13 @@
     }
    ],
    "unverified": [
-    "The ToolBit editor of a Chamfer Tool Bit has no Diameter field (established from toolbit/ui/editor.py load_toolbit, not confirmed in a running FreeCAD).",
-    "The property view shows the Chamfer Diameter as read-only for a Tool Bit in a document (established from setEditorMode(name, 1) in toolbit/models/base.py, not confirmed in a running FreeCAD).",
-    "The property view state of the Chamfer Diameter for a Tool Bit that is in a Tool Library and not in a document is not established; the page limits the statement to a Tool Bit in a document."
+    "The ToolBit editor form of a Chamfer Tool Bit has no Diameter field (established from toolbit/ui/editor.py load_toolbit; not confirmed in a running FreeCAD).",
+    "The property view shows the Chamfer Diameter as read-only for a Tool Bit in a document (established from setEditorMode(name, 1) in toolbit/models/base.py; not confirmed in a running FreeCAD).",
+    "The window title of the ToolBit editor is 'Toolbit Parameter Editor'. The name comes from the unchanged lines of the page and from the finding of the check; the diffs and the brief do not establish it.",
+    "FreeCAD calculates the Chamfer Diameter again each time a shape parameter of the Tool Bit changes (onChanged calls _apply_derived_parameters; not confirmed in a running FreeCAD)."
    ],
    "figures_wanted": [],
-   "notes": "Check finding (term): corrected. Line 64 now uses the name \"ToolBit editor\" two times, as the brief gives it.\n\nLint finding (vocab 'ToolBit' on line 64): the check and the lint conflict on the same words. The brief keeps 'ToolBit editor' as an interface name, and STYLE.md §4.1 and §6.3 tell to mark an interface string. Thus the two occurrences are now in italic markup (`_ToolBit editor_`), which is the markup for a dialog or panel name. No content was removed. If the lint does not exempt italic interface strings, the lint needs an exception for 'ToolBit editor'; a change to \"Tool Bit editor\" is a term that the brief prohibits.\n\nNo other line changed from the previous draft. The page keeps the older name \"Toolbit Parameter Editor\" on unchanged lines (Description, Aliases and subtypes), because the mode is AMEND ONLY; this is a different name for the same editor and a later rewrite must align it.\n\nThe formula uses `*` in monospace as an expression (STYLE.md §6.3); the brief writes it with ×. The page has no endmill or dovetail figure, thus no figure is requested. `:page-status: draft` is set because `unverified` is not empty.",
+   "notes": "The page is built on the pending text of gypsy PR #27 (branch gypsy/issue-13), which is the same as the text on main. Only one sentence changed in this round: the first sentence of the paragraph about the ToolBit editor in Parameters now uses the words of the finding. All other lines are returned as they were. The brief does not give the window title 'Toolbit Parameter Editor'; it gives only 'ToolBit editor' as the interface name. The title is thus in `unverified`, and `:page-status:` stays `draft`. The page shows no endmill figure and no dovetail figure, thus PR 33079 and PR 33371 need no capture.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -1223,9 +1565,14 @@
      "cost_usd": 0.713435,
      "duration_ms": 43430,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.730923,
+     "duration_ms": 38246,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 2.8338520000000003,
+   "cost_usd": 3.564775,
    "verdicts": [
     [
      "2026-08-31T21:29:32Z",
@@ -1290,7 +1637,7 @@
    ],
    "unverified": [],
    "figures_wanted": [],
-   "notes": "1. The current page already named the Notes column, the Copy button, the required name and the unique name rule. The amendment adds the exact behaviour and the interface strings from the diff and the brief (F19, F51 to F56).\n2. Term conflict that I did not correct, because the mode is AMEND ONLY: the current page says that the Presets are on the \"_Feeds && Speeds_ tab of the Toolbit Parameter Editor\". The brief says \"Presets tab\" and \"ToolBit editor\". The diff does not show the tab label. The new lines do not name the tab or the editor, thus they make no claim about the label. A person must examine the label in a FreeCAD session and correct the old line.\n3. The brief writes \"preset\" in lower case. ADR-000 and the current page write \"Preset\". The new lines use \"Preset\" to agree with ADR-000 and the page. Interface strings stay as the interface spells them.\n4. The window title 'Edit preset' is from the brief (F51) and from the current page. The diff does not show the title.\n5. The link text for tools/toolbit.adoc in the new paragraph is \"Tool Bit\". The old lines use \"CAM ToolBit\". The title of the rewritten page was not given.\n6. `:page-status:` is not on the page and `unverified` is empty, thus I did not add the attribute.\n7. The page has no figures. I did not ask for a new figure.",
+   "notes": "The two findings are corrected. No other line changed from the previous draft. The page builds on the pending text of open PR #27 (branch gypsy/issue-13), not on the text of main.\n\nThe sentence \"The task panel of a Tool Bit in a document does not have the _Feeds && Speeds_ tab\" stays from the previous draft. The diff of PR 31300 and the brief do not establish this sentence. Fact F19 speaks of presets that are edited on an embedded Tool Bit, thus a person must confirm the sentence in FreeCAD. The check did not find a fault in it, thus `unverified` stays empty and `:page-status:` is not changed.\n\nThe two figures (presets-tab.png, edit-preset-dialog.png) are in modules/ROOT/images/tools/feeds-speeds/ of the work tree, thus no new figure is necessary.\n\nConflict with STE: the lines that the AMEND ONLY mode keeps (for example \"is kept in sync\", \"is clamped\") do not follow ASD-STE100. The project rule keeps these lines as they are.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -1301,9 +1648,29 @@
      "cost_usd": 0.616067,
      "duration_ms": 63489,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.613503,
+     "duration_ms": 31868,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.648743,
+     "duration_ms": 43130,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.663495,
+     "duration_ms": 49070,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.637875,
+     "duration_ms": 38744,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 0.616067,
+   "cost_usd": 3.179683,
    "verdicts": [
     [
      "2026-08-19T03:12:44Z",
@@ -1340,11 +1707,12 @@
     }
    ],
    "unverified": [
-    "The label of the Units Decimals preference in the Preferences dialog and the path to it. The control is in FreeCAD core; only the parameter `Decimals` in `BaseApp/Preferences/Units` is established.",
-    "Which unit schemas give \"imperial\" in a Camotics export. The result depends on the unit that getUserPreferred() of FreeCAD core gives for the diameter value."
+    "Which unit schemas, other than the Imperial schemas, give \"imperial\" in a Camotics export. The result depends on getUserPreferred() of FreeCAD core for the diameter value.",
+    "The label of the Units Decimals preference in the Preferences dialog and its menu path. Only the parameter `Decimals` in `BaseApp/Preferences/Units` is established.",
+    "Which number the Library Manager gives to the other Tool Bit when a tool number is already used in a Tool Library. The Library Manager code was not in the diffs; the page says only \"a different free number of the Tool Library\"."
    ],
    "figures_wanted": [],
-   "notes": "The finding of the check is correct. The link text to tools/add-toolbit.adoc is now \"Add Toolbit…\". No other line changed from the previous draft.\n\nGuidance comment 1 says that tools/toolbit-library.adoc is the page for the dock that adds Tool Bits to a Job. The approved plan gives that procedure to tools/add-toolbit.adoc. This page obeys the plan: it gives one clause and a link for the request for a tool number.\n\nThe Camotics import statement (F60) is in Usage, below the import bullet, because the brief makes this page the owner. tools/library-manager.adoc links to this page for the Camotics units.\n\nThe JSON Structure section did not change. It shows the `.fctl` format, which the two pull requests do not change. The Camotics keys are in Export.\n\nThe page keeps lines that do not obey STYLE.md (title, \"the user\", history in Description), because the mode is AMEND ONLY.",
+   "notes": "This text builds on the pending page text of open PR #27 (branch gypsy/issue-13), which is the same as the text on `main`.\n\nCheck finding (term, line 21): corrected. The sentence is now \"The Library Manager moves the other Tool Bit to a different free number of the Tool Library when a Tool Bit gets a number that is already used.\" The term \"next free number\" is no longer on this page.\n\nLint finding (line 21, 'a tool'): corrected. The proposed sentence of the check had \"a tool number\", which the lint reads as a bare \"tool\". The new sentence uses \"a number\" and \"a different free number of the Tool Library\", thus no content is lost.\n\nThe changed sentence makes a weaker claim than the old sentence: it does not say which free number the Library Manager selects. The source of that behaviour was not in the diffs, thus the claim is in `unverified`.\n\n`:page-status:` stays `draft` because `unverified` is not empty.\n\nConflict with the guidance: Comment 1 names tools/toolbit-library.adoc as the page for the dock that adds Tool Bits to a Job. The approved plan gives that procedure to tools/add-toolbit.adoc. This page follows the plan and links to tools/add-toolbit.adoc.\n\nAll other lines are returned as they were, also the lines that do not follow STYLE.md (AMEND ONLY mode).",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -1365,9 +1733,19 @@
      "cost_usd": 0.572823,
      "duration_ms": 27926,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.604127,
+     "duration_ms": 30727,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.615679,
+     "duration_ms": 34764,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 1.848981,
+   "cost_usd": 3.068787,
    "verdicts": [
     [
      "2026-08-28T20:10:33Z",
@@ -1488,7 +1866,7 @@
    ],
    "unverified": [],
    "figures_wanted": [],
-   "notes": "The finding is correct and the two sections are shorter. 'Tool update from library' no longer defines embedded and stale, and no longer tells the dialog or the two starts; tools/toolbit.adoc owns these. 'Add a Tool Controller to a Job' no longer has the sentence about `All Tools`, the sentence \"Each Tool Controller has one tool number.\" or the tool number rule; tools/add-toolbit.adoc and tools/tool-controller.adoc own these. The numbered procedure of `main` in 'Add a Tool Controller to a Job' stays removed, because the plan makes this section a summary and tools/add-toolbit.adoc owns the procedure. Thus tools/add-toolbit.adoc must have the shortcut P, T and the prompt for a document with more than one Job (F29, F38). 'Tool Bit units' did not change from the previous draft, because the check had no finding on it. All other lines are the lines of `main`. `:page-status:` is not set, because `unverified` is empty and `main` has no such attribute.",
+   "notes": "The page builds on the pending text of open PR #27 (branch gypsy/issue-13). The two findings are the same subject and are corrected together. The two findings gave different instructions for sentence 1. The first finding permitted a clause about the ToolBit editor and the saved file. The second finding told to remove that content. The draft obeys the second finding, because tools/toolbit.adoc owns these facts. The 'See' sentence is shorter than the text that the second finding proposed. The proposed text had 31 words, and STYLE.md section 3 permits a maximum of 30. The links and the subjects are the same. `:page-status:` is not on the page and `unverified` is empty, thus the attribute was not added. `:page-source-pr:` stays 31300.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -1509,9 +1887,19 @@
      "cost_usd": 0.606371,
      "duration_ms": 33578,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.629099,
+     "duration_ms": 35886,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.6280950000000001,
+     "duration_ms": 32828,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 1.886021,
+   "cost_usd": 3.143215,
    "verdicts": [
     [
      "2026-08-19T03:12:44Z",
@@ -1544,9 +1932,7 @@
     }
    ],
    "unverified": [],
-   "figures_wanted": [
-    "CAM_UpdateDocumentTools.svg: a copy of src/Mod/CAM/Gui/Resources/icons/CAM_UpdateDocumentTools.svg from FreeCAD at commit dc2ed9d58652535b86d9945f8b2c12795fe80c2f, put in modules/ROOT/images/CAM_UpdateDocumentTools.svg. This is an icon file, not a capture."
-   ],
+   "figures_wanted": [],
    "notes": "The finding is correct, but the file copy is NOT done. This session has no file or shell tool, thus I could not copy /home/sliptonic/FreeCAD-gypsy/src/Mod/CAM/Gui/Resources/icons/CAM_UpdateDocumentTools.svg to modules/ROOT/images/CAM_UpdateDocumentTools.svg. The runner or a person must make this copy before delivery. Until the file is there, the page shows a broken image and the build can give a warning.\n\nThe page text did not change from the previous draft, as the finding instructs. I did not confirm that the source SVG exists at the path that the finding gives.\n\n`:page-status:` is not on the page and `unverified` is empty, thus I did not add it.\n\nThe sentence about the icons without images was written again in the previous draft (it removed `CAM_UpdateDocumentTools.svg` and changed \"CAMotics\" to \"Camotics\", the term of the brief). That change stays, because the instruction is to change nothing else.",
    "lint_rc": 0,
    "lint": "",
@@ -1717,6 +2103,150 @@
     "turns": 21,
     "model": "claude-opus-5-5"
    }
+  },
+  {
+   "page": "tools/toolbit.adoc",
+   "wanted": [
+    "tools/toolbit/editor-toolbit-tab.png: the ToolBit editor (window title 'Toolbit Parameter Editor') on the Toolbit tab for '5mm Endmill', light theme, with the shape drawing after PR 32278 and PR 33079. Capture again only if the file is older than PR 33079.",
+    "tools/toolbit/editor-task-panel.png: the ToolBit editor as a task panel for a Tool Bit in a document, with Label, Toolbit Type, Properties list and shape drawing, and no Feeds && Speeds tab. Capture again only if the file is older than PR 33079."
+   ],
+   "figures": [
+    {
+     "wanted": "tools/toolbit/editor-toolbit-tab.png: the ToolBit editor (window title 'Toolbit Parameter Editor') on the Toolbit tab for '5mm Endmill', light theme, with the shape drawing after PR 32278 and PR 33079. Capture again only if the file is older than PR 33079.",
+     "status": "covered",
+     "file": "tools/toolbit/editor-toolbit-tab.png",
+     "recipe": "recipes/tools/toolbit/editor-toolbit-tab.py",
+     "shows": "The dialog in the light theme with the tabs Toolbit (selected) and Feeds & Speeds. Label is '5mm Endmill' and Toolbit Type is 'Endmill'. The Properties list shows Units Metric, Spindle direction Forward, Material HSS, Cutting edge height (H) 30.000 mm, Diameter (D) 5.000 mm, Flutes 4, Length (L) 50.000 mm, Shank diameter (S) 3.000 mm and Chipload 0.000 mm. The shape drawing of the endmill is on the right with the dimensions L, S, H and D. The H dimension stops at the top of the flutes, as PR 33079 made it. The buttons OK and Cancel are at the bottom. The image does not show the window frame, thus the window title is not in the image.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "tools/toolbit/editor-task-panel.png: the ToolBit editor as a task panel for a Tool Bit in a document, with Label, Toolbit Type, Properties list and shape drawing, and no Feeds && Speeds tab. Capture again only if the file is older than PR 33079.",
+     "status": "covered",
+     "file": "tools/toolbit/editor-task-panel.png",
+     "recipe": "recipes/tools/toolbit/editor-task-panel.py",
+     "shows": "The task panel form in the light theme without tabs. The Toolbit group shows Label 'Endmill' and Toolbit Type 'Endmill.Fcstd'. The Properties list shows Chipload, Cutting edge height (H) 30.000 mm, Diameter (D) 5.000 mm, Flutes 4, Length (L) 50.000 mm, Material HSS, Shank diameter (S) 3.000 mm, Spindle direction Forward and Units Metric. The shape drawing of the endmill is below the list with the dimensions L, S, H and D. The H dimension stops at the top of the flutes. There is no Feeds & Speeds tab.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "1. I made no capture and I did not change the page, the recipes, the images or the manifest.\n2. The two images are newer than PR 33079. The manifest gives the capture date 2026-10-11 and the FreeCAD commit ef63368faf4. `gypsy/verdicts/33079.json` gives the merge date 2026-09-30 for PR 33079. `gypsy/verdicts/32278.json` gives the merge date 2026-08-31 for PR 32278.\n3. The commit ef63368faf4 is the HEAD of the FreeCAD source tree. Git commands in the FreeCAD tree and `gh` were denied, thus I did not do an ancestor check of the merge commit c97e069. I used the images as the evidence: the H dimension stops at the top of the flutes in the two images.\n4. I looked at the two images with the Read tool.\n5. The alt text of `editor-toolbit-tab.png` on the page starts with 'ToolBit editor on the Toolbit tab'. The `ALT` in the recipe and in the manifest starts with 'Toolbit Parameter Editor on the Toolbit tab'. The page text comes from a writer edit in the work tree that is not committed. I did not change it, because the rule is to change nothing else on the page. Make the recipe `ALT` and the page agree if the manifest must match the page.\n6. The task panel image shows Toolbit Type as 'Endmill.Fcstd' and the Properties list in alphabetical sequence. This is the state that FreeCAD gives for the Tool Bit of a new Job.\n7. `python3 gypsy/lint.py --since origin/main modules/ROOT/pages/tools/toolbit.adoc` gives 0 findings.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.5630794,
+    "duration_ms": 46715,
+    "turns": 19,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "tools/add-toolbit.adoc",
+   "wanted": [
+    "tools/add-toolbit/toolbit-selector-library.png: the Toolbit Selector with a Tool Library selected, with the library tool number in each list entry, the sort drop-down and the new format of the list entries.",
+    "tools/add-toolbit/toolbit-selector-all-tools.png: the Toolbit Selector with `All Tools` selected in the library drop-down, with the list of Tool Bits and the buttons Open Library Editor, Add to Job and Close.",
+    "tools/add-toolbit/tool-number-dialog-conflict.png: the Tool Number input dialog with the label 'Tool number N is already used by TC: 5mm Endmill.' and 'Tool number for <Tool Bit label>:', with the next free number as the default."
+   ],
+   "figures": [
+    {
+     "wanted": "tools/add-toolbit/toolbit-selector-library.png: the Toolbit Selector with a Tool Library selected, with the library tool number in each list entry, the sort drop-down and the new format of the list entries.",
+     "status": "covered",
+     "file": "tools/add-toolbit/toolbit-selector-library.png",
+     "recipe": "recipes/tools/add-toolbit/toolbit-selector-library.py",
+     "shows": "The Toolbit Selector with `Default` in the library drop-down, the `All Toolbit Types` filter and the `Sort by Toolbit Number` drop-down. Each list entry shows the library tool number (1 to 10), the shape icon, the label in bold and a one-line summary. The buttons Open Library Editor, Add to Job (not enabled) and Close are at the bottom.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "tools/add-toolbit/toolbit-selector-all-tools.png: the Toolbit Selector with `All Tools` selected in the library drop-down, with the list of Tool Bits and the buttons Open Library Editor, Add to Job and Close.",
+     "status": "covered",
+     "file": "tools/add-toolbit/toolbit-selector-all-tools.png",
+     "recipe": "recipes/tools/add-toolbit/toolbit-selector-all-tools.py",
+     "shows": "The Toolbit Selector with `All Tools` in the library drop-down and the `All Toolbit Types` filter. The list shows the Tool Bits in label sequence, with shape icon, label and summary, and without tool numbers. The sort drop-down is not shown. The buttons Open Library Editor, Add to Job (not enabled) and Close are at the bottom.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "tools/add-toolbit/tool-number-dialog-conflict.png: the Tool Number input dialog with the label 'Tool number N is already used by TC: 5mm Endmill.' and 'Tool number for <Tool Bit label>:', with the next free number as the default.",
+     "status": "covered",
+     "file": "tools/add-toolbit/tool-number-dialog-conflict.png",
+     "recipe": "recipes/tools/add-toolbit/tool-number-dialog-conflict.py",
+     "shows": "The Tool Number input dialog with the two label lines `Tool number 1 is already used by TC: 5mm Endmill.` and `Tool number for 3.175mm Endmill:`. The number field shows 2, the next free number. The buttons OK and Cancel are below the field.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The page already has the three wanted figures. Commit 385e533 added the images, the recipes and the manifest entries. I examined each image and each recipe. Each image shows what its description requires, so I made no new capture and no change to the page.\n\nThe source agrees with the images. `browser.py` line 202 hides the sort drop-down when `All Tools` is selected, thus the `All Tools` figure correctly has no sort drop-down. `dock.py` lines 180 to 183 contain the two label texts of the Tool Number dialog.\n\nEach figure is at the applicable location on the page, with a sentence before it that refers to it, and with width 400. The lint command gave 0 findings for the page.\n\nI did not run the recipes again. The manifest records FreeCAD revision ef63368faf4 and the date 2026-10-11 for the three images. The permission mode refused the git command that reads the current revision of the FreeCAD source tree, thus I did not compare the revisions.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.3327354,
+    "duration_ms": 26172,
+    "turns": 10,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "tools/feeds-speeds.adoc",
+   "wanted": [
+    "tools/feeds-speeds/presets-tab.png: the Feeds & Speeds tab of the editor of a library Tool Bit, with a minimum of two Presets, the Notes column with text, and the buttons Add preset, Edit, Copy and Delete",
+    "tools/feeds-speeds/edit-preset-dialog.png: the Edit preset dialog, complete, with the Name field and the Notes group"
+   ],
+   "figures": [
+    {
+     "wanted": "tools/feeds-speeds/presets-tab.png: the Feeds & Speeds tab of the editor of a library Tool Bit, with a minimum of two Presets, the Notes column with text, and the buttons Add preset, Edit, Copy and Delete",
+     "status": "done",
+     "file": "tools/feeds-speeds/presets-tab.png",
+     "recipe": "modules/ROOT/images/recipes/tools/feeds-speeds/presets-tab.py",
+     "shows": "The full Tool Bit editor dialog with the tabs Toolbit and Feeds & Speeds; Feeds & Speeds is selected. The table has the columns Name, Material, Op type, Surface speed, Chipload and Notes. Row 1 is General, (any material), (any), 120 m/min, 0.03 mm, First cut. Row 2 is Alu profile, Aluminum, profile, 300 m/min, 0.05 mm, Air blast. Below the table are a horizontal scroll bar and the buttons Add preset, Edit, Copy and Delete. At the bottom are OK and Cancel.",
+     "problem": "",
+     "check": []
+    },
+    {
+     "wanted": "tools/feeds-speeds/edit-preset-dialog.png: the Edit preset dialog, complete, with the Name field and the Notes group",
+     "status": "done",
+     "file": "tools/feeds-speeds/edit-preset-dialog.png",
+     "recipe": "modules/ROOT/images/recipes/tools/feeds-speeds/edit-preset-dialog.py",
+     "shows": "The full Edit preset dialog for the Preset Alu profile: Name (Alu profile), Material (Aluminum, the Browse… button, Generic (any material) not checked), Op type (profile), Surface speed (300.0 m/min), Chipload (per tooth) (0.0500 mm), Vert feed ratio (0.330), the Direct feed and speed group with Horiz feed (3819.72 mm/min) and Spindle speed (19099 rpm), the Notes group with the text Air blast, and the buttons OK and Cancel.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The two figures are in the page, each with one new sentence before it and width 400. The lint reports 0 findings. The page had no old figure, thus no figure was replaced.\n\nShared code is in modules/ROOT/images/recipes/tools/feeds-speeds/_presets.py. It writes two Presets to the library Tool Bit 5mm_Endmill with set_presets() and opens the ToolBitEditor form without exec_(). The Edit button opens its dialog with exec_(), thus the dialog recipe selects the row and creates the same _EditPresetDialog with the arguments that PresetsTab._on_edit uses.\n\nThe presets-tab figure used 4 captures. The cause was the Notes text, not a capture error.\n\nObservations in FreeCAD (ef63368faf4) that the page does not mention:\n- At the default size of the editor, the Notes column has a width of only about 97 pixels. Notes longer than about 10 characters show cut with \"…\". The recipe uses short notes (\"First cut\", \"Air blast\") so that the text shows in full. Thus the figure does not show notes of more than one line.\n- The table shows a horizontal scroll bar at the default size: the header is 708 pixels wide and the visible area is 705 pixels wide.\n- The table shows the rows in descending sequence of Name after the editor opens (General before Alu profile).\n\nThe title text of the two windows is not in the images, because shot.widget() captures a dialog without the window frame.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 1.0875702,
+    "duration_ms": 170686,
+    "turns": 44,
+    "model": "claude-opus-5-5"
+   }
+  },
+  {
+   "page": "reference/artwork.adoc",
+   "wanted": [
+    "CAM_UpdateDocumentTools.svg: a copy of src/Mod/CAM/Gui/Resources/icons/CAM_UpdateDocumentTools.svg from FreeCAD at commit dc2ed9d58652535b86d9945f8b2c12795fe80c2f, put in modules/ROOT/images/CAM_UpdateDocumentTools.svg. This is an icon file, not a capture."
+   ],
+   "figures": [
+    {
+     "wanted": "CAM_UpdateDocumentTools.svg: a copy of src/Mod/CAM/Gui/Resources/icons/CAM_UpdateDocumentTools.svg from FreeCAD at commit dc2ed9d58652535b86d9945f8b2c12795fe80c2f, put in modules/ROOT/images/CAM_UpdateDocumentTools.svg. This is an icon file, not a capture.",
+     "status": "covered",
+     "file": "CAM_UpdateDocumentTools.svg",
+     "recipe": "",
+     "shows": "A 64 x 64 px SVG icon: three grey tool bits in a row, with a green curved arrow that points down on top of them. The file metadata gives Inkscape document name CAM_UpdateDocumentTools.svg.",
+     "problem": "",
+     "check": []
+    }
+   ],
+   "notes": "The icon file is already in the repository. Commit 385e533 added modules/ROOT/images/CAM_UpdateDocumentTools.svg, and line 16 of reference/artwork.adoc already shows it as image:CAM_UpdateDocumentTools.svg[width=64]. I made no change to the page or to the images.\n\nVerification: cmp shows that the copy is byte-identical to src/Mod/CAM/Gui/Resources/icons/CAM_UpdateDocumentTools.svg in the working tree of /home/sliptonic/FreeCAD-gypsy. I did not confirm that this working tree is at commit dc2ed9d58652535b86d9945f8b2c12795fe80c2f, because the permission mode denied git commands in the FreeCAD tree.\n\nI read the SVG as source text, not as a rendered image; the description of the icon comes from its paths and colours.\n\nAn icon has no recipe and no manifest entry (manifest.yml says that CAM_*.svg icons are not listed). The lint command for the page reports 0 findings.",
+   "lint_rc": 0,
+   "lint": "",
+   "run": {
+    "cost_usd": 0.4370442,
+    "duration_ms": 25858,
+    "turns": 14,
+    "model": "claude-opus-5-5"
+   }
   }
  ],
  "runs": [
@@ -1743,8 +2273,26 @@
    "cost_usd": 1.5808862,
    "turns": 28,
    "duration_ms": 161221
+  },
+  {
+   "stage": "check",
+   "cost_usd": 3.021322,
+   "turns": 59,
+   "duration_ms": 196762
+  },
+  {
+   "stage": "check",
+   "cost_usd": 2.7935238000000004,
+   "turns": 67,
+   "duration_ms": 183590
+  },
+  {
+   "stage": "check",
+   "cost_usd": 2.8085195999999994,
+   "turns": 52,
+   "duration_ms": 177812
   }
  ],
- "cost_usd": 30.688434799999996,
- "generated": "2026-10-11T21:48:45+00:00"
+ "cost_usd": 52.684687399999994,
+ "generated": "2026-10-12T13:54:21+00:00"
 }

@@ -22,9 +22,13 @@ See also:: xref:tools/tool-controller.adoc[CAM ToolController], xref:tools/toolb
 
 == Presets
 
-A Preset is a named Feeds & Speeds record stored on a Tool Bit for a material and an operation type. Presets are edited on the _Feeds && Speeds_ tab of the Toolbit Parameter Editor (open the Tool Bit from the Library Manager to change the library copy; open it from a Job to change only the embedded copy). The tab lists Name, Material, Op type, Surface speed, Chipload and Notes and offers btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete].
+A Preset is a named Feeds & Speeds record stored on a Tool Bit for a material and an operation type. Presets are edited on the _Feeds && Speeds_ tab of the _ToolBit editor_ (window title _Toolbit Parameter Editor_), which opens for a Tool Bit from a Tool Library. The task panel of a Tool Bit in a document does not have the _Feeds && Speeds_ tab; see xref:tools/toolbit.adoc[Tool Bit]. The tab lists Name, Material, Op type, Surface speed, Chipload and Notes and offers btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete].
 
-FreeCAD writes the Presets that are edited on an embedded Tool Bit only to the *Presets* property of the document object, not to the Tool Library. An update from the library replaces the full embedded Tool Bit, with its Presets; see xref:tools/toolbit.adoc[Tool Bit].
+The figure shows the _Feeds && Speeds_ tab for a Tool Bit with two Presets.
+
+image::tools/feeds-speeds/presets-tab.png["Feeds & Speeds tab of the ToolBit editor with two Presets, the Notes column and the buttons Add preset, Edit, Copy and Delete",400]
+
+The Presets of an embedded Tool Bit are in the *Presets* property of the document object. FreeCAD does not write a change of the *Presets* property of an embedded Tool Bit to the library Tool Bit. An update from the library replaces the full embedded Tool Bit, with its Presets; see xref:tools/toolbit.adoc[Tool Bit].
 
 The *Notes* cell of the table shows the notes of the Preset on one line, and the tooltip of the cell shows the full text. A double-click on a row of the table opens the Preset in the _Edit preset_ dialog.
 
@@ -40,6 +44,10 @@ The _Edit preset_ dialog has:
 * *Vert feed ratio*: vertical feed as a fraction of the horizontal feed, default 0.33.
 * A _Direct feed and speed_ group (*Horiz feed* and *Spindle speed*) that is kept in sync with surface speed and chipload using the Tool Bit's Diameter and Flutes.
 * *Notes*: a text field for one or more lines in the _Notes_ group. FreeCAD saves the text in the `"notes"` key of the Preset record and saves empty notes as `null`.
+
+The figure shows the _Edit preset_ dialog for the Preset `Alu profile`.
+
+image::tools/feeds-speeds/edit-preset-dialog.png["Edit preset dialog with the Name field, the material, the op type, the feed and speed values and the Notes group",400]
 
 Only Surface Speed, Chipload and the ratio are stored; feed and spindle speed are recomputed from the Tool Bit geometry when the Preset is used. Two Presets on one Tool Bit may not share the same name, material and op type. A new Preset's chipload is seeded from the Tool Bit's *Chipload* attribute.
 

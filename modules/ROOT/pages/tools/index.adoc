@@ -78,7 +78,7 @@ The _Toolbit Selector_ dialog of the menu:CAM[Add Toolbit…] command adds one T
 
 == Tool Bit units
 
-[.since]#introduced in 26.3#: each Tool Bit has the `Units` property with the values `Metric` and `Imperial`. The _ToolBit editor_ shows the values of a Tool Bit in the `Units` of the Tool Bit, and FreeCAD saves the values in the same units. See xref:tools/toolbit.adoc[Tool Bits] for the tool precision and for the conditions in which the unit schema and the Units Decimals preference apply. The Camotics export does not use the `Units` property; see xref:tools/toolbit-library.adoc[Tool Libraries].
+[.since]#introduced in 26.3#: each Tool Bit has the `Units` property with the values `Metric` and `Imperial`. See xref:tools/toolbit.adoc[Tool Bits] for the tool precision, the unit schema and the Units Decimals preference, and xref:tools/toolbit-library.adoc[Tool Libraries] for the units of the Camotics export.
 
 == Import and export
 
