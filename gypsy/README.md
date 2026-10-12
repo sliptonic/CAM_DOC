@@ -33,6 +33,11 @@ is one or more verdicts that a person approves as one issue and that one pull re
      the last check, and the pages. Branch `gypsy/issue-N`. A person merges, and the merge
      closes the issue and deploys the site.
 
+`run.py N --revise --pr` works on the open pull request of an issue: it keeps the brief and the
+pages, reads the review comments of people, runs the check, and the writers revise. `work.py run`
+starts it when a person asks for changes in a review. The check has two agents: one for the facts
+(source, conditions, names) and one for the plan (owner pages, what is not documented, guidance).
+
 An issue without goals (made by `work.py propose`) still runs through `draft.py --issue N`.
 
 ## Work issues and labels
