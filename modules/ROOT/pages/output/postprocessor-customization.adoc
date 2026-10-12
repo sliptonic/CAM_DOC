@@ -3,7 +3,7 @@
 :page-origin-revision: 8b09057daf 2026-02-04
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 31722,32096,32099,32129,32132,32274,32282,32293,32323,32863,32886,32903,33069
+:page-source-pr: 31722,32096,32099,32129,32132,32274,32282,32293,32323,32863,32886,32903,33069,33254
 :page-status: draft
 :description: How a Post-Processor is named, written, configured and installed, for legacy script posts and for machine-based posts.
 
@@ -260,6 +260,7 @@ The table lists the properties that the included machine-based Posts add to the 
 |Post |Property |Scope |Values and default
 |`linuxcnc` |*Path Blending Mode* |Job |`EXACT_PATH`, `EXACT_STOP`, `BLEND`. Default: `BLEND`.
 |`linuxcnc` |*Blend Tolerance* |Job |Default: 0.0.
+|`linuxcnc` |*Tilted work plane: kinematics select* |Machine |Default: empty.
 |`opensbp` |*Automatic Tool Changer* |Machine |Default: unchecked.
 |`opensbp` |*Automatic Spindle Control* |Machine |Default: unchecked.
 |`generic_sheet_cutting` |*Pierce Delay* |Job |Default: 1000.
@@ -282,6 +283,8 @@ The table lists the properties that the included machine-based Posts add to the 
 |`fanuc` |*Program Number* |Job |Default: 0. The value 0 writes no `O` line.
 |`fanuc` |*Tape Marks (%)* |Machine |Default: checked.
 |===
+
+The `linuxcnc` Post-Processor writes tilted Work Planes, and *Tilted work plane: kinematics select* (`twp_kinematics_select`) is a part of that output. xref:output/posts/linuxcnc.adoc[`linuxcnc` Post-Processor] describes the output and the property.
 
 The *Control Method For Cutter* values of the `generic_sheet_cutting` Post have these effects:
 
@@ -341,13 +344,46 @@ A Post for a control that runs every cycle sets the default of *Drill Cycles to 
 
 === Commands and rapid moves
 
-* *Supported G-code Commands* lists the commands that the Post accepts.
-* *Ignore G-code Commands* lists commands that the Post accepts and removes from the output. A command in this list is not necessary in *Supported G-code Commands*.
+* *Supported G-code Commands* (`supported_commands`) lists the commands that the Post accepts. A command that is not in the list stops the export with the error `Unsupported command:` and the command name.
+* *Ignore G-code Commands* (`ignored_commands`) lists commands that the Post accepts and removes from the output. A command in this list is not necessary in *Supported G-code Commands*.
 * `translate_no_engagement_feed` changes a marked `G0` move into a `G1` move. An Operation that has a no-engagement feed marks these moves with that feed. Default: unchecked.
+
+The export does not stop for these items when they are not in *Supported G-code Commands*:
+
+* A command in *Ignore G-code Commands*.
+* A comment.
+* A bare T word.
+* A command with the `allow_unsupported` annotation.
+
+The Post compares a command name with *Supported G-code Commands* and *Ignore G-code Commands* as a full command name. Each line of the two properties is one name. The Post removes the space characters at the two ends of each line. A name does not match a part of a different name: `G1` does not match the entry `G17`, and `G5` does not match the entry `G54`.
+
+The common default of *Supported G-code Commands* contains G17, G18 and G19, which select the arc plane. A Post that uses the common conversion writes each of these commands as one line. xref:reference/scripting.adoc[Scripting] lists the supported commands. The `opensbp` Post accepts G17 and does not accept G18 and G19, as xref:output/post-process.adoc[Post Process] describes; the `heidenhain` Post accepts only G17 and writes no block for it.
 
 === Modal output and line numbers
 
 When *Duplicate Commands* of the Machine is unchecked, the Post removes a command word that is the same as the command word before it. When *Duplicate Parameters* is unchecked, the Post removes an axis parameter whose value did not change. A tool change and an item of plain text reset this state. A comment does not change this state.
+
+The Post also follows the arc plane (G17, G18, G19). These rules apply:
+
+* The arc plane is `G17` at the start of each output section.
+* A G17, G18 or G19 command in the Toolpath changes the arc plane.
+* A text block that the Post writes without change can contain a G17, G18 or G19 word. The preamble and a command with the `as-is` annotation are such text blocks. The last of these words in the text block sets the arc plane.
+* A text block with no G17, G18 or G19 word does not change the arc plane.
+* A tool change does not change the arc plane.
+
+An arc gives its center in its arc plane. The center word (I, J, K) along the plane normal has no function, because a helical arc gives its pitch in the axis word. LinuxCNC and Fanuc controls do not accept that center word. For a `G2` or `G3` command, the common conversion of a machine-based Post thus drops the center word along the plane normal. The arc plane causes no other change to the center words.
+
+[cols="1,1,1",options="header"]
+|===
+|Arc plane |Center word that the Post drops |Center words that stay
+|`G17` |K |I, J
+|`G18` |J |I, K
+|`G19` |I |J, K
+|===
+
+With the `linuxcnc` Post and the arc plane `G17`, the command `G2 X10 Y0 Z-1 I5 J0 K0` gives a line with `I5.000` and `J0.000` and no K word. With the arc plane `G18`, the command `G2 X0 Y0 Z-10 I0 J0 K-5` gives a line with `I0.000` and `K-5.000` and no J word.
+
+A Post writes a center word only when the word is in `parameter_order`. The common default of `parameter_order` is `XYZABCUVWFSIJKTQRPDHL`, which has K. The `linuxcnc` Post and the xref:output/posts/fanuc.adoc[`fanuc` Post] use the common default.
 
 When *Line Numbers* of the Machine is checked, the Post gives each command an `N` parameter. These rules apply:
 
@@ -375,6 +411,8 @@ Two class attributes tell the export what a Post can write for an Operation on a
 |===
 
 `G68_2` and `G268` take intrinsic Z-X-Z Euler angles. `PLANE_SPATIAL` takes spatial angles about the fixed machine axes X, Y and Z. The common properties *Tilted work plane: declare*, *Tilted work plane: align* and *Tilted work plane: cancel* replace one line for a control with a different form. xref:output/machine.adoc[Machine] describes these properties and the *Rotation Strategy* of the Machine.
+
+The `linuxcnc` Post sets `ROTATION_STRATEGIES` to `("twp",)` and `PLANE_COMMAND` to `PlaneCommand.G68_2`. The `linuxcnc` Post thus writes a tilted Work Plane only with the TWP Rotation Strategy. xref:output/posts/linuxcnc.adoc[`linuxcnc` Post-Processor] gives the declare line, the align line, the cancel line and the limits of this output.
 
 When the rotary axes move, the Post writes the *Pre-Rotary Move* block before the move and the *Post-Rotary Move* block after the move. The Post writes rotary axis angles with the axis precision and does not convert them between millimetres and inches.
 

@@ -3,7 +3,7 @@
 :page-origin-revision: 5446a45b21 2025-11-05
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 31722,32129
+:page-source-pr: 31722,32129,33254
 :page-status: draft
 
 == Introduction
@@ -73,7 +73,7 @@ G90 (The command name is G90, there are no arguments)
 |G1, G01 |normal move |X,Y,Z,A,B,C |Green
 |G2, G02 |clockwise arc |X,Y,Z,A,B,C,I,J,K |Green
 |G3, G03 |counterclockwise arc |X,Y,Z,A,B,C,I,J,K |Green
-|G17, G18, G19 |arc plane selection |(none) |not displayed
+|G17, G18, G19 |select the arc plane |(none) |not displayed
 |G38.2, G38.3, G38.4, G38.5 |probe moves |X,Y,Z,F |Yellow
 |G73, G74, G81, G82, G83, G84, G85, G86, G89 |canned drilling, tapping and boring cycles |X,Y,Z,R,Q,P,F |Red/Green (expanded for display)
 |G90 |absolute coordinates | |
@@ -538,10 +538,31 @@ from Path.Base.MachineState import MachineState
 ms = MachineState()
 ms.addCommands(path.Commands)
 ms.getPosition()   # the current XYZ
-ms.getState()      # the modal dictionary (units, plane, G90/G91, feed, return mode)
+ms.getState()      # the dictionary of the Tracked values
+ms.Plane           # the arc plane: 'G17', 'G18' or 'G19'
 ----
 
 Dressups and post-processors use it to expand drilling cycles accurately.
+
+The `Plane` attribute of `MachineState` holds the arc plane. The values of `Plane` are `"G17"`, `"G18"` and `"G19"`. The default is `"G17"`.
+
+`Plane` is not in the `MachineState.Tracked` list. `getState()` does not return `Plane`, the `previous` dictionary does not contain `Plane`, and `ms["Plane"]` raises `KeyError`. Read the arc plane as `ms.Plane`.
+
+These methods set `Plane`:
+
+* `addCommand(command)`: sets `Plane` to the command name when the name is in `Constants.GCODE_PLANE` (`G17`, `G18`, `G19`). `addCommand()` returns `False` for such a command.
+* `addGcodeText(text)`: sets `Plane` to the last G17, G18 or G19 word in a block of G-code text. `addGcodeText()` reads no other word and returns no value. The forms `G017`, `G018` and `G019` also match. A text with no such word, an empty text or `None` does not change `Plane`.
+
+[source,python]
+----
+from Path.Base.MachineState import MachineState
+ms = MachineState()
+ms.Plane                         # 'G17'
+ms.addGcodeText("G90 G18 G54")
+ms.Plane                         # 'G18'
+----
+
+xref:output/postprocessor-customization.adoc[Postprocessor Customization] describes how a machine-based Post uses the arc plane to write the center words of an arc. xref:output/mbpp-postprocessor.adoc[Writing a Machine-Based Post-Processor] describes when a Post calls `addGcodeText()`.
 
 == See also
 

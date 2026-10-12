@@ -1,0 +1,1375 @@
+{
+ "issue": 16,
+ "branch": "gypsy/issue-16",
+ "brief": {
+  "facts": [
+   {
+    "id": "F1",
+    "fact": "The `linuxcnc` Post sets the class attribute `ROTATION_STRATEGIES = (\"twp\",)`. The base class default is `(\"dwo\", \"twp\")`.",
+    "source": "src/Mod/CAM/Path/Post/scripts/linuxcnc_post.py:77; Path/Post/Processor.py:405",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F2",
+    "fact": "The `linuxcnc` Post sets `PLANE_COMMAND = PlaneCommand.G68_2` (from `Path.Post.TiltedWorkPlane`). This is the same value as the base class default.",
+    "source": "linuxcnc_post.py:78; Path/Post/Processor.py:409",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F3",
+    "fact": "The declare line of the `G68_2` plane command is `G68.2 X{x} Y{y} Z{z} I{a1} J{a2} K{a3}`. X, Y, Z are the origin of the Work Plane. I, J, K are intrinsic Z-X'-Z'' Euler angles.",
+    "source": "Path/Post/TiltedWorkPlane.py:63-66, 103-108 (DIALECTS[PlaneCommand.G68_2])",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F4",
+    "fact": "The default align line is `G53.1` and the default cancel line is `G69`.",
+    "source": "Path/Post/TiltedWorkPlane.py:106-107",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F5",
+    "fact": "The Post writes the align line only when the Machine strategy is TWP, the Tool Axis of the Operation is tilted, and `twp_control_positions_rotaries` is true (default: true). When that property is false, the Post writes a `G0` rotary move before the declare line and writes no align line.",
+    "source": "Path/Post/Processor.py:2053-2076 (_pose_change_postables); property default at Processor.py:630-634",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F6",
+    "fact": "A non-empty `twp_align` value replaces the complete align line. The Post writes the text as it is given. An empty value gives `G53.1`. Test: `twp_align=\"G53.1 P1 Q1\"` gives the line `G53.1 P1 Q1` and no bare `G53.1` line.",
+    "source": "Path/Post/Processor.py:1995-1998 (_plane_postables, `self.values.get(key) or None`); TiltedWorkPlane.py:129-138 (template); CAMTests/TestPathTiltedWorkPlane.py test_theAlignLineTakesTheControlsOptions",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F7",
+    "fact": "`G53.6` is not a default of the code. A reader gets `G53.6` only when the reader writes it into `twp_align` (label *Tilted work plane: align*, Machine scope, type string, default empty). The linuxcnc help text says: G53.1 moves only the rotary axes and lets the tool tip swing; `G53.1 P1` or `P2` selects one of the two poses; `Q1` lets the table take part; `G53.6` keeps the tool center point in position.",
+    "source": "linuxcnc_post.py:108-115 (help text); Path/Post/Processor.py:655-659 (label, scope, default)",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F8",
+    "fact": "For one tilted Operation with `pre_rotary_move` set, the output sequence of the `linuxcnc` Post is: preamble line with the blend command, *Pre-Rotary Move* block, `G68.2 ...` declare line, `G53.1`, the moves of the Operation in plane coordinates, `G69`. The output has no `G0` line with an A word.",
+    "source": "CAMTests/TestPathTiltedWorkPlane.py test_theProgramDeclaresAlignsCutsAndCancels; Path/Post/Processor.py:2057-2078",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F9",
+    "fact": "The cancel line before a pose change does not need a new declaration. A change from a declared plane to a Work Plane that is not tilted also gives the cancel line (Processor.py:2059-2060).",
+    "source": "Path/Post/Processor.py:2059-2060 in `_pose_change_postables()`: `if twp and declared:` writes `TWP_CANCEL` for each pose change. The declare line at 2073-2074 has the separate condition `if twp and tilted:`. Processor.py:2302-2311 calls the method when the pose changes or the Fixture changes. (corrected by the review)",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F10",
+    "fact": "With two Fixtures in the Job (`G54`, `G55`) and one tilted Operation, the output has two declare lines and two `G69` lines. One `G69` is before `G55` and one declare line is after `G55`. The class docstring gives the reason: the control refuses a change of coordinate system while a plane is active.",
+    "source": "CAMTests/TestPathTiltedWorkPlane.py test_thePlaneIsCancelledBeforeAFixtureChange; linuxcnc_post.py:72-73",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F11",
+    "fact": "The Post declares a plane only for an Operation whose Tool Axis is tilted (the local Z of the Placement is not world Z, tolerance 1e-6). A Work Plane parallel to the table gets no `G68.2`; the Post writes its Toolpath in world coordinates.",
+    "source": "Path/Post/Processor.py:311-317 (_tool_axis_tilted), 2295, 2309-2323",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F12",
+    "fact": "The export of the `linuxcnc` Post stops with a `CAMValueError` only when an Operation in the export has a tilted Tool Axis and the *Rotation Strategy* of the Machine is DWO. A Machine set to DWO with no tilted Operation posts without this error.",
+    "source": "Path/Post/Processor.py:2288-2289, 1974-1984 (_check_rotation_strategy); CAMTests/TestPathTiltedWorkPlane.py test_linuxcncHasNoDynamicWorkOffset",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F13",
+    "fact": "The error message for the DWO condition is: `{op} is on a tilted work plane, and this post-processor cannot emit the {strategy} strategy machine '{machine}' declares.` `{op}` is the Operation label, `{strategy}` is `DWO`, `{machine}` is the Machine name.",
+    "source": "Path/Post/Processor.py:1976-1980",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F14",
+    "fact": "The reason for no DWO in the `linuxcnc` Post, as the class docstring gives it: `LinuxCNC has no dynamic work offset, so this post emits TWP only.`",
+    "source": "linuxcnc_post.py:73-74",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F15",
+    "fact": "The class docstring says that the tilted Work Plane syntax follows a LinuxCNC pull request that `is a draft at the time of writing`. The source gives no LinuxCNC release version that has `G68.2`, `G53.1` or `G53.6`.",
+    "source": "linuxcnc_post.py:65-68",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F16",
+    "fact": "The Machine Editor combo *Rotation Strategy* has these entries: `Not declared`, `Dynamic work offset (DWO)`, `Tilted work plane (TWP)`, `Post transform (not available yet)`. The stored enumeration values are `dwo` and `twp` for the two usable entries.",
+    "source": "Machine/ui/editor/machine_editor.py:1020-1028, 1047; Machine/models/machine.py RotationStrategy",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F17",
+    "fact": "The `linuxcnc` Post adds the property `twp_kinematics_select`: label `Tilted work plane: kinematics select`, scope Machine (`SCOPE_MACHINE`), type `string`, default empty.",
+    "source": "linuxcnc_post.py:151-156",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F18",
+    "fact": "Help text of `twp_kinematics_select`: `A line emitted after the preamble when the job has an operation on a tilted work plane. G53.1 needs a kinematics type whose frames describe the machine; on a switchable module that starts in identity kinematics this is where G12.1 P1 goes.`",
+    "source": "linuxcnc_post.py:157-163",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F19",
+    "fact": "The Post adds the `twp_kinematics_select` text as a new line after the preamble only when two conditions are true: the value is not empty after `strip()`, and one Operation in `Job.Operations.Group` has a tilted Tool Axis (the Placement of its base Operation). The test reads all Operations of the Job, not only the Operations in the export.",
+    "source": "linuxcnc_post.py:216-218 (_expand_prefix), 223-230 (_job_has_tilted_operation)",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F20",
+    "fact": "The kinematics select line follows the preamble line that ends with the blend command, and it is before the first declare line. Test: with `twp_kinematics_select=\"G12.1 P1\"` the line after `G17 G54 G40 G49 G80 G90 G64` is `G12.1 P1`. A Job with no tilted Operation has no `G12.1 P1` line.",
+    "source": "CAMTests/TestPathTiltedWorkPlane.py test_theKinematicsSelectFollowsThePreambleOnlyWhenAPlaneNeedsIt; linuxcnc_post.py:209-219",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F21",
+    "fact": "The `linuxcnc` Post adds three properties to the common properties: *Path Blending Mode* (`blend_mode`, Job scope, choices `EXACT_PATH`, `EXACT_STOP`, `BLEND`, default `BLEND`), *Blend Tolerance* (`blend_tolerance`, Job scope, float, default 0.0, minimum 0.0, maximum 10.0, 4 decimals), and *Tilted work plane: kinematics select* (`twp_kinematics_select`, Machine scope, default empty).",
+    "source": "linuxcnc_post.py:122-165 (get_property_schema)",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F22",
+    "fact": "The `linuxcnc` defaults of the common properties are: `file_extension` = `ngc`; `supports_tool_radius_compensation` = true; `preamble` = `G17 G54 G40 G49 G80 G90`; `postamble` = `M05`, `G17 G54 G90 G80 G40`, `M2` on three lines; `safetyblock` = `G40 G49 G80`.",
+    "source": "linuxcnc_post.py:86-96",
+    "owner": "output/posts/linuxcnc.adoc"
+   },
+   {
+    "id": "F23",
+    "fact": "`Constants.GCODE_PLANE` is `[\"G17\", \"G18\", \"G19\"]` (`GCODE_PLANE_XY`, `GCODE_PLANE_XZ`, `GCODE_PLANE_YZ`). `Constants.GCODE_SUPPORTED` contains `GCODE_PLANE`, so the default of *Supported G-code Commands* contains G17, G18 and G19.",
+    "source": "src/Mod/CAM/Constants.py:63-66, 167-172; Path/Post/Processor.py:3455-3459",
+    "owner": "reference/scripting.adoc"
+   },
+   {
+    "id": "F24",
+    "fact": "`convert_command_to_gcode()` sends G17, G18 and G19 to `_convert_modal_command()`. The base method writes the command name as one line. A Post can replace `_convert_modal_command()` to change this output.",
+    "source": "Path/Post/Processor.py:3548-3563, 3938-3944",
+    "owner": "output/mbpp-postprocessor.adoc"
+   },
+   {
+    "id": "F25",
+    "fact": "`Constants.ARC_CENTER_WORD_NORMAL_TO_PLANE` is `{\"G17\": \"K\", \"G18\": \"J\", \"G19\": \"I\"}`. For a `G2`, `G02`, `G3` or `G03` command, the base conversion always drops the center word of the active plane from this table and drops no other center word because of the plane.",
+    "source": "Constants.py:68-71; Path/Post/Processor.py:3740-3752",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F26",
+    "fact": "The conversion reads the active plane from `self.machine_state.Plane`. When `machine_state` is `None`, the conversion uses `G17`.",
+    "source": "Path/Post/Processor.py:3745-3748",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F27",
+    "fact": "The active plane starts as `G17` in each output section. It changes when a G17, G18 or G19 command is in the Toolpath, and when a text block that the Post writes without change (for example the preamble, or a command with the `as-is` annotation) contains a G17, G18 or G19 word. The last plane word in the text is the active plane.",
+    "source": "Path/Base/MachineState.py:116, 153-155, 215-221; Path/Post/Processor.py:2424-2426, 3441-3445, 1596",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F28",
+    "fact": "The `PARAMETER_ORDER` lists in `init_values()` of the six Posts do not reach the export: `apply_configuration_bundle()` (Processor.py:1216) clears `self.values`, and the schema default of `parameter_order` (with K) applies. A G18 or G19 arc of those Posts keeps K unless the Machine value of `parameter_order` has no K.",
+    "source": "Path/Post/Processor.py:2851-2852: `export2()` calls `apply_configuration_bundle()`. Processor.py:1216 sets `self.values = {}`, which removes the `PARAMETER_ORDER` list from `init_values()` (grbl_post.py:108, and the five other Posts). Processor.py:1177-1180 and 1232-1234 then copy the schema default of `parameter_order` (`Constants.PARAMETER_ORDER`, Processor.py:691-695, Constants.py:243, with K) into `values[\"PARAMETER_ORDER\"]`. None of the six Posts changes `parameter_order` in `get_common_property_schema()` (grep of the six scripts: no match). Processor.py:3726 reads this value for the arc. (corrected by the review)",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F29",
+    "fact": "Examples from the tests. `linuxcnc`, plane G17: `G2 X10 Y0 Z-1 I5 J0 K0` gives a line with `I5.000` and `J0.000` and no K word. `linuxcnc`, plane G18: `G2 X0 Y0 Z-10 I0 J0 K-5` gives a line with `I0.000` and `K-5.000` and no J word.",
+    "source": "CAMTests/TestLinuxCNCPost.py test_arc_in_xy_plane_has_no_k_word, test_arc_in_xz_plane_keeps_k_word",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F30",
+    "fact": "The code comment gives the reason for the rule: an arc gives its center in its plane; the center word along the plane normal has no function (a helix gives its pitch in the axis word), and LinuxCNC and Fanuc refuse it.",
+    "source": "Constants.py:68-70; Path/Post/Processor.py:3740-3744",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F31",
+    "fact": "The Post compares a command name with *Ignore G-code Commands* (`ignored_commands`) and *Supported G-code Commands* (`supported_commands`) as a full name. Each line of the text property is one name, with space characters at the two ends removed. A name is not matched as a part of a different name: `G1` does not match a `G17` entry, and `G5` does not match a `G54` entry.",
+    "source": "Path/Post/Processor.py:3390-3402, 3448-3463; labels at Processor.py:457-473",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F32",
+    "fact": "A command name that is not in the supported list stops the export with `CAMValueError` and the message `Unsupported command: {name}`. These are exceptions: a name in the ignored list, a comment, a bare T word, and a command with the `allow_unsupported` annotation.",
+    "source": "Path/Post/Processor.py:3447-3486",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F33",
+    "fact": "A command name in the ignored list gives no output line, and the name is not necessary in the supported list.",
+    "source": "Path/Post/Processor.py:3447-3452",
+    "owner": "output/postprocessor-customization.adoc"
+   },
+   {
+    "id": "F34",
+    "fact": "`MachineState` has the attribute `Plane`. Its values are `\"G17\"`, `\"G18\"` and `\"G19\"`. The default is `\"G17\"`.",
+    "source": "Path/Base/MachineState.py:112-116",
+    "owner": "reference/scripting.adoc"
+   },
+   {
+    "id": "F35",
+    "fact": "`Plane` is not in `MachineState.Tracked`. Thus `getState()` does not return it, `machine_state.previous` does not contain it, and `ms[\"Plane\"]` raises `KeyError`. Read it as `ms.Plane`.",
+    "source": "Path/Base/MachineState.py:52-67, 127-132, 260-264",
+    "owner": "reference/scripting.adoc"
+   },
+   {
+    "id": "F36",
+    "fact": "`addCommand()` sets `Plane` to the command name when the name is in `Constants.GCODE_PLANE`, and returns `False` for that command.",
+    "source": "Path/Base/MachineState.py:153-155",
+    "owner": "reference/scripting.adoc"
+   },
+   {
+    "id": "F37",
+    "fact": "`addGcodeText(text)` reads only the plane words from a block of G-code text. It sets `Plane` to the last G17, G18 or G19 word in the text and reads no other word. The pattern is `\\bG0?(1[789])\\b`, thus `G017` also matches. A text with no plane word, an empty text or `None` does not change `Plane`. The method returns no value.",
+    "source": "Path/Base/MachineState.py:69-70, 215-221",
+    "owner": "reference/scripting.adoc"
+   },
+   {
+    "id": "F38",
+    "fact": "`setState(None)` and `updateState(None)` set only the `Tracked` values to `None`. They do not change `Plane`. A tool change does not change `Plane`.",
+    "source": "Path/Base/MachineState.py:112-115, 232-258, 138-140",
+    "owner": "output/mbpp-postprocessor.adoc"
+   },
+   {
+    "id": "F39",
+    "fact": "After a `str` postable and after a command with the `as-is` annotation, the conversion calls `machine_state.setState(None)` and then `machine_state.addGcodeText()` with that text. The other state values become `None`; `Plane` stays, or takes the last plane word of the text.",
+    "source": "Path/Post/Processor.py:2424-2426, 3441-3445",
+    "owner": "output/mbpp-postprocessor.adoc"
+   },
+   {
+    "id": "F40",
+    "fact": "`linuxcnc_post.py` is an example of a Post that narrows `ROTATION_STRATEGIES` to one strategy, sets `PLANE_COMMAND`, adds a Machine-scope `string` property, and adds a conditional line to the preamble in `_expand_prefix()`.",
+    "source": "linuxcnc_post.py:77-78, 151-165, 205-221",
+    "owner": "output/mbpp-postprocessor.adoc"
+   },
+   {
+    "id": "F41",
+    "fact": "The `fanuc` Post does not change `parameter_order`. Its default is the common value `XYZABCUVWFSIJKTQRPDHL`, which has K.",
+    "source": "scripts/fanuc_post.py:100-135 (get_common_property_schema has no parameter_order branch); Constants.py:243",
+    "owner": "output/posts/fanuc.adoc"
+   },
+   {
+    "id": "F42",
+    "fact": "`EXTRA_SUPPORTED` of the `fanuc` Post is `G54.1`, `M2`, `M02` and `M30`. The Post adds these names to the common default of `supported_commands`. G17 is in the common list, not in the added names.",
+    "source": "scripts/fanuc_post.py:81-83, 123-124; Constants.py:144-145",
+    "owner": "output/posts/fanuc.adoc"
+   },
+   {
+    "id": "F43",
+    "fact": "Example from the `fanuc` test: after `G18`, `G2 X10 Z-10 I5 J0 K-5 F10` gives `G2 X10.000 Z-10.000 F600.000 I5.000 K-5.000`. After `G17`, `G2 X0 Y0 I-5 J0 K0 F10` gives `G2 X0.000 Y0.000 F600.000 I-5.000 J0.000`. The `G18` and `G17` lines are in the output.",
+    "source": "CAMTests/TestFanucPost.py test_arcs_keep_the_center_words_of_their_plane",
+    "owner": "output/posts/fanuc.adoc"
+   },
+   {
+    "id": "F44",
+    "fact": "The `fanuc` Post has `ROTATION_STRATEGIES = (\"dwo\", \"twp\")` and `PLANE_COMMAND = PlaneCommand.G68_2`. `fanuc` and `linuxcnc` are the only included Posts that set these attributes; each other machine-based Post has the base class values.",
+    "source": "scripts/fanuc_post.py:89-91; linuxcnc_post.py:77-78; grep of Path/Post/scripts/*.py",
+    "owner": "output/post-process.adoc"
+   },
+   {
+    "id": "F45",
+    "fact": "The `opensbp` Post has G17 in `GCodeSuppressed` (`G54 G17`), which is the default of *Ignore G-code Commands*. The Post accepts a G17 command and writes no line for it.",
+    "source": "scripts/opensbp_post.py:90-94, 149-150",
+    "owner": "output/post-process.adoc"
+   },
+   {
+    "id": "F46",
+    "fact": "The `opensbp` Post has G18 and G19 in `GCodeUnsupported`, with the comment `arcs are XY only`. The two names are not in its default of *Supported G-code Commands*, so a G18 or G19 command stops the export with `Unsupported command: G18` or `Unsupported command: G19`.",
+    "source": "scripts/opensbp_post.py:97-107, 126, 146-148; Path/Post/Processor.py:3480-3486",
+    "owner": "output/post-process.adoc"
+   }
+  ],
+  "terms": [
+   {
+    "use": "tilted Work Plane",
+    "not": "TWP (as the name of the plane), tilted work plane (lower case, except in a quoted interface string), inclined plane, 3+2 plane"
+   },
+   {
+    "use": "the TWP Rotation Strategy (value `twp`); the DWO Rotation Strategy (value `dwo`)",
+    "not": "TWP mode, DWO mode, tilted work plane strategy, dynamic work offset mode"
+   },
+   {
+    "use": "*Rotation Strategy* (the Machine Editor field)",
+    "not": "Rotation strategy, rotation mode, rotary strategy"
+   },
+   {
+    "use": "`linuxcnc` Post (first use: `linuxcnc` Post-Processor)",
+    "not": "LinuxCNC post, Linuxcnc post processor, linuxcnc_post (except as the file name `linuxcnc_post.py`)"
+   },
+   {
+    "use": "LinuxCNC (the control)",
+    "not": "linuxcnc (for the control), Linuxcnc, EMC2"
+   },
+   {
+    "use": "*Tilted work plane: kinematics select* (interface label); `twp_kinematics_select` (property name)",
+    "not": "kinematics select property, TWP kinematics select, Kinematics Select"
+   },
+   {
+    "use": "*Tilted work plane: align* (interface label); `twp_align` (property name)",
+    "not": "align property, TWP align, Tilted Work Plane: Align"
+   },
+   {
+    "use": "declare line, align line, cancel line",
+    "not": "plane declaration command, alignment command, reset line, G68.2 block"
+   },
+   {
+    "use": "Plane Command (ADR-000 concept); `PLANE_COMMAND` (class attribute)",
+    "not": "plane dialect, TWP command family, plane command family"
+   },
+   {
+    "use": "arc plane (G17, G18, G19)",
+    "not": "work plane (for G17/G18/G19), plane selection, active plane, interpolation plane"
+   },
+   {
+    "use": "center word (I, J, K)",
+    "not": "centre word, arc offset, IJK parameter, center parameter"
+   },
+   {
+    "use": "plane normal",
+    "not": "normal axis, third axis, perpendicular axis"
+   },
+   {
+    "use": "*Supported G-code Commands* (`supported_commands`)",
+    "not": "supported list, supported commands list, SUPPORTED_COMMANDS (except as the `self.values` key)"
+   },
+   {
+    "use": "*Ignore G-code Commands* (`ignored_commands`)",
+    "not": "Ignored G-code Commands, ignore list, suppressed commands, tolerated list"
+   },
+   {
+    "use": "full command name",
+    "not": "substring match, exact match, whole word, name by name"
+   },
+   {
+    "use": "`Plane` attribute of `MachineState`",
+    "not": "plane property, `plane`, tracked plane, Plane state"
+   },
+   {
+    "use": "machine-based Post",
+    "not": "MBPP (in reader text), new-style post, class post, machine post"
+   },
+   {
+    "use": "Tool Axis",
+    "not": "tool vector, spindle axis, tool direction"
+   },
+   {
+    "use": "*Pre-Rotary Move* (`pre_rotary_move`)",
+    "not": "pre-rotary block (as a name), Pre Rotary Move, pre_rotary"
+   },
+   {
+    "use": "Fixture (a G54 to G59.9 selection)",
+    "not": "work offset, WCS, coordinate system (except in the quoted reason of the LinuxCNC control)"
+   },
+   {
+    "use": "export stops with an error",
+    "not": "post fails, raises, refuses, crashes, aborts"
+   }
+  ],
+  "unknown": [
+   "The LinuxCNC release that accepts `G68.2`, `G53.1`, `G53.6` and `G69`. The source says only that the syntax follows draft LinuxCNC work; it names no released version.",
+   "The exact effect of `G53.1 P1`, `P2`, `Q1` and of `G53.6` on a LinuxCNC control. The source has only the help text of `twp_align` (F7); the Post does not write or check these words itself.",
+   "The effect of `G12.1 P1` on a LinuxCNC control and which kinematics modules need it. The source has only the help text of `twp_kinematics_select` (F18).",
+   "Where the interface shows *Tilted work plane: kinematics select* (the tab or group of the Machine Editor). The schema gives only Machine scope; I did not read the editor layout code for post properties.",
+   "The numeric format of the X, Y, Z, I, J, K values in a real `G68.2` line (the number of decimals in the output). The values come from `format_parameter()` and `AXIS_PRECISION`; the tests compare with a `DECLARE` constant that I did not read. Do not write a full example `G68.2` line with numbers.",
+   "If a G17, G18 or G19 line is removed by *Duplicate Commands* suppression before the plane is followed. The pass `_optimize_duplicates_doubles` was not read for this case.",
+   "If an Operation of FreeCAD writes G18 or G19 into a Toolpath today. The source read here shows only that the Post follows the command when it is present.",
+   "The behaviour of the `heidenhain` Post for G17, G18 and G19. `TestHeidenhainPost.py` changed, but the Post replaces every conversion method and I did not read it. Do not say that the arc plane rule applies to the `heidenhain` output.",
+   "The behaviour of `opensbp` when G18 or G19 is in a preamble text block and not a command. Only the command filter was read.",
+   "The version in which these changes are introduced (the value for a `[.since]` mark). The source files do not give it."
+  ],
+  "notes": "Read these points before you write.\n\n1. Goal 3 needs a condition. The base conversion drops only the center word along the plane normal, but a Post writes K only when K is in its parameter order (F28). Six Posts (`grbl`, `mach3_mach4`, `centroid`, `smoothie`, `generic_sheet_cutting`, `masso_g3`) set an order without K. Thus \"a G18 or G19 arc keeps its K word\" is true for the common default order, `linuxcnc` and `fanuc`, not for each Post. The customization page must state this condition.\n\n2. `G53.6` is not a second default. The default align line is always `G53.1`. `G53.6` occurs only when the reader writes it into *Tilted work plane: align* (F6, F7).\n\n3. The DWO error occurs only when an Operation in the export has a tilted Tool Axis (F12). Do not write that a Machine set to DWO always stops the export.\n\n4. The kinematics select test reads all Operations of the Job, inactive Operations included (F19). The DWO check reads only the Operations in the export. These are different conditions.\n\n5. `Plane` is not in `Tracked` (F35). `reference/scripting.adoc` line 541 says today that `getState()` returns the plane and the units; this is not correct for the plane. `output/mbpp-postprocessor.adoc` says the state becomes unknown \"with each value `None`\" after a tool change, a `str` postable and an `as-is` command; `Plane` is the exception (F38, F39).\n\n6. Present text that this unit makes incorrect: `output/posts/fanuc.adoc` line 121 (`G17` in the added commands), line 127 (`XYZABCUVWFSIJTQRPDHL`, \"without the K word\") and line 197 (\"has no K word\"). `reference/scripting.adoc` already has a `G17, G18, G19` row in the command table (line 76); correct it, do not add a second row.\n\n7. `output/posts/linuxcnc.adoc` does not exist. The directory `output/posts/` has `fanuc.adoc`, `heidenhain.adoc` and `genealogy.adoc`; use `fanuc.adoc` as the model for the structure. F21 and F22 are there for the property table and the defaults table; the plan says the page has only the specific features and links to the common pages for the rest.\n\n8. The tilted Work Plane tests for the `linuxcnc` Post are in `CAMTests/TestPathTiltedWorkPlane.py` (class `TestLinuxCNCTiltedWorkPlane`), not in `TestLinuxCNCPost.py`.\n\n9. STE conflict: interface strings such as `Tilted work plane: kinematics select` and the quoted error message are not STE. They are quoted as the source spells them, which the global rule permits."
+ },
+ "checks": [
+  {
+   "round": 1,
+   "findings": [
+    {
+     "page": "reference/scripting.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 541, a changed line: \"ms.getState()      # the modal dictionary (units, G90/G91, feed, return mode)\". `getState()` returns only the keys of `MachineState.Tracked`: X, Y, Z, A, B, C, F, S, T, Coolant, WCS, Spindle, ReturnMode, G0F. The list has no units key and no G90/G91 key. Source: Path/Base/MachineState.py:52-67 and 260-264.",
+     "fix": "Change the comment to name only values that `Tracked` has. Example: `ms.getState()      # the dictionary of the Tracked values (position, F, S, T, coolant, Fixture, return mode)`."
+    },
+    {
+     "page": "reference/scripting.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Line 76: \"|G17, G18, G19 |arc plane selection |(none) |not displayed\". The brief forbids \"plane selection\" for the arc plane.",
+     "fix": "Change the description cell to \"select the arc plane\" or \"arc plane\"."
+    },
+    {
+     "page": "output/mbpp-postprocessor.adoc",
+     "kind": "excluded",
+     "severity": "should",
+     "text": "Line 337, a new line: \"For an arc, `_convert_move()` reads the arc plane (G17, G18 or G19) from `machine_state.Plane` and does not write the center word along the plane normal.\" The unit lists the method name `_convert_move` as not documented for this change.",
+     "fix": "Replace \"`_convert_move()` reads\" with \"the base conversion reads\". Keep the link to Postprocessor Customization."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Lines 201-202: \"The align line `G53.1` needs a kinematics type whose frames describe the machine. For a switchable kinematics module that starts in identity kinematics, `G12.1 P1` is the applicable value.\" The page gives this as a fact of the control. The brief says that the effect of `G12.1 P1` is not established; the source has only the help text of the property (linuxcnc_post.py:157-163).",
+     "fix": "Attribute the two sentences to the help text. Example: \"The help text of the property says that `G53.1` needs a kinematics type whose frames describe the machine, and that `G12.1 P1` goes here for a switchable module that starts in identity kinematics.\" Add that the Post does not examine the text."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 135: \"The draft LinuxCNC syntax gives these values for the align line:\" and line 140 \"`G53.6`: keeps the center point of the Tool Bit in its position.\" The source for these four items is the help text of `twp_align` (linuxcnc_post.py:108-115). The class docstring that describes the draft syntax does not have `G53.6`. The brief says that the exact effect of these words on the control is not established.",
+     "fix": "Change the lead sentence to \"The help text of *Tilted work plane: align* gives these values:\". Keep the four items and the sentence \"The Post does not examine these words.\""
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "guidance",
+     "severity": "should",
+     "text": "Lines 108-127 give the three conditions of the align line with `twp_control_positions_rotaries` and a table of `twp_align` (label, scope, type, default). These are common properties of the base class, and output/machine.adoc lines 154-156 already describe them. The guidance asks for only the linuxcnc specifics, and the unit excludes the behaviour from the base class.",
+     "fix": "Cut the `twp_align` property table. Replace the three conditions and the two sentences about `twp_control_positions_rotaries` with one clause and a link to xref:output/machine.adoc[Machine] for the common *Tilted work plane* properties. Keep the linuxcnc values of `twp_align` (`G53.1`, `G53.1 P1 Q1`, `G53.6`)."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "term",
+     "severity": "should",
+     "text": "Lines 11, 43 and 206 use the link text \"Post-Processor customization\", and line 208 uses \"Machine-based Post-Processor\". The other pages of the unit use the page titles \"Postprocessor Customization\" and \"Writing a Machine-Based Post-Processor\" for the same two pages.",
+     "fix": "Change the link text to \"Postprocessor Customization\" in lines 11, 43 and 206, and to \"Writing a Machine-Based Post-Processor\" in line 208."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane and knows its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output (Declare line, Align line, Cancel line, Sequence of the output)",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property of the linuxcnc Post and knows when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors (table row and link)",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. A reader who writes a Post or a script can find G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the full command name rule",
+     "met": "yes",
+     "where": "reference/scripting.adoc: List of currently supported G-code commands, MachineState section; output/mbpp-postprocessor.adoc: Machine state, Command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors, Work Planes; output/posts/fanuc.adoc: Defaults of the common properties, Arcs; output/postprocessor-customization.adoc: Commands and rapid moves, Modal output and line numbers",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "findings": [
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 108 says \"The Post writes the align line after the declare line.\" with no condition. The source writes the align line only when `twp_control_positions_rotaries` is true (Path/Post/Processor.py:2053-2076, fact F5). When that property is false, the Post writes a `G0` rotary move before the declare line and no align line. Lines 154-155 (\"This output has no `G0` line with a rotary axis word. The control positions the rotary axes at the align line.\") have the same gap.",
+     "fix": "In `Align line`, add one sentence: the Post writes the align line only when *Tilted work plane: control positions the rotaries* is checked (the default); when it is unchecked, the Post writes a `G0` rotary move before the declare line and no align line. Keep the link to xref:output/machine.adoc[Machine] for the property. In `Sequence of the output`, say that the sequence applies to the default value of that property."
+    },
+    {
+     "page": "output/posts/fanuc.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "The `Arcs` section has a table (`Arc plane | Center words in the output | Center word that the Post drops`, rows `G17`, `G18`, `G19`) that repeats the arc plane rule. output/postprocessor-customization.adoc owns this rule and has the same table in `Modal output and line numbers`. The plan gives the fanuc page only the fanuc values and a link.",
+     "fix": "Remove the three-row table from `Arcs`. Keep the sentence \"An arc has the two center words of its arc plane and no center word along the plane normal\", the link to xref:output/postprocessor-customization.adoc[Postprocessor Customization], the `parameter_order` statement and the `G18` example line."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane and knows its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property and knows when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors",
+     "note": ""
+    },
+    {
+     "goal": "3. Each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": ""
+    },
+    {
+     "goal": "4. A Post or script author can find G17, G18, G19 as modal commands, the Plane attribute of MachineState, and the full command name rule",
+     "met": "yes",
+     "where": "reference/scripting.adoc: List of currently supported G-code commands, MachineState; output/mbpp-postprocessor.adoc: Machine state, Command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors, Work Planes; output/posts/fanuc.adoc: Defaults of the common properties, Arcs",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": "final",
+   "findings": [
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 108 says \"The Post writes the align line after the declare line.\" with no condition. Lines 154-155 say \"This output has no `G0` line with a rotary axis word. The control positions the rotary axes at the align line.\" F5 and Path/Post/Processor.py:2053-2076 (`_pose_change_postables`) show a condition: the Post writes the align line only when `twp_control_positions_rotaries` is true (default: true). When that property is false, the Post writes a `G0` rotary move before the declare line and writes no align line. The page owns F5 and does not give this condition.",
+     "fix": "In `Align line`, replace line 108 with the condition: the Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* (`twp_control_positions_rotaries`) is checked (default: checked). Add one sentence: when the property is unchecked, the Post writes a `G0` rotary move before the declare line and writes no align line. In `Sequence of the output`, say that the sequence applies when that property is checked."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "missing",
+     "severity": "should",
+     "text": "The page owns F1 and F2 but does not give the class attributes. `Rotation Strategy` (line 47) and `Tilted Work Plane output` (line 76) do not name `ROTATION_STRATEGIES = (\"twp\",)` or `PLANE_COMMAND = PlaneCommand.G68_2`. output/postprocessor-customization.adoc (line 415) and output/mbpp-postprocessor.adoc (line 354) give these values and link here for the details. Source: linuxcnc_post.py:77-78.",
+     "fix": "In `Rotation Strategy`, add one sentence: the `linuxcnc` Post sets the class attribute `ROTATION_STRATEGIES` to `(\"twp\",)`. In `Tilted Work Plane output`, add one sentence: the Post sets `PLANE_COMMAND` to `PlaneCommand.G68_2`."
+    },
+    {
+     "page": "output/posts/fanuc.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "The `Arcs` section has a table (`Arc plane`, `Center words in the output`, `Center word that the Post drops`, rows `G17`, `G18`, `G19`) that is the same as the table in `Modal output and line numbers` of output/postprocessor-customization.adoc, which owns the arc plane rule. The plan says that the fanuc page owns only the fanuc values and links to the customization page for the rule.",
+     "fix": "Remove the three-row table. Keep the sentence \"An arc has the two center words of its arc plane and no center word along the plane normal.\", add the clause that a G18 or G19 arc keeps K and drops J or I, and keep the link to xref:output/postprocessor-customization.adoc[Postprocessor Customization]. Keep the `G18` example line."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane and knows its limits",
+     "met": "partly",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output",
+     "note": "The declare line, the align line from `twp_align` (with `G53.6`), `G69`, the TWP limit, the DWO error and the caution are there. The align line is given as unconditional: the page does not give the `twp_control_positions_rotaries` condition of F5."
+    },
+    {
+     "goal": "2. A reader can find `twp_kinematics_select` and knows when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors (table row and link)",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": ""
+    },
+    {
+     "goal": "4. A Post author or script author can find G17, G18, G19 as modal commands, the `Plane` attribute of `MachineState`, and the full command name rule",
+     "met": "yes",
+     "where": "output/mbpp-postprocessor.adoc: machine state and command filter sections; reference/scripting.adoc: command table and `MachineState` section; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors (table), Work Planes; output/posts/fanuc.adoc: Arcs; output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 4,
+   "findings": [
+    {
+     "page": "output/post-process.adoc",
+     "kind": "missing",
+     "severity": "should",
+     "text": "Line 220, table of `Included Post-Processors`: the `linuxcnc` row says \"Writes tilted Work Planes with the TWP Rotation Strategy only.\" The `fanuc` row (line 219) says only \"Writes the `%` tape marks and an `O` program number.\" A reader of the table concludes that `linuxcnc` is the only included Post that writes tilted Work Planes. Fact F44 (owner: this page) says that `fanuc` has `ROTATION_STRATEGIES = (\"dwo\", \"twp\")` (scripts/fanuc_post.py:89-91) and that each other machine-based Post has the base class values (Path/Post/Processor.py:405). The page does not give this fact.",
+     "fix": "Add one sentence to the `fanuc` row of the table: \"Writes tilted Work Planes with the DWO and the TWP Rotation Strategy.\" Give the link xref:output/posts/fanuc.adoc[Fanuc Post-Processor]. Do not change the `linuxcnc` row."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "repeat",
+     "severity": "should",
+     "text": "Lines 110-112, `Align line`: \"The default of `twp_control_positions_rotaries` is checked. When `twp_control_positions_rotaries` is unchecked, the Post writes a `G0` rotary move before the declare line and writes no align line.\" This is behaviour of the base class, and output/machine.adoc line 154 owns it: \"*Tilted work plane: control positions the rotaries*: the plane command positions the rotary axes itself (G53.1, TURN). Unchecked, the program commands them with a rotary move before declaring the plane. Default checked.\" The guidance of the person asks for only the linuxcnc specifics, and the plan asks for a link to the common pages for the inherited behaviour.",
+     "fix": "Keep line 110 (the align line follows the declare line when *Tilted work plane: control positions the rotaries* is checked). Cut the two sentences on lines 111-112. Keep the link on line 113 to xref:output/machine.adoc[Machine] for the property and its default."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "guidance",
+     "severity": "should",
+     "text": "The guidance says that the page documents the linuxcnc specific features of the Post. The page gives the property defaults, the blend command, the tilted Work Plane output and the kinematics select line. The page does not give the rigid tapping conversion, which only the `linuxcnc` Post has (`_convert_drill_cycle` in linuxcnc_post.py:251-262 writes `G33.1` for a G84 or G74 cycle with the `rigid` annotation). output/post-process.adoc line 228 has this fact: \"`linuxcnc` writes a tapping cycle that is marked rigid as `G33.1` with the pitch in the K word.\"",
+     "fix": "Add one sentence to the page (in `Overview`, or in a short new section) that says the `linuxcnc` Post writes a tapping cycle that is marked rigid as `G33.1`. Give a link to xref:output/post-process.adoc[Post Process], section `Drill cycles and tapping`, for the details. Do not add more than this clause and the link."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "guidance",
+     "severity": "should",
+     "text": "Lines 110-112 tell the full behaviour of a common property that the Post gets from the base class: \"The Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* (`twp_control_positions_rotaries`) is checked. The default of `twp_control_positions_rotaries` is checked. When `twp_control_positions_rotaries` is unchecked, the Post writes a `G0` rotary move before the declare line and writes no align line.\" output/machine.adoc line 154 owns this property and tells the same behaviour. The guidance asks for the linuxcnc specifics only, not the behaviour from inheritance, and the unit excludes the behaviour that the linuxcnc Post gets from the base class.",
+     "fix": "Replace lines 110-112 with one sentence: the Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* is checked, which is the default. Keep the link to xref:output/machine.adoc[Machine] on line 113 for the property and for the unchecked condition. Keep the `twp_align` text (lines 115-130) and the first sentence of `Sequence of the output` without change."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane and knows its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output (Declare line, Align line, Cancel line, Sequence of the output)",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property and knows when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors (table row and link)",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. A Post author or script author can find G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the full command name rule",
+     "met": "yes",
+     "where": "reference/scripting.adoc: command table and MachineState section; output/mbpp-postprocessor.adoc: Machine state and Command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors (linuxcnc and opensbp rows) and Work Planes; output/posts/fanuc.adoc: Defaults of the common properties and Arcs; output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 5,
+   "findings": [
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "missing",
+     "severity": "should",
+     "text": "Section `Sequence of the output`, line 152: step 1 is \"The preamble, with the blend command at the end of its last line.\" and step 2 is the *Pre-Rotary Move* block. The sequence is for a tilted Operation, which is the condition in which the Post adds the `twp_kinematics_select` line after the preamble (linuxcnc_post.py:216-218). The list does not show the position of that line, and with a value in `twp_kinematics_select` the blend command is not on the last preamble line.",
+     "fix": "Add one step after step 1: \"The kinematics select line, when `twp_kinematics_select` has a value.\" Change step 1 to \"The preamble line that ends with the blend command.\" Give a link to <<_kinematics_select_line,Kinematics select line>> for the conditions."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane (G68.2, G53.1 or G53.6 from twp_align, G69) and knows its limits: only the TWP rotation strategy, an error for DWO, and a syntax from draft LinuxCNC work that can change.",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (CAUTION), Rotation Strategy, Tilted Work Plane output; output/post-process.adoc: Work Planes",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property of the linuxcnc Post and knows when it adds a line after the preamble.",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal, so a G17 arc has no K word and a G18 or G19 arc keeps its K word.",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. A reader who writes a Post or a script can find G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the rule that the ignored and supported command lists match full command names.",
+     "met": "yes",
+     "where": "reference/scripting.adoc: List of currently supported G-code commands, MachineState; output/mbpp-postprocessor.adoc: machine state and command filtering sections; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes: linuxcnc writes tilted Work Planes, fanuc keeps K in its parameter_order default, opensbp accepts G17 and refuses G18 and G19.",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors, Work Planes; output/posts/fanuc.adoc: Arcs; output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": "final",
+   "findings": [
+    {
+     "page": "reference/scripting.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 541: the comment `ms.getState()      # the dictionary of the Tracked values (position, F, S, T, coolant, Fixture, return mode)` reads as the full list. `MachineState.Tracked` also has `Spindle` and `G0F` (Path/Base/MachineState.py:52-67).",
+     "fix": "Add the spindle state and the F of G0 moves to the list in the comment, or remove the list in parentheses and keep `# the dictionary of the Tracked values`."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "excluded",
+     "severity": "should",
+     "text": "Lines 123-128 document the new help text of `twp_align` in the linuxcnc Post, which the unit lists as not documented: \"The help text of *Tilted work plane: align* gives these values:\" with the four items `G53.1`, `G53.1 P1` or `G53.1 P2`, `Q1`, `G53.6`. The source of these lines is the help text override at linuxcnc_post.py:108-115. Brief fact F7 gives the same help text to this page, so the brief and the exclusion list do not agree; goal 1 needs only that `G53.6` comes from `twp_align` (line 121 says this).",
+     "fix": "Remove the sentence \"The help text of *Tilted work plane: align* gives these values:\" and its four list items (lines 123-128). Keep line 121 (\"The Post writes `G53.6` only when `twp_align` contains `G53.6`.\") and line 130 (\"The Post does not examine these words.\"), and change \"these words\" in line 130 to \"the text of `twp_align`\". If the person wants the meaning of `G53.6` on the page, keep the list; then the exclusion in the unit must change, not the page."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane (G68.2, G53.1 or G53.6 from twp_align, G69) and knows its limits: only the TWP rotation strategy, an error for DWO, and a syntax from draft LinuxCNC work that can change.",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (CAUTION), Rotation Strategy, Tilted Work Plane output (Declare line, Align line, Cancel line, Sequence of the output)",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property of the linuxcnc Post and knows when it adds a line after the preamble.",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors (table row and link)",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal, so a G17 arc has no K word and a G18 or G19 arc keeps its K word.",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. A reader who writes a Post or a script can find G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the rule that the ignored and supported command lists match full command names.",
+     "met": "yes",
+     "where": "reference/scripting.adoc: List of currently supported G-code commands, MachineState; output/mbpp-postprocessor.adoc: machine state section, command filtering section; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes: linuxcnc writes tilted Work Planes, fanuc keeps K in its parameter_order default, opensbp accepts G17 and refuses G18 and G19.",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors (table), Work Planes; output/posts/fanuc.adoc: Arcs; output/postprocessor-customization.adoc: Commands and rapid moves, Modal output and line numbers",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 7,
+   "findings": [
+    {
+     "page": "output/postprocessor-customization.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 386: \"The `grbl`, `mach3_mach4`, `centroid`, `smoothie`, `generic_sheet_cutting` and `masso_g3` Posts set a parameter order without K. A G18 or G19 arc of these six Posts has no K word until K is added to the parameter order.\" The list that these Posts set in `init_values()` does not stay in effect for an export. The export uses the default of the `parameter_order` property, which has K.",
+     "evidence": "Path/Post/Processor.py:2851-2852: `export2()` calls `apply_configuration_bundle()`. Processor.py:1216 sets `self.values = {}`, which removes the `PARAMETER_ORDER` list from `init_values()` (grbl_post.py:108, and the five other Posts). Processor.py:1177-1180 and 1232-1234 then copy the schema default of `parameter_order` (`Constants.PARAMETER_ORDER`, Processor.py:691-695, Constants.py:243, with K) into `values[\"PARAMETER_ORDER\"]`. None of the six Posts changes `parameter_order` in `get_common_property_schema()` (grep of the six scripts: no match). Processor.py:3726 reads this value for the arc.",
+     "fix": "Remove the two sentences \"The `grbl`, `mach3_mach4`, `centroid`, `smoothie`, `generic_sheet_cutting` and `masso_g3` Posts set a parameter order without K.\" and \"A G18 or G19 arc of these six Posts has no K word until K is added to the parameter order.\" Keep the first three sentences of the paragraph. If you want one sentence: \"A Post writes no K word when K is removed from *Generated Parameter Order for GCode* of the Machine.\"",
+     "brief_fact": "F28",
+     "brief_correction": "The `PARAMETER_ORDER` lists in `init_values()` of the six Posts do not reach the export: `apply_configuration_bundle()` (Processor.py:1216) clears `self.values`, and the schema default of `parameter_order` (with K) applies. A G18 or G19 arc of those Posts keeps K unless the Machine value of `parameter_order` has no K."
+    },
+    {
+     "page": "output/postprocessor-customization.adoc",
+     "kind": "contradiction",
+     "severity": "should",
+     "text": "Line 360: \"The common default of *Supported G-code Commands* contains G17, G18 and G19, which select the arc plane. The Post writes each of these commands as one line.\" The page gives only `opensbp` as an exception. output/posts/heidenhain.adoc line 151 says that the `heidenhain` Post accepts `G17` and writes no block for it. The heidenhain page is true.",
+     "evidence": "Path/Post/scripts/heidenhain_post.py:112 and 133: the supported list and `GCodeSilent` contain only `G17` of the three commands. heidenhain_post.py:920-923: `_convert_modal_command()` returns `None` for a name in `GCodeSilent`. The base method (Processor.py:3938-3944) writes the line only for a Post that does not replace it.",
+     "fix": "Change the second sentence to: \"A Post that uses the common conversion writes each of these commands as one line.\" Change the last sentence to: \"The `opensbp` Post accepts G17 and does not accept G18 and G19, as xref:output/post-process.adoc[Post Process] describes; the `heidenhain` Post accepts only G17 and writes no block for it.\"",
+     "brief_fact": "",
+     "brief_correction": ""
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Lines 127-132: the list of conditions for the cancel line has \"Before the declare line of a different pose.\" The condition is too narrow. The Post also writes the cancel line when the next Operation is not tilted, and then no declare line follows.",
+     "evidence": "Path/Post/Processor.py:2059-2060 in `_pose_change_postables()`: `if twp and declared:` writes `TWP_CANCEL` for each pose change. The declare line at 2073-2074 has the separate condition `if twp and tilted:`. Processor.py:2302-2311 calls the method when the pose changes or the Fixture changes.",
+     "fix": "Change the list item to: \"Before a change of pose: before the declare line of a different tilted Work Plane, and before an Operation on a Work Plane parallel to the table.\"",
+     "brief_fact": "F9",
+     "brief_correction": "The cancel line before a pose change does not need a new declaration. A change from a declared plane to a Work Plane that is not tilted also gives the cancel line (Processor.py:2059-2060)."
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "excluded",
+     "severity": "should",
+     "text": "Line 59: \"The tolerance of this comparison is `1e-6`.\" This is an internal tolerance of the code.",
+     "evidence": "Rule of the review: no text for how the code does its work (internal tolerances) unless a goal or the plan asks for it. No goal and no plan entry asks for the tolerance. The value is at Path/Post/Processor.py:317.",
+     "fix": "Remove the sentence \"The tolerance of this comparison is `1e-6`.\"",
+     "brief_fact": "",
+     "brief_correction": ""
+    },
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "excluded",
+     "severity": "should",
+     "text": "Lines 183-184: \"The help text of *Tilted work plane: kinematics select* says that `G53.1` needs a kinematics type whose frames describe the machine. The help text says that `G12.1 P1` goes in this property for a switchable module that starts in identity kinematics.\" The two sentences repeat help text that the interface shows.",
+     "evidence": "Rule of the review: no text for help text or a tooltip that the interface shows. The text is the `help` entry at Path/Post/scripts/linuxcnc_post.py:157-163. Goal 2 needs only the property and the condition for the line, which lines 157-181 give.",
+     "fix": "Remove the two sentences. Keep \"The Post does not examine the text of `twp_kinematics_select`.\" The example with `G12.1 P1` at line 180 stays.",
+     "brief_fact": "",
+     "brief_correction": ""
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Tilted Work Plane output of the linuxcnc Post and its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output",
+     "note": ""
+    },
+    {
+     "goal": "2. The twp_kinematics_select property and when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors",
+     "note": ""
+    },
+    {
+     "goal": "3. Each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "partly",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers",
+     "note": "The rule and the table are correct. The last paragraph (line 386) says that a G18 or G19 arc of six Posts has no K word. The source contradicts this, and the sentence contradicts the goal."
+    },
+    {
+     "goal": "4. G17, G18, G19 as supported modal commands, the Plane attribute of MachineState, and the match by full command name",
+     "met": "yes",
+     "where": "reference/scripting.adoc: command table and MachineState section; output/mbpp-postprocessor.adoc: Machine state and Command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. Which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors and Work Planes; output/posts/fanuc.adoc: Defaults of the common properties and Arcs",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 8,
+   "findings": [
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "missing",
+     "severity": "should",
+     "text": "Lines 154-182, section `Kinematics select line`: the section gives the label *Tilted work plane: kinematics select* and the scope Machine, but it does not tell the reader where to set the property. Goal 2 says that a reader can find the property. The section has no link to the page that describes the place of the Post properties in the _Machine Editor_.",
+     "evidence": "Goal 2 of the unit. output/machine.adoc line 101 describes the property list of the `linuxcnc` Post in the Machine Editor, with Machine-scope and Job-scope properties. linuxcnc_post.py:151-156 gives only the scope `SCOPE_MACHINE`.",
+     "fix": "Add this sentence after the property table (after line 166): \"xref:output/machine.adoc[Machine] describes where the _Machine Editor_ shows the properties of the Post.\"",
+     "brief_fact": "",
+     "brief_correction": ""
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader knows what the linuxcnc Post writes for a tilted Work Plane and knows its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (caution), Rotation Strategy, Tilted Work Plane output",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader can find the twp_kinematics_select property of the linuxcnc Post and knows when it adds a line after the preamble",
+     "met": "partly",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors",
+     "note": "The two conditions and the position of the line are correct. The section gives the label and the Machine scope, but it does not tell or link where the Machine Editor shows the property. See the `missing` finding."
+    },
+    {
+     "goal": "3. A reader knows that each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. A reader who writes a Post or a script can find G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the full command name rule",
+     "met": "yes",
+     "where": "reference/scripting.adoc: command table and MachineState; output/mbpp-postprocessor.adoc: machine state and command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. A reader can see which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors and Work Planes; output/posts/fanuc.adoc: Defaults of the common properties and Arcs",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": "final",
+   "findings": [
+    {
+     "page": "output/posts/linuxcnc.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 120: \"The Post writes `G53.6` only when `twp_align` contains `G53.6`.\" The condition \"only when\" is too narrow. The Post also writes the text of other text properties without change, for example `twp_declare` and `pre_rotary_move`.",
+     "evidence": "Path/Post/TiltedWorkPlane.py:103-108: the align default of `G68_2` is `G53.1`; the code has no `G53.6`. Path/Post/Processor.py:1995-1998 and 2019-2025: `_plane_postables()` and `_rotary_block_postables()` write the text of `TWP_DECLARE`, `TWP_ALIGN`, `TWP_CANCEL` and `PRE_ROTARY_MOVE` as given.",
+     "fix": "Replace the sentence with: \"`G53.6` is not a default of the Post. To get a `G53.6` align line, write `G53.6` in `twp_align`.\"",
+     "brief_fact": "",
+     "brief_correction": ""
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Tilted Work Plane output of the linuxcnc Post and its limits",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Overview (CAUTION), Rotation Strategy, Tilted Work Plane output",
+     "note": ""
+    },
+    {
+     "goal": "2. The twp_kinematics_select property and when it adds a line after the preamble",
+     "met": "yes",
+     "where": "output/posts/linuxcnc.adoc: Kinematics select line; output/postprocessor-customization.adoc: Properties of the included Post-Processors",
+     "note": "The page gives the label and the Machine scope. The source read here does not establish the tab of the Machine Editor that shows the property."
+    },
+    {
+     "goal": "3. Each machine-based Post follows G17, G18 and G19 and drops only the center word along the plane normal",
+     "met": "yes",
+     "where": "output/postprocessor-customization.adoc: Modal output and line numbers; output/posts/fanuc.adoc: Arcs",
+     "note": ""
+    },
+    {
+     "goal": "4. G17, G18 and G19 as supported modal commands, the Plane attribute of MachineState, and the full command name rule",
+     "met": "yes",
+     "where": "reference/scripting.adoc: command table and MachineState section; output/mbpp-postprocessor.adoc: machine state and command filtering; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    },
+    {
+     "goal": "5. Which included Post-Processors write Work Planes and arc planes",
+     "met": "yes",
+     "where": "output/post-process.adoc: Included Post-Processors and Work Planes; output/posts/fanuc.adoc: Arcs; output/postprocessor-customization.adoc: Commands and rapid moves",
+     "note": ""
+    }
+   ],
+   "merge": "yes",
+   "confirmed": 64,
+   "untested": [
+    "If the Post removes a repeated G17, G18 or G19 line when *Duplicate Commands* of the Machine is unchecked, which changes \"writes each of these commands as one line\".",
+    "If a real LinuxCNC control accepts the `G68.2`, `G53.1`, `G53.6` and `G69` lines and refuses a Fixture change while a plane is active; the pages take this from the class docstring.",
+    "If LinuxCNC and Fanuc controls refuse the center word along the plane normal; the pages take this from a code comment in `Constants.py`.",
+    "The output when `twp_align` contains only space characters or brace characters; the Post passes the text through `str.format()`.",
+    "The output of the kinematics select line when the export has more than one output section (split output)."
+   ],
+   "notes": "The five findings of the review before this one are resolved in the pages as they are now. The sentence about the six Posts without K is removed. The `heidenhain` exception is in the customization page, and `heidenhain_post.py:97-123` and `:920-922` confirm it. The cancel line list has the two pose cases, and `Processor.py:2253-2256`, `2059-2060` and `2326-2327` confirm all four conditions. The tolerance and the help text sentences are removed.\n\nAll added xref targets exist, the eleven glossary anchors exist, and `nav.adoc` has the entry for the new page. The caution about draft LinuxCNC work is on the linuxcnc page and has no pull request number.\n\nThe linuxcnc page describes when the declare line, the align line and the cancel line occur. The base class does this work, but Goal 1 and the plan give these facts to the linuxcnc page, so this is not a finding.\n\n`reference/scripting.adoc` had the G17, G18, G19 row before this unit; the unit changed only the description.\n\nThe one open finding is `should`. It does not prevent the merge."
+  }
+ ],
+ "pages": [
+  {
+   "page": "output/posts/linuxcnc.adoc",
+   "mode": "new",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "New reference page for the `linuxcnc` Post. It gives the `linuxcnc` defaults of the common properties, the TWP Rotation Strategy as the only strategy, the error for a Machine set to DWO with a tilted Operation, the declare line (`G68.2`), the align line (`G53.1` or the `twp_align` text), the cancel line (`G69`) and its conditions, the output sequence, and the `twp_kinematics_select` property. It has the caution that the syntax follows draft LinuxCNC work and can change, without a pull request number. The arc plane rule and the match of command lists by full command name get no text on this page: the customization page owns them. This revision corrects the four lint findings: line 48 does not use the words 'work offset', lines 137 and 140 use Tool Bit, and line 193 does not use the words 'the base'. The Function cell of the align line in the table also uses Tool Bit now."
+    }
+   ],
+   "unverified": [
+    "The LinuxCNC release that accepts `G68.2`, `G53.1`, `G53.6` and `G69`. The source names no released version; the page gives only the caution about draft LinuxCNC work.",
+    "The effect of `G53.1 P1`, `P2`, `Q1`, `G53.6` and `G12.1 P1` on a LinuxCNC control. The Post writes these texts as given and does not examine them.",
+    "The location of *Tilted work plane: kinematics select* and *Tilted work plane: align* in the _Machine Editor_ (tab or group). The schema gives only Machine scope.",
+    "The label *Tilted work plane: control positions the rotaries* and its checkbox form. The brief gives only the property name `twp_control_positions_rotaries` and its default (true).",
+    "The cancel line before each tool change and at the end of each output section. The class docstring and the pending text say this; the brief (F9, F10) confirms only the pose change and the Fixture change.",
+    "The number format of the X, Y, Z, I, J, K values in a `G68.2` line. The page shows only the word letters.",
+    "The version for a `[.since]` mark. The source does not give it, so the page has no mark."
+   ],
+   "figures_wanted": [],
+   "notes": "The page builds on the previous draft, which builds on the pending text of open PR #25 (branch gypsy/issue-16). The one review finding is correct and is applied with the reviewer's words: `G53.6` is not in the code defaults (F7), and other text properties also go to the output without change. No other line changed. `:page-status:` stays `draft` because `unverified` is not empty. Conflict with the global STE instruction: STYLE.md sets a ceiling of 30 words for a sentence and allows terms such as \"Post\"; the page obeys STYLE.md.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.641759,
+     "duration_ms": 90700,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.617823,
+     "duration_ms": 53647,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.595639,
+     "duration_ms": 40984,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.601515,
+     "duration_ms": 43942,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.732792,
+     "duration_ms": 44408,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.632471,
+     "duration_ms": 34742,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.703592,
+     "duration_ms": 32695,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.618659,
+     "duration_ms": 29974,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 5.1442499999999995,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "verdict": "revise",
+      "needs_gui": false,
+      "sections": [],
+      "reason": "New reference page for the linuxcnc Post, with only its specific features: the tilted Work Plane output (`G68.2`, the align line from `twp_align`, `G69`), the TWP rotation strategy only, the error for DWO, and `twp_kinematics_select`. Owns these facts and the caution that the syntax follows draft LinuxCNC work and can change, without a pull request number; it links to the common pages for the inherited behaviour."
+     }
+    ]
+   ]
+  },
+  {
+   "page": "output/postprocessor-customization.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "`Commands and rapid moves`: added the `Unsupported command:` error and its four exceptions, the match of *Supported G-code Commands* and *Ignore G-code Commands* by full command name, and G17, G18 and G19 as supported commands that select the arc plane. `Modal output and line numbers`: added the arc plane rules (start value `G17`, change by a command or by a text block, no change by a tool change), the dropped center word along the plane normal with a table, the two `linuxcnc` examples from the tests, and the relation to `parameter_order` (six Posts have no K). `Properties of the included Post-Processors`: added the row *Tilted work plane: kinematics select* and one paragraph with a link to the `linuxcnc` page. `Work Planes and rotary axes`: added one paragraph that the `linuxcnc` Post writes tilted Work Planes only with the TWP Rotation Strategy, with a link. Added 33254 to `:page-source-pr:`. No text for the removed `PARAMETER_ORDER` override, the new help texts, the empty command name, the method names and `copy()`: the unit lists them as not documented."
+    }
+   ],
+   "unverified": [
+    "If *Duplicate Commands* suppression removes a G17, G18 or G19 command before the Post follows the arc plane. The pass `_optimize_duplicates_doubles()` was not read for this case.",
+    "The `heidenhain` Post accepts only G17 of the three arc plane commands and writes no block for it. The evidence is from the review (heidenhain_post.py:112, 133, 920-923), not from the diff given to this stage.",
+    "The position of *Tilted work plane: kinematics select* in the Machine Editor. The schema gives only Machine scope; the page does not name a tab or group."
+   ],
+   "figures_wanted": [],
+   "notes": "The page builds on the pending text of open gypsy PR #25 (branch gypsy/issue-16), which is the same as the text on `main`.\n\nFinding 1 (wrong): corrected. I removed the two sentences and kept the first three sentences of the paragraph. I did not add the optional sentence of the reviewer, because the label *Generated Parameter Order for GCode* is not in the diff, the brief or the page, and I cannot confirm its spelling.\n\nFinding 2 (contradiction): corrected with the words of the reviewer. The brief says not to apply the arc plane rule to the `heidenhain` output. The new clause does not do that: it tells only which commands the `heidenhain` Post accepts. The clause agrees with output/posts/heidenhain.adoc as the reviewer quotes it. The sentence has two clauses with a semicolon, as the reviewer gave it; it has fewer than 30 words.\n\n`:page-status:` stays `draft` because `unverified` is not empty. `:page-source-pr:` already has 33254.\n\nThe line `linuxcnc_post.py: a machine-based Post with two Job-scope properties.` in `Included Post-Processors` is still true (the third property has Machine scope) and is not in the part of this page, thus it stays.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.8203429999999999,
+     "duration_ms": 132266,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.036344,
+     "duration_ms": 93017,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.856687,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "page": "output/postprocessor-customization.adoc",
+      "verdict": "revise",
+      "role": "primary",
+      "needs_gui": true,
+      "reason": "Path/Post/scripts/linuxcnc_post.py: ROTATION_STRATEGIES = (\"twp\",), PLANE_COMMAND = G68_2, new machine property twp_kinematics_select, new help for pre_rotary_move and twp_align, PARAMETER_ORDER override removed; Path/Post/Processor.py: _convert_move drops the center word along the plane normal, _command_names matches the ignored and supported lists name by name, G17/G18/G19 are modal commands",
+      "sections": [
+       "Properties of the included Post-Processors",
+       "Work Planes and rotary axes",
+       "Commands and rapid moves",
+       "Modal output and line numbers"
+      ]
+     }
+    ]
+   ]
+  },
+  {
+   "page": "output/post-process.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Included Post-Processors: added a `linuxcnc` row to the notes table (tilted Work Planes, TWP Rotation Strategy only, link to the linuxcnc page). Extended the `opensbp` row: G17 is accepted with no output line, G18 and G19 stop the export with `Unsupported command`, link to the customization page for the arc plane rule. Work Planes: added one bullet that the `linuxcnc` Post emits only the TWP Rotation Strategy and that the export of an Operation on a tilted Work Plane stops with an error when the *Rotation Strategy* of the Machine is DWO, with a link to the linuxcnc page. Added 33254 to `:page-source-pr:`. No text for the arc plane rule, `MachineState.Plane`, the command list match, `twp_kinematics_select` or the fanuc `parameter_order`: other pages of the set own these facts."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The page builds on the pending text of open gypsy PR #25 (branch gypsy/issue-16), which is the same as the previous draft. The finding is correct and is applied: the `fanuc` row has the sentence that the finding gives. The link is one full sentence, \"xref:output/posts/fanuc.adoc[Fanuc Post-Processor] describes the `fanuc` Post.\", to agree with the form of the `linuxcnc` row. The link text \"Fanuc Post-Processor\" comes from the finding; I did not read the title of output/posts/fanuc.adoc, so make sure that the link text agrees with that title. `:page-status:` stays `draft` as it was; `unverified` is empty, so this draft did not set it.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.659691,
+     "duration_ms": 77548,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.7141190000000001,
+     "duration_ms": 68008,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.8361399999999999,
+     "duration_ms": 58465,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 2.20995,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "page": "output/post-process.adoc",
+      "verdict": "revise",
+      "role": "supporting",
+      "needs_gui": false,
+      "reason": "Path/Post/scripts/linuxcnc_post.py: the linuxcnc Post now writes tilted Work Planes (G68.2, G53.1, G69) and raises an error for a Machine set to DWO; opensbp_post.py: G17 tolerated, G18 and G19 refused",
+      "sections": [
+       "Included Post-Processors",
+       "Work Planes"
+      ]
+     }
+    ]
+   ]
+  },
+  {
+   "page": "output/posts/fanuc.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "`Defaults of the common properties`: removed the row *Generated Parameter Order for GCode*, because the `fanuc` Post has the common default with K again (F41). Corrected the row *Supported G-code Commands*: the added names are `G54.1`, `M2`, `M02` and `M30`; `G17` is in the common list (F42). `Arcs`: replaced the statement that the word order has no K word. The section now gives the common order, a table of the center words for G17, G18 and G19, the G18 example from the `fanuc` test (F43), and a link to Postprocessor Customization for the arc plane rule. Added 33254 to `:page-source-pr:`. No text for the match of command lists by full command name or for the `Plane` attribute of `MachineState`: other pages of the set own these facts."
+    }
+   ],
+   "unverified": [
+    "The _Postprocessor_ tab of the Machine Editor shows `XYZABCUVWFSIJKTQRPDHL` as the default of *Generated Parameter Order for GCode* for a Machine that uses the `fanuc` Post.",
+    "The label *Generated Parameter Order for GCode* is spelled as the interface shows it. The label comes from the current page, not from the diff."
+   ],
+   "figures_wanted": [],
+   "notes": "The finding is correct and I applied it. The `Arcs` section has no table now. It keeps the sentence about the two center words, gives the K, J and I facts for each arc plane in short sentences, keeps the link to Postprocessor Customization and keeps the `G18` example line. No other line changed from the previous draft.\n\nThe text builds on the page of branch `main`. No pending gypsy text exists for this page.\n\nThe unit lists \"G17 removed from `EXTRA_SUPPORTED` of the fanuc Post\" as not documented. The page of `main` said that the Post adds `G17` to *Supported G-code Commands*. The diff makes that statement false, thus I corrected the row to the names of fact F42 and added no other text about the change.\n\nThe page has no `[.since]` mark for the new arc text. The brief says that the source does not give the version.\n\n`:page-status:` stays `draft`. The page was `draft` before this change, and the verdict has `needs_gui`.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.5786030000000001,
+     "duration_ms": 64694,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.585435,
+     "duration_ms": 45956,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 1.1640380000000001,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "page": "output/posts/fanuc.adoc",
+      "verdict": "revise",
+      "role": "supporting",
+      "needs_gui": true,
+      "reason": "Path/Post/scripts/fanuc_post.py: parameter_order default override removed (the default has K again) and G17 removed from EXTRA_SUPPORTED; Path/Post/Processor.py: a G18 or G19 arc keeps K and drops J or I",
+      "sections": [
+       "Defaults of the common properties",
+       "Arcs"
+      ]
+     }
+    ]
+   ]
+  },
+  {
+   "page": "output/mbpp-postprocessor.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "Added 33254 to `:page-source-pr:`. `MachineState`: added the `Plane` attribute with a link to the scripting page; limited the 'state becomes unknown' sentence to the `MachineState.Tracked` values; added that `setState(None)`, `updateState(None)` and a tool change do not change `Plane`, and that the conversion calls `addGcodeText()` after a `str` postable and an `as-is` command. `Command filter and annotations`: added the full command name comparison with a link to the customization page; added G17, G18 and G19 in the default of `supported_commands` and their conversion through `_convert_modal_command()`. `Modal suppression and line numbers`: added one paragraph that `_convert_move()` reads `machine_state.Plane` for an arc and drops the center word along the plane normal, with a link to the customization page. `Work Planes and rotary axes`: added the error condition for a Rotation Strategy that is not in `ROTATION_STRATEGIES`, the `linuxcnc` value `(\"twp\",)` and a link to the linuxcnc page. `Reference implementations`: rewrote the `linuxcnc_post.py` row to add the Machine-scope `string` property, `ROTATION_STRATEGIES`, `PLANE_COMMAND` and the conditional preamble line. `Related`: added the linuxcnc page. No text for: the empty command name that passes the filter, `copy()` of `MachineState`, the removed `PARAMETER_ORDER` override, and the new help texts (the unit lists them as not documented)."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "Only line 337 changed in this revision. The check finding asked for the words \"the base conversion reads\". The lint finding rejects \"the base\" (ADR-000: bare \"Base\"). The line now says \"the conversion of `PostProcessor` reads\", which obeys the two findings: no `_convert_move` method name in the new text, and no \"the base\". The link to Postprocessor Customization stays. The two older sentences that name `_convert_move()` in the same section are text of `main` and stay as they are (amend-only mode). `:page-status:` was `draft` on `main` and stays `draft`; `unverified` is empty, so this revision did not set it. The page repeats two facts that the brief gives to reference/scripting.adoc (F35: `Plane` is not in `Tracked`; F37: the last plane word of the text is used). The plan for this page asks for \"`Plane` not cleared by `setState(None)`\", and these clauses are necessary for that statement; the details stay on the Scripting page behind the link. No `[.since]` mark is on the new lines, because the brief does not establish the version.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.888475,
+     "duration_ms": 135397,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.9547269999999999,
+     "duration_ms": 111493,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.9566109999999999,
+     "duration_ms": 111066,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 2.799813,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "page": "output/mbpp-postprocessor.adoc",
+      "verdict": "revise",
+      "role": "supporting",
+      "needs_gui": false,
+      "reason": "Path/Base/MachineState.py: new Plane attribute and addGcodeText(), Plane is not cleared by setState(None); Path/Post/Processor.py: command lists matched by name, a command with an empty name passes the filter, GCODE_PLANE added to the modal commands; linuxcnc_post.py is a new reference for ROTATION_STRATEGIES and PLANE_COMMAND",
+      "sections": [
+       "Work Planes and rotary axes",
+       "MachineState",
+       "Command filter and annotations",
+       "Reference implementations"
+      ]
+     }
+    ]
+   ]
+  },
+  {
+   "page": "reference/scripting.adoc",
+   "mode": "amend",
+   "prs": [
+    33254
+   ],
+   "changes": [
+    {
+     "pr": 33254,
+     "what": "MachineState section: added the `Plane` attribute (values, default, not in `Tracked`, read as `ms.Plane`), the effect of `addCommand()` on `Plane`, and the `addGcodeText()` method, with a short example and links to the customization page and the machine-based Post page. Removed the word `plane` from the `getState()` comment in the first example, because `getState()` does not return `Plane`, and added an `ms.Plane` line. `List of currently supported G-code commands`: no text change, because the table on `main` already has the row `G17, G18, G19`. Added 33254 to `:page-source-pr:`. `copy()` keeps `Plane`: no text change, the unit lists it as not documented."
+    }
+   ],
+   "unverified": [],
+   "figures_wanted": [],
+   "notes": "The page builds on the pending text of the open gypsy pull request #25 (branch gypsy/issue-16). That text is the same as the previous draft. The finding is correct. I removed the list in parentheses and did not add the two names, because the brief does not give the full contents of `MachineState.Tracked`; a list without all entries can be wrong again. `:page-status: draft` stays as it was: `unverified` is empty, and the rule says to leave the attribute as it is in that condition. No `[.since]` mark was added for `Plane` and `addGcodeText()`; the brief does not give the version, and the `MachineState` section has the mark `introduced in 26.3` already. The code blocks of the `MachineState` section were not run in FreeCAD; the second block follows F34 and F37.",
+   "lint_rc": 0,
+   "lint": "",
+   "pending_prs": [],
+   "facts": [],
+   "facts_commit": "",
+   "runs": [
+    {
+     "cost_usd": 0.778187,
+     "duration_ms": 111172,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.852947,
+     "duration_ms": 96255,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 0.9539789999999999,
+     "duration_ms": 95425,
+     "model": "claude-opus-5-5"
+    }
+   ],
+   "cost_usd": 2.5851129999999998,
+   "verdicts": [
+    [
+     "2026-10-11T06:14:15Z",
+     33254,
+     "CAM: LinuxCNC post supports tilted work planes (TWP)",
+     "c2bd9bab55441a108c632026e09c8faa71e2138a",
+     {
+      "page": "reference/scripting.adoc",
+      "verdict": "revise",
+      "role": "supporting",
+      "needs_gui": false,
+      "reason": "Constants.py: GCODE_PLANE (G17, G18, G19) added to GCODE_SUPPORTED; Path/Base/MachineState.py: Plane attribute, addGcodeText(), copy() keeps Plane",
+      "sections": [
+       "List of currently supported G-code commands",
+       "MachineState"
+      ]
+     }
+    ]
+   ]
+  }
+ ],
+ "figures": [],
+ "runs": [
+  {
+   "stage": "brief",
+   "cost_usd": 1.2469306,
+   "turns": 27,
+   "duration_ms": 149309
+  },
+  {
+   "stage": "check",
+   "cost_usd": 0.833218,
+   "turns": 17,
+   "duration_ms": 102406
+  },
+  {
+   "stage": "check",
+   "cost_usd": 0.7181692,
+   "turns": 10,
+   "duration_ms": 74239
+  },
+  {
+   "stage": "check",
+   "cost_usd": 0.5715513999999999,
+   "turns": 11,
+   "duration_ms": 102630
+  },
+  {
+   "stage": "check",
+   "cost_usd": 2.1108562,
+   "turns": 34,
+   "duration_ms": 114014
+  },
+  {
+   "stage": "check",
+   "cost_usd": 1.5398898,
+   "turns": 20,
+   "duration_ms": 99277
+  },
+  {
+   "stage": "check",
+   "cost_usd": 1.0211329999999998,
+   "turns": 19,
+   "duration_ms": 110971
+  },
+  {
+   "stage": "review",
+   "cost_usd": 1.5360068,
+   "turns": 19,
+   "duration_ms": 163570
+  },
+  {
+   "stage": "review",
+   "cost_usd": 1.0901144,
+   "turns": 15,
+   "duration_ms": 127813
+  },
+  {
+   "stage": "review",
+   "cost_usd": 1.1671421999999998,
+   "turns": 25,
+   "duration_ms": 168817
+  }
+ ],
+ "cost_usd": 27.5948626,
+ "generated": "2026-10-12T16:29:22+00:00"
+}
