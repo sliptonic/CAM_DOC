@@ -351,6 +351,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="posts/genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -944,6 +947,12 @@ class Mymachine(PostProcessor):
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default: 0.0.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>linuxcnc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tilted work plane: kinematics select</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default: empty.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>opensbp</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Automatic Tool Changer</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
@@ -1071,6 +1080,9 @@ class Mymachine(PostProcessor):
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post-Processor writes tilted Work Planes, and <strong>Tilted work plane: kinematics select</strong> (<code>twp_kinematics_select</code>) is a part of that output. <a href="posts/linuxcnc.html" class="xref page"><code>linuxcnc</code> Post-Processor</a> describes the output and the property.</p>
+</div>
 <div class="paragraph">
 <p>The <strong>Control Method For Cutter</strong> values of the <code>generic_sheet_cutting</code> Post have these effects:</p>
 </div>
@@ -1207,21 +1219,108 @@ class Mymachine(PostProcessor):
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Supported G-code Commands</strong> lists the commands that the Post accepts.</p>
+<p><strong>Supported G-code Commands</strong> (<code>supported_commands</code>) lists the commands that the Post accepts. A command that is not in the list stops the export with the error <code>Unsupported command:</code> and the command name.</p>
 </li>
 <li>
-<p><strong>Ignore G-code Commands</strong> lists commands that the Post accepts and removes from the output. A command in this list is not necessary in <strong>Supported G-code Commands</strong>.</p>
+<p><strong>Ignore G-code Commands</strong> (<code>ignored_commands</code>) lists commands that the Post accepts and removes from the output. A command in this list is not necessary in <strong>Supported G-code Commands</strong>.</p>
 </li>
 <li>
 <p><code>translate_no_engagement_feed</code> changes a marked <code>G0</code> move into a <code>G1</code> move. An Operation that has a no-engagement feed marks these moves with that feed. Default: unchecked.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>The export does not stop for these items when they are not in <strong>Supported G-code Commands</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A command in <strong>Ignore G-code Commands</strong>.</p>
+</li>
+<li>
+<p>A comment.</p>
+</li>
+<li>
+<p>A bare T word.</p>
+</li>
+<li>
+<p>A command with the <code>allow_unsupported</code> annotation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Post compares a command name with <strong>Supported G-code Commands</strong> and <strong>Ignore G-code Commands</strong> as a full command name. Each line of the two properties is one name. The Post removes the space characters at the two ends of each line. A name does not match a part of a different name: <code>G1</code> does not match the entry <code>G17</code>, and <code>G5</code> does not match the entry <code>G54</code>.</p>
+</div>
+<div class="paragraph">
+<p>The common default of <strong>Supported G-code Commands</strong> contains G17, G18 and G19, which select the arc plane. A Post that uses the common conversion writes each of these commands as one line. <a href="../reference/scripting.html" class="xref page">Scripting</a> lists the supported commands. The <code>opensbp</code> Post accepts G17 and does not accept G18 and G19, as <a href="post-process.html" class="xref page">Post Process</a> describes; the <code>heidenhain</code> Post accepts only G17 and writes no block for it.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="modal-output-and-line-numbers"><a class="anchor" href="#modal-output-and-line-numbers"></a>Modal output and line numbers</h3>
 <div class="paragraph">
 <p>When <strong>Duplicate Commands</strong> of the Machine is unchecked, the Post removes a command word that is the same as the command word before it. When <strong>Duplicate Parameters</strong> is unchecked, the Post removes an axis parameter whose value did not change. A tool change and an item of plain text reset this state. A comment does not change this state.</p>
+</div>
+<div class="paragraph">
+<p>The Post also follows the arc plane (G17, G18, G19). These rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The arc plane is <code>G17</code> at the start of each output section.</p>
+</li>
+<li>
+<p>A G17, G18 or G19 command in the Toolpath changes the arc plane.</p>
+</li>
+<li>
+<p>A text block that the Post writes without change can contain a G17, G18 or G19 word. The preamble and a command with the <code>as-is</code> annotation are such text blocks. The last of these words in the text block sets the arc plane.</p>
+</li>
+<li>
+<p>A text block with no G17, G18 or G19 word does not change the arc plane.</p>
+</li>
+<li>
+<p>A tool change does not change the arc plane.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An arc gives its center in its arc plane. The center word (I, J, K) along the plane normal has no function, because a helical arc gives its pitch in the axis word. LinuxCNC and Fanuc controls do not accept that center word. For a <code>G2</code> or <code>G3</code> command, the common conversion of a machine-based Post thus drops the center word along the plane normal. The arc plane causes no other change to the center words.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Arc plane</th>
+<th class="tableblock halign-left valign-top">Center word that the Post drops</th>
+<th class="tableblock halign-left valign-top">Center words that stay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G17</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I, J</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G18</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I, K</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G19</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J, K</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>With the <code>linuxcnc</code> Post and the arc plane <code>G17</code>, the command <code>G2 X10 Y0 Z-1 I5 J0 K0</code> gives a line with <code>I5.000</code> and <code>J0.000</code> and no K word. With the arc plane <code>G18</code>, the command <code>G2 X0 Y0 Z-10 I0 J0 K-5</code> gives a line with <code>I0.000</code> and <code>K-5.000</code> and no J word.</p>
+</div>
+<div class="paragraph">
+<p>A Post writes a center word only when the word is in <code>parameter_order</code>. The common default of <code>parameter_order</code> is <code>XYZABCUVWFSIJKTQRPDHL</code>, which has K. The <code>linuxcnc</code> Post and the <a href="posts/fanuc.html" class="xref page"><code>fanuc</code> Post</a> use the common default.</p>
 </div>
 <div class="paragraph">
 <p>When <strong>Line Numbers</strong> of the Machine is checked, the Post gives each command an <code>N</code> parameter. These rules apply:</p>
@@ -1302,6 +1401,9 @@ class Mymachine(PostProcessor):
 </table>
 <div class="paragraph">
 <p><code>G68_2</code> and <code>G268</code> take intrinsic Z-X-Z Euler angles. <code>PLANE_SPATIAL</code> takes spatial angles about the fixed machine axes X, Y and Z. The common properties <strong>Tilted work plane: declare</strong>, <strong>Tilted work plane: align</strong> and <strong>Tilted work plane: cancel</strong> replace one line for a control with a different form. <a href="machine.html" class="xref page">Machine</a> describes these properties and the <strong>Rotation Strategy</strong> of the Machine.</p>
+</div>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post sets <code>ROTATION_STRATEGIES</code> to <code>("twp",)</code> and <code>PLANE_COMMAND</code> to <code>PlaneCommand.G68_2</code>. The <code>linuxcnc</code> Post thus writes a tilted Work Plane only with the TWP Rotation Strategy. <a href="posts/linuxcnc.html" class="xref page"><code>linuxcnc</code> Post-Processor</a> gives the declare line, the align line, the cancel line and the limits of this output.</p>
 </div>
 <div class="paragraph">
 <p>When the rotary axes move, the Post writes the <strong>Pre-Rotary Move</strong> block before the move and the <strong>Post-Rotary Move</strong> block after the move. The Post writes rotary axis angles with the axis precision and does not convert them between millimetres and inches.</p>

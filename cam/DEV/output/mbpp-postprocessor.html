@@ -350,6 +350,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="posts/genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -1246,6 +1249,9 @@ G43 H2
 <div class="paragraph">
 <p><code>_convert_move()</code> writes the <code>N</code> parameter with <code>LINE_NUMBER_PREFIX</code> at the start of the line. A subclass that replaces the conversion must write the <code>N</code> parameter. <code>_convert_move()</code> returns <code>None</code> for a move or a dwell that has no parameter other than <code>N</code>.</p>
 </div>
+<div class="paragraph">
+<p>For an arc, the conversion of <code>PostProcessor</code> reads the arc plane (G17, G18 or G19) from <code>machine_state.Plane</code> and does not write the center word along the plane normal. <a href="postprocessor-customization.html" class="xref page">Postprocessor Customization</a> gives the arc plane rule.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="work-planes"><a class="anchor" href="#work-planes"></a>Work Planes and rotary axes</h3>
@@ -1276,7 +1282,13 @@ G43 H2
 <li>
 <p>The Machine declares the <code>post_transform</code> strategy.</p>
 </li>
+<li>
+<p>The Machine declares a Rotation Strategy that is not in <code>ROTATION_STRATEGIES</code> of the Post.</p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post sets <code>ROTATION_STRATEGIES</code> to <code>("twp",)</code>. <a href="posts/linuxcnc.html" class="xref page">linuxcnc</a> gives the lines that the <code>linuxcnc</code> Post writes for a tilted Work Plane.</p>
 </div>
 <div class="paragraph">
 <p>The four <code>twp_</code> properties change the lines of the <code>twp</code> strategy for a control with a different form. <code>format_parameter()</code> does not convert A, B and C values between millimetres and inches. <a href="machine.html" class="xref page">Machine</a> lists the conditions that the export examines.</p>
@@ -1368,6 +1380,9 @@ G43 H2
 <p>A <code>MachineState</code> object (<code>Path.Base.MachineState</code>) follows the abstract machine. It holds the X, Y, Z, A, B and C position, F, S, T, the coolant, the active Fixture, and the drill return mode (G98 or G99). The F of G0 moves is held apart from F, as <code>G0F</code>.</p>
 </div>
 <div class="paragraph">
+<p>A <code>MachineState</code> object also holds the arc plane (G17, G18 or G19) in its <code>Plane</code> attribute. <a href="../reference/scripting.html" class="xref page">Scripting</a> describes the <code>Plane</code> attribute of <code>MachineState</code> and the <code>addGcodeText()</code> method.</p>
+</div>
+<div class="paragraph">
 <p><code>self.machine_state</code> is <code>None</code> unless a <code>with self.use_machine_state():</code> block is active. The conversion stage opens one such block for each output section. The state thus starts new for each section.</p>
 </div>
 <div class="paragraph">
@@ -1387,7 +1402,7 @@ G43 H2
 </ul>
 </div>
 <div class="paragraph">
-<p>The state becomes unknown, with each value <code>None</code>, after these events:</p>
+<p>The state becomes unknown, with each value of <code>MachineState.Tracked</code> set to <code>None</code>, after these events:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1401,6 +1416,12 @@ G43 H2
 <p>A command with the <code>as-is</code> annotation.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The <code>Plane</code> attribute of <code>MachineState</code> is not in <code>MachineState.Tracked</code>. <code>setState(None)</code> and <code>updateState(None)</code> do not change <code>Plane</code>. A tool change does not change <code>Plane</code>.</p>
+</div>
+<div class="paragraph">
+<p>After a <code>str</code> postable and after a command with the <code>as-is</code> annotation, the conversion calls <code>machine_state.setState(None)</code>. The conversion then calls <code>machine_state.addGcodeText()</code> with the text of the item. <code>Plane</code> keeps its value, or <code>Plane</code> gets the last G17, G18 or G19 word of the text.</p>
 </div>
 <div class="paragraph">
 <p>An M3 or M4 without an S parameter sets <code>S</code> to <code>None</code>. <code>setState(state)</code> sets the keys of the dict and sets each other key to <code>None</code>. <code>updateState(state)</code> sets the keys of the dict and does not change the other keys. <code>setState(None)</code> sets each key to <code>None</code>. If your hook writes motion that the tracker did not see, update the state, because the next command reads it.</p>
@@ -1425,7 +1446,13 @@ G43 H2
 </ol>
 </div>
 <div class="paragraph">
+<p>The conversion compares the name of a command with each entry of the two lists as a full command name. <a href="postprocessor-customization.html" class="xref page">Postprocessor Customization</a> gives the rules of the two lists.</p>
+</div>
+<div class="paragraph">
 <p>Three classes of command pass the third step when they are not in the list: a comment, a bare <code>T</code> word with its tool number, and a command with the <code>allow_unsupported</code> annotation. The lists in <code>Constants.py</code> supply the default of <code>supported_commands</code>: moves, drill cycles, probe commands, offsets, and the spindle and coolant M-codes. The default also has the set that Operations must not emit but Posts can: radius compensation, distance mode, units, return mode and cycle cancel.</p>
+</div>
+<div class="paragraph">
+<p>The default of <code>supported_commands</code> also has the arc plane commands G17, G18 and G19. <code>convert_command_to_gcode()</code> sends G17, G18 and G19 to <code>_convert_modal_command()</code>, which writes the command name as one line. Override <code>_convert_modal_command()</code> to change this output.</p>
 </div>
 <div class="paragraph">
 <p>A <code>Path.Command</code> carries annotations. <code>Constants.py</code> defines the keys.</p>
@@ -1654,7 +1681,7 @@ class TestMymachinePost(PathTestUtils.PathTestBase):
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>linuxcnc_post.py</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Changed schema defaults, a <code>choice</code> property with Job scope (blend mode), an <code>_expand_prefix</code> hook, and the rigid tapping conversion.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Changed schema defaults, a <code>choice</code> property with Job scope (blend mode), a <code>string</code> property with Machine scope, and the rigid tapping conversion. The Post narrows <code>ROTATION_STRATEGIES</code> to one strategy and sets <code>PLANE_COMMAND</code>. Its <code>_expand_prefix</code> hook adds the blend command and a conditional line to the preamble.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>generic_sheet_cutting_post.py</code></p></td>
@@ -1699,6 +1726,9 @@ class TestMymachinePost(PathTestUtils.PathTestBase):
 </li>
 <li>
 <p><a href="posts/genealogy.html" class="xref page">Post-Processor Genealogy</a></p>
+</li>
+<li>
+<p><a href="posts/linuxcnc.html" class="xref page">linuxcnc</a></p>
 </li>
 <li>
 <p><a href="../reference/glossary.html" class="xref page">Glossary</a></p>

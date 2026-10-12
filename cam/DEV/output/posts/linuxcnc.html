@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>linuxcnc Post-Processor :: FreeCAD CAM documentation (experiment)</title>
+    <link rel="prev" href="genealogy.html">
+    <link rel="next" href="../../job/setup-sheet.html">
+    <meta name="description" content="Features that are specific to the linuxcnc Post-Processor: its property defaults, the tilted Work Plane output and the kinematics select line.">
+    <meta name="generator" content="Antora 3.1.15">
+<link rel="stylesheet" href="../../../../_/css/site.css">
+<link rel="stylesheet" href="../../../../_/css/freecad.css">
+<script type="module">
+// A literal block with the role "mermaid" is drawn as a diagram. Without JavaScript, or when the
+// library does not load, the block stays readable as text.
+document.addEventListener('DOMContentLoaded', async () => {
+  const blocks = document.querySelectorAll('.literalblock.mermaid pre')
+  if (!blocks.length) return
+  const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs')
+  blocks.forEach((pre) => { pre.classList.add('mermaid'); pre.style.background = 'none'; pre.style.boxShadow = 'none' })
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' })
+  await mermaid.run({ nodes: blocks })
+})
+</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://sliptonic.github.io/CAM_DOC">FreeCAD CAM documentation (experiment)</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item fc-version">
+          <label class="fc-version-label" for="fc-version-select">Version</label>
+          <select id="fc-version-select" class="fc-version-select" aria-label="Documentation version" onchange="if (this.value) window.location.href = this.value">
+            <option value="linuxcnc.html" selected>DEV (pre-release)</option>
+            <option value="../../../wiki-2026-08/index.html">Wiki (Aug 2026) (page not in this version)</option>
+          </select>
+        </div>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC">Repository</a>
+        <a class="navbar-item" href="https://github.com/sliptonic/CAM_DOC/blob/main/PROPOSAL.md">About this experiment</a>
+        <a class="navbar-item" href="https://wiki.freecad.org/CAM_Workbench">FreeCAD wiki</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="cam" data-version="DEV">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">FreeCAD CAM</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">CAM Workbench</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/job.html">New Job</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../post-process.html">Post Process</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../post-process-selected.html">Post Process Selected</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../machine.html">Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../machine-configuration.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/sanity-check.html">Sanity Check</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/quick-validate.html">Quick Validate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/export-template.html">Export Template</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tool Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/inspect.html">Inspect Toolpath</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/simulator-legacy.html">Legacy CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/simulator.html">CAM Simulator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/camotics.html">CAMotics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/select-loop.html">Finish Selecting Loop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/op-active-toggle.html">Toggle Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../inspect/set-start-point.html">Start Point Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/library-manager.html">Toolbit Library Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/add-toolbit.html">Add Toolbit…</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Basic Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/profile.html">Profile</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/pocket.html">Pocket Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/mill-facing.html">Mill Facing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/helix.html">Helix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/adaptive.html">Adaptive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/slot.html">Slot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/drilling.html">Drilling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/thread-milling.html">Thread Milling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/engrave.html">Engrave</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/deburr.html">Deburr</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/vcarve.html">Vcarve</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3D Operations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/pocket-3d.html">3D Pocket</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/surface.html">3D Surface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/waterline.html">Waterline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/rotary-surface.html">Rotary Surface</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Dressup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/axis-map.html">Axis Map</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/path-boundary.html">Boundary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/dogbone.html">Dogbone</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/drag-knife.html">Drag Knife</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/lead-in-out.html">Lead In/Out</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/mirror.html">Mirror</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/ramp-entry.html">Ramp Entry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/tag.html">Tag</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dressups/zcorrect.html">Z Depth Correction</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Supplemental Commands</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/comment.html">Comment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/stop.html">Stop</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/custom.html">Custom</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/probe.html">Probe</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/path-from-shape-tc.html">Path from Shape</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Path Modification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/copy.html">Copy Operation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/array.html">Array</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../modify/simple-copy.html">Simple Copy</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Miscellaneous</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/area.html">Area</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/area-workplane.html">Area Workplane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../misc/property-bag.html">Property Bag</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">ToolBit architecture</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/index.html">Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/tool-shape.html">Tool Shape</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/toolbit.html">Tool Bit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/toolbit-library.html">Tool Library</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/tool-controller.html">Tool Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tools/feeds-speeds.html">Feeds and Speeds</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Additional</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/preferences.html">Preferences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/scripting.html">Scripting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other pages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/artwork.html">Artwork CAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../contributing/development-roadmap.html">CAM Development Roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/faq.html">CAM FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/fixture.html">CAM Fixture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/work-plane.html">Work Plane</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../postprocessor-customization.html">CAM Postprocessor Customization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../mbpp-postprocessor.html">Writing a Machine-Based Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fanuc.html">Fanuc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="heidenhain.html">Heidenhain Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="genealogy.html">Post-Processor Genealogy</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../job/setup-sheet.html">CAM SetupSheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/walkthrough-for-the-impatient.html">CAM Walkthrough for the Impatient</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/experimental.html">CAM experimental</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/fourth-axis.html">CAM fourth axis</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/mill-face.html">Face (obsolete)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/opencamlib.html">OpenCamLib</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../operations/tapping.html">Tapping (obsolete)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">About</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about/import-report.html">Import report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FreeCAD CAM</span>
+    <span class="version">DEV (pre-release)</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../../wiki-2026-08/index.html">FreeCAD CAM</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../../index.html">DEV (pre-release)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../wiki-2026-08/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
+    <li><a href="linuxcnc.html">linuxcnc Post-Processor</a></li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">DEV (pre-release)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="linuxcnc.html">DEV (pre-release)</a>
+    <a class="version is-missing" href="../../../wiki-2026-08/index.html">Wiki (Aug 2026)</a>
+  </div>
+</div>
+<div class="edit-this-page"><a href="https://github.com/sliptonic/CAM_DOC/edit/main/modules/ROOT/pages/output/posts/linuxcnc.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">linuxcnc Post-Processor</h1>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>linuxcnc</code> <a href="../../reference/glossary.html#post-processor" class="xref page">Post-Processor</a> writes G-code for the LinuxCNC control.
+The <code>linuxcnc</code> Post is a machine-based Post.
+This page gives only the features that are specific to the <code>linuxcnc</code> Post.
+<a href="../postprocessor-customization.html" class="xref page">Postprocessor Customization</a> gives the properties and the output rules that all machine-based Posts have.</p>
+</div>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post writes a tilted <a href="../../reference/glossary.html#work-plane" class="xref page">Work Plane</a> with the lines <code>G68.2</code>, <code>G53.1</code> and <code>G69</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post writes a tapping cycle that is marked rigid as <code>G33.1</code>; the section <em>Drill cycles and tapping</em> of <a href="../post-process.html" class="xref page">Post Process</a> gives the details.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Make sure that the LinuxCNC control accepts the tilted Work Plane lines before you run the program. The syntax of these lines follows draft LinuxCNC work and can change.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="defaults-of-the-common-properties"><a class="anchor" href="#defaults-of-the-common-properties"></a>Defaults of the common properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post changes the defaults of these common properties.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file_extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ngc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>supports_tool_radius_compensation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preamble</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G17 G54 G40 G49 G80 G90</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>postamble</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Three lines: <code>M05</code>, <code>G17 G54 G90 G80 G40</code>, <code>M2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>safetyblock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G40 G49 G80</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post adds the blend command to the end of the preamble.
+With the default values, the last preamble line is <code>G17 G54 G40 G49 G80 G90 G64</code>.
+The <strong>Path Blending Mode</strong> and <strong>Blend Tolerance</strong> properties select the blend command.
+<a href="../postprocessor-customization.html" class="xref page">Postprocessor Customization</a> gives the values of these two properties.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rotation-strategy"><a class="anchor" href="#rotation-strategy"></a>Rotation Strategy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post writes a tilted Work Plane only with the TWP <a href="../../reference/glossary.html#rotation-strategy" class="xref page">Rotation Strategy</a> (value <code>twp</code>).
+The <code>linuxcnc</code> Post sets the class attribute <code>ROTATION_STRATEGIES</code> to <code>("twp",)</code>.
+The LinuxCNC control does not have the function that the DWO Rotation Strategy uses.
+Thus the <code>linuxcnc</code> Post does not write output for the DWO Rotation Strategy (value <code>dwo</code>).</p>
+</div>
+<div class="paragraph">
+<p>The <strong>Rotation Strategy</strong> field of the <em>Machine Editor</em> gives the strategy of the <a href="../../reference/glossary.html#machine" class="xref page">Machine</a>.
+The entry for the TWP Rotation Strategy is <code>Tilted work plane (TWP)</code>.
+The entry for the DWO Rotation Strategy is <code>Dynamic work offset (DWO)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="../../reference/glossary.html#tool-axis" class="xref page">Tool Axis</a> of an <a href="../../reference/glossary.html#operation" class="xref page">Operation</a> is tilted when the local Z axis of its Placement is different from the world Z axis.</p>
+</div>
+<div class="paragraph">
+<p>The export stops with an error when these two conditions are true:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An Operation in the export has a tilted Tool Axis.</p>
+</li>
+<li>
+<p>The <strong>Rotation Strategy</strong> of the Machine is <code>Dynamic work offset (DWO)</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The error message has this text:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;Operation&gt; is on a tilted work plane, and this post-processor cannot emit the DWO strategy machine '&lt;Machine&gt;' declares.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>&lt;Operation&gt;</code> is the label of the Operation.
+<code>&lt;Machine&gt;</code> is the name of the Machine.</p>
+</div>
+<div class="paragraph">
+<p>The export of a Machine set to DWO does not stop with this error when no Operation in the export has a tilted Tool Axis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tilted-work-plane-output"><a class="anchor" href="#tilted-work-plane-output"></a>Tilted Work Plane output</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post uses the <code>G68.2</code> <a href="../../reference/glossary.html#plane-command" class="xref page">Plane Command</a>.
+The Post sets the class attribute <code>PLANE_COMMAND</code> to <code>PlaneCommand.G68_2</code>.
+The Plane Command has three lines.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Line</th>
+<th class="tableblock halign-left valign-top">Default text</th>
+<th class="tableblock halign-left valign-top">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Declare line</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G68.2 X Y Z I J K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gives the origin and the orientation of the tilted Work Plane.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Align line</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G53.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Points the Tool Bit along the normal of the declared plane.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel line</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G69</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancels the declared plane.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="declare-line"><a class="anchor" href="#declare-line"></a>Declare line</h3>
+<div class="paragraph">
+<p>The Post writes a declare line only for an Operation that has a tilted Tool Axis.
+The X, Y and Z words give the origin of the Work Plane.
+The I, J and K words give intrinsic Z-X'-Z'' Euler angles.</p>
+</div>
+<div class="paragraph">
+<p>After the declare line, the Post writes the moves of the Operation in the coordinates of the Work Plane.</p>
+</div>
+<div class="paragraph">
+<p>A Work Plane parallel to the table gets no declare line.
+The Post writes the <a href="../../reference/glossary.html#toolpath" class="xref page">Toolpath</a> of such an Operation in world coordinates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="align-line"><a class="anchor" href="#align-line"></a>Align line</h3>
+<div class="paragraph">
+<p>The Post writes the align line after the declare line when <strong>Tilted work plane: control positions the rotaries</strong> is checked, which is the default.
+The common <strong>Tilted work plane</strong> properties control the align line; <a href="../machine.html" class="xref page">Machine</a> gives these properties.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>Tilted work plane: align</strong> property (<code>twp_align</code>) gives the text of the align line.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An empty value gives the line <code>G53.1</code>.</p>
+</li>
+<li>
+<p>A value that is not empty replaces the complete align line. The Post writes the text as it is given.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The value <code>G53.1 P1 Q1</code> gives the line <code>G53.1 P1 Q1</code>, and the output has no line with only <code>G53.1</code>.
+<code>G53.6</code> is not a default of the Post. To get a <code>G53.6</code> align line, write <code>G53.6</code> in <code>twp_align</code>.</p>
+</div>
+<div class="paragraph">
+<p>The Post does not examine the text of <code>twp_align</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cancel-line"><a class="anchor" href="#cancel-line"></a>Cancel line</h3>
+<div class="paragraph">
+<p>When a plane is declared, the Post writes the cancel line in these conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Before each tool change.</p>
+</li>
+<li>
+<p>Before each <a href="../../reference/glossary.html#fixture" class="xref page">Fixture</a> (a G54 to G59.9 selection).</p>
+</li>
+<li>
+<p>Before a change of pose: before the declare line of a different tilted Work Plane, and before an Operation on a Work Plane parallel to the table.</p>
+</li>
+<li>
+<p>At the end of each output section.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>LinuxCNC does not accept a change of coordinate system while a plane is active.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="../../reference/glossary.html#job" class="xref page">Job</a> with the Fixtures <code>G54</code> and <code>G55</code> and one tilted Operation gives two declare lines and two <code>G69</code> lines.
+One <code>G69</code> line is before the <code>G55</code> line.
+One declare line is after the <code>G55</code> line.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sequence-of-the-output"><a class="anchor" href="#sequence-of-the-output"></a>Sequence of the output</h3>
+<div class="paragraph">
+<p>This sequence applies when <strong>Tilted work plane: control positions the rotaries</strong> (<code>twp_control_positions_rotaries</code>) is checked.
+For one tilted Operation with <strong>Pre-Rotary Move</strong> (<code>pre_rotary_move</code>) set, the output has this sequence:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The preamble, with the blend command at the end of its last line.</p>
+</li>
+<li>
+<p>The <strong>Pre-Rotary Move</strong> block.</p>
+</li>
+<li>
+<p>The declare line.</p>
+</li>
+<li>
+<p>The align line.</p>
+</li>
+<li>
+<p>The moves of the Operation, in the coordinates of the Work Plane.</p>
+</li>
+<li>
+<p>The cancel line.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This output has no <code>G0</code> line with a rotary axis word.
+The control positions the rotary axes at the align line.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="kinematics-select-line"><a class="anchor" href="#kinematics-select-line"></a>Kinematics select line</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post adds the <strong>Tilted work plane: kinematics select</strong> property to the common properties.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Label</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>twp_kinematics_select</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tilted work plane: kinematics select</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Post writes the text of <code>twp_kinematics_select</code> as one new line after the preamble when these two conditions are true:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The value has characters other than space characters.</p>
+</li>
+<li>
+<p>One Operation of the Job has a tilted Tool Axis.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Post examines all Operations of the Job, not only the Operations in the export.
+For a <a href="../../reference/glossary.html#dressup" class="xref page">Dressup</a>, the Post examines the Placement of the Operation that the Dressup changes.</p>
+</div>
+<div class="paragraph">
+<p>The kinematics select line comes directly after the preamble line that has the blend command.
+The kinematics select line is before the first declare line.</p>
+</div>
+<div class="paragraph">
+<p>With the value <code>G12.1 P1</code> and a tilted Operation, the line after <code>G17 G54 G40 G49 G80 G90 G64</code> is <code>G12.1 P1</code>.
+A Job with no tilted Operation has no <code>G12.1 P1</code> line.</p>
+</div>
+<div class="paragraph">
+<p>The Post does not examine the text of <code>twp_kinematics_select</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="related"><a class="anchor" href="#related"></a>Related</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../postprocessor-customization.html" class="xref page">Postprocessor Customization</a></p>
+</li>
+<li>
+<p><a href="../post-process.html" class="xref page">Post Process</a></p>
+</li>
+<li>
+<p><a href="../mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a></p>
+</li>
+<li>
+<p><a href="fanuc.html" class="xref page">fanuc Post-Processor</a></p>
+</li>
+<li>
+<p><a href="../../reference/scripting.html" class="xref page">Scripting</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="genealogy.html">Post-Processor Genealogy</a></span>
+  <span class="next"><a href="../../job/setup-sheet.html">CAM SetupSheet</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+  </body>
+</html>

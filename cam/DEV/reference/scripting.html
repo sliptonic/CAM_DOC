@@ -350,6 +350,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -580,7 +583,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">G17, G18, G19</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">arc plane selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">select the arc plane</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">(none)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">not displayed</p></td>
 </tr>
@@ -1230,11 +1233,43 @@ doc.recompute()</code></pre>
 ms = MachineState()
 ms.addCommands(path.Commands)
 ms.getPosition()   # the current XYZ
-ms.getState()      # the modal dictionary (units, plane, G90/G91, feed, return mode)</code></pre>
+ms.getState()      # the dictionary of the Tracked values
+ms.Plane           # the arc plane: 'G17', 'G18' or 'G19'</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Dressups and post-processors use it to expand drilling cycles accurately.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Plane</code> attribute of <code>MachineState</code> holds the arc plane. The values of <code>Plane</code> are <code>"G17"</code>, <code>"G18"</code> and <code>"G19"</code>. The default is <code>"G17"</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>Plane</code> is not in the <code>MachineState.Tracked</code> list. <code>getState()</code> does not return <code>Plane</code>, the <code>previous</code> dictionary does not contain <code>Plane</code>, and <code>ms["Plane"]</code> raises <code>KeyError</code>. Read the arc plane as <code>ms.Plane</code>.</p>
+</div>
+<div class="paragraph">
+<p>These methods set <code>Plane</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>addCommand(command)</code>: sets <code>Plane</code> to the command name when the name is in <code>Constants.GCODE_PLANE</code> (<code>G17</code>, <code>G18</code>, <code>G19</code>). <code>addCommand()</code> returns <code>False</code> for such a command.</p>
+</li>
+<li>
+<p><code>addGcodeText(text)</code>: sets <code>Plane</code> to the last G17, G18 or G19 word in a block of G-code text. <code>addGcodeText()</code> reads no other word and returns no value. The forms <code>G017</code>, <code>G018</code> and <code>G019</code> also match. A text with no such word, an empty text or <code>None</code> does not change <code>Plane</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from Path.Base.MachineState import MachineState
+ms = MachineState()
+ms.Plane                         # 'G17'
+ms.addGcodeText("G90 G18 G54")
+ms.Plane                         # 'G18'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="../output/postprocessor-customization.html" class="xref page">Postprocessor Customization</a> describes how a machine-based Post uses the arc plane to write the center words of an arc. <a href="../output/mbpp-postprocessor.html" class="xref page">Writing a Machine-Based Post-Processor</a> describes when a Post calls <code>addGcodeText()</code>.</p>
 </div>
 </div>
 </div>

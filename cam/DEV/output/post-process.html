@@ -351,6 +351,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="posts/genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="posts/linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -947,11 +950,15 @@ Do not use <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-a
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fanuc</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Writes the <code>%</code> tape marks and an <code>O</code> program number.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes the <code>%</code> tape marks and an <code>O</code> program number. Writes tilted Work Planes with the DWO and the TWP Rotation Strategy. <a href="posts/fanuc.html" class="xref page">Fanuc Post-Processor</a> describes the <code>fanuc</code> Post.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>linuxcnc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes tilted Work Planes with the TWP Rotation Strategy only. <a href="posts/linuxcnc.html" class="xref page">linuxcnc Post-Processor</a> describes the output.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>opensbp</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Does not accept the bare <code>T</code> command that the <strong>Early tool prep</strong> option of the Machine writes. The message of a failed probe names the Job and the Operation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does not accept the bare <code>T</code> command that the <strong>Early tool prep</strong> option of the Machine writes. The message of a failed probe names the Job and the Operation. The <code>opensbp</code> Post accepts a G17 command and writes no line for it. A G18 or G19 command stops the export with the message <code>Unsupported command: G18</code> or <code>Unsupported command: G19</code>. <a href="postprocessor-customization.html" class="xref page">Postprocessor Customization</a> describes the arc plane rule.</p></td>
 </tr>
 </tbody>
 </table>
@@ -987,6 +994,9 @@ Do not use <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-a
 </li>
 <li>
 <p>An Operation on a tilted Work Plane needs a Machine with rotary axes, a <strong>Rotation Strategy</strong>, and a Post that can emit that strategy. If one is absent, the export stops and the message names the Operation and the Machine. <a href="machine.html" class="xref page">Machine</a> lists the conditions.</p>
+</li>
+<li>
+<p>The <code>linuxcnc</code> Post emits only the TWP Rotation Strategy. When the <strong>Rotation Strategy</strong> of the Machine is DWO, the export of an Operation on a tilted Work Plane stops with an error. <a href="posts/linuxcnc.html" class="xref page">linuxcnc Post-Processor</a> describes the tilted Work Plane output of the <code>linuxcnc</code> Post.</p>
 </li>
 <li>
 <p>A Work Plane that the Machine cannot index to stops the export. The message names the Work Plane and the rotary limits of the Machine.</p>
