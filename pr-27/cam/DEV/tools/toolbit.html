@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>When the <em>ToolBit editor</em> loads a Tool Bit, the <em>ToolBit editor</em> sets the unit schema of FreeCAD to the <strong>Units</strong> of the Tool Bit. The <em>ToolBit editor</em> sets the initial unit schema again when it closes.</p>
 </div>
 <div class="paragraph">
-<p>The quantity fields of the <em>ToolBit editor</em> show tool precision: 3 decimals when <strong>Units</strong> is <code>Metric</code> and 4 decimals when <strong>Units</strong> is <code>Imperial</code>. The Units Decimals preference does not change the number of decimals in these fields. When you change <strong>Units</strong> in the <em>ToolBit editor</em>, the <em>ToolBit editor</em> builds the property fields again in the new units.</p>
+<p>The quantity fields of the <em>ToolBit editor</em> show tool precision: 3 decimals when <strong>Units</strong> is <code>Metric</code> and 4 decimals when <strong>Units</strong> is <code>Imperial</code>. The Units Decimals preference does not change the number of decimals in these fields. When you change <strong>Units</strong> in the <em>Toolbit Parameter Editor</em> dialog, the dialog builds the property fields again in the new units.</p>
 </div>
 </div>
 </div>
@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <div class="ulist">
 <ul>
 <li>
-<p>FreeCAD saves a <code>Metric</code> value that it shows in µm with 4 decimals.</p>
+<p>FreeCAD saves a <code>Metric</code> length from 0.001 mm to less than 0.1 mm with 4 decimals.</p>
 </li>
 <li>
 <p>FreeCAD saves an angle with the degree symbol directly after the number, without a space.</p>
@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>The <b class="menuref">Transform</b> entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The <b class="menuref">Transform</b> entry does not open the <em>ToolBit editor</em>.</p>
 </div>
 <div class="paragraph">
-<p>The tree-view context menu of a Tool Bit in a document has the entries <b class="menuref">Save Tool</b> and <b class="menuref">Save Tool As…</b>, which write the Tool Bit to a file. The entry <b class="menuref">Save Tool</b> is available only if the Tool Bit object came from a file. The two entries open a save dialog with the FreeCAD Tool (<code>.fctb</code>) and YAML formats.</p>
+<p>The tree-view context menu of a Tool Bit in a document has the entries <b class="menuref">Save Tool</b> and <b class="menuref">Save Tool As…</b>. The two entries are not available for a Tool Bit object in a document.</p>
 </div>
 <div class="paragraph">
 <p>The commands <code>CAM_ToolBitCreate</code> (<em>New Toolbit</em>) and <code>CAM_ToolBitLoad</code> (<em>Load Tool</em>) exist but are not placed in any menu.</p>
@@ -786,6 +786,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <div class="paragraph">
 <p>An update always replaces the full Tool Bit. FreeCAD attaches a new full copy of the library Tool Bit to the document, with its presets, its Shape group values and its <strong>Units</strong>. FreeCAD then sets the <strong>Tool</strong> property of the Tool Controller to the new copy and removes the old Tool Bit object from the document. An update of only the presets or only the geometry is not possible. For the Tool Controller after an update, see <a href="tool-controller.html" class="xref page">Tool Controller</a>.</p>
+</div>
+<div class="paragraph">
+<p>When two Tool Controllers use one Tool Bit object, the update of one row removes that object. FreeCAD does not set the <strong>Tool</strong> property of the other Tool Controller to the new copy.</p>
 </div>
 <div class="admonitionblock caution">
 <table>

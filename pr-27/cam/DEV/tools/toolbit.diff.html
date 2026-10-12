@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
 </aside>
-<article class="doc"><div class="diff-banner"><span><strong>Rendered diff</strong>: pull request #27 against <code>main</code>. <span class="diff-key"><ins>added</ins> <del>removed</del></span> <button id="diff-prev" title="key: p">◀ Previous</button> <button id="diff-next" title="key: n">Next change ▶</button> <span id="diff-pos">44 changed blocks</span></span><a href="toolbit.html">Page without marks</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">CAM ToolBit</h1><h2 id="description"><a class="anchor" href="#description"></a>Description</h2><div class="paragraph">
+<article class="doc"><div class="diff-banner"><span><strong>Rendered diff</strong>: pull request #27 against <code>main</code>. <span class="diff-key"><ins>added</ins> <del>removed</del></span> <button id="diff-prev" title="key: p">◀ Previous</button> <button id="diff-next" title="key: n">Next change ▶</button> <span id="diff-pos">45 changed blocks</span></span><a href="toolbit.html">Page without marks</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">CAM ToolBit</h1><h2 id="description"><a class="anchor" href="#description"></a>Description</h2><div class="paragraph">
 <p>Toolbits are the foundation of the <a href="index.html" class="xref page">CAM Tools</a> system. They represent a specific tool that can be used in a CAM Job to generate a Toolpath. Each Tool Bit is stored as a JSON file. JSON is structured data that can be easily parsed by macros or python scripts but remains human readable. Describing Tool Bits with JSON allows for the possibility of automatically creating large collections of accurate Tool Bits with a script.</p>
 </div><div class="paragraph">
 <p>Storing a tool as a JSON file sounds great but eliminates the option of an accurate thumbnail or solid body representation. On the other hand, if each Tool Bit were created as a FreeCAD object, obtaining the solid body would be simple but would require enormous storage for large tool collections. Also automatically creating Tool Bits as FreeCAD objects would be difficult or impossible.</p>
@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div><div class="paragraph diff-changed diff-block-add">
 <p>When the <em>ToolBit editor</em> loads a Tool Bit, the <em>ToolBit editor</em> sets the unit schema of FreeCAD to the <strong>Units</strong> of the Tool Bit. The <em>ToolBit editor</em> sets the initial unit schema again when it closes.</p>
 </div><div class="paragraph diff-changed diff-block-add">
-<p>The quantity fields of the <em>ToolBit editor</em> show tool precision: 3 decimals when <strong>Units</strong> is <code>Metric</code> and 4 decimals when <strong>Units</strong> is <code>Imperial</code>. The Units Decimals preference does not change the number of decimals in these fields. When you change <strong>Units</strong> in the <em>ToolBit editor</em>, the <em>ToolBit editor</em> builds the property fields again in the new units.</p>
+<p>The quantity fields of the <em>ToolBit editor</em> show tool precision: 3 decimals when <strong>Units</strong> is <code>Metric</code> and 4 decimals when <strong>Units</strong> is <code>Imperial</code>. The Units Decimals preference does not change the number of decimals in these fields. When you change <strong>Units</strong> in the <em>Toolbit Parameter Editor</em> dialog, the dialog builds the property fields again in the new units.</p>
 </div><h2 id="properties"><a class="anchor" href="#properties"></a>Properties</h2><div class="ulist">
 <div class="title">Base</div>
 <ul>
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div><div class="ulist diff-changed diff-block-add">
 <ul>
 <li>
-<p>FreeCAD saves a <code>Metric</code> value that it shows in µm with 4 decimals.</p>
+<p>FreeCAD saves a <code>Metric</code> length from 0.001 mm to less than 0.1 mm with 4 decimals.</p>
 </li>
 <li>
 <p>FreeCAD saves an angle with the degree symbol directly after the number, without a space.</p>
@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div><div class="paragraph diff-changed diff-block-add">
 <p>The <b class="menuref">Transform</b> entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The <b class="menuref">Transform</b> entry does not open the <em>ToolBit editor</em>.</p>
 </div><div class="paragraph diff-changed diff-block-add">
-<p>The tree-view context menu of a Tool Bit in a document has the entries <b class="menuref">Save Tool</b> and <b class="menuref">Save Tool As…</b>, which write the Tool Bit to a file. The entry <b class="menuref">Save Tool</b> is available only if the Tool Bit object came from a file. The two entries open a save dialog with the FreeCAD Tool (<code>.fctb</code>) and YAML formats.</p>
+<p>The tree-view context menu of a Tool Bit in a document has the entries <b class="menuref">Save Tool</b> and <b class="menuref">Save Tool As…</b>. The two entries are not available for a Tool Bit object in a document.</p>
 </div><div class="paragraph diff-changed diff-block-add">
 <p>The commands <code>CAM_ToolBitCreate</code> (<em>New Toolbit</em>) and <code>CAM_ToolBitLoad</code> (<em>Load Tool</em>) exist but are not placed in any menu.</p>
 </div><h2 id="update-from-library"><a class="anchor" href="#update-from-library"></a>Update from library</h2><div class="paragraph diff-changed diff-block-del">
@@ -675,6 +675,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p><b class="button">Update</b> replaces only the Tool Bits of the rows that are set. <b class="button">Update</b> is disabled when no row is set. <b class="button">Cancel</b> changes nothing and is the default button.</p>
 </div><div class="paragraph diff-changed diff-block-add">
 <p>An update always replaces the full Tool Bit. FreeCAD attaches a new full copy of the library Tool Bit to the document, with its presets, its Shape group values and its <strong>Units</strong>. FreeCAD then sets the <strong>Tool</strong> property of the Tool Controller to the new copy and removes the old Tool Bit object from the document. An update of only the presets or only the geometry is not possible. For the Tool Controller after an update, see <a href="tool-controller.html" class="xref page">Tool Controller</a>.</p>
+</div><div class="paragraph diff-changed diff-block-add">
+<p>When two Tool Controllers use one Tool Bit object, the update of one row removes that object. FreeCAD does not set the <strong>Tool</strong> property of the other Tool Controller to the new copy.</p>
 </div><div class="admonitionblock caution diff-changed diff-block-add">
 <table>
 <tr>
