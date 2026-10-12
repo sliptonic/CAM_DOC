@@ -548,8 +548,7 @@ The entry for the TWP Rotation Strategy is <code>Tilted work plane (TWP)</code>.
 The entry for the DWO Rotation Strategy is <code>Dynamic work offset (DWO)</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="../../reference/glossary.html#tool-axis" class="xref page">Tool Axis</a> of an <a href="../../reference/glossary.html#operation" class="xref page">Operation</a> is tilted when the local Z axis of its Placement is different from the world Z axis.
-The tolerance of this comparison is <code>1e-6</code>.</p>
+<p>The <a href="../../reference/glossary.html#tool-axis" class="xref page">Tool Axis</a> of an <a href="../../reference/glossary.html#operation" class="xref page">Operation</a> is tilted when the local Z axis of its Placement is different from the world Z axis.</p>
 </div>
 <div class="paragraph">
 <p>The export stops with an error when these two conditions are true:</p>
@@ -656,7 +655,7 @@ The common <strong>Tilted work plane</strong> properties control the align line;
 </div>
 <div class="paragraph">
 <p>The value <code>G53.1 P1 Q1</code> gives the line <code>G53.1 P1 Q1</code>, and the output has no line with only <code>G53.1</code>.
-The Post writes <code>G53.6</code> only when <code>twp_align</code> contains <code>G53.6</code>.</p>
+<code>G53.6</code> is not a default of the Post. To get a <code>G53.6</code> align line, write <code>G53.6</code> in <code>twp_align</code>.</p>
 </div>
 <div class="paragraph">
 <p>The Post does not examine the text of <code>twp_align</code>.</p>
@@ -676,7 +675,7 @@ The Post writes <code>G53.6</code> only when <code>twp_align</code> contains <co
 <p>Before each <a href="../../reference/glossary.html#fixture" class="xref page">Fixture</a> (a G54 to G59.9 selection).</p>
 </li>
 <li>
-<p>Before the declare line of a different pose.</p>
+<p>Before a change of pose: before the declare line of a different tilted Work Plane, and before an Operation on a Work Plane parallel to the table.</p>
 </li>
 <li>
 <p>At the end of each output section.</p>
@@ -786,9 +785,7 @@ The kinematics select line is before the first declare line.</p>
 A Job with no tilted Operation has no <code>G12.1 P1</code> line.</p>
 </div>
 <div class="paragraph">
-<p>The help text of <strong>Tilted work plane: kinematics select</strong> says that <code>G53.1</code> needs a kinematics type whose frames describe the machine.
-The help text says that <code>G12.1 P1</code> goes in this property for a switchable module that starts in identity kinematics.
-The Post does not examine the text of <code>twp_kinematics_select</code>.</p>
+<p>The Post does not examine the text of <code>twp_kinematics_select</code>.</p>
 </div>
 </div>
 </div>
