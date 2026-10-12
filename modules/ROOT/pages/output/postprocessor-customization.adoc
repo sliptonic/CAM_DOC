@@ -357,7 +357,7 @@ The export does not stop for these items when they are not in *Supported G-code 
 
 The Post compares a command name with *Supported G-code Commands* and *Ignore G-code Commands* as a full command name. Each line of the two properties is one name. The Post removes the space characters at the two ends of each line. A name does not match a part of a different name: `G1` does not match the entry `G17`, and `G5` does not match the entry `G54`.
 
-The common default of *Supported G-code Commands* contains G17, G18 and G19, which select the arc plane. The Post writes each of these commands as one line. xref:reference/scripting.adoc[Scripting] lists the supported commands. The `opensbp` Post accepts G17 and does not accept G18 and G19, as xref:output/post-process.adoc[Post Process] describes.
+The common default of *Supported G-code Commands* contains G17, G18 and G19, which select the arc plane. A Post that uses the common conversion writes each of these commands as one line. xref:reference/scripting.adoc[Scripting] lists the supported commands. The `opensbp` Post accepts G17 and does not accept G18 and G19, as xref:output/post-process.adoc[Post Process] describes; the `heidenhain` Post accepts only G17 and writes no block for it.
 
 === Modal output and line numbers
 
@@ -383,7 +383,7 @@ An arc gives its center in its arc plane. The center word (I, J, K) along the pl
 
 With the `linuxcnc` Post and the arc plane `G17`, the command `G2 X10 Y0 Z-1 I5 J0 K0` gives a line with `I5.000` and `J0.000` and no K word. With the arc plane `G18`, the command `G2 X0 Y0 Z-10 I0 J0 K-5` gives a line with `I0.000` and `K-5.000` and no J word.
 
-A Post writes a center word only when the word is in `parameter_order`. The common default of `parameter_order` is `XYZABCUVWFSIJKTQRPDHL`, which has K. The `linuxcnc` Post and the xref:output/posts/fanuc.adoc[`fanuc` Post] use the common default. The `grbl`, `mach3_mach4`, `centroid`, `smoothie`, `generic_sheet_cutting` and `masso_g3` Posts set a parameter order without K. A G18 or G19 arc of these six Posts has no K word until K is added to the parameter order.
+A Post writes a center word only when the word is in `parameter_order`. The common default of `parameter_order` is `XYZABCUVWFSIJKTQRPDHL`, which has K. The `linuxcnc` Post and the xref:output/posts/fanuc.adoc[`fanuc` Post] use the common default.
 
 When *Line Numbers* of the Machine is checked, the Post gives each command an `N` parameter. These rules apply:
 

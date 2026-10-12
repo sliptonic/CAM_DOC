@@ -56,7 +56,6 @@ The entry for the TWP Rotation Strategy is `Tilted work plane (TWP)`.
 The entry for the DWO Rotation Strategy is `Dynamic work offset (DWO)`.
 
 The xref:reference/glossary.adoc#tool-axis[Tool Axis] of an xref:reference/glossary.adoc#operation[Operation] is tilted when the local Z axis of its Placement is different from the world Z axis.
-The tolerance of this comparison is `1e-6`.
 
 The export stops with an error when these two conditions are true:
 
@@ -118,7 +117,7 @@ The *Tilted work plane: align* property (`twp_align`) gives the text of the alig
 * A value that is not empty replaces the complete align line. The Post writes the text as it is given.
 
 The value `G53.1 P1 Q1` gives the line `G53.1 P1 Q1`, and the output has no line with only `G53.1`.
-The Post writes `G53.6` only when `twp_align` contains `G53.6`.
+`G53.6` is not a default of the Post. To get a `G53.6` align line, write `G53.6` in `twp_align`.
 
 The Post does not examine the text of `twp_align`.
 
@@ -128,7 +127,7 @@ When a plane is declared, the Post writes the cancel line in these conditions:
 
 * Before each tool change.
 * Before each xref:reference/glossary.adoc#fixture[Fixture] (a G54 to G59.9 selection).
-* Before the declare line of a different pose.
+* Before a change of pose: before the declare line of a different tilted Work Plane, and before an Operation on a Work Plane parallel to the table.
 * At the end of each output section.
 
 LinuxCNC does not accept a change of coordinate system while a plane is active.
@@ -180,8 +179,6 @@ The kinematics select line is before the first declare line.
 With the value `G12.1 P1` and a tilted Operation, the line after `G17 G54 G40 G49 G80 G90 G64` is `G12.1 P1`.
 A Job with no tilted Operation has no `G12.1 P1` line.
 
-The help text of *Tilted work plane: kinematics select* says that `G53.1` needs a kinematics type whose frames describe the machine.
-The help text says that `G12.1 P1` goes in this property for a switchable module that starts in identity kinematics.
 The Post does not examine the text of `twp_kinematics_select`.
 
 == Related
