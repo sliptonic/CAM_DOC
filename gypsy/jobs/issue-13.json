@@ -89,8 +89,8 @@
    },
    {
     "id": "F15",
-    "fact": "An update always replaces the full Tool Bit: FreeCAD attaches a new full copy of the library Tool Bit to the document, sets the `Tool` property of the Tool Controller to the new copy, and removes the old Tool Bit object from the document. A partial update (only presets or only geometry) is not possible.",
-    "source": "src/Mod/CAM/Path/Tool/UpdateDocumentTools.py replace_tool_from_library (attach_to_doc, tc.Tool = new_tool_obj, doc.removeObject) and module docstring",
+    "fact": "replace_tool_from_library relinks only the one Tool Controller of the row. doc.removeObject then clears the Tool link of each other Tool Controller that uses the same Tool Bit object, and a later call for that Tool Controller returns False.",
+    "source": "src/Mod/CAM/Path/Tool/UpdateDocumentTools.py:236-247: replace_tool_from_library sets tc.Tool for one Tool Controller only and then calls doc.removeObject(old_tool_obj.Name). src/App/Document.cpp:3592: removeObject calls breakDependency(pcObject, true), which clears the links of all other objects to the removed object. For the second row, tc.Tool is then None and line 237-238 returns False. src/Mod/CAM/Path/Tool/Controller.py:505: copyTC passes tool=tc.Tool, thus two Tool Controllers can have one Tool Bit object. (corrected by the review)",
     "owner": "tools/toolbit.adoc"
    },
    {
@@ -131,8 +131,8 @@
    },
    {
     "id": "F22",
-    "fact": "A metric value that FreeCAD shows in µm (a small value) is saved with 4 decimals, not 3. An angle is saved with the degree symbol directly after the number, without a space.",
-    "source": "src/Mod/CAM/Path/Tool/toolbit/util.py quantity_to_str, _in_microns",
+    "fact": "The extra decimal applies when the Standard unit schema (schema 0) gives the value in µm, thus for a length from 0.001 mm to less than 0.1 mm. The schema of the Tool Bit (schema 6 for Metric) shows such a value in mm.",
+    "source": "src/Mod/CAM/Path/Tool/toolbit/util.py:29 (AUTOSCALING_SCHEMA = 0), :60-62 (_in_microns translates the value with schema 0) and :76-78 (one more decimal only when the result is µm). src/Base/UnitsSchemasData.h:96-99: schema 0 gives µm for a length from 0.001 mm to less than 0.1 mm, and nm below 0.001 mm. Line 53: schema 6 (MmMin) gives mm. (corrected by the review)",
     "owner": "tools/toolbit.adoc"
    },
    {
@@ -143,8 +143,8 @@
    },
    {
     "id": "F24",
-    "fact": "When the ToolBit editor loads a Tool Bit whose `Units` is 'Metric' or 'Imperial', the editor sets the unit schema of FreeCAD to that value (Metric = schema 6, Imperial = schema 3). The editor sets the initial schema again when it closes. A change of `Units` in the editor builds the property fields again in the new units.",
-    "source": "src/Mod/CAM/Path/Tool/toolbit/ui/editor.py load_toolbit, _original_schema, _on_toolbit_changed, _refresh_property_editor, _restore_original_schema; toolbit/util.py setToolBitSchema; toolbit/ui/panel.py accept/reject",
+    "fact": "Only the ToolBitEditor dialog builds the property fields again when Units changes. The task panel (ToolBitEditorPanel) sets the unit schema when it loads the Tool Bit and sets the initial schema again on OK or Cancel, but it does not build the fields again.",
+    "source": "src/Mod/CAM/Path/Tool/toolbit/ui/editor.py:401 and :443-481: only the class ToolBitEditor connects toolBitChanged to _on_toolbit_changed, which calls _refresh_property_editor. The class ToolBitEditorPanel (editor.py:319-360) has no such connection, and Path/Tool/toolbit/ui/panel.py:41 makes the task panel from ToolBitEditorPanel. A search of docobject/ui and panel.py finds no other code that reacts to a change of Units. (corrected by the review)",
     "owner": "tools/toolbit.adoc"
    },
    {
@@ -167,8 +167,8 @@
    },
    {
     "id": "F28",
-    "fact": "The view provider of a Tool Bit adds no entry, but the CAM workbench context menu (InitGui.py:422-423) adds 'Save Tool' and 'Save Tool As…' when one Tool Bit is selected. Transform starts the standard Transform manipulator and does not open the ToolBit editor.",
-    "source": "src/Mod/CAM/InitGui.py:389-393 and 422-423: CAMWorkbench.ContextMenu adds the commands CAM_ToolBitSave and CAM_ToolBitSaveAs when the selection is one object whose Proxy is a Path.Tool.ToolBit. Path/Tool/toolbit/ui/cmd.py:67-110, 152-153 registers them with the menu texts 'Save Tool' and 'Save Tool As…'; 'Save Tool' is active only when the object has a File. Only ViewProvider.setupContextMenu (toolbit/ui/view.py:112) adds nothing. (corrected by the review)",
+    "fact": "CommandToolBitSave.IsActive reads the property `File`, but no code adds `File` to a Tool Bit object and _promote_toolbit removes it as a legacy property. 'Save Tool is active only when the object has a File' is not a condition that a current Tool Bit can meet.",
+    "source": "src/Mod/CAM/Path/Tool/toolbit/ui/cmd.py:95-100: CommandToolBitSave.IsActive reads tool.File before it reads self.saveAs. src/Mod/CAM/Path/Tool/toolbit/models/base.py:466-470: _promote_toolbit removes the legacy property `File` on restore (called from onDocumentRestored, line 527). A search of Path/Tool finds no code that adds a `File` property to a Tool Bit object. Thus tool.File raises AttributeError for the two commands. (corrected by the review)",
     "owner": "tools/toolbit.adoc"
    },
    {
@@ -1325,6 +1325,178 @@
     "Whether the figures show the dialogs as the captions tell; the captures were not examined."
    ],
    "notes": "All seven findings of the previous review are corrected in the pages as they are now. All image targets and xref targets that the work added exist; no new page was added.\n\nPossible FreeCAD defect, not a page fault: copyTC (Path/Tool/Controller.py:505) makes two Tool Controllers that use one Tool Bit object. replace_tool_from_library removes the old Tool Bit object after it relinks the first Tool Controller. Its docstring says that a Tool Bit is used by only one Tool Controller, which is false. The second Tool Controller can lose its Tool Bit. A test in FreeCAD is necessary; if the test confirms it, the CAUTION of tools/toolbit.adoc needs one more sentence.\n\nThe set_presets function is called only from the Feeds && Speeds tab of the library ToolBit editor. A reader can thus change the presets of an embedded Tool Bit only in the property view. The pages agree with this.\n\nThe check at document load reads the preference each time a document becomes active. A document that becomes active while the preference is not set is not marked as examined. FreeCAD thus examines it at a later activation if the reader sets the preference. The page text is correct for the usual condition.\n\nThree files in the working tree are not committed (preferences.adoc, add-toolbit.adoc, toolbit.adoc, with the manifest and one capture). The review used the working tree."
+  },
+  {
+   "round": 10,
+   "findings": [
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 76: \"FreeCAD saves a `Metric` value that it shows in µm with 4 decimals.\" The condition is not what a reader sees. With `Units` = `Metric`, the ToolBit editor uses the unit schema 6, which shows each length in mm and never in µm. The test in the code uses the Standard unit schema (schema 0), not the schema of the Tool Bit.",
+     "evidence": "src/Mod/CAM/Path/Tool/toolbit/util.py:29 (AUTOSCALING_SCHEMA = 0), :60-62 (_in_microns translates the value with schema 0) and :76-78 (one more decimal only when the result is µm). src/Base/UnitsSchemasData.h:96-99: schema 0 gives µm for a length from 0.001 mm to less than 0.1 mm, and nm below 0.001 mm. Line 53: schema 6 (MmMin) gives mm.",
+     "fix": "Replace the list item with: \"FreeCAD saves a `Metric` length from 0.001 mm to less than 0.1 mm with 4 decimals.\"",
+     "brief_fact": "F22",
+     "brief_correction": "The extra decimal applies when the Standard unit schema (schema 0) gives the value in µm, thus for a length from 0.001 mm to less than 0.1 mm. The schema of the Tool Bit (schema 6 for Metric) shows such a value in mm."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "should",
+     "text": "Line 48: \"When you change *Units* in the _ToolBit editor_, the _ToolBit editor_ builds the property fields again in the new units.\" The condition is too wide. The page also names the task panel of a Tool Bit in a document \"the _ToolBit editor_ as a task panel\" (line 137), and the task panel shows the *Units* field. Only the dialog (window title _Toolbit Parameter Editor_) builds the fields again.",
+     "evidence": "src/Mod/CAM/Path/Tool/toolbit/ui/editor.py:401 and :443-481: only the class ToolBitEditor connects toolBitChanged to _on_toolbit_changed, which calls _refresh_property_editor. The class ToolBitEditorPanel (editor.py:319-360) has no such connection, and Path/Tool/toolbit/ui/panel.py:41 makes the task panel from ToolBitEditorPanel. A search of docobject/ui and panel.py finds no other code that reacts to a change of Units.",
+     "fix": "Write: \"When you change *Units* in the _Toolbit Parameter Editor_ dialog, the dialog builds the property fields again in the new units.\"",
+     "brief_fact": "F24",
+     "brief_correction": "Only the ToolBitEditor dialog builds the property fields again when Units changes. The task panel (ToolBitEditorPanel) sets the unit schema when it loads the Tool Bit and sets the initial schema again on OK or Cancel, but it does not build the fields again."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. A reader can update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and can select which tools to update.",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library",
+     "note": ""
+    },
+    {
+     "goal": "2. A reader understands that an update replaces the full Tool Bit by its ToolBitID, with presets and shape geometry, and that the Tool Controller then points to the new copy. Thus the reader knows that local edits of an embedded tool do not stay.",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library (with the CAUTION); tools/tool-controller.adoc, Tool Bit replacement; tools/index.adoc, Tool update from library",
+     "note": ""
+    },
+    {
+     "goal": "3. A reader can add a tool from any library to a Job, can give it a tool number, and knows that two different tools in a Job cannot have the same number.",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, Description and Usage; tools/tool-controller.adoc, Task panel; tools/toolbit-library.adoc, Tool numbers",
+     "note": ""
+    },
+    {
+     "goal": "4. A reader understands which units and which precision a Tool Bit uses for its values, and when the unit schema and the Units Decimals preference apply and when they do not, with the Camotics export and import included.",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Toolbit Parameter Editor, Properties and JSON Structure; tools/toolbit-library.adoc, Usage and Export; tools/library-manager.adoc, Import",
+     "note": "Two conditions are not exact (see the two findings), but the goal is achieved."
+    },
+    {
+     "goal": "5. A reader can find the exact facts of the new controls: the tool update preference, the Tool Bit Shape Drawing preferences, the calculated Chamfer `Diameter`, and the Notes field, the name rule and the Copy button of the Feeds & Speeds presets.",
+     "met": "yes",
+     "where": "reference/preferences.adoc, Tool Bit Shape Drawing, Machines and the parameter list; tools/tool-shape.adoc, parameter list; tools/feeds-speeds.adoc, Presets",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": 11,
+   "findings": [
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Lines 165, 179 and 181: \"The table of the dialog has one row for each Tool Controller whose embedded Tool Bit is stale\", \"btn:[Update] replaces only the Tool Bits of the rows that are set\" and \"FreeCAD then sets the *Tool* property of the Tool Controller to the new copy and removes the old Tool Bit object from the document.\" The condition is too wide. Line 135 of the same page says that a copy of a Tool Controller uses the Tool Bit object of the initial Tool Controller. For such a pair, the update of one row removes the Tool Bit object that the other Tool Controller uses. The other Tool Controller does not get the new copy, also when its row is set.",
+     "evidence": "src/Mod/CAM/Path/Tool/UpdateDocumentTools.py:236-247: replace_tool_from_library sets tc.Tool for one Tool Controller only and then calls doc.removeObject(old_tool_obj.Name). src/App/Document.cpp:3592: removeObject calls breakDependency(pcObject, true), which clears the links of all other objects to the removed object. For the second row, tc.Tool is then None and line 237-238 returns False. src/Mod/CAM/Path/Tool/Controller.py:505: copyTC passes tool=tc.Tool, thus two Tool Controllers can have one Tool Bit object.",
+     "fix": "Add after line 181: \"When two Tool Controllers use one Tool Bit object, the update of one row removes that object. FreeCAD does not set the *Tool* property of the other Tool Controller to the new copy.\" Confirm the result with a test in FreeCAD before the merge.",
+     "brief_fact": "F15",
+     "brief_correction": "replace_tool_from_library relinks only the one Tool Controller of the row. doc.removeObject then clears the Tool link of each other Tool Controller that uses the same Tool Bit object, and a later call for that Tool Controller returns False."
+    },
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 145: \"The entry menu:Save Tool[] is available only if the Tool Bit object came from a file.\" The source does not support this condition. A current Tool Bit object has no `File` property, thus the test of the command cannot give the result that the page tells.",
+     "evidence": "src/Mod/CAM/Path/Tool/toolbit/ui/cmd.py:95-100: CommandToolBitSave.IsActive reads tool.File before it reads self.saveAs. src/Mod/CAM/Path/Tool/toolbit/models/base.py:466-470: _promote_toolbit removes the legacy property `File` on restore (called from onDocumentRestored, line 527). A search of Path/Tool finds no code that adds a `File` property to a Tool Bit object. Thus tool.File raises AttributeError for the two commands.",
+     "fix": "Remove the sentence \"The entry menu:Save Tool[] is available only if the Tool Bit object came from a file.\" Do not replace it until a test in FreeCAD shows which of the two entries is active.",
+     "brief_fact": "F28",
+     "brief_correction": "CommandToolBitSave.IsActive reads the property `File`, but no code adds `File` to a Tool Bit object and _promote_toolbit removes it as a legacy property. 'Save Tool is active only when the object has a File' is not a condition that a current Tool Bit can meet."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and select which tools to update.",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, section 'Update from library'; reference/preferences.adoc, section 'Assets'",
+     "note": ""
+    },
+    {
+     "goal": "2. An update replaces the full Tool Bit by its ToolBitID, with presets and shape geometry, and the Tool Controller then points to the new copy; local edits do not stay.",
+     "met": "partly",
+     "where": "tools/toolbit.adoc, section 'Update from library' (lines 151-187); tools/tool-controller.adoc, section 'Tool Bit replacement'; tools/feeds-speeds.adoc, section 'Presets'",
+     "note": "The full replace, the CAUTION and the relink are correct for a Tool Bit object that one Tool Controller uses. The page does not tell what occurs for a Tool Bit object that two Tool Controllers use; see the first finding."
+    },
+    {
+     "goal": "3. Add a tool from any library to a Job, give it a tool number, and know that two different tools in a Job cannot have the same number.",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, sections 'Description' and 'Usage'; tools/tool-controller.adoc, section 'Task panel'; tools/toolbit-library.adoc, section 'Tool numbers'",
+     "note": ""
+    },
+    {
+     "goal": "4. Units and precision of a Tool Bit, when the unit schema and the Units Decimals preference apply, with the Camotics export and import.",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, sections 'Toolbit Parameter Editor', 'Properties' and 'JSON Structure'; tools/toolbit-library.adoc, sections 'Usage' and 'Import and export'; tools/library-manager.adoc, section 'Import'",
+     "note": ""
+    },
+    {
+     "goal": "5. Exact facts of the new controls: tool update preference, Tool Bit Shape Drawing preferences, calculated Chamfer Diameter, Notes field, name rule and Copy button of the presets.",
+     "met": "yes",
+     "where": "reference/preferences.adoc, sections 'Tool Bit Shape Drawing' and 'Assets'; tools/tool-shape.adoc, shape parameter list; tools/feeds-speeds.adoc, section 'Presets'",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "round": "final",
+   "findings": [
+    {
+     "page": "tools/toolbit.adoc",
+     "kind": "wrong",
+     "severity": "must",
+     "text": "Line 145: \"The tree-view context menu of a Tool Bit in a document has the entries menu:Save Tool[] and menu:Save Tool As…[], which write the Tool Bit to a file. The two entries open a save dialog with the FreeCAD Tool (`.fctb`) and YAML formats.\" The source shows that the two entries cannot be active for a current Tool Bit object, thus they open no save dialog and write no file. The revision removed the false condition of the earlier review but put a second false statement in its place.",
+     "evidence": "src/Mod/CAM/Path/Tool/toolbit/ui/cmd.py:94-100: CommandToolBitSave.IsActive reads `tool.File` before it reads `self.saveAs`, for the two commands. No code in src/Mod/CAM adds a `File` property to a Tool Bit object, and toolbit/models/base.py:466-470 removes the legacy `File` property on restore, thus `tool.File` raises AttributeError. src/Gui/Command.cpp:1552-1574: PythonCommand::isActive catches the Python exception and returns false, thus the two entries are disabled. InitGui.py:422-423 only adds the two commands to the context menu.",
+     "fix": "Remove the clause \"which write the Tool Bit to a file\" and the sentence \"The two entries open a save dialog with the FreeCAD Tool (`.fctb`) and YAML formats.\" Write: \"The tree-view context menu of a Tool Bit in a document has the entries menu:Save Tool[] and menu:Save Tool As…[]. The two entries are not available for a Tool Bit object in a document.\" As an alternative, remove the paragraph.",
+     "brief_fact": "",
+     "brief_correction": "F28 is correct. Its consequence is that IsActive of CAM_ToolBitSave and CAM_ToolBitSaveAs returns false through the exception handler of PythonCommand::isActive, thus the two entries are disabled and the save dialog of Activated does not open."
+    }
+   ],
+   "goals": [
+    {
+     "goal": "1. Update the embedded tools of a Job from the library, by the prompt at document load or by the Job context menu, and select which tools to update",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library",
+     "note": ""
+    },
+    {
+     "goal": "2. An update replaces the full Tool Bit by its ToolBitID, and the Tool Controller then points to the new copy; local edits do not stay",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Update from library; tools/tool-controller.adoc, Tool Bit replacement",
+     "note": ""
+    },
+    {
+     "goal": "3. Add a tool from any library to a Job, give it a tool number, and know that two different tools in a Job cannot have the same number",
+     "met": "yes",
+     "where": "tools/add-toolbit.adoc, Description and Usage; tools/tool-controller.adoc, Task panel; tools/toolbit-library.adoc, Tool numbers",
+     "note": ""
+    },
+    {
+     "goal": "4. Units and precision of a Tool Bit, when the unit schema and the Units Decimals preference apply, with the Camotics export and import",
+     "met": "yes",
+     "where": "tools/toolbit.adoc, Toolbit Parameter Editor, Properties and JSON Structure; tools/toolbit-library.adoc, Usage and export; tools/library-manager.adoc, Import",
+     "note": ""
+    },
+    {
+     "goal": "5. Exact facts of the new controls: tool update preference, Tool Bit Shape Drawing preferences, calculated Chamfer Diameter, Notes field, name rule and Copy button",
+     "met": "yes",
+     "where": "reference/preferences.adoc, Tool Bit Shape Drawing and Assets; tools/tool-shape.adoc, shape parameter list; tools/feeds-speeds.adoc, Presets",
+     "note": ""
+    }
+   ],
+   "merge": "no",
+   "confirmed": 78,
+   "untested": [
+    "The entries Save Tool and Save Tool As… show as disabled in the tree-view context menu of an embedded Tool Bit.",
+    "The Transform entry is in the tree-view context menu of a Tool Bit and starts the standard Transform manipulator.",
+    "After an update of one row, a second Tool Controller that used the same Tool Bit object has an empty Tool property, and the recompute of that Tool Controller fails.",
+    "The values in the expanded Changes cell show in the Units of the library Tool Bit with tool precision, for example '5.000 mm'.",
+    "A lower value of 'Tool artwork brightness (dark theme)' makes the shape in the shape drawing darker.",
+    "The check at document load also occurs for a document that becomes active after you set the preference in the same session."
+   ],
+   "notes": "The two findings of the earlier review: the first is corrected (tools/toolbit.adoc line 183 now gives the limit for two Tool Controllers with one Tool Bit object, and the source confirms it: UpdateDocumentTools.py:236-247 and App/Document.cpp:3592). The second is not corrected; the new text of line 145 is false in a different way, see the finding.\n\nNot a finding, but a person must know these items:\n1. Line 183 of tools/toolbit.adoc is true but does not give the full result. Document.cpp:3592 calls breakDependency(pcObject, true), which clears the Tool link of the other Tool Controller. That Tool Controller then has no Tool Bit, and Controller.py:443 (execute) reads obj.Tool.Proxy. This is a defect of FreeCAD for copied Tool Controllers, and a report to the developers is recommended.\n2. tools/tool-controller.adoc, Tool Bit replacement: \"The update writes no other property of the Tool Controller\" is true for replace_tool_from_library. The recompute after the update then writes the Path of the Tool Controller, and Controller.py:443 takes the spindle direction of the tool change from the new Tool Bit. The Tool Controller class has no onChanged handler, thus feeds, speeds and SpindleDir do not change.\n3. tools/add-toolbit.adoc line 35 (not changed) says that the first row has the sort drop-down and that each list entry shows the library tool number. For 'All Tools' the sort drop-down is hidden and no number shows (library/ui/browser.py:194-203). The unit excludes this subject (32211), thus I made no finding.\n4. All image targets and xref targets that the work added exist. No page is new, thus nav.adoc needs no entry. reference/artwork.adoc shows CAM_UpdateDocumentTools.svg, as the person decided.\n5. I could not read the text of origin/main for single pages, because the environment refused that command. I examined the full diff and the current pages."
   }
  ],
  "pages": [
@@ -1361,22 +1533,22 @@
     }
    ],
    "unverified": [
-    "The interface names 'Imperial decimal (in, lb)' and 'US customary (in, lb)' of the unit schemas, as the Preferences dialog shows them (source: src/Base/UnitsSchemasData.h, not a running FreeCAD).",
-    "Whether a Tool Bit without a Units value can exist in the interface; the code gives each Tool Bit the default 'Metric'.",
-    "The exact text of a value in the expanded Changes cell of the 'Tool Updates Available' dialog (for example '5.000 mm').",
-    "That one Tool Bit object that two Tool Controllers use shows as two rows in the 'Tool Updates Available' dialog, and the result when the two rows are set.",
-    "Whether the new copy of the Tool Bit keeps the label and the tree position of the old Tool Bit after an update.",
-    "Whether Undo reverses an update from the library.",
-    "The content of the ToolBit editor as a task panel: Label, Toolbit Type, Properties list and shape drawing, without the 'Feeds && Speeds' tab.",
-    "The 'Save Tool' and 'Save Tool As…' entries in the tree-view context menu of a Tool Bit, and the formats of their save dialog.",
-    "Whether the check at document load also occurs for a new document or for a document that gets its first Job after activation."
+    "The entries 'Save Tool' and 'Save Tool As…' show as disabled in the tree-view context menu of a Tool Bit in a document. The source establishes this (IsActive reads `tool.File`, which no current Tool Bit has), but the menu was not examined in a running FreeCAD.",
+    "The 'Transform' entry of the tree-view context menu of a Tool Bit starts the Transform manipulator and its label is 'Transform'. The diff establishes only that edit mode 1 runs Std_TransformManip.",
+    "The task panel of the ToolBit editor shows the Label, the Toolbit Type, the Properties list and the shape drawing, and does not have the 'Feeds && Speeds' tab.",
+    "The appearance of the 'Tool Updates Available' dialog: the column sequence, the header checkbox and the exact text of a value in an expanded Changes cell (for example '5.000 mm').",
+    "When two Tool Controllers use one Tool Bit object, the *Tool* property of the second Tool Controller is empty after the update of the first row. The source establishes this through doc.removeObject, but the behaviour was not tested.",
+    "Whether Undo reverses an update from the library. The page does not make a statement about Undo.",
+    "Whether the new copy of the Tool Bit keeps the label and the tree position of the old Tool Bit object.",
+    "The path menu:Edit[Preferences > CAM > Assets] to the preference 'Check for tool updates from the library when opening a document'.",
+    "The interface names 'Imperial decimal (in, lb)' and 'US customary (in, lb)' of the unit schemas, as the Preferences dialog shows them."
    ],
    "figures_wanted": [
-    "tools/toolbit/editor-toolbit-tab.png: the ToolBit editor on the Toolbit tab for the Tool Bit '5mm Endmill', captured after PR 33079, with the current shape drawing and the fields at tool precision",
-    "tools/toolbit/editor-task-panel.png: the ToolBit editor as a task panel for the Tool Bit of a new Job, captured after PR 32371 and PR 33079",
-    "tools/toolbit/tool-updates-available.png: the 'Tool Updates Available' dialog with two rows and the Changes cell of the first row expanded"
+    "tools/toolbit/editor-toolbit-tab.png: the ToolBit editor (window title 'Toolbit Parameter Editor') on the Toolbit tab for the Tool Bit '5mm Endmill', with the current shape drawing (dimension colors of the light theme, corrected H dimension) and the quantity fields at 3 decimals.",
+    "tools/toolbit/editor-task-panel.png: the ToolBit editor as a task panel for a Tool Bit in a document, with the Label, the Toolbit Type, the Properties list and the full shape drawing.",
+    "tools/toolbit/tool-updates-available.png: the 'Tool Updates Available' dialog with two rows, one row with 'Presets' only and one row with geometry changes, with the Changes cell of the geometry row expanded."
    ],
-   "notes": "I corrected the two findings and changed no other line. Finding 1: the sentence about the table rows and the Checkbox column entry now refer to the Tool Controller and the row. Finding 2: the two sentences about the unit schemas now name 'Imperial decimal (in, lb)' and 'US customary (in, lb)', marked as interface strings in italic. The base is my previous draft, which is the same as the text of branch main. The pending text of gypsy PR #27 is older than that text in three places (the F2 step, the Tool Bit object for each Tool Controller, and the 'Save Tool' entries), thus I did not use it as the base. The three image macros were on the page before this pass; I did not check that the files and their manifest entries exist. ':page-status:' stays 'draft' because 'unverified' is not empty. Conflict with the STE rule of the user: the lines of the page that I did not change do not follow STE, because the mode is AMEND ONLY.",
+   "notes": "This revision builds on the previous draft, which builds on the pending text of the open gypsy pull request #27 (branch gypsy/issue-13). Only the one review finding is corrected; all other lines are the same as in the previous draft.\n\nFinding (Save Tool, line 145): accepted. The paragraph now has the text that the finding gives. This agrees with fact F28 of the brief: no current Tool Bit object has the `File` property, thus the two commands are not active.\n\n`:page-status:` stays `draft` because `unverified` is not empty.\n\nThe three image macros are those of the pending text. I did not confirm that the files and their manifest entries exist; `figures_wanted` lists them for capture at the FreeCAD commit of the pull request.\n\nThe paragraph 'When two Tool Controllers use one Tool Bit object…' of the previous draft stays. It agrees with F15 of the brief.\n\nConflict with the STE instruction: the page lines from before this work do not follow STE or STYLE.md (for example the Description section). The AMEND ONLY mode requires that these lines stay as they are, thus I did not change them.",
    "lint_rc": 0,
    "lint": "",
    "pending_prs": [],
@@ -1447,9 +1619,24 @@
      "cost_usd": 1.101219,
      "duration_ms": 61337,
      "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.107179,
+     "duration_ms": 63106,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.113123,
+     "duration_ms": 65069,
+     "model": "claude-opus-5-5"
+    },
+    {
+     "cost_usd": 1.104883,
+     "duration_ms": 61007,
+     "model": "claude-opus-5-5"
     }
    ],
-   "cost_usd": 14.375019,
+   "cost_usd": 17.700204,
    "verdicts": [
     [
      "2026-08-19T03:12:44Z",
@@ -2617,8 +2804,26 @@
    "cost_usd": 1.9553352000000002,
    "turns": 23,
    "duration_ms": 203286
+  },
+  {
+   "stage": "review",
+   "cost_usd": 2.608476,
+   "turns": 45,
+   "duration_ms": 282628
+  },
+  {
+   "stage": "review",
+   "cost_usd": 2.0480783999999996,
+   "turns": 33,
+   "duration_ms": 189707
+  },
+  {
+   "stage": "review",
+   "cost_usd": 2.0925366,
+   "turns": 37,
+   "duration_ms": 227607
   }
  ],
- "cost_usd": 64.58039939999999,
- "generated": "2026-10-12T16:47:05+00:00"
+ "cost_usd": 74.65467539999999,
+ "generated": "2026-10-12T17:05:21+00:00"
 }

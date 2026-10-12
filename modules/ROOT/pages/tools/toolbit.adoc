@@ -45,7 +45,7 @@ The Properties list does not show a calculated parameter, for example the *Diame
 
 When the _ToolBit editor_ loads a Tool Bit, the _ToolBit editor_ sets the unit schema of FreeCAD to the *Units* of the Tool Bit. The _ToolBit editor_ sets the initial unit schema again when it closes.
 
-The quantity fields of the _ToolBit editor_ show tool precision: 3 decimals when *Units* is `Metric` and 4 decimals when *Units* is `Imperial`. The Units Decimals preference does not change the number of decimals in these fields. When you change *Units* in the _ToolBit editor_, the _ToolBit editor_ builds the property fields again in the new units.
+The quantity fields of the _ToolBit editor_ show tool precision: 3 decimals when *Units* is `Metric` and 4 decimals when *Units* is `Imperial`. The Units Decimals preference does not change the number of decimals in these fields. When you change *Units* in the _Toolbit Parameter Editor_ dialog, the dialog builds the property fields again in the new units.
 
 == Properties
 
@@ -73,7 +73,7 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
 
 FreeCAD saves each quantity parameter in the *Units* of the Tool Bit at tool precision: 3 decimals for `Metric` and 4 decimals for `Imperial`. The active unit schema and the Units Decimals preference do not change the saved text when *Units* is `Metric` or `Imperial`.
 
-* FreeCAD saves a `Metric` value that it shows in µm with 4 decimals.
+* FreeCAD saves a `Metric` length from 0.001 mm to less than 0.1 mm with 4 decimals.
 * FreeCAD saves an angle with the degree symbol directly after the number, without a space.
 
 When a Tool Bit has no *Units* value, FreeCAD selects the unit and the number of decimals from the active unit schema. Only the unit schema _Imperial decimal (in, lb)_ gives 4 decimals. All other unit schemas, _US customary (in, lb)_ included, give 3 decimals.
@@ -142,7 +142,7 @@ image::tools/toolbit/editor-task-panel.png["ToolBit editor as a task panel, with
 
 The menu:Transform[] entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The menu:Transform[] entry does not open the _ToolBit editor_.
 
-The tree-view context menu of a Tool Bit in a document has the entries menu:Save Tool[] and menu:Save Tool As…[], which write the Tool Bit to a file. The entry menu:Save Tool[] is available only if the Tool Bit object came from a file. The two entries open a save dialog with the FreeCAD Tool (`.fctb`) and YAML formats.
+The tree-view context menu of a Tool Bit in a document has the entries menu:Save Tool[] and menu:Save Tool As…[]. The two entries are not available for a Tool Bit object in a document.
 
 The commands `CAM_ToolBitCreate` (_New Toolbit_) and `CAM_ToolBitLoad` (_Load Tool_) exist but are not placed in any menu.
 
@@ -179,6 +179,8 @@ image::tools/toolbit/tool-updates-available.png["Tool Updates Available dialog w
 btn:[Update] replaces only the Tool Bits of the rows that are set. btn:[Update] is disabled when no row is set. btn:[Cancel] changes nothing and is the default button.
 
 An update always replaces the full Tool Bit. FreeCAD attaches a new full copy of the library Tool Bit to the document, with its presets, its Shape group values and its *Units*. FreeCAD then sets the *Tool* property of the Tool Controller to the new copy and removes the old Tool Bit object from the document. An update of only the presets or only the geometry is not possible. For the Tool Controller after an update, see xref:tools/tool-controller.adoc[Tool Controller].
+
+When two Tool Controllers use one Tool Bit object, the update of one row removes that object. FreeCAD does not set the *Tool* property of the other Tool Controller to the new copy.
 
 CAUTION: Do not update an embedded Tool Bit whose local edits are necessary. The update removes the old Tool Bit object with all its local edits: presets, dimensions and other properties.
 
