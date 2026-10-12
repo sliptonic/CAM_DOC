@@ -38,7 +38,7 @@ The figure shows the _Toolbit Selector_ with the `Default` Tool Library selected
 
 image::tools/add-toolbit/toolbit-selector-library.png["Toolbit Selector with a Tool Library selected, the library tool number in each list entry and the sort drop-down",400]
 
-[.since]#introduced in 26.3#: The library drop-down always has `All Tools` as its first entry. The Tool Libraries follow in the natural sort sequence of their labels. `All Tools` shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in `All Tools` has no library tool number.
+[.since]#introduced in 26.3#: The library drop-down always has `All Tools` as its first entry. `All Tools` shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in `All Tools` has no library tool number.
 
 The figure shows the _Toolbit Selector_ with `All Tools` selected.
 
@@ -48,7 +48,7 @@ If the document contains no Job, the message _Create a Job first_ is shown. If i
 
 [.since]#introduced in 26.3#: The library tool number of a Tool Bit is only a suggestion for the *Tool Number* of the new Tool Controller; see xref:tools/toolbit-library.adoc[Tool Library]. The *Add Toolbit…* command and the _Tool controller_ drop-down of an Operation open the _Toolbit Selector_ with the request for a tool number. The _Tool Number_ dialog asks for a number when the Tool Bit has no library tool number and the _Toolbit Selector_ has the request for a tool number. The _Tool Number_ dialog also opens when a different Tool Bit in the Job already uses the library tool number.
 
-The default of the _Tool Number_ dialog is the next free number of the Job. The next free number is the highest *Tool Number* of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.
+The default of the _Tool Number_ dialog is the next free number of the Job when the dialog opens the first time for a Tool Bit. The next free number is the highest *Tool Number* of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.
 
 The figure shows the _Tool Number_ dialog for a library tool number that `TC: 5mm Endmill` has.
 
@@ -71,6 +71,6 @@ The Job editor (Tools tab → btn:[Add]) opens the same _Toolbit Selector_ dialo
 . [.since]#introduced in 26.3# If the _Tool Number_ dialog opens, enter a tool number that no different Tool Bit in the Job uses. Press btn:[OK].
 * The label *Tool number for <Tool Bit label>:* shows that the Tool Bit has no library tool number.
 * The label *Tool number <number> is already used by <Tool Controller label>.* shows that a different Tool Bit uses the library tool number or the number that you entered.
-* The default is the next free number of the Job. The minimum is 1.
-* The _Tool Number_ dialog opens again as long as a different Tool Bit in the Job uses the number.
+* The first default is the next free number of the Job. The minimum is 1.
+* The _Tool Number_ dialog opens again, with the number that you entered as the default, as long as a different Tool Bit in the Job uses the number.
 * btn:[Cancel] does not add that Tool Bit. FreeCAD still adds the other selected Tool Bits.

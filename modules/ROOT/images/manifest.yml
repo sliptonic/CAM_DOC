@@ -294,9 +294,9 @@ figures:
   page: reference/preferences.adoc
   model: null
   recipe: recipes/reference/preferences/assets-machines.py
-  freecad: 62544c4c6e8
-  date: '2026-10-10'
-  alt: Assets page of the CAM preferences, with the Machines list and the buttons Add, Import..., Edit and Delete
+  freecad: ef63368faf4
+  date: '2026-10-12'
+  alt: Assets page of the CAM preferences, with the Machines list, the buttons Add, Import..., Edit and Delete, and the checkbox for tool updates from the library
 - file: tools/add-toolbit/tool-number-dialog-conflict.png
   page: tools/add-toolbit.adoc
   model: drilling-1
