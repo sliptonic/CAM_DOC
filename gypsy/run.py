@@ -6,12 +6,13 @@
 
     1. brief     one agent reads the FreeCAD source and writes the facts that all pages share
     2. draft     one writer for each page, in parallel, with the goals, the plan and the brief
-    3. check     one agent compares the pages with the goals, the plan, the brief, the source and
-                 each other
-    4. revise    the writer of each page with a finding of severity `must` drafts again;
-                 steps 3 and 4 repeat, at most N rounds (default 2)
+    3. review    one independent reviewer compares the pages with the FreeCAD source, the plan,
+                 the guidance and each other. The source is the authority, not the brief; each
+                 finding gives its evidence, and a finding can correct a fact of the brief
+    4. revise    the writer of each page with a finding drafts again; steps 3 and 4 repeat, at
+                 most N rounds (default 2); after round 1 only `must` findings start a revision
     5. figures   the figure stage makes the images that the pages want
-    6. check     one last check; its result is the report of the pull request
+    6. review    one last review; its result is the report of the pull request
     7. pull request, linked to the issue
 
 Lint runs after each draft and each revision. The issue must have the label `approved`.
@@ -28,18 +29,19 @@ import work     # noqa: E402
 print = functools.partial(print, flush=True)
 ROOT, PAGES = config.ROOT, draft.PAGES
 READ_TOOLS = "Read,Grep,Glob"
-BUDGET = os.environ.get("GYPSY_AGENT_BUDGET", "10")          # US dollars for one brief or one check
+REVIEW_TOOLS = READ_TOOLS + ",Bash(git diff:*),Bash(git show:*),Bash(git log:*),Bash(git status:*)"
+BUDGET = os.environ.get("GYPSY_AGENT_BUDGET", "10")          # US dollars for one brief or one review
 WRITERS = int(os.environ.get("GYPSY_WRITERS", "4"))
 
 
-def agent(name, fields, model):
+def agent(name, fields, model, tools=READ_TOOLS):
     """Run a read-only agent with a prompt template and a schema. Returns (result, run)."""
     prompt = open(os.path.join(HERE, "prompts", f"{name}.md"), encoding="utf-8").read()
     for k in sorted(fields, key=len, reverse=True):
         prompt = prompt.replace(f"${k}", fields[k])
     schema = json.load(open(os.path.join(HERE, "schema", f"{name}.schema.json")))
     cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema),
-           "--add-dir", config.FREECAD_TREE, "--allowedTools", READ_TOOLS, "--max-budget-usd", BUDGET]
+           "--add-dir", config.FREECAD_TREE, "--allowedTools", tools, "--max-budget-usd", BUDGET]
     if model:
         cmd += ["--model", model]
     r = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=ROOT)
@@ -112,51 +114,34 @@ def add_nav(page):
     open(nav, "w", encoding="utf-8").write("\n".join(lines))
 
 
-FOCUS = {
-    "source": """Your part is the facts. A second checker examines the plan; do not report `repeat`, `excluded`,
-`guidance` or `missing`. Do these passes for each page:
-1. Source: compare each changed statement, and each statement of a new page, with the brief, and
-   with the source when the brief does not have it. Open the source file. Look at the condition
-   of each statement: "always", "only when", "the first time", "before each". A condition that is
-   too wide or too narrow is `wrong`. A statement about what a set of things does (for example
-   "these six Post-Processors") needs the source of each one.
-2. The same page: read the unchanged lines of each page too. An unchanged line that a changed
-   line now contradicts is a `contradiction` with severity `must`; the fix removes or corrects
-   the old line.
-3. Between pages: compare the statements on one subject across all pages, and the names used for
-   one thing: dialogs, properties, link texts. A dialog has the name that its window title shows.
-Give `goals` as an empty list.""",
-    "plan": """Your part is the plan. A second checker examines the facts against the source; do not report `wrong`,
-`contradiction` or `term`. Do these passes for each page:
-1. Owner: list the subjects of the changed passages of the page (for a new page: of all its
-   sections). For each subject, find the owner page in the plan. When the page is not the owner,
-   more than one clause on the subject is a `repeat`; the fix names what to cut and the link to
-   give. A page that the plan limits ("only the specifics", "a short summary") must not tell what
-   a different page tells: compare with the text of that page.
-2. Not documented: compare each changed passage with the list of what the unit does not
-   document, and with these rules: no text for how the interface looks, for a sort sequence, for
-   help text or a tooltip that the interface shows, for how the code does its work (objects that
-   it makes, removes or links, function names, internal tolerances). Each such passage is
-   `excluded`; the fix says what to cut.
-3. Guidance: compare each page with each comment of the person. A comment that the page does not
-   obey is `guidance` with severity `must`.
-4. Goals and parts: report each goal, and each page that does not do its part of the plan
-   (`missing`). For a reference page, name what a reader needs and the page does not have.""",
-}
-
-
-def check(c, brief, modes, model):
-    """Two checkers in parallel: one for the facts, one for the plan. Returns the joined result."""
-    amended = [os.path.join("modules/ROOT/pages", p) for p, m in modes.items() if m == "amend"]
-    diff = draft.sh("git", "diff", "origin/main", "--", *amended) if amended else "(none)"
+def review(c, brief, modes, previous, model):
+    """The independent reviewer. `previous` is the findings that the writers got before this review."""
+    before = ""
+    if previous:
+        before = ("# Findings of the review before this one\n\nThe writers got these findings and revised the pages. "
+                  "Examine each one in the pages as they are now, and report it again only when it is still present. "
+                  "Examine the lines that the revision changed for new faults.\n\n" +
+                  "\n".join(f"- `{f['page']}` ({f['kind']}): {f['text']}" for f in previous))
     fields = {"freecad_tree": config.FREECAD_TREE, "unit": unit_text(c), "brief": brief_text(brief),
-              "guidance": "\n\n".join(c["guidance"]) or "(none)",
-              "pages": "\n".join(f"- {p}: {m}" for p, m in modes.items()), "diff": diff[:200_000]}
-    with concurrent.futures.ThreadPoolExecutor(2) as pool:
-        (src, r1), (plan, r2) = pool.map(lambda k: agent("check", dict(fields, focus=FOCUS[k]), model), ("source", "plan"))
-    res = {"goals": plan["goals"], "findings": src["findings"] + plan["findings"], "notes": src["notes"] + "\n" + plan["notes"]}
-    return res, {"stage": "check", "cost_usd": r1["cost_usd"] + r2["cost_usd"], "turns": (r1["turns"] or 0) + (r2["turns"] or 0),
-                 "duration_ms": max(r1["duration_ms"] or 0, r2["duration_ms"] or 0)}
+              "guidance": "\n\n".join(c["guidance"]) or "(none)", "previous": before,
+              "pages": "\n".join(f"- {p}: {m}" for p, m in modes.items())}
+    return agent("review", fields, model, REVIEW_TOOLS)
+
+
+def correct_brief(brief, findings):
+    """Put the brief corrections of the reviewer into the brief. Returns the ids that changed."""
+    facts, changed = {f["id"]: f for f in brief["facts"]}, []
+    for f in findings:
+        fid = f.get("brief_fact", "").strip()
+        if fid in facts and f.get("brief_correction", "").strip():
+            facts[fid]["fact"] = f["brief_correction"].strip()
+            facts[fid]["source"] = f["evidence"].strip() + " (corrected by the review)"
+            changed.append(fid)
+    return changed
+
+
+def todo_line(f):
+    return f"- ({f['kind']}) {f['text']}\n  Evidence: {f.get('evidence') or 'not given'}\n  Do: {f['fix']}"
 
 
 def open_pr(branch):
@@ -182,7 +167,7 @@ def main():
     ap.add_argument("--pr", action="store_true", help="commit, push and open the pull request")
     ap.add_argument("--rounds", type=int, default=2, help="revision rounds after the first draft")
     ap.add_argument("--revise", action="store_true",
-                    help="work on the open pull request of the issue: check and revise its pages, with the "
+                    help="work on the open pull request of the issue: review and revise its pages, with the "
                          "review comments of people; no new draft")
     ap.add_argument("--no-figures", action="store_true")
     ap.add_argument("--no-replan", action="store_true", help="do not apply the comments of people to the plan")
@@ -258,14 +243,19 @@ def main():
         if mode == "new":
             add_nav(page)
 
-    # 3 and 4. check and revise
-    first = len(history)
+    # 3 and 4. review and revise
+    first, given = len(history), []
     for rnd in range(1, a.rounds + 1):
-        res, run = check(c, brief, modes, a.model)
+        res, run = review(c, brief, modes, given, a.model)
         runs.append(run)
+        fixed = correct_brief(brief, res["findings"])
+        if fixed:                                # the writers get the corrected brief
+            for j in jobs:
+                j["prompt"] = write(j["page"], prompt_only=True)
         must = [f for f in res["findings"] if f["severity"] == "must" and f["page"] in by_page]
         history.append({"round": len(history) + 1, "findings": res["findings"], "goals": res["goals"]})
-        print(f"check {rnd}: {len(res['findings'])} findings, {len(must)} must; goals " +
+        print(f"review {rnd}: {len(res['findings'])} findings, {len(must)} must; {res['confirmed']} statements confirmed; "
+              f"brief corrected: {', '.join(fixed) or 'none'}; goals " +
               ", ".join(g["met"] for g in res["goals"]) + f"; cost ${run['cost_usd']:.2f}")
         act = [f for f in res["findings"] if f["page"] in by_page] if rnd == 1 else must
         if not act:                              # round 1 corrects each finding; later rounds only `must`
@@ -273,13 +263,16 @@ def main():
         todo = {}
         for f in res["findings"]:                # a writer that drafts again gets all its findings
             if f["page"] in {m["page"] for m in act}:
-                todo.setdefault(f["page"], []).append(f"- ({f['kind']}) {f['text']}\n  Do: {f['fix']}")
+                todo.setdefault(f["page"], []).append(todo_line(f))
+        given = [f for f in res["findings"] if f["page"] in todo]
         with concurrent.futures.ThreadPoolExecutor(WRITERS) as pool:
             list(pool.map(lambda p: draft.revise_page(by_page[p], "\n".join(todo[p]), a.model), todo))
         print(f"revised {len(todo)} pages: " + ", ".join(f"{p} (lint rc={by_page[p]['lint_rc']})" for p in todo))
 
     # 5. figures
-    wanted = {j["page"]: j["figures_wanted"] for j in jobs if j["figures_wanted"]}
+    have = {f["file"] for p in figure_pages for f in p["figures"] if f["status"] != "failed" and not f["check"]}
+    wanted = {j["page"]: [w for w in j["figures_wanted"] if w.split(":", 1)[0].strip() not in have] for j in jobs}
+    wanted = {p: w for p, w in wanted.items() if w}
     for p in ([] if a.revise else c["pages"].get("capture", [])):
         wanted.setdefault(p, []).append(f"{p[:-5]}/(the figure of the page that changed): {c['plan'][p]['does']}")
     if wanted and not a.no_figures:
@@ -291,18 +284,22 @@ def main():
             j["figures_wanted"] = [w for w in j["figures_wanted"] if w not in made]
             j["lint"], j["lint_rc"] = draft.lint(os.path.join(PAGES, j["page"]), "origin/main" if j["mode"] == "amend" else None)
 
-    # 6. the last check is the report
-    final, run = check(c, brief, modes, a.model)
+    # 6. the last review is the report
+    final, run = review(c, brief, modes, given, a.model)
     runs.append(run)
-    history.append({"round": "final", "findings": final["findings"], "goals": final["goals"]})
+    if correct_brief(brief, final["findings"]):
+        for j in jobs:
+            j["prompt"] = write(j["page"], prompt_only=True)
+    history.append({"round": "final", "findings": final["findings"], "goals": final["goals"], "merge": final["merge"],
+                    "confirmed": final["confirmed"], "untested": final["untested"], "notes": final["notes"]})
     left = [f for f in final["findings"] if f["severity"] == "must"]
-    print(f"final check: {len(final['findings'])} findings, {len(left)} must; goals " + ", ".join(g["met"] for g in final["goals"]))
+    print(f"final review: {len(final['findings'])} findings, {len(left)} must; merge {final['merge']}; goals " + ", ".join(g["met"] for g in final["goals"]))
 
-    # the writers correct what the last check and the last lint found; no check follows
+    # the writers correct what the last review and the last lint found; no review follows
     todo = {}
     for f in final["findings"]:
         if f["page"] in by_page and f["kind"] != "figure":
-            todo.setdefault(f["page"], []).append(f"- ({f['kind']}) {f['text']}\n  Do: {f['fix']}")
+            todo.setdefault(f["page"], []).append(todo_line(f))
     for j in jobs:
         if j["lint_rc"]:
             todo.setdefault(j["page"], []).append("- (lint) " + j["lint"].strip().replace("\n", "\n  "))
@@ -328,9 +325,15 @@ def main():
     body = [f"**{c['title']}**", "", f"Closes #{a.issue}", "", "## Goals of the issue", "", "| Goal | Result | Where |", "|---|---|---|"]
     body += [f"| {g['goal']} | {mark[g['met']]}{': ' + g['note'] if g['met'] != 'yes' and g['note'] else ''} | {g['where']} |"
              for g in final["goals"]]
-    body += ["", "## Findings of the last check", "",
-             "The writers got these findings and corrected the pages after the check. No check ran after that, "
+    body += ["", "## Findings of the last review", "",
+             f"An independent reviewer compared the pages with the FreeCAD source. It confirmed {final['confirmed']} "
+             f"statements. Its decision before the last corrections: {'merge' if final['merge'] == 'yes' else 'do not merge'}.",
+             "", "The writers got these findings and corrected the pages after the review. No review ran after that, "
              "so examine each item. A `figure` finding is not corrected.", ""] + (findings_md(final["findings"]) or ["None."])
+    if final["untested"]:
+        body += ["", "Only a test in FreeCAD can decide these statements:", ""] + [f"- {u}" for u in final["untested"]]
+    if final["notes"].strip():
+        body += ["", final["notes"].strip()]
     body += ["", "## Pages", "", "| Page | Part | Change | Lint | Not verified |", "|---|---|---|---|---|"]
     body += [f"| `{j['page']}` | {c['plan'][j['page']]['role']} | {j['mode']} | {'clean' if j['lint_rc'] == 0 else 'findings'} | "
              f"{len(j['unverified'])} |" for j in jobs]
@@ -343,7 +346,7 @@ def main():
         h["round"] = n
     body += ["", "## How the runner worked", "",
              f"- Brief: {len(brief['facts'])} shared facts, {len(brief['terms'])} terms, {len(brief['unknown'])} not established.",
-             *[f"- Check {h['round']}: {len(h['findings'])} findings, {sum(f['severity'] == 'must' for f in h['findings'])} of them `must`."
+             *[f"- Review {h['round']}: {len(h['findings'])} findings, {sum(f['severity'] == 'must' for f in h['findings'])} of them `must`."
                for h in rounds],
              f"- Cost: ${cost:.2f}.", "", "Review the rendered changes from the preview comment below.", "",
              "<details><summary>Changes, unverified claims and lint for each page</summary>", ""]
@@ -358,13 +361,13 @@ def main():
     if a.revise:                                 # the same pull request: new commit, new report
         draft.sh("git", "add", "-A")
         draft.sh("git", "-c", "user.name=sliptonic", "-c", "user.email=shopinthewoods@gmail.com", "commit", "-q", "-m",
-                 f"{c['title']}: revise from the check and the review\n\nRevised by gypsy.\n\n"
+                 f"{c['title']}: revise from the review\n\nRevised by gypsy.\n\n"
                  "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
         draft.sh("git", "push", "-q", "origin", branch)
         work.gh("pr", "edit", str(pr["number"]), "--body", "\n".join(body)[:64000],
                 *(["--add-label", "check-findings"] if left else ["--remove-label", "check-findings"]))
         work.gh("pr", "comment", str(pr["number"]), "--body", work.MARK + "\nThe runner revised the pages: " +
-                f"{len(history) - first - 1} check rounds, {len(final['findings'])} findings at the last check. "
+                f"{len(history) - first - 1} review rounds, {len(final['findings'])} findings at the last review. "
                 "The description has the new report.")
         draft.sh("git", "checkout", "-q", "--detach", "origin/main")
         return print(f"pull request #{pr['number']} revised")

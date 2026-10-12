@@ -22,21 +22,21 @@ is one or more verdicts that a person approves as one issue and that one pull re
    - **brief**: one agent reads the FreeCAD source and writes the facts and terms that all
      pages share;
    - **draft**: one writer for each page, in parallel, with the goals, the plan and the brief;
-   - **check**: one agent compares the pages with the goals, the plan, the brief, the source and
-     each other;
-   - **revise**: the writers correct the findings; check and revise repeat for a fixed number of
-     rounds;
+   - **review**: one independent reviewer compares the pages with the FreeCAD source, the plan,
+     the guidance and each other. The source is the authority; the brief is not. Each finding
+     gives its evidence in the source, and a finding can correct a fact of the brief;
+   - **revise**: the writers correct the findings; review and revise repeat for a fixed number of
+     rounds. A writer does not change a line from before the work without source evidence;
    - **lint** (`lint.py`) after each draft and revision;
    - **figures** (`figures.py`): an agent writes a recipe for each wanted figure, runs it with
      `capture.py`, looks at the image and puts it into the page;
    - **pull request**: reports each goal of the issue as achieved or not, the open findings of
-     the last check, and the pages. Branch `gypsy/issue-N`. A person merges, and the merge
+     the last review, and the pages. Branch `gypsy/issue-N`. A person merges, and the merge
      closes the issue and deploys the site.
 
 `run.py N --revise --pr` works on the open pull request of an issue: it keeps the brief and the
-pages, reads the review comments of people, runs the check, and the writers revise. `work.py run`
-starts it when a person asks for changes in a review. The check has two agents: one for the facts
-(source, conditions, names) and one for the plan (owner pages, what is not documented, guidance).
+pages, reads the review comments of people, runs the review, and the writers revise. `work.py run`
+starts it when a person asks for changes in a review.
 
 An issue without goals (made by `work.py propose`) still runs through `draft.py --issue N`.
 

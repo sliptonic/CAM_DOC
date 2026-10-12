@@ -228,14 +228,17 @@ def draft_page(page, vs, mode, facts_files, siblings, model, dry=False, base="or
 
 
 def revise_page(job, findings, model):
-    """Draft a page again from the findings of the check. Changes the job entry in place."""
+    """Draft a page again from the findings of the review. Changes the job entry in place."""
     path = os.path.join(PAGES, job["page"])
     schema = json.load(open(os.path.join(HERE, "schema", "draft.schema.json")))
     since = "origin/main" if job["mode"] == "amend" else None
     text = (job["prompt"] + "\n\n# Your previous draft\n\n" + open(path, encoding="utf-8").read() +
-            "\n\n# Findings of the check on it\n\nA check compared the pages of the unit with the goals, the "
-            "plan, the brief, the FreeCAD source and each other. Correct each finding and return the full page "
-            "again, with the same JSON fields. Change nothing else. If a finding is wrong, keep the text and "
+            "\n\n# Findings of the review on it\n\nAn independent reviewer compared the pages of the unit with the "
+            "FreeCAD source, the plan and each other. Each finding gives its evidence. The unit of work above has "
+            "the brief with the corrections of the reviewer. Correct each finding and return the full page again, "
+            "with the same JSON fields. Change nothing else. Do not remove or change a line that was on the page "
+            "before this work unless a finding gives evidence from the source that the line is false. If a finding "
+            "is wrong, keep the text and "
             "say why in `notes`.\n\n" + findings)
     for attempt in range(1 + FIX_ATTEMPTS):
         res, run = ask(text if attempt == 0 else text + "\n\n# gypsy lint findings on your revision\n\n"
