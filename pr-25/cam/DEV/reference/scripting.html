@@ -369,6 +369,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="../output/posts/genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../output/posts/linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -1249,7 +1252,7 @@ doc.recompute()</code></pre>
 ms = MachineState()
 ms.addCommands(path.Commands)
 ms.getPosition()   # the current XYZ
-ms.getState()      # the dictionary of the Tracked values (position, F, S, T, coolant, Fixture, return mode)
+ms.getState()      # the dictionary of the Tracked values
 ms.Plane           # the arc plane: 'G17', 'G18' or 'G19'</code></pre>
 </div>
 </div>

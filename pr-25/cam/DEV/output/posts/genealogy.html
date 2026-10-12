@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Post-Processor Genealogy :: FreeCAD CAM documentation (experiment) — pull request preview</title>
     <link rel="prev" href="heidenhain.html">
-    <link rel="next" href="../../job/setup-sheet.html">
+    <link rel="next" href="linuxcnc.html">
     <meta name="description" content="Which machine-based Post-Processor class inherits from which, generated from the FreeCAD source tree.">
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../../../_/css/site.css">
@@ -22,7 +22,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   await mermaid.run({ nodes: blocks })
 })
 </script>
-  </head>
+  <style>
+.diff-banner{position:sticky;top:var(--navbar-height,3.5rem);z-index:5;display:flex;flex-wrap:wrap;
+  gap:.4rem 1rem;align-items:center;margin:0 0 1rem;padding:.5rem .75rem;border:1px solid #c9c9c9;
+  border-radius:4px;background:#fffbe6;color:#222;font-size:.85rem;line-height:1.4}
+.diff-banner a{font-weight:600}
+.diff-banner button{font:inherit;padding:.1rem .5rem;cursor:pointer}
+.diff-banner .diff-key ins,.diff-banner .diff-key del{padding:0 .3rem}
+.doc ins{background:#d1f5d3;color:#0b3d12;text-decoration:none}
+.doc del{background:#ffd8d6;color:#6b1210;text-decoration:line-through}
+.doc ins img,.doc img.diff-img-new{outline:3px solid #2da44e;outline-offset:2px}
+.doc del img,.doc img.diff-img-old{outline:3px solid #cf222e;outline-offset:2px;opacity:.75}
+.doc .diff-img-pair{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start}
+.doc .diff-img-pair>span{display:flex;flex-direction:column;font-size:.8rem;color:#555}
+.doc .diff-block-add{background:#e6f9e7;outline:1px solid #2da44e}
+.doc .diff-block-del{background:#ffecea;outline:1px solid #cf222e;opacity:.8;text-decoration:line-through}
+.doc .diff-block-del img{opacity:.6}
+.doc .diff-changed{box-shadow:-.6rem 0 0 -.35rem #d4a72c}
+.doc .diff-current{box-shadow:-.6rem 0 0 -.35rem #0969da}
+.doc.diff-new-page{box-shadow:-.9rem 0 0 -.6rem #2da44e}
+</style></head>
   <body class="article">
 <header class="header">
   <nav class="navbar">
@@ -350,6 +369,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     <a class="nav-link" href="genealogy.html">Post-Processor Genealogy</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -433,7 +455,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Post-Processor Genealogy</h1>
+<div class="diff-banner"><span>This page changes in pull request #25.</span><a href="genealogy.diff.html">Show the changes</a><a href="../../../../changes.html">All changed pages</a></div><h1 class="page">Post-Processor Genealogy</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -673,7 +695,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <nav class="pagination">
   <span class="prev"><a href="heidenhain.html">Heidenhain Post-Processor</a></span>
-  <span class="next"><a href="../../job/setup-sheet.html">CAM SetupSheet</a></span>
+  <span class="next"><a href="linuxcnc.html">linuxcnc Post-Processor</a></span>
 </nav>
 </article>
   </div>

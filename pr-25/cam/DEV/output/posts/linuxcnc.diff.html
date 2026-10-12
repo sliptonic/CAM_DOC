@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>linuxcnc Post-Processor :: FreeCAD CAM documentation (experiment) — pull request preview</title>
+    <link rel="prev" href="genealogy.html">
+    <link rel="next" href="../../job/setup-sheet.html">
     <meta name="description" content="Features that are specific to the linuxcnc Post-Processor: its property defaults, the tilted Work Plane output and the kinematics select line.">
     <meta name="generator" content="Antora 3.1.15">
 <link rel="stylesheet" href="../../../../_/css/site.css">
@@ -366,6 +368,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="genealogy.html">Post-Processor Genealogy</a>
   </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="linuxcnc.html">linuxcnc Post-Processor</a>
+  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../../job/setup-sheet.html">CAM SetupSheet</a>
   </li>
@@ -432,6 +437,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../../index.html">FreeCAD CAM</a></li>
+    <li>Other pages</li>
     <li><a href="linuxcnc.html">linuxcnc Post-Processor</a></li>
   </ul>
 </nav>
@@ -460,6 +466,9 @@ This page gives only the features that are specific to the <code>linuxcnc</code>
 </div>
 <div class="paragraph">
 <p>The <code>linuxcnc</code> Post writes a tilted <a href="../../reference/glossary.html#work-plane" class="xref page">Work Plane</a> with the lines <code>G68.2</code>, <code>G53.1</code> and <code>G69</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>linuxcnc</code> Post writes a tapping cycle that is marked rigid as <code>G33.1</code>; the section <em>Drill cycles and tapping</em> of <a href="../post-process.html" class="xref page">Post Process</a> gives the details.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -628,9 +637,7 @@ The Post writes the <a href="../../reference/glossary.html#toolpath" class="xref
 <div class="sect2">
 <h3 id="align-line"><a class="anchor" href="#align-line"></a>Align line</h3>
 <div class="paragraph">
-<p>The Post writes the align line after the declare line when <strong>Tilted work plane: control positions the rotaries</strong> (<code>twp_control_positions_rotaries</code>) is checked.
-The default of <code>twp_control_positions_rotaries</code> is checked.
-When <code>twp_control_positions_rotaries</code> is unchecked, the Post writes a <code>G0</code> rotary move before the declare line and writes no align line.
+<p>The Post writes the align line after the declare line when <strong>Tilted work plane: control positions the rotaries</strong> is checked, which is the default.
 The common <strong>Tilted work plane</strong> properties control the align line; <a href="../machine.html" class="xref page">Machine</a> gives these properties.</p>
 </div>
 <div class="paragraph">
@@ -651,26 +658,7 @@ The common <strong>Tilted work plane</strong> properties control the align line;
 The Post writes <code>G53.6</code> only when <code>twp_align</code> contains <code>G53.6</code>.</p>
 </div>
 <div class="paragraph">
-<p>The help text of <strong>Tilted work plane: align</strong> gives these values:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>G53.1</code>: moves only the rotary axes. The tip of the Tool Bit changes its position.</p>
-</li>
-<li>
-<p><code>G53.1 P1</code> or <code>G53.1 P2</code>: selects one of the two poses.</p>
-</li>
-<li>
-<p><code>Q1</code>: lets the table take part in the move.</p>
-</li>
-<li>
-<p><code>G53.6</code>: keeps the center point of the Tool Bit in its position.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The Post does not examine these words.</p>
+<p>The Post does not examine the text of <code>twp_align</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -827,6 +815,10 @@ The Post does not examine the text of <code>twp_kinematics_select</code>.</p>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="genealogy.html">Post-Processor Genealogy</a></span>
+  <span class="next"><a href="../../job/setup-sheet.html">CAM SetupSheet</a></span>
+</nav>
 </article>
   </div>
 </main>
