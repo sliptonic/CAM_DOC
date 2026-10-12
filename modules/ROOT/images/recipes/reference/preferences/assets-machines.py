@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 """CAM preferences, Assets page, with one saved Machine in the Machines list."""
 PAGE = "reference/preferences.adoc"
-ALT = "Assets page of the CAM preferences, with the Machines list and the buttons Add, Import..., Edit and Delete"
+ALT = "Assets page of the CAM preferences, with the Machines list, the buttons Add, Import..., Edit and Delete, and the checkbox for tool updates from the library"
 
 
 def capture(shot):

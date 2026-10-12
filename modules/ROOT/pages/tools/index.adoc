@@ -3,6 +3,7 @@
 :page-origin-revision: 45eab38f4c 2025-01-23
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300
 
 == Description
 
@@ -65,9 +66,7 @@ The legacy (pre-0.19) tool table is not supported; templates that reference lega
 
 === Add a Tool Controller to a Job
 
-. Select menu:CAM[Add Toolbit…] (or press kbd:[P] then kbd:[T]).
-. Select a library in the drop-down, select one or more Tool Bits and press btn:[Add to Job], or double-click a Tool Bit.
-. If the document contains several Jobs you are asked which Job to use.
+The _Toolbit Selector_ dialog of the menu:CAM[Add Toolbit…] command adds one Tool Controller to the Job for each Tool Bit that you select. See xref:tools/add-toolbit.adoc[Add Toolbit…] for the procedure and xref:tools/tool-controller.adoc[Tool Controller] for the rule on tool numbers.
 
 == Feeds and speeds
 
@@ -75,11 +74,11 @@ The legacy (pre-0.19) tool table is not supported; templates that reference lega
 
 == Tool update from library
 
-[.since]#introduced in 26.3#: Tool Bits embedded in a Job keep the ID of the library Tool Bit they were created from. When a document is opened, CAM compares the embedded Tool Bits with the library and offers to replace changed ones (_Tool Updates Available_ dialog). The check can be run manually from the Job's context menu (menu:Update Tools from Library[]) and disabled in menu:Edit[Preferences > CAM > Assets].
+[.since]#introduced in 26.3#: an update from the library replaces a stale embedded Tool Bit of a Job with a new copy of its library Tool Bit. The local edits of the embedded Tool Bit do not stay. See xref:tools/toolbit.adoc[Tool Bits] for the _Tool Updates Available_ dialog and xref:reference/preferences.adoc[CAM Preferences] for the check at document load.
 
 == Tool Bit units
 
-[.since]#introduced in 26.3#: every Tool Bit has a Units attribute (Metric or Imperial). The Toolbit Parameter Editor shows the parameters in that unit system; internally all values remain millimetres.
+[.since]#introduced in 26.3#: each Tool Bit has the `Units` property with the values `Metric` and `Imperial`. See xref:tools/toolbit.adoc[Tool Bits] for the tool precision, the unit schema and the Units Decimals preference, and xref:tools/toolbit-library.adoc[Tool Libraries] for the units of the Camotics export.
 
 == Import and export
 

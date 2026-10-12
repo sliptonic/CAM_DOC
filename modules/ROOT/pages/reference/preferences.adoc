@@ -3,7 +3,7 @@
 :page-origin-revision: c0f7759332 2026-08-07
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32081
+:page-source-pr: 32081, 31300, 32278
 :page-status: draft
 
 == Overview
@@ -33,6 +33,15 @@ There are five pages: <<gui,GUI>>, <<assets,Assets>> ([.since]#introduced in 1.1
 * *Show editor before writing G-code* [.since]#introduced in 26.3#: open the G-code editor for review before the post-processor output file is written.
 * *Maximum lines of G-code to use highlighter* [.since]#introduced in 26.3# (default 1000): larger files are shown without syntax highlighting; set to zero to disable the highlighter.
 
+=== Tool Bit Shape Drawing
+
+[.since]#introduced in 26.3#: The _Tool Bit Shape Drawing_ group box sets the colors of the shape drawings in the ToolBit editor. The page xref:tools/tool-shape.adoc[Tool Shape] describes the shape drawings.
+
+* *Dimension color (light theme)*: color of the dimension lines and labels on a light theme. Parameter: `ToolBitDimensionColorLight`. Default: `#111111` (RGB 17, 17, 17).
+* *Dimension color (dark theme)*: color of the dimension lines and labels on a dark theme. Parameter: `ToolBitDimensionColorDark`. Default: `#23818d` (RGB 35, 129, 141).
+* *Dimension highlight color*: color of the dimension that the pointer is on. Parameter: `ToolBitDimensionHighlightColor`. Default: `#ff8c00` (RGB 255, 140, 0).
+* *Tool artwork brightness (dark theme)*: brightness of the Tool Bit shape in the shape drawing on a dark theme. A lower value makes the shape darker. Parameter: `ToolBitArtworkBrightness` (integer, in percent). Values: 10 % to 100 %. Default: 85 %. FreeCAD limits a stored value to the range 10 to 100.
+
 == Assets
 
 [.since]#introduced in 1.1#
@@ -47,12 +56,12 @@ There are five pages: <<gui,GUI>>, <<assets,Assets>> ([.since]#introduced in 1.1
 
 The figure shows the Assets page with one Machine in the Machines list.
 
-image::reference/preferences/assets-machines.png["Assets page of the CAM preferences, with the Machines list and the buttons Add, Import..., Edit and Delete",400]
+image::reference/preferences/assets-machines.png["Assets page of the CAM preferences, with the Machines list, the buttons Add, Import..., Edit and Delete, and the checkbox for tool updates from the library",400]
 
 * List of Machine templates (`.fcm` files in the `Machines` folder plus templates provided by add-ons). btn:[Add] creates a new machine in the Machine Editor, btn:[Edit] (or double-click) opens the selected machine in the Machine Editor, btn:[Delete] removes the file after confirmation. See xref:output/machine.adoc[CAM Machine].
 * btn:[Import...] is between btn:[Add] and btn:[Edit]. btn:[Import...] creates a Machine from the probe document of an MTConnect agent. The import dialog reads the probe document from the URL of the agent or from an XML file. The Machine Editor then opens with the imported Machine. The list shows the imported Machine after the Machine Editor is accepted.
 * The page shows the note _Warning: Machine definition is an experimental feature._
-* *Check for tool updates from the library when opening a document* [.since]#introduced in 26.3#: when enabled (default), opening a document compares the Tool Bits embedded in its Jobs with the library and offers to update them (see xref:tools/toolbit.adoc[CAM ToolBit]).
+* [.since]#introduced in 26.3# *Check for tool updates from the library when opening a document*: when the checkbox is set, FreeCAD compares the embedded Tool Bits of the Jobs with their library Tool Bits at document load. Default: set. The page xref:tools/toolbit.adoc[Tool Bit] describes the update from the library.
 
 Machine templates created here are selected per Job in the Job task panel (General tab → Machine) and used by machine-based post-processors; see xref:output/machine.adoc[CAM Machine] and xref:job/job.adoc[CAM Job].
 
@@ -105,4 +114,4 @@ Under `BaseApp/Preferences/Mod/CAM/Tools`:
 
 * `ToolPath`: the asset directory.
 * `LastToolLibrary`, `LastToolLibrarySortKey`: library and sort order remembered by the Library Manager and Toolbit Selector.
-* `ToolUpdateOnLoad`: the Assets page checkbox.
+* `ToolUpdateOnLoad` (Bool, default true): the Assets page checkbox *Check for tool updates from the library when opening a document*.

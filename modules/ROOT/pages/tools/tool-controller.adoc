@@ -3,7 +3,7 @@
 :page-origin-revision: 50f2b935e9 2025-01-23
 :page-imported: true
 :page-audit: applied
-:page-source-pr: 32129
+:page-source-pr: 32129, 31300, 32211
 :page-status: draft
 
 == Description
@@ -18,6 +18,10 @@ Tool Controllers are created by:
 * the btn:[Add] button of the Tools tab in the Job task panel,
 * the last two entries of the _Tool controller_ drop-down in an operation's task panel (create a new Tool Controller from the Toolbit Selector, or copy the current one).
 
+[.since]#introduced in 26.3#: The _Toolbit Selector_ dialog can ask for the tool number of the new Tool Controller; see xref:tools/add-toolbit.adoc[Add Toolbit…].
+
+The command `CAM_ToolController` is not in a menu or a toolbar. A macro can run the command `CAM_ToolController`, which opens the _Toolbit Selector_ dialog for the selected Job.
+
 They are edited by double-clicking the Tool Controller in the tree (Tool Controller Editor task panel), with the btn:[Edit] button of the Job's Tools tab, or [.since]#introduced in 1.1# directly in the Tool Controller page of an operation's task panel ([.since]#26.3 and later#: shown on its own tab). A Tool Controller that is used by an operation cannot be deleted from the Job editor.
 
 == Task panel
@@ -26,6 +30,10 @@ They are edited by double-clicking the Tool Controller in the tree (Tool Control
 * _Horizontal feed_, _Vertical feed_, _Lead-in feed_, _Lead-out feed_, _Ramp feed_, _Horizontal rapid_, _Vertical rapid_.
 * _Spindle_: direction (Forward, Reverse, None) and speed in rpm.
 * [.since]#introduced in 26.3# btn:[Feeds and Speeds Wizard] button: opens the _Suggest Feeds & Speeds_ dialog, see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
+
+[.since]#introduced in 26.3#: Two Tool Controllers of a Job have a tool number conflict when they have the same tool number and their Tool Bits have different `ToolBitID` values. Tool Controllers whose Tool Bits have the same `ToolBitID` can have the same tool number. Thus one Tool Bit can have more than one set of feeds and speeds with one tool number.
+
+When *Tool Number* gets a number that a different Tool Bit of the Job uses, the editor does not change the *ToolNumber* property. The editor sets *Tool Number* back to the previous number and shows a warning with the title _Tool Number In Use_. The warning gives the number and the label of the Tool Controller that uses the number.
 
 When the editor is embedded in an operation's task panel, a warning states how many other operations use the same Tool Controller.
 
@@ -67,7 +75,7 @@ Feed properties may hold expressions (for example `VertFeed = HorizFeed * 0.5`);
 
 == Tool Bit replacement
 
-[.since]#introduced in 26.3#: when the library Tool Bit a controller's Tool Bit came from has changed, the menu:Update Tools from Library[] command (Job context menu, or automatically on document open) replaces the controller's Tool Bit with the current library version.
+[.since]#introduced in 26.3#: An update from the library sets the *Tool* property of the Tool Controller to a new copy of the library Tool Bit. The update writes no other property of the Tool Controller; see xref:tools/toolbit.adoc[Tool Bit].
 
 == Scripting
 

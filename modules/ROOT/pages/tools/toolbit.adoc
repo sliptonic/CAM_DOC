@@ -3,6 +3,8 @@
 :page-origin-revision: bc37ebf88a 2026-06-08
 :page-imported: true
 :page-audit: applied
+:page-source-pr: 31300,32278,32371,32818,33079
+:page-status: draft
 
 == Description
 
@@ -22,18 +24,28 @@ Within the FreeCAD GUI the Library Manager provides a mechanism to create a new 
 . Select a library (or _All Toolbits_).
 . Press the btn:[Adds a toolbit] button and pick a Tool Shape in the _Toolbit Shape Selection_ dialog.
 . In the _Toolbit Parameter Editor_ set the Label, Tool Number (only when a library is selected; the next free number is proposed), the Toolbit Type (editable only for shapes with subtypes, for example Drill: jobber, stub, spot, center, brad point), the shape parameters and the attributes, then press btn:[OK].
-. To edit an existing Tool Bit, double-click it in the Library Manager or in the Toolbit Selector, or select it and press kbd:[F2].
+. To edit an existing Tool Bit, double-click it in the Library Manager. As an alternative, select it in the Library Manager or in the Toolbit Selector and press kbd:[F2].
+
+To edit a Tool Bit that is in a document, see <<tool-bits-in-a-document,Tool Bits in a document>>.
 
 === Toolbit Parameter Editor
 
-The editor (window title _Toolbit Parameter Editor_) has two tabs:
+The _ToolBit editor_ (window title _Toolbit Parameter Editor_) has two tabs:
 
 * _Toolbit_: Label, Toolbit Type, optional Tool Number, a Properties list (Shape and Attributes groups) with the abbreviations used in the shape drawing shown next to each parameter, and the shape drawing.
 * _Feeds && Speeds_ [.since]#introduced in 26.3#: a table of the presets stored on the Tool Bit with btn:[Add preset], btn:[Edit], btn:[Copy] and btn:[Delete] buttons; see xref:tools/feeds-speeds.adoc[CAM FeedsSpeeds].
 
+The figure shows the _Toolbit_ tab for the Tool Bit `5mm Endmill`.
+
+image::tools/toolbit/editor-toolbit-tab.png["ToolBit editor on the Toolbit tab, with the properties and the shape drawing of an endmill",400]
+
 A _Notes_ tab exists in the dialog definition but is hidden.
 
-While the Toolbit Parameter Editor is open, the FreeCAD unit schema is temporarily switched to the Tool Bit's Units setting so that parameters are entered in the tool's native units; the previous schema is restored when the editor closes.
+The Properties list does not show a calculated parameter, for example the *Diameter* of the Chamfer Tool Shape; see xref:tools/tool-shape.adoc[Tool Shape].
+
+When the _ToolBit editor_ loads a Tool Bit, the _ToolBit editor_ sets the unit schema of FreeCAD to the *Units* of the Tool Bit. The _ToolBit editor_ sets the initial unit schema again when it closes.
+
+The quantity fields of the _ToolBit editor_ show tool precision: 3 decimals when *Units* is `Metric` and 4 decimals when *Units* is `Imperial`. The Units Decimals preference does not change the number of decimals in these fields. When you change *Units* in the _Toolbit Parameter Editor_ dialog, the dialog builds the property fields again in the new units.
 
 == Properties
 
@@ -47,7 +59,7 @@ While the Toolbit Parameter Editor is open, the FreeCAD unit schema is temporari
 One property per parameter of the Tool Shape, for example *Diameter*, *Length*, *CuttingEdgeHeight*, *ShankDiameter*, *Flutes*. See xref:tools/tool-shape.adoc[CAM ToolShape] for the list per shape.
 
 .Attributes
-* *Units* (`Enumeration`: Metric, Imperial) [.since]#introduced in 26.3#: unit system used to display the Tool Bit's parameters.
+* *Units* (`Enumeration`: Metric, Imperial) [.since]#introduced in 26.3#: measurement units of the Tool Bit. The _ToolBit editor_ shows the quantity parameters in these units and FreeCAD saves them in these units. Default: `Metric`.
 * *SpindleDirection* (`Enumeration`: Forward, Reverse, None): default spindle direction; copied to the Tool Controller when the Tool Bit is added to a Job. Probes never rotate.
 * *Material* (`Enumeration`: HSS, Carbide): tool material; used by the Feeds and Speeds helper to pick the matching surface speed of the Stock material.
 * *Chipload* (`Length`, cutting tools only): default chipload per tooth, used as a low-confidence fallback by the Feeds and Speeds helper.
@@ -57,7 +69,18 @@ One property per parameter of the Tool Shape, for example *Diameter*, *Length*, 
 
 == JSON Structure
 
-[.since]#introduced in 26.3#: a ToolBit can define a `Units` parameter: `Metric` or `Imperial`. The ToolBit editor uses it for native-unit display; CAM calculations still use metric units internally. Changing the unit schema may cause small rounding differences.
+[.since]#introduced in 26.3#: the `parameter` object of a Tool Bit file can have the `Units` parameter with the value `Metric` or `Imperial`. Each Tool Bit file that FreeCAD supplies has the `Units` parameter. CAM calculations still use metric units internally.
+
+FreeCAD saves each quantity parameter in the *Units* of the Tool Bit at tool precision: 3 decimals for `Metric` and 4 decimals for `Imperial`. The active unit schema and the Units Decimals preference do not change the saved text when *Units* is `Metric` or `Imperial`.
+
+* FreeCAD saves a `Metric` length from 0.001 mm to less than 0.1 mm with 4 decimals.
+* FreeCAD saves an angle with the degree symbol directly after the number, without a space.
+
+When a Tool Bit has no *Units* value, FreeCAD selects the unit and the number of decimals from the active unit schema. Only the unit schema _Imperial decimal (in, lb)_ gives 4 decimals. All other unit schemas, _US customary (in, lb)_ included, give 3 decimals.
+
+Tool precision applies to the values that FreeCAD saves. A Tool Bit file can have values with a different number of decimals, as the example shows.
+
+The Camotics export does not use the *Units* property; see xref:tools/toolbit-library.adoc[Tool Library].
 
 [source,json]
 ----
@@ -106,15 +129,64 @@ The keys are:
 
 Unknown top-level keys are preserved when the file is re-saved.
 
+[#tool-bits-in-a-document]
 == Tool Bits in a document
 
-In a Job the Tool Bit object is shown as a child of its xref:tools/tool-controller.adoc[Tool Controller] and is hidden by default. Several Tool Controllers may reference the same Tool Bit object.
+In a Job the Tool Bit object is shown as a child of its xref:tools/tool-controller.adoc[Tool Controller] and is hidden by default. The _Toolbit Selector_ makes a new Tool Bit object for each Tool Controller. A copy of a Tool Controller uses the Tool Bit object of the initial Tool Controller.
 
-A Tool Bit placed in a document can be written back to a file from its tree-view context menu: menu:Save Tool[] (only if the object came from a file) and menu:Save Tool As…[] open a save dialog offering the FreeCAD Tool (`.fctb`) and YAML formats. The commands `CAM_ToolBitCreate` (New Toolbit) and `CAM_ToolBitLoad` (Load Tool) exist but are not placed in any menu.
+Double-click a Tool Bit in the https://wiki.freecad.org/Tree_view[tree view] to open the _ToolBit editor_ as a https://wiki.freecad.org/Task_panel[task panel]. The task panel shows the *Label*, the *Toolbit Type*, the Properties list and the shape drawing of the Tool Bit. The task panel does not have the _Feeds && Speeds_ tab. btn:[OK] saves the Tool Bit and recomputes the document. btn:[Cancel] discards all edits that you made in the task panel.
+
+The figure shows the task panel for the Tool Bit of a new Job.
+
+image::tools/toolbit/editor-task-panel.png["ToolBit editor as a task panel, with the properties and the shape drawing of the Tool Bit",600]
+
+The menu:Transform[] entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The menu:Transform[] entry does not open the _ToolBit editor_.
+
+The tree-view context menu of a Tool Bit in a document has the entries menu:Save Tool[] and menu:Save Tool As…[]. The two entries are not available for a Tool Bit object in a document.
+
+The commands `CAM_ToolBitCreate` (_New Toolbit_) and `CAM_ToolBitLoad` (_Load Tool_) exist but are not placed in any menu.
 
 == Update from library
 
-[.since]#introduced in 26.3#: when a document is opened, embedded Tool Bits are compared with the library Tool Bit that has the same *ToolBitID*. If presets or Shape-group values differ, the _Tool Updates Available_ dialog lists the differences (expand a row to see old and new values) and replaces checked Tool Bits with the library version. The same check is available from the Job's context menu entry menu:Update Tools from Library[]. The automatic check can be turned off in menu:Edit[Preferences > CAM > Assets] (*Check for tool updates from the library when opening a document*).
+[.since]#introduced in 26.3#: an embedded Tool Bit is the copy of a library Tool Bit that a Job has in the document. A change of the library Tool Bit does not change the embedded Tool Bit. An update from the library replaces a stale embedded Tool Bit with a new copy of its library Tool Bit.
+
+FreeCAD finds the library Tool Bit of an embedded Tool Bit only by the *ToolBitID* property. An embedded Tool Bit is stale when one of these conditions applies:
+
+* The Feeds & Speeds presets of the embedded Tool Bit are different from the presets of the library Tool Bit.
+* A property of the Shape group that is on the two Tool Bits has a different value.
+
+FreeCAD does not compare the Shape group when the *ShapeType* of the two Tool Bits is different. FreeCAD does not compare a property that is on only one of the two Tool Bits. FreeCAD searches for the *ToolBitID* in your Tool Bits and then in the Tool Bits that FreeCAD supplies. An embedded Tool Bit without a *ToolBitID*, or with a *ToolBitID* that FreeCAD does not find, is not examined and is not changed.
+
+FreeCAD examines the embedded Tool Bits at two times:
+
+* At document load. When a document becomes active for the first time after you open it, FreeCAD examines all Jobs of the document. The check occurs one time for each load of the document, after restore and recompute are complete. The check occurs only when the preference *Check for tool updates from the library when opening a document* in menu:Edit[Preferences > CAM > Assets] is set; see xref:reference/preferences.adoc[CAM Preferences].
+* On request. The entry menu:Update Tools from Library[] in the tree-view context menu of a Job examines only that Job. The entry operates also when the preference is not set. When the Job has no stale Tool Bit, FreeCAD shows the message "This job has no tool updates available."
+
+When a minimum of one embedded Tool Bit is stale, FreeCAD shows the _Tool Updates Available_ dialog. The table of the dialog has one row for each Tool Controller whose embedded Tool Bit is stale. The table has these columns:
+
+* Checkbox column: selects the row for the update. Each row is set by default. The checkbox in the table header sets or clears all rows and shows a partial state when only some rows are set.
+* *Job*: the label of the Job.
+* *Tool #*: *Tool Number* of the Tool Controller.
+* *Tool*: the label of the embedded Tool Bit.
+* *Changes*: the summary `Presets`, `Geometry` or `Presets, Geometry`.
+
+When a Tool Bit has geometry changes, you can expand its *Changes* cell. The expanded cell shows one line `Presets` if the presets are different. The expanded cell shows one line for each changed property, with the property label, the value in the document and the value in the library. The dialog shows the two values in the *Units* of the library Tool Bit. The dialog does not show the presets item by item.
+
+The figure shows the dialog with two stale Tool Bits and the *Changes* cell of the first row expanded.
+
+image::tools/toolbit/tool-updates-available.png["Tool Updates Available dialog with two rows, and the Changes cell of the first row expanded",400]
+
+btn:[Update] replaces only the Tool Bits of the rows that are set. btn:[Update] is disabled when no row is set. btn:[Cancel] changes nothing and is the default button.
+
+An update always replaces the full Tool Bit. FreeCAD attaches a new full copy of the library Tool Bit to the document, with its presets, its Shape group values and its *Units*. FreeCAD then sets the *Tool* property of the Tool Controller to the new copy and removes the old Tool Bit object from the document. An update of only the presets or only the geometry is not possible. For the Tool Controller after an update, see xref:tools/tool-controller.adoc[Tool Controller].
+
+When two Tool Controllers use one Tool Bit object, the update of one row removes that object. FreeCAD does not set the *Tool* property of the other Tool Controller to the new copy.
+
+CAUTION: Do not update an embedded Tool Bit whose local edits are necessary. The update removes the old Tool Bit object with all its local edits: presets, dimensions and other properties.
+
+FreeCAD does not write a change of the *Presets* property of an embedded Tool Bit to the library Tool Bit; see xref:tools/feeds-speeds.adoc[Feeds & Speeds presets]. Thus an update from the library replaces the changed presets with the presets of the library Tool Bit.
+
+After the update, FreeCAD hides each new Tool Bit in the 3D view and recomputes the document one time. FreeCAD does not replace a Tool Bit whose library Tool Bit was deleted after the check.
 
 == Scripting
 
