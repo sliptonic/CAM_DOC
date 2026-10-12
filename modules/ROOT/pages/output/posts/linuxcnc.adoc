@@ -12,6 +12,8 @@ xref:output/postprocessor-customization.adoc[Postprocessor Customization] gives 
 
 The `linuxcnc` Post writes a tilted xref:reference/glossary.adoc#work-plane[Work Plane] with the lines `G68.2`, `G53.1` and `G69`.
 
+The `linuxcnc` Post writes a tapping cycle that is marked rigid as `G33.1`; the section _Drill cycles and tapping_ of xref:output/post-process.adoc[Post Process] gives the details.
+
 CAUTION: Make sure that the LinuxCNC control accepts the tilted Work Plane lines before you run the program. The syntax of these lines follows draft LinuxCNC work and can change.
 
 == Defaults of the common properties
@@ -107,9 +109,7 @@ The Post writes the xref:reference/glossary.adoc#toolpath[Toolpath] of such an O
 
 === Align line
 
-The Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* (`twp_control_positions_rotaries`) is checked.
-The default of `twp_control_positions_rotaries` is checked.
-When `twp_control_positions_rotaries` is unchecked, the Post writes a `G0` rotary move before the declare line and writes no align line.
+The Post writes the align line after the declare line when *Tilted work plane: control positions the rotaries* is checked, which is the default.
 The common *Tilted work plane* properties control the align line; xref:output/machine.adoc[Machine] gives these properties.
 
 The *Tilted work plane: align* property (`twp_align`) gives the text of the align line.
@@ -120,14 +120,7 @@ The *Tilted work plane: align* property (`twp_align`) gives the text of the alig
 The value `G53.1 P1 Q1` gives the line `G53.1 P1 Q1`, and the output has no line with only `G53.1`.
 The Post writes `G53.6` only when `twp_align` contains `G53.6`.
 
-The help text of *Tilted work plane: align* gives these values:
-
-* `G53.1`: moves only the rotary axes. The tip of the Tool Bit changes its position.
-* `G53.1 P1` or `G53.1 P2`: selects one of the two poses.
-* `Q1`: lets the table take part in the move.
-* `G53.6`: keeps the center point of the Tool Bit in its position.
-
-The Post does not examine these words.
+The Post does not examine the text of `twp_align`.
 
 === Cancel line
 

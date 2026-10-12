@@ -538,7 +538,7 @@ from Path.Base.MachineState import MachineState
 ms = MachineState()
 ms.addCommands(path.Commands)
 ms.getPosition()   # the current XYZ
-ms.getState()      # the dictionary of the Tracked values (position, F, S, T, coolant, Fixture, return mode)
+ms.getState()      # the dictionary of the Tracked values
 ms.Plane           # the arc plane: 'G17', 'G18' or 'G19'
 ----
 

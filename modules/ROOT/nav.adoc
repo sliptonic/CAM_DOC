@@ -82,6 +82,7 @@
 ** xref:output/posts/fanuc.adoc[Fanuc Post-Processor]
 ** xref:output/posts/heidenhain.adoc[Heidenhain Post-Processor]
 ** xref:output/posts/genealogy.adoc[Post-Processor Genealogy]
+** xref:output/posts/linuxcnc.adoc[linuxcnc Post-Processor]
 ** xref:job/setup-sheet.adoc[CAM SetupSheet]
 ** xref:tutorials/walkthrough-for-the-impatient.adoc[CAM Walkthrough for the Impatient]
 ** xref:reference/experimental.adoc[CAM experimental]

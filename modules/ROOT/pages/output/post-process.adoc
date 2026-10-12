@@ -216,7 +216,7 @@ The table gives notes on individual Posts.
 |Post |Notes
 |`generic_sheet_cutting` |For plasma, laser and waterjet machines. *Control Method For Cutter* has the values `Z_Control`, `Spindle_Control` and `G0_Control`. Default: `Z_Control`.
 |`heidenhain` |Writes a Klartext program with block numbers, not G-code.
-|`fanuc` |Writes the `%` tape marks and an `O` program number.
+|`fanuc` |Writes the `%` tape marks and an `O` program number. Writes tilted Work Planes with the DWO and the TWP Rotation Strategy. xref:output/posts/fanuc.adoc[Fanuc Post-Processor] describes the `fanuc` Post.
 |`linuxcnc` |Writes tilted Work Planes with the TWP Rotation Strategy only. xref:output/posts/linuxcnc.adoc[linuxcnc Post-Processor] describes the output.
 |`opensbp` |Does not accept the bare `T` command that the *Early tool prep* option of the Machine writes. The message of a failed probe names the Job and the Operation. The `opensbp` Post accepts a G17 command and writes no line for it. A G18 or G19 command stops the export with the message `Unsupported command: G18` or `Unsupported command: G19`. xref:output/postprocessor-customization.adoc[Postprocessor Customization] describes the arc plane rule.
 |===
