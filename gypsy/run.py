@@ -191,6 +191,14 @@ def main():
             sys.exit(f"issue #{a.issue} has no open pull request to revise")
         draft.sh("git", "fetch", "-q", "origin", f"+{branch}:refs/remotes/origin/{branch}")
         draft.sh("git", "checkout", "-q", "-B", branch, f"origin/{branch}")
+        # The runner reads its prompts, schemas and the figure stage from the working tree. Bring the branch to
+        # the published main, so that the tools and the other pages are current.
+        merged = subprocess.run(["git", "-c", "user.name=sliptonic", "-c", "user.email=shopinthewoods@gmail.com", "merge",
+                                 "-q", "--no-edit", "origin/main"], cwd=ROOT, capture_output=True, text=True)
+        if merged.returncode:
+            subprocess.run(["git", "merge", "--abort"], cwd=ROOT)
+            draft.sh("git", "checkout", "-q", "-f", "--detach", "origin/main")
+            sys.exit(f"origin/main does not merge into {branch}; a person must resolve it:\n{merged.stdout}{merged.stderr}"[:1500])
         said = feedback(pr)
         c["guidance"] += [f"Review of a person on pull request #{pr['number']}:\n{s}" for s in said]
         print(f"revise pull request #{pr['number']}: {len(said)} review comments of people")
