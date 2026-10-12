@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 </div>
 <div class="paragraph">
-<p><span class="since">introduced in 26.3</span>: The library drop-down always has <code>All Tools</code> as its first entry. The Tool Libraries follow in the natural sort sequence of their labels. <code>All Tools</code> shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in <code>All Tools</code> has no library tool number.</p>
+<p><span class="since">introduced in 26.3</span>: The library drop-down always has <code>All Tools</code> as its first entry. <code>All Tools</code> shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in <code>All Tools</code> has no library tool number.</p>
 </div>
 <div class="paragraph">
 <p>The figure shows the <em>Toolbit Selector</em> with <code>All Tools</code> selected.</p>
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p><span class="since">introduced in 26.3</span>: The library tool number of a Tool Bit is only a suggestion for the <strong>Tool Number</strong> of the new Tool Controller; see <a href="toolbit-library.html" class="xref page">Tool Library</a>. The <strong>Add Toolbit…</strong> command and the <em>Tool controller</em> drop-down of an Operation open the <em>Toolbit Selector</em> with the request for a tool number. The <em>Tool Number</em> dialog asks for a number when the Tool Bit has no library tool number and the <em>Toolbit Selector</em> has the request for a tool number. The <em>Tool Number</em> dialog also opens when a different Tool Bit in the Job already uses the library tool number.</p>
 </div>
 <div class="paragraph">
-<p>The default of the <em>Tool Number</em> dialog is the next free number of the Job. The next free number is the highest <strong>Tool Number</strong> of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.</p>
+<p>The default of the <em>Tool Number</em> dialog is the next free number of the Job when the dialog opens the first time for a Tool Bit. The next free number is the highest <strong>Tool Number</strong> of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.</p>
 </div>
 <div class="paragraph">
 <p>The figure shows the <em>Tool Number</em> dialog for a library tool number that <code>TC: 5mm Endmill</code> has.</p>
@@ -588,10 +588,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>The label <strong>Tool number &lt;number&gt; is already used by &lt;Tool Controller label&gt;.</strong> shows that a different Tool Bit uses the library tool number or the number that you entered.</p>
 </li>
 <li>
-<p>The default is the next free number of the Job. The minimum is 1.</p>
+<p>The first default is the next free number of the Job. The minimum is 1.</p>
 </li>
 <li>
-<p>The <em>Tool Number</em> dialog opens again as long as a different Tool Bit in the Job uses the number.</p>
+<p>The <em>Tool Number</em> dialog opens again, with the number that you entered as the default, as long as a different Tool Bit in the Job uses the number.</p>
 </li>
 <li>
 <p><b class="button">Cancel</b> does not add that Tool Bit. FreeCAD still adds the other selected Tool Bits.</p>

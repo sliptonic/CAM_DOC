@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
 </aside>
-<article class="doc"><div class="diff-banner"><span><strong>Rendered diff</strong>: pull request #27 against <code>main</code>. <span class="diff-key"><ins>added</ins> <del>removed</del></span> <button id="diff-prev" title="key: p">◀ Previous</button> <button id="diff-next" title="key: n">Next change ▶</button> <span id="diff-pos">16 changed blocks</span></span><a href="add-toolbit.html">Page without marks</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">CAM ToolBitDock</h1><div class="openblock fcinfobox">
+<article class="doc"><div class="diff-banner"><span><strong>Rendered diff</strong>: pull request #27 against <code>main</code>. <span class="diff-key"><ins>added</ins> <del>removed</del></span> <button id="diff-prev" title="key: p">◀ Previous</button> <button id="diff-next" title="key: n">Next change ▶</button> <span id="diff-pos">14 changed blocks</span></span><a href="add-toolbit.html">Page without marks</a><a href="../../../changes.html">All changed pages</a></div><h1 class="page">CAM ToolBitDock</h1><div class="openblock fcinfobox">
 <div class="content">
 <div class="paragraph fcTitle">
 <p><span class="image"><img src="../_images/CAM_ToolTable.svg" alt="CAM ToolBitDock" width="32"></span> <strong>CAM ToolBitDock</strong></p>
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <img src="../_images/tools/add-toolbit/toolbit-selector-library.png" alt="Toolbit Selector with a Tool Library selected, the library tool number in each list entry and the sort drop-down" width="400">
 </div>
 </div><div class="paragraph diff-changed diff-block-add">
-<p><span class="since">introduced in 26.3</span>: The library drop-down always has <code>All Tools</code> as its first entry. The Tool Libraries follow in the natural sort sequence of their labels. <code>All Tools</code> shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in <code>All Tools</code> has no library tool number.</p>
+<p><span class="since">introduced in 26.3</span>: The library drop-down always has <code>All Tools</code> as its first entry. <code>All Tools</code> shows each Tool Bit that FreeCAD has stored, in a Tool Library or not. A Tool Bit that is selected in <code>All Tools</code> has no library tool number.</p>
 </div><div class="paragraph diff-changed diff-block-add">
 <p>The figure shows the <em>Toolbit Selector</em> with <code>All Tools</code> selected.</p>
 </div><div class="imageblock diff-changed diff-block-add">
@@ -508,7 +508,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div><div class="paragraph"><p class="diff-changed">If the document contains no Job, the message <em>Create a Job first</em> is shown. If it contains several Jobs, a dialog asks which Job to add the Tool Controllers to. The new Tool Controller is named <em>TC: &lt;Tool Bit label&gt;</em> <ins>and gets</ins> <del>, gets the Tool Bit’s number in the selected library as <strong>Tool Number</strong> and</del> the Tool Bit’s <strong>Spindle Direction</strong>.</p> </div><div class="paragraph diff-changed diff-block-add">
 <p><span class="since">introduced in 26.3</span>: The library tool number of a Tool Bit is only a suggestion for the <strong>Tool Number</strong> of the new Tool Controller; see <a href="toolbit-library.html" class="xref page">Tool Library</a>. The <strong>Add Toolbit…</strong> command and the <em>Tool controller</em> drop-down of an Operation open the <em>Toolbit Selector</em> with the request for a tool number. The <em>Tool Number</em> dialog asks for a number when the Tool Bit has no library tool number and the <em>Toolbit Selector</em> has the request for a tool number. The <em>Tool Number</em> dialog also opens when a different Tool Bit in the Job already uses the library tool number.</p>
 </div><div class="paragraph diff-changed diff-block-add">
-<p>The default of the <em>Tool Number</em> dialog is the next free number of the Job. The next free number is the highest <strong>Tool Number</strong> of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.</p>
+<p>The default of the <em>Tool Number</em> dialog is the next free number of the Job when the dialog opens the first time for a Tool Bit. The next free number is the highest <strong>Tool Number</strong> of the Tool Controllers in the Job plus 1. The next free number is 1 when the Job has no Tool Controller. FreeCAD does not select a lower number that is not used.</p>
 </div><div class="paragraph diff-changed diff-block-add">
 <p>The figure shows the <em>Tool Number</em> dialog for a library tool number that <code>TC: 5mm Endmill</code> has.</p>
 </div><div class="imageblock diff-changed diff-block-add">
@@ -517,7 +517,79 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 </div><div class="paragraph diff-changed diff-block-add">
 <p>Two different Tool Bits in a Job cannot have the same tool number. <a href="tool-controller.html" class="xref page">Tool Controller</a> gives the rule for tool numbers.</p>
-</div><div class="paragraph"><p class="diff-changed"> <ins>The</ins> <del>The same Tool Bit browser is used by the</del> Job editor (Tools tab → <b class="button">Add</b> <ins>) opens the same <em>Toolbit Selector</em> dialog. When the Job editor opens the <em>Toolbit Selector</em>, a Tool Bit without a library tool number gets</ins> <del>, dialog <em>Select Toolbit</em>, which additionally offers <em>All Tools</em>; Tool Bits taken from <em>All Tools</em> get</del> the next free <del>tool</del> number of the <ins>Job, and FreeCAD does not ask. The last entry of</ins> <del>Job) and by</del> the <em>Tool controller</em> drop-down of an <ins>Operation’s task panel</ins> <del>operation’s task panel, whose last entry</del> opens the <em>Toolbit Selector</em> <ins>dialog</ins> to create a new Tool Controller.</p> </div><h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2><h3 id="create-tool-controllers"><a class="anchor" href="#create-tool-controllers"></a>Create Tool Controllers</h3><div class="olist arabic"><ol class="arabic"><li><p>There are several ways to open the Toolbit Selector:</p> <div class="ulist"><ul><li><p>Press the <span class="image"><img src="../_images/CAM_ToolTable.svg" alt="CAM ToolTable" width="16"></span> <b class="button">Add Toolbit…</b> button in the Tool Commands toolbar.</p> </li> <li><p>Select the <span class="menuseq"><b class="menu">CAM</b><i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span> option from the menu.</p> </li> <li><p>Use the keyboard shortcut: <kbd>P</kbd> then <kbd>T</kbd>.</p> </li> </ul> </div> </li> <li class="diff-changed"><p class="diff-changed">Select a <ins>Tool Library in the drop-down, or select <code>All Tools</code>.</ins> </p> <del>library in the drop-down.</del> </li> <li><p>Double-click a Tool Bit, or select one or more Tool Bits and press <b class="button">Add to Job</b>.</p> </li> <li class="diff-changed"><p class="diff-changed"><ins><span class="since">introduced in 26.3</span> If the <em>Tool Number</em> dialog opens, enter a tool number that no different Tool Bit in the Job uses. Press <b class="button">OK</b>.</ins></p><ins> </ins><div class="ulist"><ul><li><p><ins>The label <strong>Tool number for &lt;Tool Bit label&gt;:</strong> shows that the Tool Bit has no library tool number.</ins></p><ins> </ins></li><ins> </ins><li><p><ins>The label <strong>Tool number &lt;number&gt; is already used by &lt;Tool Controller label&gt;.</strong> shows that a different Tool Bit uses the library tool number or the number that you entered.</ins></p><ins> </ins></li><ins> </ins><li><p><ins>The default is the next free number of the Job. The minimum is 1.</ins></p><ins> </ins></li><ins> </ins><li><p><ins>The <em>Tool Number</em> dialog opens again as long as a different Tool Bit in the Job uses the number.</ins></p><ins> </ins></li><ins> </ins><li><p><ins><b class="button">Cancel</b> does not add that Tool Bit. FreeCAD still adds the other selected Tool Bits.</ins></p><ins> </ins></li><ins> </ins></ul><ins> </ins></div><ins> </ins></li> </ol> </div><nav class="pagination">
+</div><div class="paragraph"><p class="diff-changed"> <ins>The</ins> <del>The same Tool Bit browser is used by the</del> Job editor (Tools tab → <b class="button">Add</b> <ins>) opens the same <em>Toolbit Selector</em> dialog. When the Job editor opens the <em>Toolbit Selector</em>, a Tool Bit without a library tool number gets</ins> <del>, dialog <em>Select Toolbit</em>, which additionally offers <em>All Tools</em>; Tool Bits taken from <em>All Tools</em> get</del> the next free <del>tool</del> number of the <ins>Job, and FreeCAD does not ask. The last entry of</ins> <del>Job) and by</del> the <em>Tool controller</em> drop-down of an <ins>Operation’s task panel</ins> <del>operation’s task panel, whose last entry</del> opens the <em>Toolbit Selector</em> <ins>dialog</ins> to create a new Tool Controller.</p> </div><h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2><h3 id="create-tool-controllers"><a class="anchor" href="#create-tool-controllers"></a>Create Tool Controllers</h3><div class="olist arabic diff-changed diff-block-del">
+<ol class="arabic">
+<li>
+<p>There are several ways to open the Toolbit Selector:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Press the <span class="image"><img src="../_images/CAM_ToolTable.svg" alt="CAM ToolTable" width="16"></span> <b class="button">Add Toolbit…</b> button in the Tool Commands toolbar.</p>
+</li>
+<li>
+<p>Select the <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span> option from the menu.</p>
+</li>
+<li>
+<p>Use the keyboard shortcut: <kbd>P</kbd> then <kbd>T</kbd>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select a library in the drop-down.</p>
+</li>
+<li>
+<p>Double-click a Tool Bit, or select one or more Tool Bits and press <b class="button">Add to Job</b>.</p>
+</li>
+</ol>
+</div><div class="olist arabic diff-changed diff-block-add">
+<ol class="arabic">
+<li>
+<p>There are several ways to open the Toolbit Selector:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Press the <span class="image"><img src="../_images/CAM_ToolTable.svg" alt="CAM ToolTable" width="16"></span> <b class="button">Add Toolbit…</b> button in the Tool Commands toolbar.</p>
+</li>
+<li>
+<p>Select the <span class="menuseq"><b class="menu">CAM</b> <i class="fa fa-angle-right caret"></i> <b class="menuitem">Add Toolbit…</b></span> option from the menu.</p>
+</li>
+<li>
+<p>Use the keyboard shortcut: <kbd>P</kbd> then <kbd>T</kbd>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select a Tool Library in the drop-down, or select <code>All Tools</code>.</p>
+</li>
+<li>
+<p>Double-click a Tool Bit, or select one or more Tool Bits and press <b class="button">Add to Job</b>.</p>
+</li>
+<li>
+<p><span class="since">introduced in 26.3</span> If the <em>Tool Number</em> dialog opens, enter a tool number that no different Tool Bit in the Job uses. Press <b class="button">OK</b>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The label <strong>Tool number for &lt;Tool Bit label&gt;:</strong> shows that the Tool Bit has no library tool number.</p>
+</li>
+<li>
+<p>The label <strong>Tool number &lt;number&gt; is already used by &lt;Tool Controller label&gt;.</strong> shows that a different Tool Bit uses the library tool number or the number that you entered.</p>
+</li>
+<li>
+<p>The first default is the next free number of the Job. The minimum is 1.</p>
+</li>
+<li>
+<p>The <em>Tool Number</em> dialog opens again, with the number that you entered as the default, as long as a different Tool Bit in the Job uses the number.</p>
+</li>
+<li>
+<p><b class="button">Cancel</b> does not add that Tool Bit. FreeCAD still adds the other selected Tool Bits.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div><nav class="pagination">
   <span class="prev"><a href="library-manager.html">Toolbit Library Manager</a></span>
   <span class="next"><a href="../operations/profile.html">Profile</a></span>
 </nav></article>

@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p>In the <em>Toolbit Parameter Editor</em> set the Label, Tool Number (only when a library is selected; the next free number is proposed), the Toolbit Type (editable only for shapes with subtypes, for example Drill: jobber, stub, spot, center, brad point), the shape parameters and the attributes, then press <b class="button">OK</b>.</p>
 </li>
 <li>
-<p>To edit an existing Tool Bit, double-click it in the Library Manager or in the Toolbit Selector, or select it and press <kbd>F2</kbd>.</p>
+<p>To edit an existing Tool Bit, double-click it in the Library Manager. As an alternative, select it in the Library Manager or in the Toolbit Selector and press <kbd>F2</kbd>.</p>
 </li>
 </ol>
 </div>
@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </ul>
 </div>
 <div class="paragraph">
-<p>When a Tool Bit has no <strong>Units</strong> value, FreeCAD selects the unit and the number of decimals from the active unit schema. The Imperial schema gives 4 decimals. All other schemas give 3 decimals.</p>
+<p>When a Tool Bit has no <strong>Units</strong> value, FreeCAD selects the unit and the number of decimals from the active unit schema. Only the unit schema <em>Imperial decimal (in, lb)</em> gives 4 decimals. All other unit schemas, <em>US customary (in, lb)</em> included, give 3 decimals.</p>
 </div>
 <div class="paragraph">
 <p>Tool precision applies to the values that FreeCAD saves. A Tool Bit file can have values with a different number of decimals, as the example shows.</p>
@@ -689,7 +689,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="tool-bits-in-a-document"><a class="anchor" href="#tool-bits-in-a-document"></a>Tool Bits in a document</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In a Job the Tool Bit object is shown as a child of its <a href="tool-controller.html" class="xref page">Tool Controller</a> and is hidden by default. Each Tool Controller has its own Tool Bit object.</p>
+<p>In a Job the Tool Bit object is shown as a child of its <a href="tool-controller.html" class="xref page">Tool Controller</a> and is hidden by default. The <em>Toolbit Selector</em> makes a new Tool Bit object for each Tool Controller. A copy of a Tool Controller uses the Tool Bit object of the initial Tool Controller.</p>
 </div>
 <div class="paragraph">
 <p>Double-click a Tool Bit in the <a href="https://wiki.freecad.org/Tree_view">tree view</a> to open the <em>ToolBit editor</em> as a <a href="https://wiki.freecad.org/Task_panel">task panel</a>. The task panel shows the <strong>Label</strong>, the <strong>Toolbit Type</strong>, the Properties list and the shape drawing of the Tool Bit. The task panel does not have the <em>Feeds &amp;&amp; Speeds</em> tab. <b class="button">OK</b> saves the Tool Bit and recomputes the document. <b class="button">Cancel</b> discards all edits that you made in the task panel.</p>
@@ -703,7 +703,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 </div>
 <div class="paragraph">
-<p>The <b class="menuref">Transform</b> entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The <b class="menuref">Transform</b> entry does not open the <em>ToolBit editor</em>. The tree-view context menu of a Tool Bit has no CAM entry of its own.</p>
+<p>The <b class="menuref">Transform</b> entry of the tree-view context menu starts the standard Transform manipulator of FreeCAD for the Tool Bit. The <b class="menuref">Transform</b> entry does not open the <em>ToolBit editor</em>.</p>
+</div>
+<div class="paragraph">
+<p>The tree-view context menu of a Tool Bit in a document has the entries <b class="menuref">Save Tool</b> and <b class="menuref">Save Tool As…</b>, which write the Tool Bit to a file. The entry <b class="menuref">Save Tool</b> is available only if the Tool Bit object came from a file. The two entries open a save dialog with the FreeCAD Tool (<code>.fctb</code>) and YAML formats.</p>
 </div>
 <div class="paragraph">
 <p>The commands <code>CAM_ToolBitCreate</code> (<em>New Toolbit</em>) and <code>CAM_ToolBitLoad</code> (<em>Load Tool</em>) exist but are not placed in any menu.</p>
@@ -730,7 +733,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </ul>
 </div>
 <div class="paragraph">
-<p>FreeCAD does not compare the Shape group when the <strong>ShapeType</strong> of the two Tool Bits is different. FreeCAD does not compare a property that is on only one of the two Tool Bits. An embedded Tool Bit without a <strong>ToolBitID</strong>, or with a <strong>ToolBitID</strong> that is not in the local library store, is not examined and is not changed.</p>
+<p>FreeCAD does not compare the Shape group when the <strong>ShapeType</strong> of the two Tool Bits is different. FreeCAD does not compare a property that is on only one of the two Tool Bits. FreeCAD searches for the <strong>ToolBitID</strong> in your Tool Bits and then in the Tool Bits that FreeCAD supplies. An embedded Tool Bit without a <strong>ToolBitID</strong>, or with a <strong>ToolBitID</strong> that FreeCAD does not find, is not examined and is not changed.</p>
 </div>
 <div class="paragraph">
 <p>FreeCAD examines the embedded Tool Bits at two times:</p>
@@ -746,12 +749,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 </ul>
 </div>
 <div class="paragraph">
-<p>When a minimum of one embedded Tool Bit is stale, FreeCAD shows the <em>Tool Updates Available</em> dialog. The table of the dialog has one row for each stale Tool Bit, in the sequence of the Job label and then of <strong>Tool #</strong>. The table has these columns:</p>
+<p>When a minimum of one embedded Tool Bit is stale, FreeCAD shows the <em>Tool Updates Available</em> dialog. The table of the dialog has one row for each Tool Controller whose embedded Tool Bit is stale. The table has these columns:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Checkbox column: selects the Tool Bit for the update. Each row is set by default. The checkbox in the table header sets or clears all rows and shows a partial state when only some rows are set.</p>
+<p>Checkbox column: selects the row for the update. Each row is set by default. The checkbox in the table header sets or clears all rows and shows a partial state when only some rows are set.</p>
 </li>
 <li>
 <p><strong>Job</strong>: the label of the Job.</p>
