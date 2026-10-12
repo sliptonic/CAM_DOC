@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="tool-numbers"><a class="anchor" href="#tool-numbers"></a>Tool numbers</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Tool Bit has a permanent ID (its file name, shown as <strong>ToolBitID</strong>). Each tool number belongs to one Tool Library: the same Tool Bit can have different tool numbers in different Tool Libraries. Tool numbers are unique in a Tool Library. The Library Manager moves the other Tool Bit to the next free number when a Tool Bit gets a number that is already used.</p>
+<p>A Tool Bit has a permanent ID (its file name, shown as <strong>ToolBitID</strong>). Each tool number belongs to one Tool Library: the same Tool Bit can have different tool numbers in different Tool Libraries. Tool numbers are unique in a Tool Library. The Library Manager moves the other Tool Bit to a different free number of the Tool Library when a Tool Bit gets a number that is already used.</p>
 </div>
 <div class="paragraph">
 <p>The library tool number is only a suggestion for the Job. FreeCAD gives the library tool number to the new Tool Controller when the number is free in the Job or the same Tool Bit already uses it. FreeCAD does not ask for a number in these two conditions. FreeCAD asks for a different number when a different Tool Bit in the Job uses the library tool number; <a href="add-toolbit.html" class="xref page">Add Toolbit…</a> describes the request.</p>

@@ -499,10 +499,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 <h2 id="presets"><a class="anchor" href="#presets"></a>Presets</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Preset is a named Feeds &amp; Speeds record stored on a Tool Bit for a material and an operation type. Presets are edited on the <em>Feeds &amp;&amp; Speeds</em> tab of the Toolbit Parameter Editor (open the Tool Bit from the Library Manager to change the library copy; open it from a Job to change only the embedded copy). The tab lists Name, Material, Op type, Surface speed, Chipload and Notes and offers <b class="button">Add preset</b>, <b class="button">Edit</b>, <b class="button">Copy</b> and <b class="button">Delete</b>.</p>
+<p>A Preset is a named Feeds &amp; Speeds record stored on a Tool Bit for a material and an operation type. Presets are edited on the <em>Feeds &amp;&amp; Speeds</em> tab of the <em>ToolBit editor</em> (window title <em>Toolbit Parameter Editor</em>), which opens for a Tool Bit from a Tool Library. The task panel of a Tool Bit in a document does not have the <em>Feeds &amp;&amp; Speeds</em> tab; see <a href="toolbit.html" class="xref page">Tool Bit</a>. The tab lists Name, Material, Op type, Surface speed, Chipload and Notes and offers <b class="button">Add preset</b>, <b class="button">Edit</b>, <b class="button">Copy</b> and <b class="button">Delete</b>.</p>
 </div>
 <div class="paragraph">
-<p>FreeCAD writes the Presets that are edited on an embedded Tool Bit only to the <strong>Presets</strong> property of the document object, not to the Tool Library. An update from the library replaces the full embedded Tool Bit, with its Presets; see <a href="toolbit.html" class="xref page">Tool Bit</a>.</p>
+<p>The figure shows the <em>Feeds &amp;&amp; Speeds</em> tab for a Tool Bit with two Presets.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/feeds-speeds/presets-tab.png" alt="Feeds &amp; Speeds tab of the ToolBit editor with two Presets, the Notes column and the buttons Add preset, Edit, Copy and Delete" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>The Presets of an embedded Tool Bit are in the <strong>Presets</strong> property of the document object. FreeCAD does not write a change of the <strong>Presets</strong> property of an embedded Tool Bit to the library Tool Bit. An update from the library replaces the full embedded Tool Bit, with its Presets; see <a href="toolbit.html" class="xref page">Tool Bit</a>.</p>
 </div>
 <div class="paragraph">
 <p>The <strong>Notes</strong> cell of the table shows the notes of the Preset on one line, and the tooltip of the cell shows the full text. A double-click on a row of the table opens the Preset in the <em>Edit preset</em> dialog.</p>
@@ -540,6 +548,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 <p><strong>Notes</strong>: a text field for one or more lines in the <em>Notes</em> group. FreeCAD saves the text in the <code>"notes"</code> key of the Preset record and saves empty notes as <code>null</code>.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The figure shows the <em>Edit preset</em> dialog for the Preset <code>Alu profile</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tools/feeds-speeds/edit-preset-dialog.png" alt="Edit preset dialog with the Name field, the material, the op type, the feed and speed values and the Notes group" width="400">
+</div>
 </div>
 <div class="paragraph">
 <p>Only Surface Speed, Chipload and the ratio are stored; feed and spindle speed are recomputed from the Tool Bit geometry when the Preset is used. Two Presets on one Tool Bit may not share the same name, material and op type. A new Preset’s chipload is seeded from the Tool Bit’s <strong>Chipload</strong> attribute.</p>
