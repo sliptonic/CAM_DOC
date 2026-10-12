@@ -1,9 +1,12 @@
 {
-  "title": "gypsy check",
+  "title": "gypsy review",
   "type": "object",
   "required": [
     "goals",
     "findings",
+    "confirmed",
+    "untested",
+    "merge",
     "notes"
   ],
   "properties": {
@@ -46,7 +49,10 @@
           "kind",
           "severity",
           "text",
-          "fix"
+          "evidence",
+          "fix",
+          "brief_fact",
+          "brief_correction"
         ],
         "properties": {
           "page": {
@@ -73,11 +79,35 @@
           "text": {
             "type": "string"
           },
+          "evidence": {
+            "type": "string"
+          },
           "fix": {
+            "type": "string"
+          },
+          "brief_fact": {
+            "type": "string"
+          },
+          "brief_correction": {
             "type": "string"
           }
         }
       }
+    },
+    "confirmed": {
+      "type": "integer"
+    },
+    "untested": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "merge": {
+      "enum": [
+        "yes",
+        "no"
+      ]
     },
     "notes": {
       "type": "string"
